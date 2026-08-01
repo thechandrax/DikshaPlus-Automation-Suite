@@ -1758,98 +1758,41 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
 
 async def process_feedback_activity(page, view_button, answer_key=None, module_name="", module_no=None, sub_name="", sub_no=None, course_title=""):
     """
-    Dedicated Feedback Form Automation Engine.
-    Does NOT open quiz modals, does NOT look for 'Stay Calm' banners, and does NOT call AI solvers.
-    Directly opens Feedback Form, selects positive rating choices (Strongly Agree / Agree / Yes),
-    fills comment boxes, submits feedback, and clicks Continue to confirm 100% checkmark!
+    Dedicated DIKSHA Popup Feedback Form Engine.
+    Matches exact DIKSHA Feedback Form popup modal:
+    1. Clicks brown 'View' button to open Feedback Form popup modal.
+    2. Selects 'Strongly Agree' / Option 1 for all radio questions inside the modal.
+    3. Clicks the brown 'Submit Feedback' button at the bottom of the modal.
+    4. Confirms 100% checkmark update!
     """
     ctx_str = f"Module #{module_no or 8} ('{module_name or 'Feedback Form'}') || Subsection #{sub_no or 1} ('{sub_name or 'Feedback Form'}')"
     logger.info(f"\n" + "=" * 50)
-    logger.info(f" 📝 [FEEDBACK FORM] Opening Feedback Form for {ctx_str}...")
+    logger.info(f" 📝 [FEEDBACK FORM MODAL] Opening Feedback Form for {ctx_str}...")
     logger.info("=" * 50)
 
-    # 1. Click the View / Feedback button explicitly
+    # 1. Click the brown 'View' button to open the Feedback Form popup modal
     try:
         view_id = await view_button.get_attribute("data-id") or ""
         await view_button.scroll_into_view_if_needed()
         await view_button.click(force=True)
-        logger.info(f"  --> Clicked Feedback View button (data-id='{view_id}'). Waiting 4s for Feedback page/modal to hydrate...")
-        await page.wait_for_timeout(4000)
+        logger.info(f"  --> Clicked Feedback View button (data-id='{view_id}'). Waiting 3s for Feedback Form popup modal to render...")
+        await page.wait_for_timeout(3000)
     except Exception as ex:
-        logger.warning(f"  --> Direct click notice on Feedback button: {ex}")
+        logger.warning(f"  --> Direct click notice on Feedback View button: {ex}")
 
-    # 2. Check across page and all frames for 'Answer the questions...' or launch link
-    clicked_ans = False
+    # 2. Process all rating questions inside the Feedback popup modal across page and frames
     for frame_target in [page] + page.frames:
         try:
-            ans_selectors = [
-                "a[href*='complete.php']",
-                "a:has-text('Answer the questions')",
-                "button:has-text('Answer the questions')",
-                "a:has-text('Complete Feedback')",
-                "button:has-text('Complete Feedback')",
-                "a[href*='mod/feedback/complete.php']",
-                "form[action*='complete.php'] button",
-                "form[action*='complete.php'] input",
-                ".singlebutton a[href*='feedback']",
-                ".singlebutton button"
-            ]
-            for sel in ans_selectors:
-                ans_btn = frame_target.locator(sel).first
-                if await ans_btn.count() > 0 and await ans_btn.is_visible():
-                    cand_id = await ans_btn.get_attribute("data-id") or ""
-                    btn_t = (await ans_btn.inner_text()).strip()
-                    
-                    # Ensure we are clicking the inner launch link, NOT re-clicking the View button!
-                    if cand_id != view_id and btn_t.lower() not in ("view", ""):
-                        logger.info(f"  --> Found Feedback launch link '{btn_t}' ({sel})! Clicking to open complete.php...")
-                        await ans_btn.click(force=True)
-                        clicked_ans = True
-                        await page.wait_for_timeout(4000)
-                        break
-            if clicked_ans:
-                break
-        except Exception:
-            pass
-
-
-    # Fallback JS click for 'Answer the questions...' link
-    if not clicked_ans:
-        for frame_target in [page] + page.frames:
-            try:
-                clicked_ans = await frame_target.evaluate("""() => {
-                    const links = Array.from(document.querySelectorAll('a, button, input[type="submit"]'));
-                    const ans = links.find(l => {
-                        const txt = (l.innerText || l.value || '').toLowerCase();
-                        const href = (l.href || '').toLowerCase();
-                        return href.includes('complete.php') || txt.includes('answer the questions') || txt.includes('complete feedback');
-                    });
-                    if (ans) { ans.click(); return true; }
-                    return false;
-                }""")
-                if clicked_ans:
-                    logger.info("  --> JS fallback successfully clicked 'Answer the questions...' link! Waiting 4s for complete.php...")
-                    await page.wait_for_timeout(4000)
-                    break
-            except Exception:
-                pass
-
-
-    await page.wait_for_timeout(2000)
-
-    # 3. Process Feedback Form inputs across page and all frames
-    for frame_target in [page] + page.frames:
-        try:
-            # Select rating radio buttons (group by input name attribute to select one per question)
+            # Find all radio button inputs inside the feedback modal
             radios = frame_target.locator("input[type='radio'], input[type='checkbox']")
             r_count = await radios.count()
             if r_count > 0:
-                logger.info(f"  --> Found {r_count} rating options on Feedback Form. Selecting positive responses...")
+                logger.info(f"  --> Found {r_count} rating options in Feedback Modal. Selecting 'Strongly Agree' / positive responses...")
                 names_seen = set()
                 for idx in range(r_count):
                     r_el = radios.nth(idx)
                     try:
-                        r_name = await r_el.get_attribute("name") or f"idx_{idx}"
+                        r_name = await r_el.get_attribute("name") or f"q_idx_{idx}"
                         if r_name not in names_seen:
                             names_seen.add(r_name)
                             await r_el.click(force=True)
@@ -1857,7 +1800,7 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                     except Exception:
                         pass
 
-            # Fill feedback comment textareas / text inputs
+            # Fill any comment textareas if present
             textareas = frame_target.locator("textarea, input[type='text']:not([class*='search']):not([id*='search'])")
             t_count = await textareas.count()
             for idx in range(t_count):
@@ -1869,15 +1812,16 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                 except Exception:
                     pass
         except Exception as f_ex:
-            logger.warning(f"  --> Feedback form filling notice: {f_ex}")
+            logger.warning(f"  --> Feedback modal processing notice: {f_ex}")
 
-    # 4. Click 'Submit feedback' button
+    # 3. Click the brown 'Submit Feedback' button at the bottom of the modal
+    logger.info("  --> Searching for brown 'Submit Feedback' button...")
     submitted = False
     for frame_target in [page] + page.frames:
         try:
-            sub_btn = frame_target.locator("button.submit-feed-btn, #submitFeedbackBtn11, input[value*='Submit feedback'], button:has-text('Submit feedback'), input[type='submit'][value*='Submit'], button:has-text('Submit')").first
+            sub_btn = frame_target.locator("button:has-text('Submit Feedback'), input[value*='Submit Feedback'], button.submit-feed-btn, #submitFeedbackBtn11, button:has-text('Submit'), input[type='submit'][value*='Submit']").first
             if await sub_btn.count() > 0 and await sub_btn.is_visible():
-                logger.info("  --> Clicking 'Submit feedback' button to complete Feedback Form...")
+                logger.info("  🎯 [SUBMIT FEEDBACK] Clicking brown 'Submit Feedback' button...")
                 await sub_btn.click(force=True)
                 submitted = True
                 await page.wait_for_timeout(4000)
@@ -1895,32 +1839,22 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                         const txt = (b.innerText || b.value || '').toLowerCase();
                         const id = (b.id || '').toLowerCase();
                         const cls = (b.className || '').toLowerCase();
-                        return id.includes('submitfeedback') || cls.includes('submit-feed') || txt.includes('submit feedback') || txt.includes('submit');
+                        return txt.includes('submit feedback') || id.includes('submitfeedback') || cls.includes('submit-feed') || txt.includes('submit');
                     });
                     if (sub) { sub.click(); return true; }
                     return false;
                 }""")
                 if clicked:
-                    logger.info("  --> JS fallback successfully clicked Submit feedback!")
+                    logger.info("  🎯 [SUBMIT FEEDBACK] JS fallback successfully clicked 'Submit Feedback' button!")
                     await page.wait_for_timeout(4000)
                     break
             except Exception:
                 pass
 
-    # 5. Click post-feedback 'Continue' button to return to course page and trigger 100% checkmark sync
-    for frame_target in [page] + page.frames:
-        try:
-            cont_btn = frame_target.locator("a:has-text('Continue'), button:has-text('Continue'), input[value*='Continue']").first
-            if await cont_btn.count() > 0 and await cont_btn.is_visible():
-                logger.info("  --> Clicking post-feedback 'Continue' button to return to course page...")
-                await cont_btn.click(force=True)
-                await page.wait_for_timeout(3000)
-                break
-        except Exception:
-            pass
-
+    # 4. Check for modal close & confirm 100% checkmark update
     await close_activity_modal(page)
     await wait_for_server_checkmark(page)
+
 
 
 
