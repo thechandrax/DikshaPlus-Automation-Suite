@@ -553,9 +553,10 @@ async def process_video_activity(page, view_button):
         except Exception:
             initial_time = 0.0
 
-        if initial_time > 10.0 and duration > 0:
-            saved_pct = int((initial_time / duration) * 100)
-            logger.info(f"  --> [SAVED PROGRESS RESUMED] Video already at {saved_pct}% ({int(initial_time)}s / {int(duration)}s)! Resuming from current position...")
+        if initial_time > 1.0 and duration > 0:
+            saved_pct = min(99, max(1, int((initial_time / duration) * 100)))
+            logger.info(f"  --> [SAVED PROGRESS RESUMED] Video already at {saved_pct}% ({int(initial_time)}s / {int(duration)}s)! Resuming dynamically from current position...")
+
 
         # 2. ALWAYS 15s Warm-up Buffer @ 1.0x Speed (for telemetry initialization)
         logger.info("  --> 15s Warm-up Buffer: playing at 1.0x speed for session telemetry initialization...")
@@ -594,12 +595,12 @@ async def process_video_activity(page, view_button):
             if cur_time >= target_final_buffer_time or cur_time >= duration - 1:
                 break
 
-            # 4. Stall & Pause Recovery: Wait 8s for buffering window, then rewind 5s & adjust speed
+            # 4. Stall & Pause Recovery: Wait 10s for buffering window, then rewind 15s & adjust speed
             if is_paused or ready_state < 2:
-                logger.warning("  --> [STALL RECOVERY] Video buffering/paused! Waiting 8s for DIKSHA server buffer...")
-                await asyncio.sleep(8)
+                logger.warning("  --> [STALL RECOVERY] Video buffering/paused! Waiting 10s for DIKSHA server buffer...")
+                await asyncio.sleep(10)
                 
-                # Re-verify if video resumed on its own after 8s buffering window
+                # Re-verify if video resumed on its own after 10s buffering window
                 try:
                     re_info = await target_frame.evaluate("""
                         () => {
@@ -608,7 +609,7 @@ async def process_video_activity(page, view_button):
                         }
                     """)
                     if re_info.get("paused", False) or re_info.get("readyState", 0) < 2:
-                        logger.warning("  --> [STALL RECOVERY] Still buffering after 8s! Rewinding 15s back & resuming play()...")
+                        logger.warning("  --> [STALL RECOVERY] Still buffering after 10s! Rewinding 15s back & resuming play()...")
                         await target_frame.evaluate("""
                             () => {
                                 const v = document.querySelector('video');
@@ -619,10 +620,10 @@ async def process_video_activity(page, view_button):
                                 }
                             }
                         """)
-
                 except Exception:
                     pass
             else:
+
                 # Set accelerated speed & advance
                 await target_frame.evaluate(f"() => {{ const v = document.querySelector('video'); if (v) {{ v.playbackRate = {speed}; if (v.paused) v.play(); }} }}")
                 await asyncio.sleep(2)
