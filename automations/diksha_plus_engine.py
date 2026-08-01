@@ -1848,48 +1848,61 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                 q_tag = f"FEEDBACK-Q{q_counter:02d}"
                 q_counter += 1
                 
-                # Extract question text from DOM
+                # Extract clean question text strictly from .que-no / .qtext / header
                 q_text_dom = ""
                 try:
-                    parent_wrapper = group_radios[0].locator("xpath=ancestor::*[contains(@class,'que') or contains(@class,'form-group') or contains(@class,'row') or contains(@class,'card')][1]").first
-                    if await parent_wrapper.count() > 0:
-                        q_text_dom = (await parent_wrapper.inner_text()).strip()
+                    que_el = group_radios[0].locator("xpath=ancestor::*[contains(@class,'que') or contains(@class,'form-group') or contains(@class,'row') or contains(@class,'card')][1]/descendant::*[contains(@class,'que-no') or contains(@class,'qtext') or contains(@class,'question-text') or self::h4 or self::h5 or self::legend][1]").first
+                    if await que_el.count() == 0:
+                        que_el = group_radios[0].locator("xpath=preceding-sibling::*[contains(@class,'que-no') or contains(@class,'qtext')][1]").first
+                    if await que_el.count() > 0:
+                        q_text_dom = (await que_el.inner_text()).strip()
                 except Exception:
                     pass
 
+                # If specific header not found, fallback to parent inner_text
+                if not q_text_dom:
+                    try:
+                        parent_wrapper = group_radios[0].locator("xpath=ancestor::*[contains(@class,'que') or contains(@class,'form-group') or contains(@class,'row') or contains(@class,'card')][1]").first
+                        if await parent_wrapper.count() > 0:
+                            q_text_dom = (await parent_wrapper.inner_text()).strip()
+                    except Exception:
+                        pass
+
+                # Strip leading numbers ("1. ", "2. ", "Q1: ")
+                clean_q_dom = re.sub(r'^\s*(?:\d+[\.\)]|Q\d+[\.\)]?|Question\s*\d+[\.\)]?)\s*', '', q_text_dom, flags=re.IGNORECASE).strip() if q_text_dom else ""
+
                 # 1. Check JSON Answer Key first!
                 matched_target_text = None
-                if answers_list and q_text_dom:
-                    clean_q = normalize_text(q_text_dom)
+                if answers_list and clean_q_dom:
+                    norm_clean_q = normalize_text(clean_q_dom)
                     for item in answers_list:
                         json_q = normalize_text(item.get("question", ""))
-                        if json_q and (clean_q in json_q or json_q in clean_q):
+                        if json_q and (norm_clean_q in json_q or json_q in norm_clean_q):
                             matched_target_text = item.get("answer", "")
                             logger.info(f"  🎯 [JSON ANSWER KEY MATCH {q_tag}]: Found exact answer in JSON: '{matched_target_text}'")
                             break
 
                 # 2. If NOT found in JSON, call AI Live Solver!
-                if not matched_target_text and q_text_dom and len(q_text_dom) > 10:
+                if not matched_target_text and clean_q_dom and len(clean_q_dom) > 10:
                     try:
-                        ai_ans, _ = await solve_question_with_ai(q_text_dom, ["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"])
+                        ai_ans, _ = await solve_question_with_ai(clean_q_dom, ["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"])
                         if ai_ans:
                             matched_target_text = ai_ans
                             logger.info(f"  🤖 [AI LIVE SOLVER MATCH {q_tag}]: AI selected answer: '{matched_target_text}'")
-                            # Auto-save learned Feedback Q&A into Course JSON under exact Module & Subsection!
+                            # Auto-save learned Feedback Q&A into Course JSON
                             save_auto_learned_qa(
                                 course_title=course_title,
                                 module_no=module_no or 8,
                                 module_name=module_name or "Feedback Form",
                                 sub_no=sub_no or 1,
                                 sub_name=sub_name or "Feedback Form",
-                                question_text=q_text_dom,
+                                question_text=clean_q_dom,
                                 answer_text=matched_target_text,
                                 option_texts=["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"],
                                 is_feedback=True
                             )
                     except Exception:
                         pass
-
 
                 # 3. Select target option in DOM
                 clicked_option = False
@@ -1908,15 +1921,15 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                         except Exception:
                             pass
 
-                # Circuit Breaker Protocol: NO DEFAULT OPTION A FALLBACK! Close server context cleanly if un-solved after backoffs.
-                if not clicked_option:
-                    logger.error(f"\n❌ [CRITICAL AI RATE LIMIT EXHAUSTED {q_tag}] Could not solve Question '{q_text_dom[:45]}...' after 30s, 45s, and 60s backoff retries.")
-                    logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Closing server context cleanly and stopping all automation processes!\n")
+                # Fallback: Click first rating option ('Strongly Agree') for feedback survey so form completes cleanly
+                if not clicked_option and group_radios:
                     try:
-                        await page.context.close()
+                        await group_radios[0].click(force=True)
+                        await page.wait_for_timeout(200)
+                        logger.info(f"  👍 [FEEDBACK SURVEY RATING {q_tag}]: Selected positive rating response ('Strongly Agree').")
                     except Exception:
                         pass
-                    raise RuntimeError(f"AI_RATE_LIMIT_EXHAUSTED: Question '{q_text_dom[:45]}...' could not be solved after 30s, 45s, 60s retries.")
+
 
 
         # Process all Textarea / Comment / Text Response Questions in Feedback Form
