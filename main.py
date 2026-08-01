@@ -43,8 +43,24 @@ def display_interactive_user_menu():
 
 
     if not sys.stdin.isatty():
-        logger.info("  [!] Non-interactive mode detected. Processing user [1] by default.")
-        return [(user_keys[0], config.USER_CREDENTIALS[user_keys[0]])]
+        import os
+        env_user = os.getenv("SELECTED_USER", "").strip()
+        if env_user:
+            if env_user.lower() == "all":
+                return [(u, p) for u, p in config.USER_CREDENTIALS.items()]
+            elif env_user.isdigit():
+                u_idx = int(env_user)
+                if 1 <= u_idx <= len(user_keys):
+                    selected_user = user_keys[u_idx - 1]
+                    return [(selected_user, config.USER_CREDENTIALS[selected_user])]
+            elif env_user in config.USER_CREDENTIALS:
+                return [(env_user, config.USER_CREDENTIALS[env_user])]
+
+        logger.warning("\n===================================================================\n ⏸️ [MANUAL USER CONFIGURATION REQUIRED ON RAILWAY]\n No SELECTED_USER variable configured in Railway Variables.\n All default auto-run fallback code has been completely REMOVED.\n Please set SELECTED_USER=1 (or 2, 3, all) in Railway Variables to run.\n===================================================================\n")
+        import time
+        while True:
+            time.sleep(3600)
+
 
     try:
         choice = input(f"\033[38;5;51m👉 Select user number (1-{len(user_keys)}) or type custom email/mobile: \033[0m").strip()

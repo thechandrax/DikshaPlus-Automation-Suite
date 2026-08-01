@@ -754,8 +754,10 @@ def display_interactive_course_menu(courses):
                 if 1 <= c_idx <= len(courses):
                     logger.info(f"  [!] Environment variable SELECTED_COURSE='{c_idx}' detected. Processing Course #{c_idx}: '{courses[c_idx-1]['title']}'.")
                     return [courses[c_idx - 1]]
-        logger.info("  [!] Non-interactive mode detected. Processing option [1] by default.")
-        return [courses[0]]
+
+        logger.warning("\n===================================================================\n ⏸️ [MANUAL COURSE CONFIGURATION REQUIRED ON RAILWAY]\n No SELECTED_COURSE variable configured in Railway Variables.\n All default auto-run fallback course selection code has been completely REMOVED.\n Please set SELECTED_COURSE=1 (or 2, 3, all) in Railway Variables to run.\n===================================================================\n")
+        return None
+
 
 
     try:
