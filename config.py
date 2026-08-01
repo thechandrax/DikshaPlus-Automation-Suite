@@ -71,10 +71,15 @@ GEMINI_API_KEYS_ENCRYPTED = [
 
 def _load_gemini_keys():
     keys = []
-    env_key = os.environ.get("GEMINI_API_KEY", "").strip()
-    if env_key:
-        keys.append(env_key)
+    # Priority 1: Environment Variables (GOOGLE_API_KEY takes precedence per official Google Docs)
+    env_google = os.environ.get("GOOGLE_API_KEY", "").strip()
+    env_gemini = os.environ.get("GEMINI_API_KEY", "").strip()
+    if env_google:
+        keys.append(env_google)
+    if env_gemini and env_gemini not in keys:
+        keys.append(env_gemini)
     
+    # Priority 2: 256-Bit Encrypted Key Pool
     for enc_k in GEMINI_API_KEYS_ENCRYPTED:
         try:
             dec_k = decrypt_password(enc_k)
@@ -83,6 +88,7 @@ def _load_gemini_keys():
         except Exception:
             pass
     return keys
+
 
 GEMINI_API_KEYS = _load_gemini_keys()
 GEMINI_API_KEY = GEMINI_API_KEYS[0] if GEMINI_API_KEYS else ""
