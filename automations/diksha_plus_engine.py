@@ -157,43 +157,48 @@ Option Choices:
 INSTRUCTIONS:
 Return ONLY the exact text of the correct option choice from the list above. Do NOT include option numbers (1, 2, 3), do NOT include explanations. Return ONLY the exact option text."""
 
-    models_to_try = ["gemini-flash-latest", "gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash", "gemini-2.5-flash"]
+    models_to_try = ["gemini-2.0-flash", "gemini-flash-latest"]
 
     for key_idx, api_key in enumerate(api_keys, 1):
         for model_name in models_to_try:
-            try:
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
-                payload = json.dumps({
-                    "contents": [{"parts": [{"text": prompt}]}]
-                }).encode('utf-8')
-                
-                headers = {
-                    'Content-Type': 'application/json',
-                    'x-goog-api-key': api_key  # 2025/2026 Official Google API Auth Header
-                }
+            for attempt in range(2):
+                try:
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
+                    payload = json.dumps({
+                        "contents": [{"parts": [{"text": prompt}]}]
+                    }).encode('utf-8')
+                    
+                    headers = {
+                        'Content-Type': 'application/json',
+                        'x-goog-api-key': api_key  # 2025/2026 Official Google API Auth Header
+                    }
 
-                req = urllib.request.Request(url, data=payload, headers=headers)
-                res = urllib.request.urlopen(req, timeout=12)
-                resp_data = json.loads(res.read().decode('utf-8'))
-                ans_text = resp_data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "").strip()
-                
-                clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
-                if clean_ans:
-                    logger.info(f"  🧠 [AI LIVE SOLVER SUCCESS] Solved via Key #{key_idx} ({model_name}) -> '{clean_ans}'")
-                    return clean_ans
-            except urllib.error.HTTPError as http_err:
-                if http_err.code == 429:
-                    logger.warning(f"  🔄 [AI RATE LIMIT 429] Key #{key_idx} rate limited on {model_name}. Switching to next key in pool...")
-                    break  # Switch to next key in pool immediately!
-                elif http_err.code in (401, 403):
-                    logger.error(f"  ❌ [GEMINI API ERROR {http_err.code}] Key #{key_idx} {http_err.reason}. Switching to next key...")
+                    req = urllib.request.Request(url, data=payload, headers=headers)
+                    res = urllib.request.urlopen(req, timeout=12)
+                    resp_data = json.loads(res.read().decode('utf-8'))
+                    ans_text = resp_data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "").strip()
+                    
+                    clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
+                    if clean_ans:
+                        logger.info(f"  🧠 [AI LIVE SOLVER SUCCESS] Solved via Key #{key_idx} ({model_name}) -> '{clean_ans}'")
+                        return clean_ans
+                except urllib.error.HTTPError as http_err:
+                    if http_err.code in (429, 503):
+                        wait_sec = 3 * (attempt + 1)
+                        logger.warning(f"  ⏳ [AI RATE LIMIT {http_err.code}] Key #{key_idx} rate limit hit ({http_err.reason}). Waiting {wait_sec}s before retry...")
+                        time.sleep(wait_sec)
+                        continue
+                    elif http_err.code in (401, 403):
+                        logger.error(f"  ❌ [GEMINI API ERROR {http_err.code}] Key #{key_idx} {http_err.reason}. Trying next key...")
+                        break
+                    else:
+                        logger.warning(f"  ⚠️ [AI API HTTP ERROR {http_err.code}] {http_err.reason}")
+                        break
+                except Exception as ex:
+                    logger.warning(f"  ⚠️ [AI SOLVER NOTICE] {ex}")
+                    time.sleep(1)
                     break
-                else:
-                    logger.warning(f"  ⚠️ [AI API HTTP ERROR {http_err.code}] {http_err.reason}")
-                    break
-            except Exception as ex:
-                logger.warning(f"  ⚠️ [AI SOLVER NOTICE] {ex}")
-                break
+
 
     logger.warning("  ⚠️ [AI LIVE SOLVER UNABLE TO SOLVE] Falling back to available options.")
     return None
