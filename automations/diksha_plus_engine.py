@@ -50,23 +50,18 @@ def load_answer_key(course_title=None):
             except Exception as e:
                 logger.warning(f"Could not parse {course_file.name}: {e}")
         else:
-            # Create a clean template JSON file for this course using structured hierarchical schema
+            # Create a clean template JSON file for this course with dynamic subsections array
             template = {
                 "course_name": course_title,
-                "subsections": [
-                    {
-                        "subsection_no": 1,
-                        "subsection_name": "Assessment",
-                        "questions": []
-                    }
-                ]
+                "subsections": []
             }
             try:
                 with open(course_file, "w", encoding="utf-8") as f:
                     json.dump(template, f, indent=2)
-                logger.info(f"  --> Created template answer key file: data/courses/{course_file.name}")
+                logger.info(f"  --> Created clean answer key template file: data/courses/{course_file.name}")
             except Exception:
                 pass
+
 
 
 def extract_all_qa_items(answer_key):
