@@ -1245,7 +1245,21 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
     search_buckets = [scoped_items, answers_list] if scoped_items else [answers_list]
     logger.info(f"  --> [HIERARCHICAL MATCHING] Scoped {len(scoped_items)} questions for Module #{module_no or 1} • Subsection '{sub_name or ''}'.")
 
+    # 2.5 Navigation Reset Protocol: Click Question 1 in Right-Side Quiz Navigation panel (#quiznavbutton1)
+    try:
+        q1_btn = target_frame.locator("#quiznavbutton1, a#quiznavbutton1, .qn_buttons a[data-quiz-page='0']").first
+        if await q1_btn.count() == 0:
+            q1_btn = page.locator("#quiznavbutton1, a#quiznavbutton1, .qn_buttons a[data-quiz-page='0']").first
+
+        if await q1_btn.count() > 0 and await q1_btn.is_visible():
+            logger.info("  🎯 [QUIZ NAV RESET] Found Question 1 button (#quiznavbutton1). Clicking to start quiz from Question 1!")
+            await q1_btn.click(force=True)
+            await page.wait_for_timeout(2000)
+    except Exception as q1_ex:
+        logger.warning(f"  --> Question 1 navigation reset notice: {q1_ex}")
+
     for q_num in range(200):
+
         # Unlimited time pacing: 1.5s human reading delay
         await page.wait_for_timeout(1500)
 
