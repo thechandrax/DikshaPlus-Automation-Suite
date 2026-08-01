@@ -1456,6 +1456,18 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             except Exception as match_ex:
                 logger.warning(f"  --> Option matching notice: {match_ex}")
 
+        # Gate 2.5: Text / Comment Box Input Filling (For Feedback Forms or Open Text Questions)
+        if matched_answer_text and not selected_option:
+            try:
+                textarea_el = target_frame.locator("textarea, input[type='text']:not([class*='search']), .form-control:not([type='hidden'])").first
+                if await textarea_el.count() > 0 and await textarea_el.is_visible():
+                    await textarea_el.fill(matched_answer_text)
+                    selected_option = True
+                    logger.info(f"  ✍️ [TYPED FEEDBACK RESPONSE {q_tag}]: '{matched_answer_text}'")
+                    logger.info("  " + "-" * 75 + "\n")
+                    await page.wait_for_timeout(1000)
+            except Exception as text_ex:
+                logger.warning(f"  --> Text response filling notice: {text_ex}")
 
         # Fallback ONLY if AI solver & JSON cache both failed after 3 full attempts
         if not selected_option:
@@ -1476,13 +1488,10 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                     logger.info("  " + "-" * 75 + "\n")
                     await page.wait_for_timeout(800)
 
-
-
-
-
-        next_nav = target_frame.locator("input[value='Next Question'], input[value='Next'], button:has-text('Next Question'), button:has-text('Next'), .btn-next, a:has-text('Next')").first
+        next_nav = target_frame.locator("input[value='Next Question'], input[value='Next'], button:has-text('Next Question'), button:has-text('Next'), .btn-next, a:has-text('Next'), button:has-text('Submit Feedback'), input[value*='Submit Feedback'], button:has-text('Submit'), input[value*='Submit']").first
         if await next_nav.count() == 0:
-            next_nav = page.locator("input[value='Next Question'], input[value='Next'], button:has-text('Next Question'), button:has-text('Next'), .btn-next, a:has-text('Next')").first
+            next_nav = page.locator("input[value='Next Question'], input[value='Next'], button:has-text('Next Question'), button:has-text('Next'), .btn-next, a:has-text('Next'), button:has-text('Submit Feedback'), input[value*='Submit Feedback'], button:has-text('Submit'), input[value*='Submit']").first
+
 
         review_submit_nav = target_frame.locator("input[value='Review & Submit'], input[value='Submit'], button:has-text('Review & Submit'), button:has-text('Submit Assessment'), button:has-text('Submit'), input[value*='Submit']").first
         if await review_submit_nav.count() == 0:

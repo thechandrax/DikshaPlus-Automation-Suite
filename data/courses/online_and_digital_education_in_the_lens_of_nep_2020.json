@@ -30,6 +30,102 @@
         {
           "question": "NEP-2020 strongly promotes which learning approach is supported by digital technology?",
           "answer": "Blended learning"
+        },
+        {
+          "question": "Which clause of the National Education Policy 2020 focuses on technology-enabled education governance and analytics?",
+          "answer": "Para 23.1-23.3"
+        },
+        {
+          "question": "Which of the following is NOT a DPDP Act 2023 requirement?",
+          "answer": "Unlimited data retention"
+        },
+        {
+          "question": "How is the relationship between education and technology described as bi-directional?",
+          "answer": "Educational needs influence technological advancements, which in turn enhance teaching and learning practices."
+        },
+        {
+          "question": "What is the primary goal of Predicative analysis in data-driven decision making?",
+          "answer": "To forecast future trends based on historical data"
+        },
+        {
+          "question": "While implementing ICT in school education, certain precautions must be taken. Which of the following is not one of them?",
+          "answer": "Increasing the scope and reach of learning"
+        },
+        {
+          "question": "NEP 2020 emphasizes virtual labs mainly to:",
+          "answer": "Provide equal access to practical learning"
+        },
+        {
+          "question": "How many languages are supported on the DIKSHA portal?",
+          "answer": "18"
+        },
+        {
+          "question": "360-degree videos allow users to:",
+          "answer": "Look around in all directions"
+        },
+        {
+          "question": "Which step involves gathering relevant data to inform educational decisions?",
+          "answer": "Data Collection"
+        },
+        {
+          "question": "Tools such as QR codes that connect physical and digital learning are known as:",
+          "answer": "Phygital technologies"
+        },
+        {
+          "question": "The class-based feature of DIKSHA allows users to:",
+          "answer": "Choose study material according to their class"
+        },
+        {
+          "question": "Which feature allows users to access DIKSHA content through NCERT textbooks?",
+          "answer": "QR Code"
+        },
+        {
+          "question": "Which of the following is NOT mentioned as a language option on DIKSHA?",
+          "answer": "French"
+        },
+        {
+          "question": "Augmented Reality (AR) primarily does which of the following?",
+          "answer": "Overlays digital information on the real world"
+        },
+        {
+          "question": "What does Action Planning primarily involve?",
+          "answer": "Strategy development based on data insights for implementation"
+        },
+        {
+          "question": "Which of the following best describes Data in the context of an information system?",
+          "answer": "A collection of raw facts and figures related to any domain, structured or unstructured"
+        },
+        {
+          "question": "Data security safeguards are mandated under which law in India?",
+          "answer": "DPDP Act, 2023 and IT Act, 2000 (SPDI Rules)"
+        },
+        {
+          "question": "What does DIKSHA stand for?",
+          "answer": "Digital Infrastructure for Knowledge Sharing"
+        },
+        {
+          "question": "One key pedagogical benefit of virtual labs at the middle stage is:",
+          "answer": "Visualization of basic scientific concepts"
+        },
+        {
+          "question": "What is data harmonization?",
+          "answer": "Integration of multiple source data sets for a unified view"
+        },
+        {
+          "question": "DIKSHA Virtual Labs are characterized by:",
+          "answer": "Curriculum-aligned simulations and rich content"
+        },
+        {
+          "question": "The location-based feature of DIKSHA helps users to:",
+          "answer": "View courses relevant to their region"
+        },
+        {
+          "question": "Which of the following is a thrust area of Digital Education under NEP?",
+          "answer": "Removing language barriers"
+        },
+        {
+          "question": "Which approach does NEP 2020 recommend before large-scale implementation of digital education?",
+          "answer": "Pilot studies"
         }
       ]
     }
