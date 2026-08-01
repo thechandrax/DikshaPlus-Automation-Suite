@@ -1810,8 +1810,10 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
         except Exception:
             pass
 
-    # 3. Process all VISIBLE rating questions inside the Feedback popup modal
+    # 3. Process Feedback Questions using JSON Answer Key + AI Fallback Engine
+    answers_list = extract_all_qa_items(answer_key)
     target_scope = modal_container if modal_container else target_frame
+
     try:
         radios = target_scope.locator("input[type='radio']:visible, input[type='checkbox']:visible")
         r_count = await radios.count()
@@ -1822,18 +1824,79 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
             r_count = await radios.count()
 
         if r_count > 0:
-            logger.info(f"  --> Found {r_count} visible rating options in Feedback Modal. Selecting 'Strongly Agree' / positive responses...")
-            names_seen = set()
+            logger.info(f"  --> Found {r_count} rating options in Feedback Modal. Matching against JSON Answer Key / AI Solver...")
+            
+            # Group radio elements by question input name attribute
+            radio_groups = {}
             for idx in range(r_count):
                 r_el = radios.nth(idx)
                 try:
                     r_name = await r_el.get_attribute("name") or f"q_idx_{idx}"
-                    if r_name not in names_seen:
-                        names_seen.add(r_name)
-                        await r_el.click(force=True)
-                        await page.wait_for_timeout(250)
+                    if r_name not in radio_groups:
+                        radio_groups[r_name] = []
+                    radio_groups[r_name].append(r_el)
                 except Exception:
                     pass
+
+            q_counter = 1
+            for group_name, group_radios in radio_groups.items():
+                q_tag = f"FEEDBACK-Q{q_counter:02d}"
+                q_counter += 1
+                
+                # Extract question text from DOM
+                q_text_dom = ""
+                try:
+                    parent_wrapper = group_radios[0].locator("xpath=ancestor::*[contains(@class,'que') or contains(@class,'form-group') or contains(@class,'row') or contains(@class,'card')][1]").first
+                    if await parent_wrapper.count() > 0:
+                        q_text_dom = (await parent_wrapper.inner_text()).strip()
+                except Exception:
+                    pass
+
+                # 1. Check JSON Answer Key first!
+                matched_target_text = None
+                if answers_list and q_text_dom:
+                    clean_q = normalize_text(q_text_dom)
+                    for item in answers_list:
+                        json_q = normalize_text(item.get("question", ""))
+                        if json_q and (clean_q in json_q or json_q in clean_q):
+                            matched_target_text = item.get("answer", "")
+                            logger.info(f"  🎯 [JSON ANSWER KEY MATCH {q_tag}]: Found exact answer in JSON: '{matched_target_text}'")
+                            break
+
+                # 2. If NOT found in JSON, call AI Live Solver!
+                if not matched_target_text and q_text_dom and len(q_text_dom) > 10:
+                    try:
+                        ai_ans, _ = await solve_question_with_ai(q_text_dom, ["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"])
+                        if ai_ans:
+                            matched_target_text = ai_ans
+                            logger.info(f"  🤖 [AI LIVE SOLVER MATCH {q_tag}]: AI selected answer: '{matched_target_text}'")
+                    except Exception:
+                        pass
+
+                # 3. Select target option in DOM or default to first option ('Strongly Agree')
+                clicked_option = False
+                if matched_target_text:
+                    for r_el in group_radios:
+                        try:
+                            r_id = await r_el.get_attribute("id") or ""
+                            label_el = target_scope.locator(f"label[for='{r_id}']").first if r_id else None
+                            opt_txt = (await label_el.inner_text()).strip() if label_el and await label_el.count() > 0 else ""
+                            
+                            if opt_txt and (normalize_text(matched_target_text) in normalize_text(opt_txt) or normalize_text(opt_txt) in normalize_text(matched_target_text)):
+                                await r_el.click(force=True)
+                                clicked_option = True
+                                await page.wait_for_timeout(200)
+                                break
+                        except Exception:
+                            pass
+
+                # Fallback: Click first option ('Strongly Agree') if not matched
+                if not clicked_option and group_radios:
+                    try:
+                        await group_radios[0].click(force=True)
+                        await page.wait_for_timeout(200)
+                    except Exception:
+                        pass
 
         # Fill any comment textareas if present
         textareas = target_scope.locator("textarea:visible, input[type='text']:visible:not([class*='search']):not([id*='search'])")
@@ -1842,12 +1905,20 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
             try:
                 ta_el = textareas.nth(idx)
                 if await ta_el.is_visible():
-                    await ta_el.fill("The course content was excellent, highly informative, and well structured.")
-                    logger.info("  ✍️ [FEEDBACK COMMENT]: Filled positive response.")
+                    # Check if comment text is specified in JSON
+                    comment_text = "The course content was excellent, highly informative, and well structured."
+                    if answers_list:
+                        for item in answers_list:
+                            if "comment" in item.get("question", "").lower() or "feedback" in item.get("question", "").lower():
+                                comment_text = item.get("answer", comment_text)
+                                break
+                    await ta_el.fill(comment_text)
+                    logger.info(f"  ✍️ [FEEDBACK COMMENT]: Filled response: '{comment_text[:40]}...'")
             except Exception:
                 pass
     except Exception as f_ex:
         logger.warning(f"  --> Feedback modal processing notice: {f_ex}")
+
 
 
     # 3. Click the brown 'Submit Feedback' button at the bottom of the modal
