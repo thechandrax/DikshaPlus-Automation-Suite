@@ -1,4 +1,23 @@
 {
   "course_name": "Online and Digital Education in the Lens of NEP 2020",
-  "subsections": []
+  "subsections": [
+    {
+      "module_no": 7,
+      "module_name": "Assessment",
+      "subsection_no": 1,
+      "subsection_name": "Assessment",
+      "questions": [
+        {
+          "question": "A major benefit of virtual labs is:",
+          "answer": "Safety and repeatability of experiments"
+        },
+        {
+          "question": "Blended models of learning refer to:",
+          "answer": "Integration of online and offline learning"
+        }
+      ]
+    }
+  ],
+  "module_no": 7,
+  "module_name": "Assessment"
 }
