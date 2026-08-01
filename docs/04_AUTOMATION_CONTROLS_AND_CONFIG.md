@@ -1,10 +1,29 @@
 # ⚙️ Automation Controls & Configuration Guide
 
-This document details all customizable timing parameters, video buffering recovery settings, engine module structure, and exit procedures for **DIKSHA+ Automation Suite**.
+This document details all customizable timing parameters, video playback architecture, stall recovery controls, engine module structure, and exit procedures for **DIKSHA+ Automation Suite**.
 
 ---
 
-## 🎛️ 1. Configuration Settings (`config.py`)
+## 🎥 1. Complete Video Playback Architecture (`process_video_activity`)
+
+Located in [automations/diksha_plus_engine.py](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/automations/diksha_plus_engine.py):
+
+The video automation pipeline follows a strict 8-step lifecycle:
+
+| Step | Stage | Behavior |
+| :--- | :--- | :--- |
+| **1** | **Saved Progress Resume** | Inspects `currentTime`. If video was previously watched (e.g. 55%), it resumes from that position instead of rewinding to zero. |
+| **2** | **Mandatory 15s Warm-up** | Plays the first 15 seconds at **1.0x normal speed** to register session telemetry with DIKSHA servers. |
+| **3** | **Dynamic Acceleration** | Applies **16.0x speed** for long videos ($\ge$ 5 min) or **10.0x speed** for short videos (< 5 min). |
+| **4** | **8s Stall Window** | If buffering or paused (`readyState < 2`), waits 8 seconds for DIKSHA server buffer recovery. |
+| **5** | **15s Fixed Rewind** | If still buffering after 8s, rewinds **exactly 15 seconds back** (`currentTime - 15`) and lowers playback to 4.0x speed. |
+| **6** | **45s Final Buffer** | Slows down to **1.0x speed** for the final 45 seconds to naturally dispatch the `ended` event & log 100% progress telemetry. |
+| **7** | **15s Checkmark Sync** | Closes video modal and waits 15 seconds for DIKSHA server 100% brown checkmark update. |
+| **8** | **5s Refresh & Circuit Breaker** | If locked after 2 attempts, waits 5s and reloads page (`page.reload()`). If incomplete after 4 total attempts, triggers **Circuit Breaker** and exits cleanly. |
+
+---
+
+## 🎛️ 2. Configuration Settings (`config.py`)
 
 You can tune all automation behaviors inside [config.py](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/config.py):
 
@@ -35,15 +54,6 @@ AUTOMATIC_FINAL_SUBMIT = True        # Auto-submit quiz after last question
 HEADLESS = False                     # Set to True for hidden browser mode
 SLOMO_MS = 200                       # Slow-motion delay for smooth watching
 ```
-
----
-
-## 🎥 2. Video Buffering & 3% Auto-Rewind Engine (`process_video_activity`)
-
-Located in [automations/diksha_plus_engine.py](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/automations/diksha_plus_engine.py):
-
-* **Buffering Detection**: When video buffering/stall (`readyState < 2` or `is_paused`) is detected, DIKSHA+ waits **8 seconds** for natural network buffer recovery.
-* **Auto-Rewind 3%**: If still buffering after 8 seconds, it automatically rewinds **3% back** (`duration * 0.03`) and calls `.play()` to unfreeze video playback smoothly without console spam.
 
 ---
 
