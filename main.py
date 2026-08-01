@@ -46,20 +46,36 @@ def display_interactive_user_menu():
         import os
         env_user = os.getenv("SELECTED_USER", "").strip()
         if env_user:
-            if env_user.lower() == "all":
+            clean_env_u = env_user.lower()
+            if clean_env_u == "all":
+                logger.info(f"  🎯 [RAILWAY USER SELECTION] SELECTED_USER='all' detected. Processing ALL {len(config.USER_CREDENTIALS)} registered accounts in batch.")
                 return [(u, p) for u, p in config.USER_CREDENTIALS.items()]
             elif env_user.isdigit():
                 u_idx = int(env_user)
                 if 1 <= u_idx <= len(user_keys):
                     selected_user = user_keys[u_idx - 1]
+                    disp_name = config.USER_NAMES.get(selected_user, selected_user)
+                    logger.info(f"  🎯 [RAILWAY USER SELECTION] Selected Account #{u_idx}: '{disp_name}' ({selected_user}).")
                     return [(selected_user, config.USER_CREDENTIALS[selected_user])]
-            elif env_user in config.USER_CREDENTIALS:
-                return [(env_user, config.USER_CREDENTIALS[env_user])]
+            else:
+                # Match by exact key, email, or display name keyword!
+                matched_user = None
+                for u_k in user_keys:
+                    disp_n = config.USER_NAMES.get(u_k, "")
+                    if clean_env_u == u_k.lower() or clean_env_u in u_k.lower() or (disp_n and clean_env_u in disp_n.lower()):
+                        matched_user = u_k
+                        break
 
-        logger.warning("\n===================================================================\n ⏸️ [MANUAL USER CONFIGURATION REQUIRED ON RAILWAY]\n No SELECTED_USER variable configured in Railway Variables.\n All default auto-run fallback code has been completely REMOVED.\n Please set SELECTED_USER=1 (or 2, 3, all) in Railway Variables to run.\n===================================================================\n")
+                if matched_user:
+                    disp_name = config.USER_NAMES.get(matched_user, matched_user)
+                    logger.info(f"  🎯 [RAILWAY USER SELECTION] Matched Account by Keyword '{env_user}': '{disp_name}' ({matched_user}).")
+                    return [(matched_user, config.USER_CREDENTIALS[matched_user])]
+
+        logger.warning("\n===================================================================\n ⏸️ [MANUAL USER CONFIGURATION REQUIRED ON RAILWAY]\n No SELECTED_USER variable configured in Railway Variables.\n You can set SELECTED_USER in Railway Variables by:\n   • Index Number: SELECTED_USER = 1, 2, 3, or all\n   • Account Name: SELECTED_USER = \"Gsgs Sdgr\", \"Sujata\", \"Tasapur\"\n   • Email/Mobile: SELECTED_USER = \"gexowo4534@candaba.com\", \"8617383566\"\n===================================================================\n")
         import time
         while True:
             time.sleep(3600)
+
 
 
     try:

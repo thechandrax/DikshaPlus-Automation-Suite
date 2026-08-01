@@ -20,12 +20,19 @@ To keep Railway on standby without executing any browser automation:
   ===================================================================
   ```
 
-### 🎯 Specifying User & Course Manually on Railway
-When you want Railway to run a specific user account and course:
-* Go to Railway Dashboard $\rightarrow$ **Variables** tab $\rightarrow$ Add:
-  * `AUTO_START` = `True`
-  * `SELECTED_USER` = `1` (or `2`, `3`, `4`, `all`)
-  * `SELECTED_COURSE` = `2` (or `1`, `3`, `4`, `all`)
+### 🎯 Flexible User & Course Selection Options
+
+You can specify users and courses in Railway Variables using **Index Numbers**, **Names**, **Emails**, or **Keywords**:
+
+1. **`SELECTED_USER` Options**:
+   * **By Index Number**: `SELECTED_USER` = `1` (or `2`, `3`, `all`)
+   * **By Account Name**: `SELECTED_USER` = `Gsgs Sdgr` (or `Sujata`, `Tasapur`)
+   * **By Email / Mobile**: `SELECTED_USER` = `gexowo4534@candaba.com` (or `8617383566`)
+
+2. **`SELECTED_COURSE` Options**:
+   * **By Index Number**: `SELECTED_COURSE` = `1` (or `2`, `3`, `all`)
+   * **By Course Title / Keyword**: `SELECTED_COURSE` = `Power of Audio` (or `audio`, `NEP 2020`, `NEP`, `Action Research`)
+
 
 ---
 

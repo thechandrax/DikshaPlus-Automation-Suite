@@ -746,17 +746,31 @@ def display_interactive_course_menu(courses):
 
     if not sys.stdin.isatty():
         if env_course:
-            if env_course.lower() == "all":
-                logger.info(f"  [!] Environment variable SELECTED_COURSE='all' detected. Processing ALL {len(courses)} enrolled courses.")
+            clean_env_c = env_course.lower()
+            if clean_env_c == "all":
+                logger.info(f"  🎯 [RAILWAY COURSE SELECTION] SELECTED_COURSE='all' detected. Processing ALL {len(courses)} enrolled courses.")
                 return courses
             elif env_course.isdigit():
                 c_idx = int(env_course)
                 if 1 <= c_idx <= len(courses):
-                    logger.info(f"  [!] Environment variable SELECTED_COURSE='{c_idx}' detected. Processing Course #{c_idx}: '{courses[c_idx-1]['title']}'.")
+                    logger.info(f"  🎯 [RAILWAY COURSE SELECTION] Selected Course #{c_idx}: '{courses[c_idx-1]['title']}'.")
                     return [courses[c_idx - 1]]
+            else:
+                # Match by course title keyword! (e.g. "Power of Audio", "audio", "NEP 2020", "NEP", "Action Research")
+                matched_c = None
+                for c in courses:
+                    c_title = c.get("title", "")
+                    if clean_env_c in c_title.lower() or c_title.lower() in clean_env_c:
+                        matched_c = c
+                        break
 
-        logger.warning("\n===================================================================\n ⏸️ [MANUAL COURSE CONFIGURATION REQUIRED ON RAILWAY]\n No SELECTED_COURSE variable configured in Railway Variables.\n All default auto-run fallback course selection code has been completely REMOVED.\n Please set SELECTED_COURSE=1 (or 2, 3, all) in Railway Variables to run.\n===================================================================\n")
+                if matched_c:
+                    logger.info(f"  🎯 [RAILWAY COURSE SELECTION] Matched Course by Keyword '{env_course}': Course #{matched_c['index']} - '{matched_c['title']}'.")
+                    return [matched_c]
+
+        logger.warning("\n===================================================================\n ⏸️ [MANUAL COURSE CONFIGURATION REQUIRED ON RAILWAY]\n No SELECTED_COURSE variable configured in Railway Variables.\n You can set SELECTED_COURSE in Railway Variables by:\n   • Index Number: SELECTED_COURSE = 1, 2, 3, or all\n   • Course Title/Keyword: SELECTED_COURSE = \"Power of Audio\", \"audio\", \"NEP 2020\", \"NEP\", \"Action Research\"\n===================================================================\n")
         return None
+
 
 
 
