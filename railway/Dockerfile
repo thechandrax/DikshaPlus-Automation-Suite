@@ -18,4 +18,4 @@ ENV PYTHONUNBUFFERED=1
 ENV HEADLESS=True
 
 # Default command to run non-interactive automation
-CMD ["python", "main.py", "--headless", "--skip-pin", "--all-users"]
+CMD ["python", "main.py", "--headless", "--skip-pin"]
