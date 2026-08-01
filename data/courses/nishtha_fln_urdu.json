@@ -1,0 +1,10 @@
+{
+    "course_name": "NISHTHA FLN Urdu",
+    "description": "Add MCQ question and answer mappings for this course",
+    "answers": [
+        {
+            "question_keyword": "example question text",
+            "correct_option": "Option 1"
+        }
+    ]
+}

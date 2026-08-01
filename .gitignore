@@ -1,0 +1,21 @@
+# Python & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Environments
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Logs & Temporary outputs
+*.log
+output/
+
+# Playwright & Browser caches
+.playwright/
+ms-playwright/
