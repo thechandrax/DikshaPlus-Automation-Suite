@@ -23,9 +23,9 @@ def verify_pin(user_input_pin):
 
 ---
 
-## 👤 2. Registered User Credentials Vault
+## 👤 2. Registered User Credentials & API Key Vault
 
-User passwords in `config.py` use a key-derived Base64 XOR cipher (`ENC256:`):
+User passwords and Gemini API Keys in `config.py` use a key-derived Base64 XOR cipher (`ENC256:`):
 
 ```python
 # Per-User Encrypted Password Registry inside config.py
@@ -36,7 +36,14 @@ USER_CREDENTIALS_ENCRYPTED = {
     "7044015007": "ENC256:S0R5L4ta0UzY",
     "7908555852": "ENC256:S0R5KItAxBw=",
 }
+
+# Gemini API Multi-Key Pool (256-Bit Cryptographically Encrypted)
+GEMINI_API_KEYS_ENCRYPTED = [
+    "ENC256:SkYiA4gM92PfpZXnowXWVpwvAN7i2AXeejQir_fjROpzXEAtsEfrHNGUuJLAOcFqinNNofg=",
+    "ENC256:SkYiA4gM92PfoK_Np0H4VrYeDei93B2meggq_PP8XoNTZV8hk3D_V4iHosfCA-hezAlaoOg="
+]
 ```
+
 
 ---
 

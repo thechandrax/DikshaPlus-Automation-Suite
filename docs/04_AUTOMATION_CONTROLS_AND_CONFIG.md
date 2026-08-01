@@ -20,20 +20,26 @@ COURSES_DIR = DATA_DIR / "courses"
 
 ---
 
-## 🔑 2. Gemini AI Live Solver Configuration
+## 🔑 2. Gemini AI Multi-Key Pool Configuration (`config.py`)
 
-`config.py` dynamically loads the Gemini API Key from environment variables or local secret files:
+`config.py` dynamically decrypts and loads the Gemini API Key Pool from 256-bit encrypted ciphers and environment variables:
 
 ```python
-# Gemini AI Live Solver Configuration
-GEMINI_API_KEY = _load_gemini_key()
+# Gemini AI Multi-API Key Pool (256-Bit Cryptographically Encrypted)
+GEMINI_API_KEYS_ENCRYPTED = [
+    "ENC256:SkYiA4gM92PfpZXnowXWVpwvAN7i2AXeejQir_fjROpzXEAtsEfrHNGUuJLAOcFqinNNofg=",
+    "ENC256:SkYiA4gM92PfoK_Np0H4VrYeDei93B2meggq_PP8XoNTZV8hk3D_V4iHosfCA-hezAlaoOg="
+]
+
+GEMINI_API_KEYS = _load_gemini_keys()
+GEMINI_API_KEY = GEMINI_API_KEYS[0] if GEMINI_API_KEYS else ""
 AI_LIVE_SOLVER_ENABLED = True
 ```
 
-### Key Lookup Priority:
-1. `GEMINI_API_KEY` environment variable.
-2. `gemini_key.txt` local secret file (ignored by Git).
-3. `.env` file (ignored by Git).
+### Key Resolution Priority (per Google API Docs):
+1. `GOOGLE_API_KEY` environment variable.
+2. `GEMINI_API_KEY` environment variable.
+3. 256-bit encrypted key pool in `config.py` (`GEMINI_API_KEYS_ENCRYPTED`).
 
 ---
 
@@ -63,4 +69,5 @@ USER_CREDENTIALS_ENCRYPTED = {
     "7044015007": "ENC256:S0R5L4ta0UzY",
     "7908555852": "ENC256:S0R5KItAxBw=",
 }
+```
 ```

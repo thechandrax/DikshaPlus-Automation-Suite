@@ -109,9 +109,12 @@ When a course is selected, DIKSHA+ executes each activity type automatically:
 ### C. H5P Interactive Quizzes (`act_type="h5pactivity"`)
 * Presses `Start Quiz`.
 * Extracts H5P question text & options.
-* Solves live via **Gemini AI API** (`gemini-2.0-flash`), clicks matching H5P radio option, and auto-saves to JSON cache.
+* Checks auto-learning JSON cache (`⚡ [VERIFIED JSON 100% MATCH Q-x]`).
+* If NEW, applies 3-second pacing delay, solves live via **Gemini AI Multi-Key Pool** (`x-goog-api-key` header, `gemini-flash-latest` / `gemini-2.0-flash`), clicks matching H5P radio option, and auto-saves to JSON cache.
 
 ### D. Formative Assessments / Quizzes (`act_type="quiz"`)
 * Dismisses banner GIF popups (`button.quiz-popup-close`).
-* Solves questions live via **Gemini AI API**, targets exact `<div data-region='answer-label'>` radio inputs, and auto-saves to JSON.
+* Checks auto-learning JSON cache (`⚡ [VERIFIED JSON 100% MATCH Q-x]`).
+* If NEW, applies 3-second pacing delay, solves questions live via **Gemini AI Multi-Key Pool**, targets exact `<div data-region='answer-label'>` radio inputs, and auto-saves sequentially under module and subsection hierarchies to JSON.
 * Executes automatic final quiz submission (`AUTOMATIC_FINAL_SUBMIT = True`).
+

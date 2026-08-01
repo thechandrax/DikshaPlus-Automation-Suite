@@ -14,16 +14,17 @@ Welcome to the complete documentation hub for **DIKSHA+ Automation Suite**. Ever
 2. 🔐 **[02_MANAGE_USERS_AND_SECURITY.md](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/02_MANAGE_USERS_AND_SECURITY.md)**
    * 256-Bit Cryptographic SHA-256 PIN Verification (`541563`).
    * User Credential Vault & in-memory dynamic decryption (`utils/security.py`).
-   * Adding and managing registered student accounts safely.
+   * 256-Bit Encrypted Gemini API Key Pool (`GEMINI_API_KEYS_ENCRYPTED`).
 
 3. 📝 **[03_ANSWER_KEYS_AND_QUIZZES.md](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/03_ANSWER_KEYS_AND_QUIZZES.md)**
-   * **Gemini AI Live Solver Engine** (`gemini-2.0-flash`).
+   * **Gemini AI Multi-Key Live Solver Engine** (`gemini-flash-latest` / `gemini-2.0-flash`).
+   * **Official 2025/2026 Google API Standard** (`x-goog-api-key` header protocol).
    * **Structured Sequential Auto-Learning Storage** (`module_no`, `module_name`, `subsection_no`, `subsection_name`, `questions`).
-   * **Dual-Pass 100% Exact Matching** (Gate 1 question text equality & Gate 2 option label target locator).
+   * **Dual-Pass 100% Exact Matching** (Gate 1 `⚡ [VERIFIED JSON 100% MATCH Q-x]` & Gate 2 option label target locator).
    * Complete H5P & Formative Assessment activity automation.
 
 4. ⚙️ **[04_AUTOMATION_CONTROLS_AND_CONFIG.md](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/04_AUTOMATION_CONTROLS_AND_CONFIG.md)**
-   * Dynamic Gemini API key loading (`GEMINI_API_KEY`, `gemini_key.txt`, `.env`).
+   * Dynamic Multi-API key pool loading & rate limit failover.
    * Screenshot directory configuration (`output/screenshots/`).
    * Playwright pacing controls (`SLOMO_MS`, `AUTOMATIC_FINAL_SUBMIT`, `KEEP_BROWSER_OPEN`).
 
@@ -46,7 +47,7 @@ Diksha+ Automation Suite/
 │   └── 05_RAILWAY_DEPLOYMENT_GUIDE.md     # Cloud Deployment Guide
 ├── automations/
 │   └── diksha_plus_engine.py              # Playwright Automation & AI Live Solver
-├── config.py                              # Dynamic System Configuration
+├── config.py                              # Dynamic System Configuration & 256-bit encrypted keys
 ├── data/
 │   └── courses/                           # Auto-learning Course Answer Keys
 ├── output/
@@ -60,7 +61,6 @@ Diksha+ Automation Suite/
 │   └── security.py                        # Cryptographic PIN & Vault Engine
 ├── main.py                                # CLI Menu Launcher
 ├── diksha+.bat                            # 1-Click Windows Batch Launcher
-├── setup.bat                              # 1-Click Installer Script
-├── gemini_key.txt                         # Local Gemini Key (Git Ignored)
-└── .env                                   # Local Environment Variables (Git Ignored)
+└── setup.bat                              # 1-Click Installer Script
 ```
+
