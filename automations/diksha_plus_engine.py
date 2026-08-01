@@ -1272,13 +1272,14 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                 q_text_screen = re.sub(r'^(?:question\s*text|question\s*\d+[:.]?|\d+[:.]?|q\d+[:.]?)\s*', '', raw_q, flags=re.IGNORECASE)
                 q_text_screen = re.sub(r'\s*(?:select\s*one|question\s*\d+).*$', '', q_text_screen, flags=re.IGNORECASE | re.DOTALL).strip()
 
-            # Select unique option rows cleanly
-            option_rows = target_frame.locator("div[class*='r0'], div[class*='r1'], .answer > div, .form-check, div[data-region='answer-label']")
+            # Select unique option rows cleanly (.answer > div.r0 / div.r1)
+            option_rows = target_frame.locator(".answer > div.r0, .answer > div.r1, .answer > div, .que .content .answer > div")
             row_count = await option_rows.count()
 
             if row_count == 0:
-                option_rows = target_frame.locator(".answer label, .form-check-label, label.custom-control-label")
+                option_rows = target_frame.locator("div.r0, div.r1, div[data-region='answer-label']")
                 row_count = await option_rows.count()
+
 
             for r_idx in range(row_count):
                 row_el = option_rows.nth(r_idx)
