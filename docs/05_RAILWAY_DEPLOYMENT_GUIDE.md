@@ -4,6 +4,19 @@ This guide provides step-by-step instructions for deploying **DIKSHA+ Automation
 
 ---
 
+## 📁 Railway Deployment Directory Structure
+
+All Railway deployment configuration files are neatly stored inside the **`railway/`** folder:
+
+```text
+railway/
+├── Dockerfile                      # Production Playwright Python Container
+├── railway.json                    # Railway Build & Restart Policy Config
+└── .dockerignore                   # Ignores local screenshots & pycache
+```
+
+---
+
 ## 📑 Table of Contents
 1. [Prerequisites](#1-prerequisites)
 2. [Step-by-Step Deployment Instructions](#2-step-by-step-deployment-instructions)
@@ -35,7 +48,7 @@ Before you begin, ensure you have:
 
 ### Step 3: Deploy Service
 1. Click **Deploy Now**.
-2. Railway will automatically detect the **[Dockerfile](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/Dockerfile)** and **[railway.json](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/railway.json)** in your repository.
+2. Railway automatically detects **`railway/Dockerfile`** via `railway.json`.
 3. Railway will start building the Playwright Python container image automatically.
 
 ---
