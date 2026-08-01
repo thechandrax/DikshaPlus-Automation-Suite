@@ -1845,11 +1845,9 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
 
             q_counter = 1
             for group_name, group_radios in radio_groups.items():
-                q_tag = f"FEEDBACK-Q{q_counter:02d}"
-                q_counter += 1
-                
-                # Extract clean question text strictly from .que-no / .qtext / header
+                # Extract question number and clean question text from DOM
                 q_text_dom = ""
+                dom_q_num = None
                 try:
                     que_el = group_radios[0].locator("xpath=ancestor::*[contains(@class,'que') or contains(@class,'form-group') or contains(@class,'row') or contains(@class,'card')][1]/descendant::*[contains(@class,'que-no') or contains(@class,'qtext') or contains(@class,'question-text') or self::h4 or self::h5 or self::legend][1]").first
                     if await que_el.count() == 0:
@@ -1868,8 +1866,22 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                     except Exception:
                         pass
 
+                # Parse exact DOM question number (e.g., "1.", "18.", "Q19")
+                if q_text_dom:
+                    num_match = re.search(r'^\s*(\d+)[\.\)]', q_text_dom)
+                    if num_match:
+                        dom_q_num = int(num_match.group(1))
+
+                # Set tag based on real DOM question number if available
+                if dom_q_num:
+                    q_tag = f"FEEDBACK-Q{dom_q_num:02d}"
+                else:
+                    q_tag = f"FEEDBACK-Q{q_counter:02d}"
+                q_counter += 1
+
                 # Strip leading numbers ("1. ", "2. ", "Q1: ")
                 clean_q_dom = re.sub(r'^\s*(?:\d+[\.\)]|Q\d+[\.\)]?|Question\s*\d+[\.\)]?)\s*', '', q_text_dom, flags=re.IGNORECASE).strip() if q_text_dom else ""
+
 
                 # 1. Check JSON Answer Key first!
                 matched_target_text = None
