@@ -141,6 +141,11 @@ def solve_question_with_ai(question_text, option_texts=None):
     if not api_key:
         return None
 
+    # 3-Second Pacing Delay for smooth execution & rate limit prevention
+    logger.info("  ⏳ [AI LIVE SOLVER] Waiting 3s pacing delay before AI API call...")
+    time.sleep(3)
+
+
 
     options_formatted = "\n".join([f"{idx+1}. {opt}" for idx, opt in enumerate(option_texts or [])])
     prompt = f"""You are an expert AI teacher solving a quiz question for an educational course.
