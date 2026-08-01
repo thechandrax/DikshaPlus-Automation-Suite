@@ -1025,7 +1025,8 @@ async def process_h5p_activity(page, view_button, answer_key, course_title=None)
 
     await close_activity_modal(page)
 
-async def process_quiz_assessment(page, view_button, answer_key, module_name=None, module_no=None, sub_name=None, sub_no=None):
+async def process_quiz_assessment(page, view_button, answer_key, module_name=None, module_no=None, sub_name=None, sub_no=None, course_title=None):
+
     """
     STEP-07 (Formative Assessment - act_type="quiz"):
     Identifies exact module (number/name) & subsection (number/name) context,
@@ -1794,7 +1795,8 @@ async def process_course_modules(page, answer_key=None):
                             await process_h5p_activity(page, btn, answer_key, course_title=course_title)
 
                         elif act_type == "quiz":
-                            await process_quiz_assessment(page, btn, answer_key, module_name=header_title, module_no=i+1, sub_name=btn_text, sub_no=j)
+                            await process_quiz_assessment(page, btn, answer_key, module_name=header_title, module_no=i+1, sub_name=btn_text, sub_no=j, course_title=course_title)
+
                         else:
                             await btn.click(force=True)
                             await page.wait_for_timeout(3000)
