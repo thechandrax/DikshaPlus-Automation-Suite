@@ -1758,6 +1758,143 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
     await wait_for_server_checkmark(page)
 
 
+async def process_feedback_activity(page, view_button, answer_key=None, module_name="", module_no=None, sub_name="", sub_no=None, course_title=""):
+    """
+    Dedicated Feedback Form Automation Engine.
+    Does NOT open quiz modals, does NOT look for 'Stay Calm' banners, and does NOT call AI solvers.
+    Directly opens Feedback Form, selects positive rating choices (Strongly Agree / Agree / Yes),
+    fills comment boxes, submits feedback, and clicks Continue to confirm 100% checkmark!
+    """
+    ctx_str = f"Module #{module_no or 8} ('{module_name or 'Feedback Form'}') || Subsection #{sub_no or 1} ('{sub_name or 'Feedback Form'}')"
+    logger.info(f"\n" + "=" * 50)
+    logger.info(f" 📝 [FEEDBACK FORM] Opening Feedback Form for {ctx_str}...")
+    logger.info("=" * 50)
+
+    # 1. Click the brown View / Feedback button
+    try:
+        await view_button.scroll_into_view_if_needed()
+        await view_button.click(force=True)
+        await page.wait_for_timeout(3000)
+    except Exception as ex:
+        logger.warning(f"  --> Direct click notice on Feedback button: {ex}")
+
+    # 2. Check across page and all frames for 'Answer the questions...' or launch link
+    for frame_target in [page] + page.frames:
+        try:
+            ans_btn = frame_target.locator("a:has-text('Answer the questions'), button:has-text('Answer the questions'), a[href*='complete.php'], button:has-text('Complete Feedback'), a:has-text('Complete Feedback')").first
+            if await ans_btn.count() > 0 and await ans_btn.is_visible():
+                logger.info("  --> Clicking 'Answer the questions...' link...")
+                await ans_btn.click(force=True)
+                await page.wait_for_timeout(3000)
+                break
+        except Exception:
+            pass
+
+    # Fallback JS click for 'Answer the questions...' link
+    for frame_target in [page] + page.frames:
+        try:
+            await frame_target.evaluate("""() => {
+                const links = Array.from(document.querySelectorAll('a, button, input[type="submit"]'));
+                const ans = links.find(l => {
+                    const txt = (l.innerText || l.value || '').toLowerCase();
+                    const href = (l.href || '').toLowerCase();
+                    return href.includes('complete.php') || txt.includes('answer the questions') || txt.includes('complete feedback');
+                });
+                if (ans) { ans.click(); return true; }
+                return false;
+            }""")
+        except Exception:
+            pass
+
+    await page.wait_for_timeout(2000)
+
+    # 3. Process Feedback Form inputs across page and all frames
+    for frame_target in [page] + page.frames:
+        try:
+            # Select rating radio buttons (group by input name attribute to select one per question)
+            radios = frame_target.locator("input[type='radio'], input[type='checkbox']")
+            r_count = await radios.count()
+            if r_count > 0:
+                logger.info(f"  --> Found {r_count} rating options on Feedback Form. Selecting positive responses...")
+                names_seen = set()
+                for idx in range(r_count):
+                    r_el = radios.nth(idx)
+                    try:
+                        r_name = await r_el.get_attribute("name") or f"idx_{idx}"
+                        if r_name not in names_seen:
+                            names_seen.add(r_name)
+                            await r_el.click(force=True)
+                            await page.wait_for_timeout(200)
+                    except Exception:
+                        pass
+
+            # Fill feedback comment textareas / text inputs
+            textareas = frame_target.locator("textarea, input[type='text']:not([class*='search']):not([id*='search'])")
+            t_count = await textareas.count()
+            for idx in range(t_count):
+                try:
+                    ta_el = textareas.nth(idx)
+                    if await ta_el.is_visible():
+                        await ta_el.fill("The course content was excellent, highly informative, and well structured.")
+                        logger.info("  ✍️ [FEEDBACK COMMENT]: Filled positive response.")
+                except Exception:
+                    pass
+        except Exception as f_ex:
+            logger.warning(f"  --> Feedback form filling notice: {f_ex}")
+
+    # 4. Click 'Submit feedback' button
+    submitted = False
+    for frame_target in [page] + page.frames:
+        try:
+            sub_btn = frame_target.locator("button.submit-feed-btn, #submitFeedbackBtn11, input[value*='Submit feedback'], button:has-text('Submit feedback'), input[type='submit'][value*='Submit'], button:has-text('Submit')").first
+            if await sub_btn.count() > 0 and await sub_btn.is_visible():
+                logger.info("  --> Clicking 'Submit feedback' button to complete Feedback Form...")
+                await sub_btn.click(force=True)
+                submitted = True
+                await page.wait_for_timeout(4000)
+                break
+        except Exception:
+            pass
+
+    # Fallback JS Submit click
+    if not submitted:
+        for frame_target in [page] + page.frames:
+            try:
+                clicked = await frame_target.evaluate("""() => {
+                    const btns = Array.from(document.querySelectorAll('button, input[type="submit"], input[type="button"], a.btn'));
+                    const sub = btns.find(b => {
+                        const txt = (b.innerText || b.value || '').toLowerCase();
+                        const id = (b.id || '').toLowerCase();
+                        const cls = (b.className || '').toLowerCase();
+                        return id.includes('submitfeedback') || cls.includes('submit-feed') || txt.includes('submit feedback') || txt.includes('submit');
+                    });
+                    if (sub) { sub.click(); return true; }
+                    return false;
+                }""")
+                if clicked:
+                    logger.info("  --> JS fallback successfully clicked Submit feedback!")
+                    await page.wait_for_timeout(4000)
+                    break
+            except Exception:
+                pass
+
+    # 5. Click post-feedback 'Continue' button to return to course page and trigger 100% checkmark sync
+    for frame_target in [page] + page.frames:
+        try:
+            cont_btn = frame_target.locator("a:has-text('Continue'), button:has-text('Continue'), input[value*='Continue']").first
+            if await cont_btn.count() > 0 and await cont_btn.is_visible():
+                logger.info("  --> Clicking post-feedback 'Continue' button to return to course page...")
+                await cont_btn.click(force=True)
+                await page.wait_for_timeout(3000)
+                break
+        except Exception:
+            pass
+
+    await close_activity_modal(page)
+    await wait_for_server_checkmark(page)
+
+
+
 
 
 
@@ -2124,14 +2261,15 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     except Exception:
                         pass
 
-                    is_feedback_or_quiz = (
-                        act_type in ("quiz", "feedback", "survey", "choice") or 
+                    is_feedback = (
+                        act_type in ("feedback", "survey", "choice") or 
                         "feedback" in act_type.lower() or 
                         "feedback" in header_title.lower() or 
                         "feedback" in real_item_title.lower() or 
-                        "assessment" in real_item_title.lower() or 
                         "survey" in real_item_title.lower()
                     )
+
+                    is_quiz = act_type == "quiz" or "assessment" in real_item_title.lower() or "quiz" in act_type.lower()
 
                     try:
                         if act_type == "url":
@@ -2140,7 +2278,9 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                             await process_pdf_activity(page, btn)
                         elif act_type == "h5pactivity":
                             await process_h5p_activity(page, btn, answer_key, course_title=course_title)
-                        elif is_feedback_or_quiz:
+                        elif is_feedback:
+                            await process_feedback_activity(page, btn, answer_key, module_name=header_title, module_no=i, sub_name=real_item_title, sub_no=j, course_title=course_title)
+                        elif is_quiz:
                             await process_quiz_assessment(page, btn, answer_key, module_name=header_title, module_no=i, sub_name=real_item_title, sub_no=j, course_title=course_title)
                         else:
                             try:
@@ -2151,6 +2291,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                             await page.wait_for_timeout(3000)
                             await close_activity_modal(page)
                             await wait_for_server_checkmark(page)
+
                     except Exception as item_ex:
                         logger.error(f"     [-] Subsection execution notice: {item_ex}")
 
