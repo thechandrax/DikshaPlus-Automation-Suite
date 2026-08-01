@@ -158,20 +158,20 @@ Option Choices:
 INSTRUCTIONS:
 Return ONLY the exact text of the correct option choice from the list above. Do NOT include option numbers (1, 2, 3), do NOT include explanations. Return ONLY the exact option text."""
 
-    models_to_try = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-2.5-flash"]
+    models_to_try = ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash", "gemini-2.5-flash"]
 
     for model_name in models_to_try:
         for attempt in range(3):
             try:
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
                 payload = json.dumps({
                     "contents": [{"parts": [{"text": prompt}]}]
                 }).encode('utf-8')
                 
-                headers = {'Content-Type': 'application/json'}
-                if not api_key.startswith("AIza"):
-                    headers['Authorization'] = f'Bearer {api_key}'
-                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
+                headers = {
+                    'Content-Type': 'application/json',
+                    'x-goog-api-key': api_key  # 2025/2026 Official Google API Auth Header
+                }
 
                 req = urllib.request.Request(url, data=payload, headers=headers)
                 res = urllib.request.urlopen(req, timeout=12)
@@ -184,12 +184,12 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
                     return clean_ans
             except urllib.error.HTTPError as http_err:
                 if http_err.code == 429:
-                    wait_sec = 4 * (attempt + 1)
+                    wait_sec = 5 * (attempt + 1)
                     logger.warning(f"  ⏳ [AI RATE LIMIT 429] Gemini API rate limit hit. Waiting {wait_sec}s before retry (Attempt {attempt+1}/3)...")
                     time.sleep(wait_sec)
                     continue
-                elif http_err.code in (401, 403, 404):
-                    logger.error(f"  ❌ [GEMINI API ERROR {http_err.code}] {http_err.reason} for model '{model_name}'. Trying next model...")
+                elif http_err.code in (401, 403):
+                    logger.error(f"  ❌ [GEMINI API ERROR {http_err.code}] {http_err.reason} for key. Trying next model...")
                     break
                 else:
                     logger.warning(f"  ⚠️ [AI API HTTP ERROR {http_err.code}] {http_err.reason}")
@@ -198,6 +198,7 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
                 logger.warning(f"  ⚠️ [AI SOLVER NOTICE] {ex}")
                 time.sleep(1)
                 break
+
 
     logger.warning("  ⚠️ [AI LIVE SOLVER UNABLE TO SOLVE] Falling back to available options.")
     return None
