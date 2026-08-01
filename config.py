@@ -63,30 +63,21 @@ AUTOMATIC_FINAL_SUBMIT = True    # Set to True to automatically click final quiz
 
 KEEP_BROWSER_OPEN = True         # Set to True to keep browser open after completion so it doesn't close!
 
-# Gemini AI Live Solver Configuration
+# Gemini AI Live Solver Configuration (256-Bit Cryptographically Encrypted API Key)
+GEMINI_API_KEY_ENCRYPTED = "ENC256:SkYiA4gM92PfpZXnowXWVpwvAN7i2AXeejQir_fjROpzXEAtsEfrHNGUuJLAOcFqinNNofg="
+
 def _load_gemini_key():
     key = os.environ.get("GEMINI_API_KEY", "").strip()
-    if not key:
-        key_file = BASE_DIR / "gemini_key.txt"
-        if key_file.exists():
-            try:
-                key = key_file.read_text(encoding="utf-8").strip()
-            except Exception:
-                pass
-    if not key:
-        env_file = BASE_DIR / ".env"
-        if env_file.exists():
-            try:
-                for line in env_file.read_text(encoding="utf-8").splitlines():
-                    if line.startswith("GEMINI_API_KEY="):
-                        key = line.split("=", 1)[1].strip()
-                        break
-            except Exception:
-                pass
+    if not key and GEMINI_API_KEY_ENCRYPTED:
+        try:
+            key = decrypt_password(GEMINI_API_KEY_ENCRYPTED)
+        except Exception:
+            pass
     return key
 
 GEMINI_API_KEY = _load_gemini_key()
 AI_LIVE_SOLVER_ENABLED = True
+
 
 
 
