@@ -1873,7 +1873,7 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                     except Exception:
                         pass
 
-                # 3. Select target option in DOM or default to first option ('Strongly Agree')
+                # 3. Select target option in DOM
                 clicked_option = False
                 if matched_target_text:
                     for r_el in group_radios:
@@ -1890,13 +1890,16 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                         except Exception:
                             pass
 
-                # Fallback: Click first option ('Strongly Agree') if not matched
-                if not clicked_option and group_radios:
+                # Circuit Breaker Protocol: NO DEFAULT OPTION A FALLBACK! Close server context cleanly if un-solved after backoffs.
+                if not clicked_option:
+                    logger.error(f"\n❌ [CRITICAL AI RATE LIMIT EXHAUSTED {q_tag}] Could not solve Question '{q_text_dom[:45]}...' after 30s, 45s, and 60s backoff retries.")
+                    logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Closing server context cleanly and stopping all automation processes!\n")
                     try:
-                        await group_radios[0].click(force=True)
-                        await page.wait_for_timeout(200)
+                        await page.context.close()
                     except Exception:
                         pass
+                    raise RuntimeError(f"AI_RATE_LIMIT_EXHAUSTED: Question '{q_text_dom[:45]}...' could not be solved after 30s, 45s, 60s retries.")
+
 
         # Fill any comment textareas if present
         textareas = target_scope.locator("textarea:visible, input[type='text']:visible:not([class*='search']):not([id*='search'])")
