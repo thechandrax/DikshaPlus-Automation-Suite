@@ -1311,11 +1311,18 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                 pass
         await page.wait_for_timeout(2000)
 
-    # 2. Locate and click 'Start Assessment' / 'Continue Assessment' / 'Re-attempt Assessment' button across page and all frames
+    # 2. Locate and click 'Start Assessment' / 'Continue Assessment' / 'Answer the questions' button across page and all frames
     start_assessment_btn = None
     target_frame = page
 
     start_selectors = [
+        "a:has-text('Answer the questions')",
+        "button:has-text('Answer the questions')",
+        "input[value*='Answer the questions']",
+        "a:has-text('Complete Feedback')",
+        "button:has-text('Complete Feedback')",
+        "button.submit-feed-btn",
+        "#submitFeedbackBtn11",
         "button:has-text('Re-attempt Assessment')",
         "input[value*='Re-attempt Assessment']",
         "a:has-text('Re-attempt Assessment')",
@@ -1325,6 +1332,8 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
         "button:has-text('Start Assessment')",
         "input[value*='Start Assessment']",
         "a:has-text('Start Assessment')",
+        "a[href*='complete.php']",
+        "a[href*='feedback']",
         ".singlebutton.quizstartbuttondiv button",
         ".singlebutton.quizstartbuttondiv input",
         ".singlebutton button",
@@ -1361,28 +1370,28 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
     if start_assessment_btn:
         try:
             btn_txt = (await start_assessment_btn.inner_text()).strip() or (await start_assessment_btn.get_attribute("value") or "").strip()
-            logger.info(f"  --> Clicking Assessment button '{btn_txt}'...")
+            logger.info(f"  --> Clicking Assessment/Feedback launch button '{btn_txt}'...")
             await start_assessment_btn.click(force=True)
             await page.wait_for_timeout(4000)
         except Exception as ex:
             logger.warning(f"  --> Direct click notice on assessment button: {ex}")
 
-    # Fallback JavaScript evaluation click for Start/Continue/Re-attempt Assessment
+    # Fallback JavaScript evaluation click for Start/Continue/Re-attempt/Answer Questions
     if not start_assessment_btn:
-        logger.info("  --> Attempting JS click fallback for 'Start/Continue/Re-attempt Assessment'...")
+        logger.info("  --> Attempting JS click fallback for 'Start/Continue/Answer the questions'...")
         for frame_target in [page] + page.frames:
             try:
                 clicked = await frame_target.evaluate("""() => {
-                    const btns = Array.from(document.querySelectorAll('button, input[type="submit"], a.btn'));
+                    const btns = Array.from(document.querySelectorAll('button, input[type="submit"], a.btn, a'));
                     const startBtn = btns.find(b => {
                         const txt = (b.innerText || b.value || '').toLowerCase();
-                        return txt.includes('re-attempt') || txt.includes('continue') || txt.includes('start');
+                        return txt.includes('answer the questions') || txt.includes('complete feedback') || txt.includes('re-attempt') || txt.includes('continue') || txt.includes('start');
                     });
                     if (startBtn) { startBtn.click(); return true; }
                     return false;
                 }""")
                 if clicked:
-                    logger.info("  --> JS fallback successfully clicked 'Start/Continue/Re-attempt Assessment'!")
+                    logger.info("  --> JS fallback successfully clicked launch button!")
                     await page.wait_for_timeout(4000)
                     target_frame = frame_target
                     break
@@ -2046,18 +2055,41 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                             continue
 
                     act_type = await btn.get_attribute("act_type") or "resource"
+                    
+                    # Extract real item title if button text is generic like 'View'
+                    real_item_title = btn_text
+                    if btn_text.lower() in ("view", "start", "open", "continue"):
+                        try:
+                            row = btn.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'card-body')][1]").first
+                            if await row.count() > 0:
+                                title_el = row.locator("h4, h5, .title, .activity-title, bdi, strong, .name").first
+                                if await title_el.count() > 0:
+                                    extracted_t = (await title_el.inner_text()).strip()
+                                    if extracted_t and extracted_t.lower() not in ("view", "start"):
+                                        real_item_title = extracted_t
+                        except Exception:
+                            pass
+
                     logger.info("\n" + "=" * 35)
-                    logger.info(f" ▶ SUBSECTION [{j}/{total_sec_items}]: '{btn_text}' (Type: '{act_type}') [Attempt {runs_done + 1}/4]")
+                    logger.info(f" ▶ SUBSECTION [{j}/{total_sec_items}]: '{real_item_title}' (Type: '{act_type}') [Attempt {runs_done + 1}/4]")
                     logger.info("=" * 35)
 
                     item_attempts[btn_text] = runs_done + 1
-
 
                     try:
                         await btn.scroll_into_view_if_needed()
                         await page.wait_for_timeout(300)
                     except Exception:
                         pass
+
+                    is_feedback_or_quiz = (
+                        act_type in ("quiz", "feedback", "survey", "choice") or 
+                        "feedback" in act_type.lower() or 
+                        "feedback" in header_title.lower() or 
+                        "feedback" in real_item_title.lower() or 
+                        "assessment" in real_item_title.lower() or 
+                        "survey" in real_item_title.lower()
+                    )
 
                     try:
                         if act_type == "url":
@@ -2066,10 +2098,8 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                             await process_pdf_activity(page, btn)
                         elif act_type == "h5pactivity":
                             await process_h5p_activity(page, btn, answer_key, course_title=course_title)
-
-                        elif act_type == "quiz":
-                            await process_quiz_assessment(page, btn, answer_key, module_name=header_title, module_no=i, sub_name=btn_text, sub_no=j, course_title=course_title)
-
+                        elif is_feedback_or_quiz:
+                            await process_quiz_assessment(page, btn, answer_key, module_name=header_title, module_no=i, sub_name=real_item_title, sub_no=j, course_title=course_title)
                         else:
                             try:
                                 await btn.scroll_into_view_if_needed()
@@ -2081,6 +2111,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                             await wait_for_server_checkmark(page)
                     except Exception as item_ex:
                         logger.error(f"     [-] Subsection execution notice: {item_ex}")
+
 
 
                     processed_any = True
