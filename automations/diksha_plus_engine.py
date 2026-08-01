@@ -202,7 +202,7 @@ def solve_question_with_ai(question_text, option_texts=None):
         return None
 
     # 3-Second Pacing Delay for smooth execution
-    logger.info("  ⏳ [AI LIVE SOLVER] Waiting 3s pacing delay before AI API call...")
+    logger.info("  ⏳ [AI LIVE] Waiting 3s pacing delay before AI API call...")
     time.sleep(3)
 
     options_formatted = "\n".join([f"{idx+1}. {opt}" for idx, opt in enumerate(option_texts or [])])
@@ -220,7 +220,7 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
     models_to_try = ["gemini-2.0-flash", "gemini-flash-latest"]
 
     for attempt_round in range(1, 4):
-        logger.info(f"  🧠 [AI SOLVER ATTEMPT {attempt_round}/3] Requesting AI solution from Gemini API...")
+        logger.info(f"  🧠 [AI ATTEMPT {attempt_round}/3] Requesting AI solution...")
         for key_idx, api_key in enumerate(api_keys, 1):
             for model_name in models_to_try:
                 try:
@@ -241,13 +241,14 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
                     
                     clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
                     if clean_ans:
-                        logger.info(f"  🧠 [AI LIVE SOLVER SUCCESS] Solved on Attempt {attempt_round}/3 via Key #{key_idx} ({model_name}) -> '{clean_ans}'")
+                        logger.info(f"  🧠 [AI LIVE SUCCESS] Solved on Attempt {attempt_round}/3 via Key #{key_idx} -> '{clean_ans}'")
                         return clean_ans
                 except urllib.error.HTTPError as http_err:
                     if http_err.code in (429, 503):
-                        logger.warning(f"  ⏳ [AI RATE LIMIT {http_err.code}] Key #{key_idx} ({model_name}) rate limited ({http_err.reason}). Trying next model/key...")
+                        logger.warning(f"  ⏳ [AI RATE LIMIT] Key #{key_idx} rate limited ({http_err.reason}). Trying next key...")
                         time.sleep(2)
                         continue
+
                     elif http_err.code in (401, 403):
                         logger.error(f"  ❌ [GEMINI API ERROR {http_err.code}] Key #{key_idx} {http_err.reason}. Trying next key...")
                         break
@@ -349,7 +350,8 @@ def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name,
             })
             with open(course_key_file, "w", encoding="utf-8") as f:
                 json.dump(data_j, f, indent=2)
-            logger.info(f"  💾 [AUTO-LEARNING SEQUENTIAL SAVE] Saved to {course_key_file.name}: Module #{module_no or 1} ('{module_name or ''}') • Subsection #{t_sub_no} ('{t_sub_name}') -> Q: '{norm_q[:40]}...'")
+            logger.info(f"  💾 [AUTO-LEARNING SAVE] Saved to {course_key_file.name}: Module #{module_no or 1} ('{module_name or ''}') || Subsection #{t_sub_no} ('{t_sub_name}') -> Q: '{norm_q[:40]}...'")
+
 
     except Exception as ex:
         logger.warning(f"  --> Auto-learning save notice: {ex}")
@@ -1290,7 +1292,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
         screen_opts = []
         parsed_option_elements = []
 
-        screen_q_label = f"Q-{q_num + 1}"
+        screen_q_label = f"{q_num + 1}"
         try:
             qno_el = target_frame.locator(".qno, .questionnumber, .question-number, h3.no, h4.no, .qheader h3, .qheader h4").first
             if await qno_el.count() > 0 and await qno_el.is_visible():
@@ -1299,6 +1301,12 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                     screen_q_label = raw_qno
         except Exception:
             pass
+
+        num_m = re.search(r'\d+', screen_q_label)
+        if num_m:
+            q_tag = f"QUESTION-{int(num_m.group()):02d}"
+        else:
+            q_tag = f"QUESTION-{q_num + 1:02d}"
 
         try:
             q_elem = target_frame.locator(".qtext, div.qtext, .question-text, .que .content .qtext, fieldset legend, .qheader, .question-content, div.que div.content").first
@@ -1334,9 +1342,9 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
 
         if q_text_screen:
             logger.info("\n" + "  " + "-" * 75)
-            logger.info(f"  ❓ [{screen_q_label.upper()} FULL QUESTION]: {q_text_screen}")
+            logger.info(f"  ❓ [{q_tag}]: {q_text_screen}")
             if screen_opts:
-                logger.info("  📋 [OPTION CHOICES]:")
+                logger.info("  📋 [OPTIONS]:")
                 for idx, opt_text in enumerate(screen_opts):
                     letter = chr(65 + idx) if idx < 26 else str(idx + 1)
                     logger.info(f"     [{letter}] {opt_text}")
@@ -1374,7 +1382,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                         if is_100pct_match:
                             matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
                             gate1_ok = True
-                            logger.info(f"  ⚡ [VERIFIED JSON 100% MATCH {screen_q_label.upper()}] Target Answer: '{matched_answer_text}'")
+                            logger.info(f"  ⚡ [VERIFIED JSON 100% MATCH {q_tag}] Target Answer: '{matched_answer_text}'")
                             break
 
         # Step 2: AI Live Solver Fallback (If Question is NEW & Not in JSON Cache)
@@ -1384,7 +1392,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                 if ai_solved:
                     matched_answer_text = ai_solved
                     gate1_ok = True
-                    logger.info(f"  🧠 [AI LIVE SOLVER {screen_q_label.upper()}] Solved NEW question -> '{matched_answer_text}'")
+                    logger.info(f"  🧠 [AI LIVE {q_tag}] Solved NEW question -> '{matched_answer_text}'")
                     save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name, q_text_screen, ai_solved)
             except Exception as ai_ex:
                 logger.warning(f"  --> AI Live Solver notice: {ai_ex}")
@@ -1406,7 +1414,8 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
 
                     if is_match:
                         opt_let = chr(65 + idx) if idx < 26 else str(idx + 1)
-                        logger.info(f"  ✔ [VERIFIED ANSWER MATCH {screen_q_label.upper()}] Target Answer: '{matched_answer_text}'")
+                        logger.info(f"  ✔ [VERIFIED ANSWER MATCH {q_tag}] Target Answer: '{matched_answer_text}'")
+
 
                         # 1. Try finding radio/checkbox inside THIS specific option row
                         radio_input = row_el.locator("input[type='radio'], input[type='checkbox']").first
