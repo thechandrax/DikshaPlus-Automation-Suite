@@ -546,10 +546,22 @@ async def process_video_activity(page, view_button):
     if duration and not (duration != duration):  # Check for valid float / NaN
         logger.info(f"  --> Video Duration: {int(duration)} seconds ({int(duration//60)}m {int(duration%60)}s)")
 
-        # 2. 15s Warm-up Buffer @ 1.0x Speed
-        logger.info("  --> 15s Warm-up Buffer: playing at 1.0x speed for session initialization...")
-        await target_frame.evaluate("() => { const v = document.querySelector('video'); if (v) v.playbackRate = 1.0; }")
-        await asyncio.sleep(min(15, max(1, int(duration * 0.2))))
+        # Check for saved progress (e.g. video already played to 55%)
+        initial_time = 0.0
+        try:
+            initial_time = float(await target_frame.evaluate("() => { const v = document.querySelector('video'); return v ? v.currentTime : 0; }"))
+        except Exception:
+            initial_time = 0.0
+
+        if initial_time > 10.0 and duration > 0:
+            saved_pct = int((initial_time / duration) * 100)
+            logger.info(f"  --> [SAVED PROGRESS RESUMED] Video already at {saved_pct}% ({int(initial_time)}s / {int(duration)}s)! Resuming from current position...")
+
+        # 2. Warm-up Buffer @ 1.0x Speed
+        if initial_time < 10.0:
+            logger.info("  --> 15s Warm-up Buffer: playing at 1.0x speed for session initialization...")
+            await target_frame.evaluate("() => { const v = document.querySelector('video'); if (v) v.playbackRate = 1.0; }")
+            await asyncio.sleep(min(15, max(1, int(duration * 0.2))))
 
         # 3. Dynamic Playback Acceleration: 16x (>= 5 min) or 10x (< 5 min)
         if duration >= 300:
@@ -583,7 +595,7 @@ async def process_video_activity(page, view_button):
             if cur_time >= target_final_buffer_time or cur_time >= duration - 1:
                 break
 
-            # 4. Stall & Pause Recovery: Wait 8s for buffering window, then auto-rewind 3% back if stuck
+            # 4. Stall & Pause Recovery: Wait 8s for buffering window, then rewind 5s & adjust speed
             if is_paused or ready_state < 2:
                 logger.warning("  --> [STALL RECOVERY] Video buffering/paused! Waiting 8s for DIKSHA server buffer...")
                 await asyncio.sleep(8)
@@ -597,22 +609,24 @@ async def process_video_activity(page, view_button):
                         }
                     """)
                     if re_info.get("paused", False) or re_info.get("readyState", 0) < 2:
-                        logger.warning("  --> [STALL RECOVERY] Still buffering after 8s! Auto-rewinding 3% back & resuming play()...")
+                        logger.warning("  --> [STALL RECOVERY] Still buffering after 8s! Rewinding 5s back & resuming play()...")
                         await target_frame.evaluate("""
-                            (dur) => {
+                            () => {
                                 const v = document.querySelector('video');
                                 if (v) {
-                                    v.currentTime = Math.max(0, v.currentTime - (dur * 0.03));
+                                    v.currentTime = Math.max(0, v.currentTime - 5);
+                                    v.playbackRate = 4.0;
                                     v.play().catch(() => {});
                                 }
                             }
-                        """, duration)
+                        """)
                 except Exception:
                     pass
             else:
                 # Set accelerated speed & advance
                 await target_frame.evaluate(f"() => {{ const v = document.querySelector('video'); if (v) {{ v.playbackRate = {speed}; if (v.paused) v.play(); }} }}")
                 await asyncio.sleep(2)
+
 
 
         # 5. 45s Final Buffer @ 1.0x Speed
@@ -1243,6 +1257,7 @@ async def process_course_modules(page, answer_key=None):
             logger.info(f" 📚 MODULE [{i}/{total_real_modules}]: {header_title}")
             logger.info("=" * 35)
 
+            item_attempts = {}
 
             # Check if Module header is ALREADY 100% complete
             if await is_header_100_percent_complete(header):
@@ -1326,19 +1341,36 @@ async def process_course_modules(page, answer_key=None):
                         logger.info(f"  --> [✓ ALREADY DONE] Subsection [{j}/{total_sec_items}]: '{btn_text}' is 100% complete. Skipping!")
                         continue
 
+                    # MAX 2 RUNS LIMIT: Stop infinite re-playing of the same item if played 2 times
+                    runs_done = item_attempts.get(btn_text, 0)
+                    if runs_done >= 2:
+                        logger.info(f"  --> [MAX 2 RUNS REACHED] Subsection [{j}/{total_sec_items}]: '{btn_text}' played {runs_done} times. Skipping re-run to prevent infinite loop!")
+                        continue
+
                     # Check if item is locked / disabled by DIKSHA server
                     if not await is_button_enabled(btn):
-                        logger.info(f"  --> [LOCKED ITEM] Subsection [{j}/{total_sec_items}]: '{btn_text}' is currently LOCKED. Waiting 4s for server unlock...")
-                        await page.wait_for_timeout(4000)
+                        logger.info(f"  --> [LOCKED ITEM] Subsection [{j}/{total_sec_items}]: '{btn_text}' is currently LOCKED.")
+                        logger.info("  --> [SERVER REFRESH] Reloading page (page.reload()) to fetch updated DIKSHA server session unlock status...")
+                        try:
+                            await page.reload()
+                            await page.wait_for_timeout(4000)
+                            # Re-locate elements after reload
+                            if await click_target.count() > 0:
+                                await click_target.click(force=True)
+                                await page.wait_for_timeout(2000)
+                        except Exception:
+                            pass
+
                         if not await is_button_enabled(btn):
                             logger.info(f"  --> [SKIP LOCKED] Subsection [{j}/{total_sec_items}]: '{btn_text}' remains locked. Will re-evaluate after active item finishes...")
                             continue
 
                     act_type = await btn.get_attribute("act_type") or "resource"
                     logger.info("\n" + "=" * 35)
-                    logger.info(f" ▶ SUBSECTION [{j}/{total_sec_items}]: '{btn_text}' (Type: '{act_type}')")
+                    logger.info(f" ▶ SUBSECTION [{j}/{total_sec_items}]: '{btn_text}' (Type: '{act_type}') [Attempt {runs_done + 1}/2]")
                     logger.info("=" * 35)
 
+                    item_attempts[btn_text] = runs_done + 1
 
                     try:
                         if act_type == "url":
@@ -1380,6 +1412,15 @@ async def process_course_modules(page, answer_key=None):
 
             header_done = await is_header_100_percent_complete(header)
 
+            if not all_done and not header_done:
+                logger.info("  --> [GATE REFRESH] Reloading page once to sync DIKSHA server backend checkmarks...")
+                try:
+                    await page.reload()
+                    await page.wait_for_timeout(4000)
+                    header_done = await is_header_100_percent_complete(header)
+                except Exception:
+                    pass
+
             if all_done or header_done:
                 logger.info(f"  --> [CONFIRMED 1/2] Section activities in '{header_title}' verified 100% complete!")
                 logger.info(f"  --> [CONFIRMED 2/2] DIKSHA Server 100% completion badge verified! Moving to next module...\n")
@@ -1390,10 +1431,15 @@ async def process_course_modules(page, answer_key=None):
                 for retry_pass in range(2):
                     r_btns = await get_section_action_buttons(collapse_panel, header)
                     for r_idx, r_btn in enumerate(r_btns, start=1):
+                        r_btn_text = (await r_btn.inner_text()).strip()
+                        r_runs = item_attempts.get(r_btn_text, 0)
+                        if r_runs >= 2:
+                            continue
+
                         if not await is_item_100_percent_complete(r_btn) and await is_button_enabled(r_btn):
                             r_act_type = await r_btn.get_attribute("act_type") or "resource"
-                            r_btn_text = (await r_btn.inner_text()).strip()
                             logger.info(f"  ▶ Retrying Subsection item (Type: '{r_act_type}')...")
+                            item_attempts[r_btn_text] = r_runs + 1
                             if r_act_type == "quiz":
                                 await process_quiz_assessment(page, r_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=r_btn_text, sub_no=r_idx)
                             elif r_act_type == "h5pactivity":
@@ -1402,6 +1448,7 @@ async def process_course_modules(page, answer_key=None):
                                 await process_video_activity(page, r_btn)
                             elif r_act_type == "resource":
                                 await process_pdf_activity(page, r_btn)
+
 
 
 
