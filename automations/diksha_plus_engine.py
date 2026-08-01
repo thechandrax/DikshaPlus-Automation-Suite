@@ -959,8 +959,9 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             q_elem = target_frame.locator(".qtext, div.qtext, .question-text, .que .content .qtext, fieldset legend, .qheader, .question-content, div.que div.content").first
             if await q_elem.count() > 0 and await q_elem.is_visible():
                 raw_q = (await q_elem.inner_text()).strip()
-                # Strip leading question numbering (e.g. "1. ", "Q1: ", "Question 1: ")
-                q_text_screen = re.sub(r'^(?:question\s*\d+[:.]?|\d+[:.]?|q\d+[:.]?)\s*', '', raw_q, flags=re.IGNORECASE).strip().lower()
+                # 1. Clean DIKSHA question text header & option choice footer noise
+                q_text_screen = re.sub(r'^(?:question\s*text|question\s*\d+[:.]?|\d+[:.]?|q\d+[:.]?)\s*', '', raw_q, flags=re.IGNORECASE)
+                q_text_screen = re.sub(r'\s*(?:select\s*one|question\s*\d+).*$', '', q_text_screen, flags=re.IGNORECASE | re.DOTALL).strip().lower()
         except Exception:
             pass
 
@@ -980,16 +981,30 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                 if matched_answer_text:
                     break
 
-                # Gate 1: Text & Keyword Overlap Search across active section bucket
+                # Gate 1: Bi-Directional Jaccard Overlap & Substring Safeguard Search
                 if clean_screen_q:
                     for item in bucket:
                         json_q = (item.get("question") or item.get("question_keyword") or "").strip().lower()
                         clean_json_q = re.sub(r'[^\w\s]', '', json_q)
                         json_words = set(w for w in clean_json_q.split() if len(w) >= 3)
                         
-                        overlap_ratio = (len(json_words & screen_words) / float(len(json_words))) if json_words else 0.0
+                        common_words = json_words & screen_words
+                        json_coverage = (len(common_words) / float(len(json_words))) if json_words else 0.0
+                        screen_coverage = (len(common_words) / float(len(screen_words))) if screen_words else 0.0
 
-                        if clean_json_q and (clean_json_q in clean_screen_q or clean_screen_q in clean_json_q or overlap_ratio >= 0.75):
+                        # Substring match with length & coverage safeguard (prevents short "audio is" false positives)
+                        is_exact_sub = False
+                        if clean_json_q and clean_screen_q:
+                            if clean_json_q == clean_screen_q:
+                                is_exact_sub = True
+                            elif clean_json_q in clean_screen_q or clean_screen_q in clean_json_q:
+                                if (len(clean_json_q) >= 15 and screen_coverage >= 0.35) or abs(len(clean_json_q) - len(clean_screen_q)) <= 10:
+                                    is_exact_sub = True
+
+                        # Keyword Overlap requiring both JSON & Screen Coverage thresholds
+                        is_keyword_match = (json_coverage >= 0.75 and screen_coverage >= 0.35)
+
+                        if is_exact_sub or is_keyword_match:
                             matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
                             matched_json_question = (item.get("question") or item.get("question_keyword") or "")[:50]
                             gate1_ok = True
@@ -1004,6 +1019,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                     gate1_ok = True
                     logger.info(f"  ✔ [GATE 1 VERIFIED Q-{q_num + 1}] Index Match #{q_num + 1}: '{matched_json_question}...'")
                     break
+
 
         selected_option = False
         
