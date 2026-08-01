@@ -132,20 +132,19 @@ def extract_all_qa_items(answer_key):
 def solve_question_with_ai(question_text, option_texts=None):
     """
     Uses Gemini AI API to solve any live quiz question on screen with 100% accuracy.
-    Handles rate limits (HTTP 429) with exponential backoff retries.
+    Handles rate limits (HTTP 429) with exponential backoff retries and explicit log feedback.
     """
     if not getattr(config, "AI_LIVE_SOLVER_ENABLED", True):
         return None
 
     api_key = getattr(config, "GEMINI_API_KEY", "") or os.environ.get("GEMINI_API_KEY", "")
     if not api_key:
+        logger.warning("  ⚠️ [AI LIVE SOLVER NOTICE] GEMINI_API_KEY is not configured in config.py!")
         return None
 
     # 3-Second Pacing Delay for smooth execution & rate limit prevention
     logger.info("  ⏳ [AI LIVE SOLVER] Waiting 3s pacing delay before AI API call...")
     time.sleep(3)
-
-
 
     options_formatted = "\n".join([f"{idx+1}. {opt}" for idx, opt in enumerate(option_texts or [])])
     prompt = f"""You are an expert AI teacher solving a quiz question for an educational course.
@@ -159,7 +158,7 @@ Option Choices:
 INSTRUCTIONS:
 Return ONLY the exact text of the correct option choice from the list above. Do NOT include option numbers (1, 2, 3), do NOT include explanations. Return ONLY the exact option text."""
 
-    models_to_try = ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash-latest"]
+    models_to_try = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-2.5-flash"]
 
     for model_name in models_to_try:
         for attempt in range(3):
@@ -168,26 +167,41 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
                 payload = json.dumps({
                     "contents": [{"parts": [{"text": prompt}]}]
                 }).encode('utf-8')
-                req = urllib.request.Request(url, data=payload, headers={'Content-Type': 'application/json'})
-                res = urllib.request.urlopen(req, timeout=10)
+                
+                headers = {'Content-Type': 'application/json'}
+                if not api_key.startswith("AIza"):
+                    headers['Authorization'] = f'Bearer {api_key}'
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
+
+                req = urllib.request.Request(url, data=payload, headers=headers)
+                res = urllib.request.urlopen(req, timeout=12)
                 resp_data = json.loads(res.read().decode('utf-8'))
                 ans_text = resp_data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "").strip()
                 
-                # Remove quotes or markdown if returned
                 clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
                 if clean_ans:
-                    logger.info(f"  🧠 [AI LIVE SOLVER] Solved question via {model_name} -> '{clean_ans}'")
+                    logger.info(f"  🧠 [AI LIVE SOLVER SUCCESS] Solved via {model_name} -> '{clean_ans}'")
                     return clean_ans
             except urllib.error.HTTPError as http_err:
                 if http_err.code == 429:
-                    time.sleep(2 * (attempt + 1))
+                    wait_sec = 4 * (attempt + 1)
+                    logger.warning(f"  ⏳ [AI RATE LIMIT 429] Gemini API rate limit hit. Waiting {wait_sec}s before retry (Attempt {attempt+1}/3)...")
+                    time.sleep(wait_sec)
                     continue
-                break
+                elif http_err.code in (401, 403, 404):
+                    logger.error(f"  ❌ [GEMINI API ERROR {http_err.code}] {http_err.reason} for model '{model_name}'. Trying next model...")
+                    break
+                else:
+                    logger.warning(f"  ⚠️ [AI API HTTP ERROR {http_err.code}] {http_err.reason}")
+                    break
             except Exception as ex:
+                logger.warning(f"  ⚠️ [AI SOLVER NOTICE] {ex}")
                 time.sleep(1)
                 break
 
+    logger.warning("  ⚠️ [AI LIVE SOLVER UNABLE TO SOLVE] Falling back to available options.")
     return None
+
 
 
 def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name, question_text, answer_text):
