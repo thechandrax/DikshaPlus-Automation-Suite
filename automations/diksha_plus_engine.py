@@ -479,6 +479,19 @@ async def process_video_activity(page, view_button):
       5. 45s Final Buffer @ 1.0x speed (natural ended event & 100% progress telemetry)
       6. Video 10s-15s Checkmark Verification & 1-Time Reload/Replay Recovery Engine
     """
+    # Check for saved progress percentage badge on DOM row (e.g. "55%")
+    row_saved_pct = 0
+    try:
+        parent_row = view_button.locator("xpath=./ancestor::*[contains(@class, 'activity') or contains(@class, 'row') or contains(@class, 'item') or self::li or self::div][1]")
+        if await parent_row.count() > 0:
+            row_text = await parent_row.inner_text()
+            import re
+            m = re.search(r'(\d{1,2})%', row_text)
+            if m:
+                row_saved_pct = int(m.group(1))
+    except Exception:
+        row_saved_pct = 0
+
     logger.info("[VIDEO ACTIVITY] Opening video module...")
     await view_button.click(force=True)
     await page.wait_for_timeout(3000)
@@ -505,7 +518,7 @@ async def process_video_activity(page, view_button):
         except Exception:
             pass
 
-    # Ensure video plays muted via HTML5 Video API and set 360p lower resolution option
+    # Ensure video plays muted via HTML5 Video API (preserving current video position)
     try:
         await target_frame.evaluate("""
             async () => {
@@ -513,7 +526,6 @@ async def process_video_activity(page, view_button):
                 vids.forEach(v => {
                     v.muted = true;
                     v.volume = 0.0;
-                    v.currentTime = 0;
                     v.playbackRate = 1.0;
                     v.play().catch(() => {});
                 });
@@ -535,7 +547,6 @@ async def process_video_activity(page, view_button):
 
     await page.wait_for_timeout(2000)
 
-
     # Get Video Duration
     duration = 0.0
     try:
@@ -546,16 +557,26 @@ async def process_video_activity(page, view_button):
     if duration and not (duration != duration):  # Check for valid float / NaN
         logger.info(f"  --> Video Duration: {int(duration)} seconds ({int(duration//60)}m {int(duration%60)}s)")
 
-        # Check for saved progress (e.g. video already played to 55%)
+        # Check for saved progress (from DIKSHA DOM row badge e.g. 55% or HTML5 video currentTime)
         initial_time = 0.0
         try:
             initial_time = float(await target_frame.evaluate("() => { const v = document.querySelector('video'); return v ? v.currentTime : 0; }"))
         except Exception:
             initial_time = 0.0
 
-        if initial_time > 1.0 and duration > 0:
+        if row_saved_pct > 0 and duration > 0:
+            target_seek = (row_saved_pct / 100.0) * duration
+            if initial_time < target_seek - 10:
+                initial_time = target_seek
+                await target_frame.evaluate(f"() => {{ const v = document.querySelector('video'); if (v) {{ v.currentTime = {target_seek}; }} }}")
+                logger.info(f"  --> [SAVED PROGRESS RESUMED] Detected {row_saved_pct}% saved progress badge on DIKSHA item row! Seeking video to {int(target_seek)}s / {int(duration)}s ({row_saved_pct}%) and resuming...")
+            else:
+                saved_pct = min(99, max(1, int((initial_time / duration) * 100)))
+                logger.info(f"  --> [SAVED PROGRESS RESUMED] Video already at {saved_pct}% ({int(initial_time)}s / {int(duration)}s)! Resuming dynamically from current position...")
+        elif initial_time > 1.0 and duration > 0:
             saved_pct = min(99, max(1, int((initial_time / duration) * 100)))
             logger.info(f"  --> [SAVED PROGRESS RESUMED] Video already at {saved_pct}% ({int(initial_time)}s / {int(duration)}s)! Resuming dynamically from current position...")
+
 
 
         # 2. ALWAYS 15s Warm-up Buffer @ 1.0x Speed (for telemetry initialization)
