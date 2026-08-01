@@ -1058,6 +1058,12 @@ async def process_video_activity(page, view_button):
         except Exception as ex:
             logger.warning(f"  --> Video reload recovery notice: {ex}")
 
+async def check_pause_status():
+    global IS_PAUSED
+    if IS_PAUSED:
+        while IS_PAUSED:
+            await asyncio.sleep(0.2)
+
 
 async def process_pdf_activity(page, view_button):
     """
@@ -1074,6 +1080,7 @@ async def process_pdf_activity(page, view_button):
     # 1. Automated Page Flipping & Reading Time Simulation
     logger.info("  --> Automated Page Flipping: simulating PageDown key presses...")
     for flip in range(4):
+        await check_pause_status()
         await page.keyboard.press("PageDown")
         await page.wait_for_timeout(2500)
 
@@ -1115,6 +1122,7 @@ async def process_h5p_activity(page, view_button, answer_key, course_title=None)
     # Radio button option selection loop with Smart Auto-Learning AI Cache & Live Solver
     answers_list = extract_all_qa_items(answer_key)
     for question_step in range(15):
+        await check_pause_status()
         h5p_frame = page
         for f in page.frames:
             try:
@@ -1957,8 +1965,10 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                 processed_any = False
 
                 for j, btn in enumerate(distinct_btns, 1):
+                    await check_pause_status()
                     if not await btn.is_visible():
                         continue
+
 
                     btn_text = (await btn.inner_text()).strip()
 
