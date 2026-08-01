@@ -4,6 +4,21 @@ This guide explains how to deploy **DIKSHA+ Automation Suite** to **Railway.app*
 
 ---
 
+## 🛠️ Fixing Docker Build Error (`/requirements.txt: not found`)
+
+If you encountered this error during deployment:
+```text
+Build Failed: build daemon returned an error < failed to solve: failed to compute cache key: ... "/requirements.txt": not found >
+```
+
+### **Root Cause & Solution**:
+1. **Root Cause**: Setting **Root Directory** = `railway` in Railway settings scoped Docker's build context strictly to `railway/`. Since `requirements.txt` was only at root level, Docker threw a missing file error.
+2. **The Fix**:
+   * We added `requirements.txt` inside `railway/` **AND** added a root-level `Dockerfile` to the repository!
+   * **In Railway Settings**: Set **Root Directory** to **EMPTY / BLANK** (or `/`). Railway will automatically detect root `Dockerfile` and build the entire repository in 1 click!
+
+---
+
 ## 🔑 Do I Need to Add Gemini API Keys in Railway Variables?
 
 ### **Short Answer**: **NO, IT IS NOT NECESSARY!**
@@ -21,35 +36,7 @@ This guide explains how to deploy **DIKSHA+ Automation Suite** to **Railway.app*
 
 ---
 
-## 📁 1. Consolidated Railway Directory Structure (`railway/`)
-
-All Railway configuration files are consolidated inside `railway/`:
-
-```text
-railway/
-├── Dockerfile           # Headless Python + Playwright Linux container
-├── railway.json         # Railway build & deployment configuration
-└── .dockerignore        # Excludes temporary logs & screenshots
-```
-
-### `railway/railway.json` Specification:
-```json
-{
-  "$schema": "https://railway.app/railway.schema.json",
-  "build": {
-    "builder": "DOCKERFILE",
-    "dockerfilePath": "Dockerfile"
-  },
-  "deploy": {
-    "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 5
-  }
-}
-```
-
----
-
-## 🚀 2. Steps to Deploy on Railway.app
+## 🚀 Steps to Deploy on Railway.app (1-Click)
 
 1. **Connect GitHub Repository**:
    * Open [Railway.app](https://railway.app) dashboard.
@@ -57,7 +44,7 @@ railway/
    * Select `thechandrax/DikshaPlus-Automation-Suite`.
 
 2. **Configure Root Directory in Railway**:
-   * Go to **Settings** $\rightarrow$ **Root Directory** $\rightarrow$ Set to `railway`.
+   * Go to **Settings** $\rightarrow$ **Root Directory** $\rightarrow$ Leave **EMPTY / BLANK**!
 
 3. **Deploy**:
-   * Click **Deploy**. Railway will automatically build the Docker container and start headless automated execution!
+   * Click **Deploy**. Railway will automatically detect `Dockerfile`, build the container, and start headless automated execution!

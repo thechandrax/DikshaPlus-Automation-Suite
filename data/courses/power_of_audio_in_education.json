@@ -96,6 +96,106 @@
             "[D] Akashvani Guwahati"
           ],
           "answer": "[B] Akashvani Dibrugarh"
+        },
+        {
+          "question": "What is the name of the first community radio launched?",
+          "options": [
+            "[A] Apna CR",
+            "[B] Deccan Radio",
+            "[C] Gyan Bharati",
+            "[D] Anna FM"
+          ],
+          "answer": "[D] Anna FM"
+        },
+        {
+          "question": "What is one of the primary reasons behind the podcast boom in India?",
+          "options": [
+            "[A] Limited content",
+            "[B] Affordable internet",
+            "[C] Expensive hardware",
+            "[D] Complex technology"
+          ],
+          "answer": "[B] Affordable internet"
+        },
+        {
+          "question": "What makes podcasts a modern educational tool?",
+          "options": [
+            "[A] Open access for content creation",
+            "[B] Limited subject areas",
+            "[C] One-directional communication",
+            "[D] Strict airing schedules"
+          ],
+          "answer": "[A] Open access for content creation"
+        },
+        {
+          "question": "Audio is……….",
+          "options": [
+            "[A] Provocative",
+            "[B] Insignificant",
+            "[C] Expressive",
+            "[D] Evocative"
+          ],
+          "answer": "[D] Evocative"
+        },
+        {
+          "question": "What should come first in the podcast creation process for educational courses?",
+          "options": [
+            "[A] Deciding the course and curriculum",
+            "[B] Recording lessons",
+            "[C] Embedding on the website",
+            "[D] Hosting the podcast"
+          ],
+          "answer": "[A] Deciding the course and curriculum"
+        },
+        {
+          "question": "School Broadcast is an endeavour of :",
+          "options": [
+            "[A] NCERT",
+            "[B] CIET",
+            "[C] Doordarshan",
+            "[D] Akashvani"
+          ],
+          "answer": "[D] Akashvani"
+        },
+        {
+          "question": "What is the name of the dedicated radio channel for education?",
+          "options": [
+            "[A] Gyan Darshan",
+            "[B] IGNOU Radio",
+            "[C] Akashvani",
+            "[D] Gyan Vani"
+          ],
+          "answer": "[D] Gyan Vani"
+        },
+        {
+          "question": "While using audio in Learning - use music and sound effects……….",
+          "options": [
+            "[A] Heavily",
+            "[B] Intensely",
+            "[C] Poorly",
+            "[D] Sparingly"
+          ],
+          "answer": "[D] Sparingly"
+        },
+        {
+          "question": "When was the first community radio launched in India?",
+          "options": [
+            "[A] 2004",
+            "[B] 2001",
+            "[C] 2003",
+            "[D] 2000"
+          ],
+          "answer": "[A] 2004"
+        },
+        {
+          "question": "Our deep connection to audio starts in the…….",
+          "options": [
+            "[A] Studio",
+            "[B] Womb",
+            "[C] Theatre",
+            "[D] Classroom"
+          ],
+          "answer": "[B] Womb"
         }
       ]
     }
