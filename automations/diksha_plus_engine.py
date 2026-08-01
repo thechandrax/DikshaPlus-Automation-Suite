@@ -1009,12 +1009,32 @@ async def process_video_activity(page, view_button):
 
 
 
-        # 5. 45s Final Buffer @ 1.0x Speed
+        # 5. 45s Final Buffer @ 1.0x Speed with Auto-Play & Network Stall Recovery Safeguard
         logger.info("  --> 45s Final Buffer: slowing down to 1.0x speed for natural ended event & 100% progress telemetry...")
         await target_frame.evaluate("() => { const v = document.querySelector('video'); if (v) { v.playbackRate = 1.0; if (v.paused) v.play(); } }")
         
         final_wait = min(45, max(10, int(duration - cur_time)))
-        await asyncio.sleep(final_wait)
+        
+        # Safeguard Loop: Periodically verifies video is playing, auto-resuming if paused by network/browser
+        start_wait_t = time.time()
+        while time.time() - start_wait_t < final_wait:
+            await check_pause_status()
+            try:
+                v_st = await target_frame.evaluate("""
+                    () => {
+                        const v = document.querySelector('video');
+                        if (!v) return { found: false };
+                        if (v.paused && v.currentTime < v.duration) {
+                            v.play().catch(() => {});
+                        }
+                        return { found: true, paused: v.paused, currentTime: v.currentTime };
+                    }
+                """)
+                if v_st and v_st.get("found") and v_st.get("paused"):
+                    logger.info("  🛡️ [AUTOPLAY SAFEGUARD] Video was paused. Auto-triggered video.play() to keep playback active.")
+            except Exception:
+                pass
+            await asyncio.sleep(1.5)
         
         # Trigger natural ended event dispatch
         try:
@@ -1024,10 +1044,18 @@ async def process_video_activity(page, view_button):
     else:
         # Fallback if duration is unavailable
         logger.info("  --> Video playback active (default watch duration)...")
-        await asyncio.sleep(config.MIN_VIDEO_WATCH_SECONDS)
+        start_wait_t = time.time()
+        while time.time() - start_wait_t < config.MIN_VIDEO_WATCH_SECONDS:
+            await check_pause_status()
+            try:
+                await target_frame.evaluate("() => { const v = document.querySelector('video'); if (v && v.paused) v.play().catch(() => {}); }")
+            except Exception:
+                pass
+            await asyncio.sleep(1.5)
 
     # Close video modal
     await close_activity_modal(page)
+
     
     # 6. Video 10s-15s Checkmark Verification & 1-Time Reload/Replay Recovery Engine
     logger.info("  --> [VIDEO CHECKMARK] Waiting 10s to 15s specifically for video 100% checkmark...")
