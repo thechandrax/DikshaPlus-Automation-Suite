@@ -1,241 +1,245 @@
 {
   "course_name": "Power of Audio in Education",
-  "subsections": [
+  "modules": [
     {
       "module_no": 7,
       "module_name": "Assessment",
-      "subsection_no": 1,
-      "subsection_name": "Assessment",
-      "questions": [
+      "subsections": [
         {
-          "question": "How many community radio stations are there in India as of May 2025",
-          "options": [
-            "[A] 540",
-            "[B] 100",
-            "[C] 200",
-            "[D] 300"
-          ],
-          "answer": "[A] 540"
-        },
-        {
-          "question": "Why is audio well-suited for multitasking?",
-          "options": [
-            "[A] It runs only on mobile devices",
-            "[B] It relies on visual aids",
-            "[C] It demands constant visual focus",
-            "[D] It allows low mental effort during use"
-          ],
-          "answer": "[D] It allows low mental effort during use"
-        },
-        {
-          "question": "How does community radio benefit local populations?",
-          "options": [
-            "[A] By encouraging international content",
-            "[B] By addressing community-specific needs",
-            "[C] By limiting audience participation",
-            "[D] By delivering national broadcasts"
-          ],
-          "answer": "[B] By addressing community-specific needs"
-        },
-        {
-          "question": "The common name of the State Tree of Assam is :",
-          "options": [
-            "[A] Hollong",
-            "[B] Sal",
-            "[C] Mango",
-            "[D] Neem"
-          ],
-          "answer": "[A] Hollong"
-        },
-        {
-          "question": "Audio can stir up strong emotions like ………",
-          "options": [
-            "[A] Laughter",
-            "[B] Jealousy",
-            "[C] Happiness",
-            "[D] Anger"
-          ],
-          "answer": "[D] Anger"
-        },
-        {
-          "question": "Dr. Rajendra Prasad Memorial Lecture is organised every year by :",
-          "options": [
-            "[A] National Museum",
-            "[B] Delhi University",
-            "[C] Akashvani",
-            "[D] Doordarshan"
-          ],
-          "answer": "[C] Akashvani"
-        },
-        {
-          "question": "Audio in learning should ………. lengthy monologues.",
-          "options": [
-            "[A] Avoid",
-            "[B] Exclude",
-            "[C] Admit",
-            "[D] Include"
-          ],
-          "answer": "[A] Avoid"
-        },
-        {
-          "question": "Which year the Community Radio Policy was announced?",
-          "options": [
-            "[A] 2000",
-            "[B] 2001",
-            "[C] 2002",
-            "[D] 2004"
-          ],
-          "answer": "[C] 2002"
-        },
-        {
-          "question": "Green Broadcasting was a Environment Conservation Endeavour of :",
-          "options": [
-            "[A] Akashvani Delhi",
-            "[B] Akashvani Dibrugarh",
-            "[C] Akashvani Shillong",
-            "[D] Akashvani Guwahati"
-          ],
-          "answer": "[B] Akashvani Dibrugarh"
-        },
-        {
-          "question": "What is the name of the first community radio launched?",
-          "options": [
-            "[A] Apna CR",
-            "[B] Deccan Radio",
-            "[C] Gyan Bharati",
-            "[D] Anna FM"
-          ],
-          "answer": "[D] Anna FM"
-        },
-        {
-          "question": "What is one of the primary reasons behind the podcast boom in India?",
-          "options": [
-            "[A] Limited content",
-            "[B] Affordable internet",
-            "[C] Expensive hardware",
-            "[D] Complex technology"
-          ],
-          "answer": "[B] Affordable internet"
-        },
-        {
-          "question": "What makes podcasts a modern educational tool?",
-          "options": [
-            "[A] Open access for content creation",
-            "[B] Limited subject areas",
-            "[C] One-directional communication",
-            "[D] Strict airing schedules"
-          ],
-          "answer": "[A] Open access for content creation"
-        },
-        {
-          "question": "Audio is……….",
-          "options": [
-            "[A] Provocative",
-            "[B] Insignificant",
-            "[C] Expressive",
-            "[D] Evocative"
-          ],
-          "answer": "[D] Evocative"
-        },
-        {
-          "question": "What should come first in the podcast creation process for educational courses?",
-          "options": [
-            "[A] Deciding the course and curriculum",
-            "[B] Recording lessons",
-            "[C] Embedding on the website",
-            "[D] Hosting the podcast"
-          ],
-          "answer": "[A] Deciding the course and curriculum"
-        },
-        {
-          "question": "School Broadcast is an endeavour of :",
-          "options": [
-            "[A] NCERT",
-            "[B] CIET",
-            "[C] Doordarshan",
-            "[D] Akashvani"
-          ],
-          "answer": "[D] Akashvani"
-        },
-        {
-          "question": "What is the name of the dedicated radio channel for education?",
-          "options": [
-            "[A] Gyan Darshan",
-            "[B] IGNOU Radio",
-            "[C] Akashvani",
-            "[D] Gyan Vani"
-          ],
-          "answer": "[D] Gyan Vani"
-        },
-        {
-          "question": "While using audio in Learning - use music and sound effects……….",
-          "options": [
-            "[A] Heavily",
-            "[B] Intensely",
-            "[C] Poorly",
-            "[D] Sparingly"
-          ],
-          "answer": "[D] Sparingly"
-        },
-        {
-          "question": "When was the first community radio launched in India?",
-          "options": [
-            "[A] 2004",
-            "[B] 2001",
-            "[C] 2003",
-            "[D] 2000"
-          ],
-          "answer": "[A] 2004"
-        },
-        {
-          "question": "Our deep connection to audio starts in the…….",
-          "options": [
-            "[A] Studio",
-            "[B] Womb",
-            "[C] Theatre",
-            "[D] Classroom"
-          ],
-          "answer": "[B] Womb"
-        },
-        {
-          "question": "The Word \"podcasting\" came from?",
-          "options": [
-            "[A] iPhone",
-            "[B] iPod",
-            "[C] Internet Radio",
-            "[D] Google"
-          ],
-          "answer": "[B] iPod"
-        },
-        {
-          "question": "Which of the following was listed as a key catalyst in the rise of podcasts?",
-          "options": [
-            "[A] Expensive apps",
-            "[B] Decreasing education levels",
-            "[C] Changing content habits",
-            "[D] Stable power supply"
-          ],
-          "answer": "[C] Changing content habits"
-        },
-        {
-          "question": "Which international organization encouraged the adoption of Community Radio in India during the 1990s?",
-          "options": [
-            "[A] UNICEF",
-            "[B] UNESCO",
-            "[C] UNDP",
-            "[D] WHO"
-          ],
-          "answer": "[B] UNESCO"
-        },
-        {
-          "question": "Who published the book on community radio in India?",
-          "options": [
-            "[A] Publication division",
-            "[B] National Book Trust",
-            "[C] UNESCO",
-            "[D] UNICEF"
-          ],
-          "answer": "[A] Publication division"
+          "subsection_no": 1,
+          "subsection_name": "Assessment",
+          "questions": [
+            {
+              "question": "How many community radio stations are there in India as of May 2025",
+              "options": [
+                "[A] 540",
+                "[B] 100",
+                "[C] 200",
+                "[D] 300"
+              ],
+              "answer": "[A] 540"
+            },
+            {
+              "question": "Why is audio well-suited for multitasking?",
+              "options": [
+                "[A] It runs only on mobile devices",
+                "[B] It relies on visual aids",
+                "[C] It demands constant visual focus",
+                "[D] It allows low mental effort during use"
+              ],
+              "answer": "[D] It allows low mental effort during use"
+            },
+            {
+              "question": "How does community radio benefit local populations?",
+              "options": [
+                "[A] By encouraging international content",
+                "[B] By addressing community-specific needs",
+                "[C] By limiting audience participation",
+                "[D] By delivering national broadcasts"
+              ],
+              "answer": "[B] By addressing community-specific needs"
+            },
+            {
+              "question": "The common name of the State Tree of Assam is :",
+              "options": [
+                "[A] Hollong",
+                "[B] Sal",
+                "[C] Mango",
+                "[D] Neem"
+              ],
+              "answer": "[A] Hollong"
+            },
+            {
+              "question": "Audio can stir up strong emotions like ………",
+              "options": [
+                "[A] Laughter",
+                "[B] Jealousy",
+                "[C] Happiness",
+                "[D] Anger"
+              ],
+              "answer": "[D] Anger"
+            },
+            {
+              "question": "Dr. Rajendra Prasad Memorial Lecture is organised every year by :",
+              "options": [
+                "[A] National Museum",
+                "[B] Delhi University",
+                "[C] Akashvani",
+                "[D] Doordarshan"
+              ],
+              "answer": "[C] Akashvani"
+            },
+            {
+              "question": "Audio in learning should ………. lengthy monologues.",
+              "options": [
+                "[A] Avoid",
+                "[B] Exclude",
+                "[C] Admit",
+                "[D] Include"
+              ],
+              "answer": "[A] Avoid"
+            },
+            {
+              "question": "Which year the Community Radio Policy was announced?",
+              "options": [
+                "[A] 2000",
+                "[B] 2001",
+                "[C] 2002",
+                "[D] 2004"
+              ],
+              "answer": "[C] 2002"
+            },
+            {
+              "question": "Green Broadcasting was a Environment Conservation Endeavour of :",
+              "options": [
+                "[A] Akashvani Delhi",
+                "[B] Akashvani Dibrugarh",
+                "[C] Akashvani Shillong",
+                "[D] Akashvani Guwahati"
+              ],
+              "answer": "[B] Akashvani Dibrugarh"
+            },
+            {
+              "question": "What is the name of the first community radio launched?",
+              "options": [
+                "[A] Apna CR",
+                "[B] Deccan Radio",
+                "[C] Gyan Bharati",
+                "[D] Anna FM"
+              ],
+              "answer": "[D] Anna FM"
+            },
+            {
+              "question": "What is one of the primary reasons behind the podcast boom in India?",
+              "options": [
+                "[A] Limited content",
+                "[B] Affordable internet",
+                "[C] Expensive hardware",
+                "[D] Complex technology"
+              ],
+              "answer": "[B] Affordable internet"
+            },
+            {
+              "question": "What makes podcasts a modern educational tool?",
+              "options": [
+                "[A] Open access for content creation",
+                "[B] Limited subject areas",
+                "[C] One-directional communication",
+                "[D] Strict airing schedules"
+              ],
+              "answer": "[A] Open access for content creation"
+            },
+            {
+              "question": "Audio is……….",
+              "options": [
+                "[A] Provocative",
+                "[B] Insignificant",
+                "[C] Expressive",
+                "[D] Evocative"
+              ],
+              "answer": "[D] Evocative"
+            },
+            {
+              "question": "What should come first in the podcast creation process for educational courses?",
+              "options": [
+                "[A] Deciding the course and curriculum",
+                "[B] Recording lessons",
+                "[C] Embedding on the website",
+                "[D] Hosting the podcast"
+              ],
+              "answer": "[A] Deciding the course and curriculum"
+            },
+            {
+              "question": "School Broadcast is an endeavour of :",
+              "options": [
+                "[A] NCERT",
+                "[B] CIET",
+                "[C] Doordarshan",
+                "[D] Akashvani"
+              ],
+              "answer": "[D] Akashvani"
+            },
+            {
+              "question": "What is the name of the dedicated radio channel for education?",
+              "options": [
+                "[A] Gyan Darshan",
+                "[B] IGNOU Radio",
+                "[C] Akashvani",
+                "[D] Gyan Vani"
+              ],
+              "answer": "[D] Gyan Vani"
+            },
+            {
+              "question": "While using audio in Learning - use music and sound effects……….",
+              "options": [
+                "[A] Heavily",
+                "[B] Intensely",
+                "[C] Poorly",
+                "[D] Sparingly"
+              ],
+              "answer": "[D] Sparingly"
+            },
+            {
+              "question": "When was the first community radio launched in India?",
+              "options": [
+                "[A] 2004",
+                "[B] 2001",
+                "[C] 2003",
+                "[D] 2000"
+              ],
+              "answer": "[A] 2004"
+            },
+            {
+              "question": "Our deep connection to audio starts in the…….",
+              "options": [
+                "[A] Studio",
+                "[B] Womb",
+                "[C] Theatre",
+                "[D] Classroom"
+              ],
+              "answer": "[B] Womb"
+            },
+            {
+              "question": "The Word \"podcasting\" came from?",
+              "options": [
+                "[A] iPhone",
+                "[B] iPod",
+                "[C] Internet Radio",
+                "[D] Google"
+              ],
+              "answer": "[B] iPod"
+            },
+            {
+              "question": "Which of the following was listed as a key catalyst in the rise of podcasts?",
+              "options": [
+                "[A] Expensive apps",
+                "[B] Decreasing education levels",
+                "[C] Changing content habits",
+                "[D] Stable power supply"
+              ],
+              "answer": "[C] Changing content habits"
+            },
+            {
+              "question": "Which international organization encouraged the adoption of Community Radio in India during the 1990s?",
+              "options": [
+                "[A] UNICEF",
+                "[B] UNESCO",
+                "[C] UNDP",
+                "[D] WHO"
+              ],
+              "answer": "[B] UNESCO"
+            },
+            {
+              "question": "Who published the book on community radio in India?",
+              "options": [
+                "[A] Publication division",
+                "[B] National Book Trust",
+                "[C] UNESCO",
+                "[D] UNICEF"
+              ],
+              "answer": "[A] Publication division"
+            }
+          ]
         }
       ]
     }

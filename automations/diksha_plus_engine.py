@@ -195,10 +195,7 @@ def extract_all_qa_items(answer_key):
 
 def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name, question_text, answer_text, option_texts=None, is_feedback=False):
     """
-    Saves auto-learned question & answer sequentially under module and subsection structure.
-    Saves all options:
-    - Quizzes: Formatted as ["[A] ...", "[B] ...", "[C] ...", "[D] ..."] and answer as "[B] ..."
-    - Feedback Forms: Standard options ["Strongly Agree", "Agree", ...] without [A] [B] prefixes.
+    Saves auto-learned question & answer sequentially under clean modules -> subsections hierarchy.
     """
     try:
         c_name = course_title or "unknown_course"
@@ -217,15 +214,55 @@ def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name,
 
         data_j["course_name"] = course_title or "Course"
 
-        subsections = data_j.get("subsections")
-        if not isinstance(subsections, list):
-            subsections = []
-            data_j["subsections"] = subsections
+        t_mod_no = int(module_no) if (module_no and str(module_no).isdigit()) else (module_no or 1)
+        t_mod_name = module_name or "Module"
 
-        target_sub = None
         t_sub_no = int(sub_no) if (sub_no and str(sub_no).isdigit()) else 1
         t_sub_name = sub_name or "Assessment"
 
+        # Support clean "modules" hierarchy
+        modules = data_j.get("modules")
+        if not isinstance(modules, list):
+            legacy_subs = data_j.pop("subsections", [])
+            modules = []
+            data_j["modules"] = modules
+            if legacy_subs:
+                m_dict = {}
+                for s in legacy_subs:
+                    mno = s.get("module_no") or t_mod_no
+                    mname = s.get("module_name") or t_mod_name
+                    if mno not in m_dict:
+                        m_dict[mno] = {"module_no": mno, "module_name": mname, "subsections": []}
+                    clean_s = {
+                        "subsection_no": s.get("subsection_no", 1),
+                        "subsection_name": s.get("subsection_name", "Assessment"),
+                        "questions": s.get("questions", [])
+                    }
+                    m_dict[mno]["subsections"].append(clean_s)
+                modules.extend(list(m_dict.values()))
+
+        # Find or create target module
+        target_mod = None
+        for m in modules:
+            if m.get("module_no") == t_mod_no or (m.get("module_name") or "").strip().lower() == t_mod_name.strip().lower():
+                target_mod = m
+                break
+
+        if not target_mod:
+            target_mod = {
+                "module_no": t_mod_no,
+                "module_name": t_mod_name,
+                "subsections": []
+            }
+            modules.append(target_mod)
+
+        # Find or create target subsection inside target module
+        subsections = target_mod.get("subsections")
+        if not isinstance(subsections, list):
+            subsections = []
+            target_mod["subsections"] = subsections
+
+        target_sub = None
         for s in subsections:
             if s.get("subsection_no") == t_sub_no or (s.get("subsection_name") or "").strip().lower() == t_sub_name.strip().lower():
                 target_sub = s
@@ -233,8 +270,6 @@ def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name,
 
         if not target_sub:
             target_sub = {
-                "module_no": int(module_no) if (module_no and str(module_no).isdigit()) else module_no,
-                "module_name": module_name,
                 "subsection_no": t_sub_no,
                 "subsection_name": t_sub_name,
                 "questions": []
@@ -288,10 +323,11 @@ def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name,
             questions.append(q_entry)
             with open(course_key_file, "w", encoding="utf-8") as f:
                 json.dump(data_j, f, indent=2, ensure_ascii=False)
-            logger.info(f"  💾 [AUTO-LEARNING SAVE] Saved to {course_key_file.name}: Module #{module_no or 1} ('{module_name or ''}') || Subsection #{t_sub_no} ('{t_sub_name}') -> Q: '{norm_q[:40]}...'")
+            logger.info(f"  💾 [AUTO-LEARNING SAVE] Saved to {course_key_file.name}: Module #{t_mod_no} ('{t_mod_name}') || Subsection #{t_sub_no} ('{t_sub_name}') -> Q: '{norm_q[:40]}...'")
 
     except Exception as ex:
         logger.warning(f"  --> Auto-learning save notice: {ex}")
+
 
 
 
