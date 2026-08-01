@@ -1371,24 +1371,33 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                         opt_let = chr(65 + idx) if idx < 26 else str(idx + 1)
                         logger.info(f"  ✔ [VERIFIED ANSWER MATCH {screen_q_label.upper()}] Target Answer: '{matched_answer_text}'")
 
-                        # 1. Try finding radio/checkbox inside THIS specific option row first
+                        # 1. Try finding radio/checkbox inside THIS specific option row
                         radio_input = row_el.locator("input[type='radio'], input[type='checkbox']").first
-                        if await radio_input.count() > 0 and await radio_input.is_visible():
+                        if await radio_input.count() > 0:
                             await radio_input.click(force=True)
                             selected_option = True
                         else:
-                            # 2. Try label or ID match inside row
-                            for_id = await row_el.get_attribute("for") or ""
-                            if for_id:
-                                target_input = target_frame.locator(f"#{for_id}, input[id='{for_id}']").first
-                                if await target_input.count() > 0 and await target_input.is_visible():
-                                    await target_input.click(force=True)
+                            # 2. Try preceding sibling input (Moodle DOM structure: <input> followed by <div id="..._label">)
+                            prec_radio = row_el.locator("xpath=preceding-sibling::input[@type='radio' or @type='checkbox'][1]").first
+                            if await prec_radio.count() > 0:
+                                await prec_radio.click(force=True)
+                                selected_option = True
+
+                        if not selected_option:
+                            # 3. Try aria-labelledby or id.replace('_label', '') match (Moodle DOM standard)
+                            row_id = await row_el.get_attribute("id") or ""
+                            if row_id:
+                                input_id = row_id.replace("_label", "")
+                                linked_input = target_frame.locator(f"#{input_id}, input[id='{input_id}'], input[aria-labelledby='{row_id}']").first
+                                if await linked_input.count() > 0:
+                                    await linked_input.click(force=True)
                                     selected_option = True
 
                         if not selected_option:
-                            # 3. Direct click on option row element
+                            # 4. Direct click on option row element as fallback
                             await row_el.click(force=True)
                             selected_option = True
+
 
                         if selected_option:
                             logger.info(f"  🎯 [SELECTED OPTION {opt_let}] Selected Radio Button [{opt_let}] for Answer: '{matched_answer_text}'.")
