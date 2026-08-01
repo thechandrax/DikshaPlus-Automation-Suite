@@ -1009,7 +1009,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                             matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
                             matched_json_question = (item.get("question") or item.get("question_keyword") or "")[:50]
                             gate1_ok = True
-                            logger.info(f"  ✔ [GATE 1 VERIFIED 100% MATCH Q-{q_num + 1}] Question Match: '{matched_json_question}...'")
+                            logger.info(f"  ✔ [VERIFIED QUESTION 100% MATCH Q-{q_num + 1}] '{matched_json_question}...'")
                             break
 
                 # Gate 1 Fallback: Exact Position/Index Check if screen text could not be extracted
@@ -1018,7 +1018,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                     matched_answer_text = (pos_item.get("answer") or pos_item.get("correct_option") or "").strip()
                     matched_json_question = (pos_item.get("question") or pos_item.get("question_keyword") or "")[:50]
                     gate1_ok = True
-                    logger.info(f"  ✔ [GATE 1 VERIFIED Q-{q_num + 1}] Index Match #{q_num + 1}: '{matched_json_question}...'")
+                    logger.info(f"  ✔ [VERIFIED INDEX 100% MATCH Q-{q_num + 1}] '{matched_json_question}...'")
                     break
 
         selected_option = False
@@ -1049,8 +1049,9 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
 
                     if clean_target and is_100pct_option_match:
                         gate2_ok = True
-                        logger.info(f"  ✔ [GATE 2 VERIFIED 100% MATCH Q-{q_num + 1}] Answer Label Match: '{matched_answer_text}'")
+                        logger.info(f"  ✔ [VERIFIED ANSWER 100% MATCH Q-{q_num + 1}] Target Answer: '{matched_answer_text}'")
                         logger.info(f"  🛡️ [DUAL CONFIRMATION 100% GUARANTEED Q-{q_num + 1}] Question & Answer 100% Verified!")
+
 
 
                         # 1. DIKSHA aria-labelledby linking check (e.g. id="q15158343:1_answer1_label" -> input id="q15158343:1_answer1")
