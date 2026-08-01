@@ -645,7 +645,9 @@ def display_interactive_course_menu(courses):
         for c in ongoing_list:
             pct = c['progress_pct']
             filled = int(round(pct / 10))
-            bar = f"\033[38;5;46m[{"█" * filled}\033[38;5;238m{"░" * (10 - filled)} \033[38;5;220m{pct:>3}%\033[38;5;46m]\033[0m"
+            filled_str = "█" * filled
+            empty_str = "░" * (10 - filled)
+            bar = f"\033[38;5;46m[{filled_str}\033[38;5;238m{empty_str} \033[38;5;220m{pct:>3}%\033[38;5;46m]\033[0m"
             formatted_title = (c['title'][:42] + '...') if len(c['title']) > 45 else c['title'].ljust(45)
             print(f"  \033[38;5;220m[{c['index']:02d}]\033[0m \033[38;5;231m{formatted_title}\033[0m {bar} \033[38;5;214m{c['icon']} {c['status']}\033[0m")
         print()
@@ -654,10 +656,11 @@ def display_interactive_course_menu(courses):
         print(" \033[38;5;207m\033[1m✨ FINISHED COURSES:\033[0m")
         for c in finished_list:
             pct = c['progress_pct']
-            filled = 10
-            bar = f"\033[38;5;207m[{"█" * filled} \033[38;5;220m{pct:>3}%\033[38;5;207m]\033[0m"
+            filled_str = "█" * 10
+            bar = f"\033[38;5;207m[{filled_str} \033[38;5;220m{pct:>3}%\033[38;5;207m]\033[0m"
             formatted_title = (c['title'][:42] + '...') if len(c['title']) > 45 else c['title'].ljust(45)
             print(f"  \033[38;5;220m[{c['index']:02d}]\033[0m \033[38;5;231m{formatted_title}\033[0m {bar} \033[38;5;220m{c['icon']} {c['status']}\033[0m")
+
         print()
 
 

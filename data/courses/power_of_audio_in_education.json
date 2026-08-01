@@ -196,6 +196,46 @@
             "[D] Classroom"
           ],
           "answer": "[B] Womb"
+        },
+        {
+          "question": "The Word \"podcasting\" came from?",
+          "options": [
+            "[A] iPhone",
+            "[B] iPod",
+            "[C] Internet Radio",
+            "[D] Google"
+          ],
+          "answer": "[B] iPod"
+        },
+        {
+          "question": "Which of the following was listed as a key catalyst in the rise of podcasts?",
+          "options": [
+            "[A] Expensive apps",
+            "[B] Decreasing education levels",
+            "[C] Changing content habits",
+            "[D] Stable power supply"
+          ],
+          "answer": "[C] Changing content habits"
+        },
+        {
+          "question": "Which international organization encouraged the adoption of Community Radio in India during the 1990s?",
+          "options": [
+            "[A] UNICEF",
+            "[B] UNESCO",
+            "[C] UNDP",
+            "[D] WHO"
+          ],
+          "answer": "[B] UNESCO"
+        },
+        {
+          "question": "Who published the book on community radio in India?",
+          "options": [
+            "[A] Publication division",
+            "[B] National Book Trust",
+            "[C] UNESCO",
+            "[D] UNICEF"
+          ],
+          "answer": "[A] Publication division"
         }
       ]
     }
