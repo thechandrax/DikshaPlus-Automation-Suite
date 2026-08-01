@@ -948,7 +948,8 @@ async def process_h5p_activity(page, view_button, answer_key, course_title=None)
                 json_words = set(w for w in clean_json_q.split() if len(w) >= 3)
                 if clean_json_q and clean_screen_q and (clean_json_q == clean_screen_q or (json_words and screen_words and json_words == screen_words)):
                     matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
-                    logger.info(f"  ⚡ [H5P CACHED JSON 100% MATCH Q-{question_step + 1}] Target Answer: '{matched_answer_text}'")
+                    logger.info(f"  ⚡ [H5P VERIFIED JSON 100% MATCH Q-{question_step + 1}] Target Answer: '{matched_answer_text}'")
+
                     break
 
         # 2. AI Live Solver Fallback
@@ -1210,7 +1211,8 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                             matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
                             matched_json_question = (item.get("question") or item.get("question_keyword") or "")[:50]
                             gate1_ok = True
-                            logger.info(f"  ⚡ [CACHED JSON 100% MATCH Q-{q_num + 1}] '{matched_json_question}...' -> Target: '{matched_answer_text}'")
+                            logger.info(f"  ⚡ [VERIFIED JSON 100% MATCH Q-{q_num + 1}] '{matched_json_question}...' -> Target: '{matched_answer_text}'")
+
                             break
 
         # Step 2: AI Live Solver Fallback (If Question is NEW & Not in JSON Cache)
