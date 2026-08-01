@@ -969,7 +969,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
 
         matched_answer_text = None
 
-        # Pass A & B: Multi-level Search (Position Match -> Scoped Bucket -> Global Bucket)
+        # Multi-level Search across Scoped Module/Subsection Bucket & Global Bucket (handles randomized/shuffled order)
         if answers_list:
             clean_screen_q = re.sub(r'[^\w\s]', '', q_text_screen) if q_text_screen else ""
             screen_words = set(w for w in clean_screen_q.split() if len(w) >= 3) if clean_screen_q else set()
@@ -978,20 +978,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                 if matched_answer_text:
                     break
 
-                # 1. Exact Question Position/Index Check (if JSON defines question_no or array position)
-                if q_num < len(bucket):
-                    pos_item = bucket[q_num]
-                    pos_q = (pos_item.get("question") or pos_item.get("question_keyword") or "").strip().lower()
-                    clean_pos_q = re.sub(r'[^\w\s]', '', pos_q)
-                    pos_words = set(w for w in clean_pos_q.split() if len(w) >= 3)
-                    pos_overlap = (len(pos_words & screen_words) / float(len(pos_words))) if (pos_words and screen_words) else 0.0
-
-                    if clean_pos_q and (clean_pos_q in clean_screen_q or clean_screen_q in clean_pos_q or pos_overlap >= 0.65 or not clean_screen_q):
-                        matched_answer_text = (pos_item.get("answer") or pos_item.get("correct_option") or "").strip()
-                        logger.info(f"  ✔ [POSITION MATCH Q-{q_num + 1}] Found answer by exact position/index #{q_num + 1} -> Target Answer: '{matched_answer_text}'")
-                        break
-
-                # 2. Key Word Overlap Search (>= 75%)
+                # 1. Text & Keyword Overlap Search across all questions in active Module/Subsection bucket (handles shuffled order)
                 if clean_screen_q:
                     for item in bucket:
                         json_q = (item.get("question") or item.get("question_keyword") or "").strip().lower()
@@ -1003,8 +990,16 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                         if clean_json_q and (clean_json_q in clean_screen_q or clean_screen_q in clean_json_q or overlap_ratio >= 0.75):
                             matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
                             display_q = (item.get("question") or item.get("question_keyword") or "")[:45]
-                            logger.info(f"  ✔ [EXACT MATCH Q-{q_num + 1}] '{display_q}...' -> Target Answer: '{matched_answer_text}'")
+                            logger.info(f"  ✔ [TEXT MATCH Q-{q_num + 1}] '{display_q}...' -> Target Answer: '{matched_answer_text}'")
                             break
+
+                # 2. Fallback: Exact Question Position/Index Check if screen text could not be extracted
+                if not matched_answer_text and q_num < len(bucket):
+                    pos_item = bucket[q_num]
+                    matched_answer_text = (pos_item.get("answer") or pos_item.get("correct_option") or "").strip()
+                    logger.info(f"  ✔ [INDEX FALLBACK Q-{q_num + 1}] Target Answer by position #{q_num + 1} -> '{matched_answer_text}'")
+                    break
+
 
         selected_option = False
         
