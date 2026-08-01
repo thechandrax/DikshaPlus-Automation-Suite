@@ -971,10 +971,10 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                 clean_json_q = re.sub(r'[^\w\s]', '', json_q)
                 json_words = set(w for w in clean_json_q.split() if len(w) >= 3)
                 
-                # Match strategy: Substring match OR >= 50% key word overlap (words >= 3 letters)
+                # Match strategy: Substring match OR >= 75% key word overlap (words >= 3 letters)
                 overlap_ratio = (len(json_words & screen_words) / float(len(json_words))) if json_words else 0.0
 
-                if clean_json_q and (clean_json_q in clean_screen_q or clean_screen_q in clean_json_q or overlap_ratio >= 0.45):
+                if clean_json_q and (clean_json_q in clean_screen_q or clean_screen_q in clean_json_q or overlap_ratio >= 0.75):
                     matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
                     display_q = (item.get("question") or item.get("question_keyword") or "")[:45]
                     logger.info(f"  ✔ [EXACT MATCH Q-{q_num + 1}] '{display_q}...' -> Target Answer: '{matched_answer_text}'")
@@ -1005,7 +1005,8 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                     # Substring match or word overlap match on option text
                     opt_overlap = (len(target_words & lbl_words) / float(len(target_words))) if target_words else 0.0
                     
-                    if clean_target and (clean_target == clean_lbl or clean_target in clean_lbl or clean_lbl in clean_target or opt_overlap >= 0.45):
+                    if clean_target and (clean_target == clean_lbl or clean_target in clean_lbl or clean_lbl in clean_target or opt_overlap >= 0.75):
+
                         # 1. DIKSHA aria-labelledby linking check (e.g. id="q15158343:1_answer1_label" -> input id="q15158343:1_answer1")
                         container_id = await container.get_attribute("id") or ""
                         if container_id and "_label" in container_id:
