@@ -50,23 +50,24 @@ def load_answer_key(course_title=None):
             except Exception as e:
                 logger.warning(f"Could not parse {course_file.name}: {e}")
         else:
-            # Create a clean template JSON file for this course
+            # Create a clean template JSON file for this course using structured hierarchical schema
             template = {
                 "course_name": course_title,
-                "description": "Add MCQ question and answer mappings for this course",
-                "answers": [
+                "subsections": [
                     {
-                        "question_keyword": "example question text",
-                        "correct_option": "Option 1"
+                        "subsection_no": 1,
+                        "subsection_name": "Assessment",
+                        "questions": []
                     }
                 ]
             }
             try:
                 with open(course_file, "w", encoding="utf-8") as f:
-                    json.dump(template, f, indent=4)
+                    json.dump(template, f, indent=2)
                 logger.info(f"  --> Created template answer key file: data/courses/{course_file.name}")
             except Exception:
                 pass
+
 
 def extract_all_qa_items(answer_key):
     """
@@ -222,6 +223,10 @@ def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name,
                 except Exception:
                     data_j = {}
 
+        # Strip legacy fields if present
+        data_j.pop("description", None)
+        data_j.pop("answers", None)
+
         data_j["course_name"] = course_title or "Course"
         if module_no:
             try:
@@ -235,6 +240,7 @@ def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name,
         if not isinstance(subsections, list):
             subsections = []
             data_j["subsections"] = subsections
+
 
         target_sub = None
         t_sub_no = int(sub_no) if (sub_no and str(sub_no).isdigit()) else 1

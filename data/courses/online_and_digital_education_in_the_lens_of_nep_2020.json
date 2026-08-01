@@ -1,10 +1,10 @@
 {
-    "course_name": "Online and Digital Education in the Lens of NEP 2020",
-    "description": "Add MCQ question and answer mappings for this course",
-    "answers": [
-        {
-            "question_keyword": "example question text",
-            "correct_option": "Option 1"
-        }
-    ]
+  "course_name": "Online and Digital Education in the Lens of NEP 2020",
+  "subsections": [
+    {
+      "subsection_no": 1,
+      "subsection_name": "Assessment",
+      "questions": []
+    }
+  ]
 }
