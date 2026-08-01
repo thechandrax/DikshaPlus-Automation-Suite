@@ -616,7 +616,7 @@ async def process_video_activity(page, view_button):
             if cur_time >= target_final_buffer_time or cur_time >= duration - 1:
                 break
 
-            # 4. Stall & Pause Recovery: Wait 10s for buffering window, then rewind 15s & adjust speed
+            # 4. Stall & Pause Recovery: Wait 10s for buffering window, then rewind 30s & adjust speed
             if is_paused or ready_state < 2:
                 logger.warning("  --> [STALL RECOVERY] Video buffering/paused! Waiting 10s for DIKSHA server buffer...")
                 await asyncio.sleep(10)
@@ -630,12 +630,12 @@ async def process_video_activity(page, view_button):
                         }
                     """)
                     if re_info.get("paused", False) or re_info.get("readyState", 0) < 2:
-                        logger.warning("  --> [STALL RECOVERY] Still buffering after 10s! Rewinding 15s back & resuming play()...")
+                        logger.warning("  --> [STALL RECOVERY] Still buffering after 10s! Rewinding 30s back & resuming play()...")
                         await target_frame.evaluate("""
                             () => {
                                 const v = document.querySelector('video');
                                 if (v) {
-                                    v.currentTime = Math.max(0, v.currentTime - 15);
+                                    v.currentTime = Math.max(0, v.currentTime - 30);
                                     v.playbackRate = 4.0;
                                     v.play().catch(() => {});
                                 }
@@ -643,6 +643,7 @@ async def process_video_activity(page, view_button):
                         """)
                 except Exception:
                     pass
+
             else:
 
                 # Set accelerated speed & advance

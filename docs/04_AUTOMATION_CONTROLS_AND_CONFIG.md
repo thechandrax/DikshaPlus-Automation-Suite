@@ -16,7 +16,7 @@ The video automation pipeline follows a strict 8-step lifecycle:
 | **2** | **Mandatory 15s Warm-up** | Plays the first 15 seconds at **1.0x normal speed** to ensure session telemetry & progress registration with DIKSHA servers. |
 | **3** | **Dynamic Acceleration** | Applies **16.0x speed** for long videos ($\ge$ 5 min) or **10.0x speed** for short videos (< 5 min). |
 | **4** | **10s Stall Window** | If buffering or paused (`readyState < 2`), waits 10 seconds for DIKSHA server buffer recovery. |
-| **5** | **15s Fixed Rewind** | If still buffering after 10s, rewinds **exactly 15 seconds back** (`currentTime - 15`) and lowers playback to 4.0x speed. |
+| **5** | **30s Fixed Rewind** | If still buffering after 10s, rewinds **exactly 30 seconds back** (`currentTime - 30`) and lowers playback to 4.0x speed. |
 | **6** | **45s Final Buffer** | Slows down to **1.0x speed** for the final 45 seconds to naturally dispatch the `ended` event & log 100% progress telemetry. |
 | **7** | **15s Checkmark Sync** | Closes video modal and waits 15 seconds for DIKSHA server 100% brown checkmark update. |
 | **8** | **5s Refresh & Circuit Breaker** | If locked after 2 attempts, waits 5s and reloads page (`page.reload()`). If incomplete after 4 total attempts, triggers **Circuit Breaker** and exits cleanly. |
