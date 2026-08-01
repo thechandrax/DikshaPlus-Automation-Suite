@@ -63,6 +63,12 @@ AUTOMATIC_FINAL_SUBMIT = True    # Set to True to automatically click final quiz
 
 KEEP_BROWSER_OPEN = True         # Set to True to keep browser open after completion so it doesn't close!
 
+# Gemini AI Live Solver Configuration (Set GEMINI_API_KEY environment variable)
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+AI_LIVE_SOLVER_ENABLED = True
+
+
+
 # DOM Selectors extracted from DIKSHA.docx
 SELECTORS = {
     # Login Page
