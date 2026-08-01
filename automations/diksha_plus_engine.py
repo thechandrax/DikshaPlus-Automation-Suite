@@ -1127,9 +1127,10 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
     matches questions against answer key metadata, and executes assessment.
     """
     if module_name or sub_name:
-        ctx_str = f"Module #{module_no or 1} ('{module_name or ''}') • Subsection #{sub_no or 1} ('{sub_name or ''}')"
+        ctx_str = f"Module #{module_no or 1} ('{module_name or ''}') || Subsection #{sub_no or 1} ('{sub_name or ''}')"
         logger.info(f"[FORMATIVE ASSESSMENT] Opening Assessment for {ctx_str}...")
     else:
+
         logger.info("[FORMATIVE ASSESSMENT] Opening Assessment...")
 
     await view_button.click(force=True)
@@ -1266,7 +1267,8 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                 scoped_items.append(item)
 
     search_buckets = [scoped_items, answers_list] if scoped_items else [answers_list]
-    logger.info(f"  --> [HIERARCHICAL MATCHING] Scoped {len(scoped_items)} questions for Module #{module_no or 1} • Subsection '{sub_name or ''}'.")
+    logger.info(f"  --> [HIERARCHICAL MATCHING] Scoped {len(scoped_items)} questions for Module #{module_no or 1} || Subsection '{sub_name or ''}'.")
+
 
     # 2.5 Navigation Reset Protocol: Click Question 1 in Right-Side Quiz Navigation panel (#quiznavbutton1)
     try:
