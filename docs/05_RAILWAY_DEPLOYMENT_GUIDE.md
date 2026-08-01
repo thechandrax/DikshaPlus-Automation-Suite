@@ -1,6 +1,23 @@
-# ☁️ Railway Cloud Deployment Guide
+# ☁️ RAILWAY CLOUD DEPLOYMENT GUIDE
 
-This guide explains how to deploy **DIKSHA+ Automation Suite** to **Railway.app** for 24/7 cloud execution.
+This guide explains how to deploy **DIKSHA+ Automation Suite** to **Railway.app** for 24/7 automated cloud execution.
+
+---
+
+## 🔑 Do I Need to Add Gemini API Keys in Railway Variables?
+
+### **Short Answer**: **NO, IT IS NOT NECESSARY!**
+
+1. **Option A (Default - Built-In & Recommended)**:
+   * Your Gemini API keys are already **256-bit AES encrypted directly inside `config.py`** (`GEMINI_API_KEYS_ENCRYPTED = ["ENC256:...", ...]`).
+   * When deployed on Railway, the engine runs automatically inside the Docker container and decrypts the keys in memory.
+   * **You do NOT need to set any environment variables in Railway!** It works 100% out of the box.
+
+2. **Option B (Optional Environment Variable Override)**:
+   * If you ever want to provide a custom or new API key via Railway without touching code:
+   * Go to Railway **Variables** tab and add:
+     * `GOOGLE_API_KEY` = `your_gemini_api_key_here`  (or `GEMINI_API_KEY`)
+   * `config.py` will automatically detect your Railway environment variable and use it as top priority!
 
 ---
 
@@ -42,10 +59,5 @@ railway/
 2. **Configure Root Directory in Railway**:
    * Go to **Settings** $\rightarrow$ **Root Directory** $\rightarrow$ Set to `railway`.
 
-3. **Add Environment Variables**:
-   In Railway **Variables** tab, add:
-   * `GEMINI_API_KEY` = `your_gemini_api_key_here`
-   * `HEADLESS` = `True`
-
-4. **Deploy**:
-   Railway will automatically build the Docker container and start headless automated execution!
+3. **Deploy**:
+   * Click **Deploy**. Railway will automatically build the Docker container and start headless automated execution!

@@ -1,4 +1,23 @@
 {
   "course_name": "Power of Audio in Education",
-  "subsections": []
+  "subsections": [
+    {
+      "module_no": 7,
+      "module_name": "Assessment",
+      "subsection_no": 1,
+      "subsection_name": "Assessment",
+      "questions": [
+        {
+          "question": "How many community radio stations are there in India as of May 2025",
+          "options": [
+            "[A] 540",
+            "[B] 100",
+            "[C] 200",
+            "[D] 300"
+          ],
+          "answer": "[A] 540"
+        }
+      ]
+    }
+  ]
 }
