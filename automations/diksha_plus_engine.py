@@ -1311,19 +1311,20 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             q_tag = f"QUESTION-{q_num + 1:02d}"
 
         try:
-            q_elem = target_frame.locator(".qtext, div.qtext, .question-text, .que .content .qtext, fieldset legend, .qheader, .question-content, div.que div.content").first
+            q_elem = target_frame.locator(".que-no, .qtext, div.qtext, .question-text, .que .content .qtext, fieldset legend, .qheader, .question-content, div.que div.content").first
             if await q_elem.count() > 0 and await q_elem.is_visible():
                 raw_q = (await q_elem.inner_text()).strip()
                 q_text_screen = re.sub(r'^(?:question\s*text|question\s*\d+[:.]?|\d+[:.]?|q\d+[:.]?)\s*', '', raw_q, flags=re.IGNORECASE)
                 q_text_screen = normalize_text(re.sub(r'\s*(?:select\s*one|question\s*\d+).*$', '', q_text_screen, flags=re.IGNORECASE | re.DOTALL).strip())
 
-            # Select unique option rows cleanly (.answer > div.r0 / div.r1)
-            option_rows = target_frame.locator(".answer > div.r0, .answer > div.r1, .answer > div, .que .content .answer > div")
+            # Select unique option rows cleanly (.answer > div.r0 / div.r1 / div.feed-ans-div)
+            option_rows = target_frame.locator(".answer > div.r0, .answer > div.r1, .answer > div, .que .content .answer > div, div.feed-ans-div, div.feed-ans-div > div.form-check")
             row_count = await option_rows.count()
 
             if row_count == 0:
-                option_rows = target_frame.locator("div.r0, div.r1, div[data-region='answer-label']")
+                option_rows = target_frame.locator("div.r0, div.r1, div[data-region='answer-label'], .feed-ans-div .form-check")
                 row_count = await option_rows.count()
+
 
 
             for r_idx in range(row_count):
@@ -1488,14 +1489,15 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                     logger.info("  " + "-" * 75 + "\n")
                     await page.wait_for_timeout(800)
 
-        next_nav = target_frame.locator("input[value='Next Question'], input[value='Next'], button:has-text('Next Question'), button:has-text('Next'), .btn-next, a:has-text('Next'), button:has-text('Submit Feedback'), input[value*='Submit Feedback'], button:has-text('Submit'), input[value*='Submit']").first
+        next_nav = target_frame.locator("button.submit-feed-btn, #submitFeedbackBtn11, input[value='Next Question'], input[value='Next'], button:has-text('Next Question'), button:has-text('Next'), .btn-next, a:has-text('Next'), button:has-text('Submit Feedback'), input[value*='Submit Feedback'], button:has-text('Submit'), input[value*='Submit']").first
         if await next_nav.count() == 0:
-            next_nav = page.locator("input[value='Next Question'], input[value='Next'], button:has-text('Next Question'), button:has-text('Next'), .btn-next, a:has-text('Next'), button:has-text('Submit Feedback'), input[value*='Submit Feedback'], button:has-text('Submit'), input[value*='Submit']").first
+            next_nav = page.locator("button.submit-feed-btn, #submitFeedbackBtn11, input[value='Next Question'], input[value='Next'], button:has-text('Next Question'), button:has-text('Next'), .btn-next, a:has-text('Next'), button:has-text('Submit Feedback'), input[value*='Submit Feedback'], button:has-text('Submit'), input[value*='Submit']").first
 
 
-        review_submit_nav = target_frame.locator("input[value='Review & Submit'], input[value='Submit'], button:has-text('Review & Submit'), button:has-text('Submit Assessment'), button:has-text('Submit'), input[value*='Submit']").first
+        review_submit_nav = target_frame.locator("button.submit-feed-btn, #submitFeedbackBtn11, input[value='Review & Submit'], input[value='Submit'], button:has-text('Review & Submit'), button:has-text('Submit Assessment'), button:has-text('Submit'), input[value*='Submit']").first
         if await review_submit_nav.count() == 0:
-            review_submit_nav = page.locator("input[value='Review & Submit'], input[value='Submit'], button:has-text('Review & Submit'), button:has-text('Submit Assessment'), button:has-text('Submit'), input[value*='Submit']").first
+            review_submit_nav = page.locator("button.submit-feed-btn, #submitFeedbackBtn11, input[value='Review & Submit'], input[value='Submit'], button:has-text('Review & Submit'), button:has-text('Submit Assessment'), button:has-text('Submit'), input[value*='Submit']").first
+
 
         if await next_nav.count() > 0 and await next_nav.is_visible():
             await next_nav.click(force=True)
