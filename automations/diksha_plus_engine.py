@@ -557,11 +557,10 @@ async def process_video_activity(page, view_button):
             saved_pct = int((initial_time / duration) * 100)
             logger.info(f"  --> [SAVED PROGRESS RESUMED] Video already at {saved_pct}% ({int(initial_time)}s / {int(duration)}s)! Resuming from current position...")
 
-        # 2. Warm-up Buffer @ 1.0x Speed
-        if initial_time < 10.0:
-            logger.info("  --> 15s Warm-up Buffer: playing at 1.0x speed for session initialization...")
-            await target_frame.evaluate("() => { const v = document.querySelector('video'); if (v) v.playbackRate = 1.0; }")
-            await asyncio.sleep(min(15, max(1, int(duration * 0.2))))
+        # 2. ALWAYS 15s Warm-up Buffer @ 1.0x Speed (for telemetry initialization)
+        logger.info("  --> 15s Warm-up Buffer: playing at 1.0x speed for session telemetry initialization...")
+        await target_frame.evaluate("() => { const v = document.querySelector('video'); if (v) { v.playbackRate = 1.0; if (v.paused) v.play(); } }")
+        await asyncio.sleep(min(15, max(1, int(duration * 0.2))))
 
         # 3. Dynamic Playback Acceleration: 16x (>= 5 min) or 10x (< 5 min)
         if duration >= 300:
@@ -626,6 +625,7 @@ async def process_video_activity(page, view_button):
                 # Set accelerated speed & advance
                 await target_frame.evaluate(f"() => {{ const v = document.querySelector('video'); if (v) {{ v.playbackRate = {speed}; if (v.paused) v.play(); }} }}")
                 await asyncio.sleep(2)
+
 
 
 
@@ -1341,36 +1341,63 @@ async def process_course_modules(page, answer_key=None):
                         logger.info(f"  --> [✓ ALREADY DONE] Subsection [{j}/{total_sec_items}]: '{btn_text}' is 100% complete. Skipping!")
                         continue
 
-                    # MAX 2 RUNS LIMIT: Stop infinite re-playing of the same item if played 2 times
+                    # Strict Attempt & Page Reload Circuit Breaker Protocol
                     runs_done = item_attempts.get(btn_text, 0)
-                    if runs_done >= 2:
-                        logger.info(f"  --> [MAX 2 RUNS REACHED] Subsection [{j}/{total_sec_items}]: '{btn_text}' played {runs_done} times. Skipping re-run to prevent infinite loop!")
-                        continue
+                    
+                    if runs_done >= 4:
+                        logger.error(f"\n❌ [CRITICAL DIKSHA SERVER FAILURE] Subsection item '{btn_text}' failed to unlock/complete after 4 attempts & 5s page refreshes.")
+                        logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Stopping all automation processes and closing server context cleanly!\n")
+                        try:
+                            await page.context.close()
+                        except Exception:
+                            pass
+                        raise RuntimeError(f"DIKSHA_SERVER_STUCK: '{btn_text}' did not complete after 4 attempts.")
+
+                    if runs_done == 2:
+                        logger.warning(f"  --> [ATTEMPT 2 FAILED] Subsection '{btn_text}' not unlocked yet. Waiting 5s gap & reloading page (page.reload())...")
+                        await asyncio.sleep(5)
+                        try:
+                            await page.reload()
+                            await asyncio.sleep(5)
+                            if await click_target.count() > 0:
+                                await click_target.click(force=True)
+                                await page.wait_for_timeout(2500)
+                        except Exception:
+                            pass
 
                     # Check if item is locked / disabled by DIKSHA server
                     if not await is_button_enabled(btn):
                         logger.info(f"  --> [LOCKED ITEM] Subsection [{j}/{total_sec_items}]: '{btn_text}' is currently LOCKED.")
-                        logger.info("  --> [SERVER REFRESH] Reloading page (page.reload()) to fetch updated DIKSHA server session unlock status...")
+                        logger.info("  --> [SERVER REFRESH] Waiting 5s gap & reloading page (page.reload()) to fetch updated DIKSHA server session unlock status...")
+                        await asyncio.sleep(5)
                         try:
                             await page.reload()
-                            await page.wait_for_timeout(4000)
-                            # Re-locate elements after reload
+                            await asyncio.sleep(5)
                             if await click_target.count() > 0:
                                 await click_target.click(force=True)
-                                await page.wait_for_timeout(2000)
+                                await page.wait_for_timeout(2500)
                         except Exception:
                             pass
 
                         if not await is_button_enabled(btn):
-                            logger.info(f"  --> [SKIP LOCKED] Subsection [{j}/{total_sec_items}]: '{btn_text}' remains locked. Will re-evaluate after active item finishes...")
+                            if runs_done >= 3:
+                                logger.error(f"\n❌ [CRITICAL DIKSHA SERVER FAILURE] Subsection item '{btn_text}' remains locked after 4 attempts.")
+                                logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Stopping all automation processes and closing server context!\n")
+                                try:
+                                    await page.context.close()
+                                except Exception:
+                                    pass
+                                raise RuntimeError(f"DIKSHA_SERVER_LOCKED_STUCK: '{btn_text}' locked after 4 attempts.")
+                            logger.info(f"  --> [SKIP LOCKED] Subsection [{j}/{total_sec_items}]: '{btn_text}' remains locked. Will re-evaluate on next pass...")
                             continue
 
                     act_type = await btn.get_attribute("act_type") or "resource"
                     logger.info("\n" + "=" * 35)
-                    logger.info(f" ▶ SUBSECTION [{j}/{total_sec_items}]: '{btn_text}' (Type: '{act_type}') [Attempt {runs_done + 1}/2]")
+                    logger.info(f" ▶ SUBSECTION [{j}/{total_sec_items}]: '{btn_text}' (Type: '{act_type}') [Attempt {runs_done + 1}/4]")
                     logger.info("=" * 35)
 
                     item_attempts[btn_text] = runs_done + 1
+
 
                     try:
                         if act_type == "url":
@@ -1433,12 +1460,12 @@ async def process_course_modules(page, answer_key=None):
                     for r_idx, r_btn in enumerate(r_btns, start=1):
                         r_btn_text = (await r_btn.inner_text()).strip()
                         r_runs = item_attempts.get(r_btn_text, 0)
-                        if r_runs >= 2:
+                        if r_runs >= 4:
                             continue
 
                         if not await is_item_100_percent_complete(r_btn) and await is_button_enabled(r_btn):
                             r_act_type = await r_btn.get_attribute("act_type") or "resource"
-                            logger.info(f"  ▶ Retrying Subsection item (Type: '{r_act_type}')...")
+                            logger.info(f"  ▶ Retrying Subsection item (Type: '{r_act_type}') [Attempt {r_runs + 1}/4]...")
                             item_attempts[r_btn_text] = r_runs + 1
                             if r_act_type == "quiz":
                                 await process_quiz_assessment(page, r_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=r_btn_text, sub_no=r_idx)
@@ -1448,6 +1475,18 @@ async def process_course_modules(page, answer_key=None):
                                 await process_video_activity(page, r_btn)
                             elif r_act_type == "resource":
                                 await process_pdf_activity(page, r_btn)
+
+                # Final Circuit Breaker Gate Check
+                final_header_check = await is_header_100_percent_complete(header)
+                if not final_header_check:
+                    logger.error(f"\n❌ [CRITICAL DIKSHA SERVER FAILURE] '{header_title}' remains incomplete after 4 attempts & 5s page reloads.")
+                    logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Stopping all automation processes and closing server context!\n")
+                    try:
+                        await page.context.close()
+                    except Exception:
+                        pass
+                    raise RuntimeError(f"DIKSHA_SERVER_STUCK: '{header_title}' failed to achieve 100% after 4 attempts.")
+
 
 
 
