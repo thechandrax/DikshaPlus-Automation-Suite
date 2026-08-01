@@ -185,6 +185,75 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
     return None
 
 
+def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name, question_text, answer_text):
+    """
+    Saves auto-learned question & answer sequentially under the exact
+    module_no, module_name, subsection_no, and subsection_name structure.
+    """
+    try:
+        c_name = course_title or "unknown_course"
+        course_key_file = config.COURSES_DIR / f"{re.sub(r'[^a-zA-Z0-9]+', '_', c_name.lower()).strip('_')}.json"
+        
+        data_j = {}
+        if course_key_file.exists():
+            with open(course_key_file, "r", encoding="utf-8") as f:
+                try:
+                    data_j = json.load(f)
+                except Exception:
+                    data_j = {}
+
+        data_j["course_name"] = course_title or "Course"
+        if module_no:
+            try:
+                data_j["module_no"] = int(module_no)
+            except Exception:
+                data_j["module_no"] = module_no
+        if module_name:
+            data_j["module_name"] = module_name
+
+        subsections = data_j.get("subsections")
+        if not isinstance(subsections, list):
+            subsections = []
+            data_j["subsections"] = subsections
+
+        target_sub = None
+        t_sub_no = int(sub_no) if (sub_no and str(sub_no).isdigit()) else 1
+        t_sub_name = sub_name or "Assessment"
+
+        for s in subsections:
+            if s.get("subsection_no") == t_sub_no or (s.get("subsection_name") or "").strip().lower() == t_sub_name.strip().lower():
+                target_sub = s
+                break
+
+        if not target_sub:
+            target_sub = {
+                "subsection_no": t_sub_no,
+                "subsection_name": t_sub_name,
+                "questions": []
+            }
+            subsections.append(target_sub)
+
+        questions = target_sub.get("questions")
+        if not isinstance(questions, list):
+            questions = []
+            target_sub["questions"] = questions
+
+        clean_new_q = question_text.strip().lower()
+        existing_qs = set((q.get("question") or "").strip().lower() for q in questions)
+
+        if clean_new_q not in existing_qs:
+            questions.append({
+                "question": question_text.strip(),
+                "answer": answer_text.strip()
+            })
+            with open(course_key_file, "w", encoding="utf-8") as f:
+                json.dump(data_j, f, indent=2)
+            logger.info(f"  💾 [AUTO-LEARNING SEQUENTIAL SAVE] Saved to {course_key_file.name}: Module #{module_no or 1} ('{module_name or ''}') • Subsection #{t_sub_no} ('{t_sub_name}') -> Q: '{question_text[:40]}...'")
+    except Exception as ex:
+        logger.warning(f"  --> Auto-learning save notice: {ex}")
+
+
+
 
 
 
@@ -813,7 +882,7 @@ async def process_pdf_activity(page, view_button):
     await wait_for_server_checkmark(page)
 
 
-async def process_h5p_activity(page, view_button, answer_key):
+async def process_h5p_activity(page, view_button, answer_key, course_title=None):
     """
     STEP-07 (H5P Interactive Quiz - act_type="h5pactivity"):
     Clicks View, waits for container, presses 'Start Quiz', answers radio questions,
@@ -883,6 +952,8 @@ async def process_h5p_activity(page, view_button, answer_key):
             if ai_solved:
                 matched_answer_text = ai_solved
                 logger.info(f"  🧠 [H5P AI LIVE SOLVER Q-{question_step + 1}] Solved: '{matched_answer_text}'")
+                save_auto_learned_qa(course_title, 1, "H5P Interactive Quiz", 1, "H5P Interactive Quiz", q_text_screen, ai_solved)
+
 
         # Click matching option or fallback to first radio
         selected = False
@@ -1155,34 +1226,11 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                     gate1_ok = True
                     logger.info(f"  🧠 [AI LIVE SOLVER Q-{q_num + 1}] Solved NEW question -> '{matched_answer_text}'")
 
-                    # Automatically Save New Question & Answer to Course JSON File
-                    try:
-                        c_name = course_title or "unknown_course"
-                        course_key_file = config.COURSES_DIR / f"{re.sub(r'[^a-zA-Z0-9]+', '_', c_name.lower()).strip('_')}.json"
-                        
-                        if not course_key_file.exists():
-                            with open(course_key_file, "w", encoding="utf-8") as f:
-                                json.dump({"course_name": course_title or "Course", "questions": []}, f, indent=2)
-                        
-                        with open(course_key_file, "r+", encoding="utf-8") as f:
-                            data_j = json.load(f)
-                            q_arr = data_j.get("questions")
-                            if q_arr is None:
-                                q_arr = []
-                                data_j["questions"] = q_arr
-                            
-                            # Avoid duplicate auto-save
-                            existing_qs = set((q.get("question") or "").strip().lower() for q in q_arr)
-                            if q_text_screen.strip().lower() not in existing_qs:
-                                q_arr.append({"question": q_text_screen, "answer": ai_solved})
-                                f.seek(0)
-                                json.dump(data_j, f, indent=2)
-                                f.truncate()
-                                logger.info(f"  💾 [AUTO-LEARNING CACHE] Saved new Q&A to {course_key_file.name}!")
-                    except Exception as save_ex:
-                        logger.warning(f"  --> Auto-cache save notice: {save_ex}")
+                    # Save sequentially with module_no, module_name, sub_no, sub_name structure
+                    save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name, q_text_screen, ai_solved)
             except Exception as ai_ex:
                 logger.warning(f"  --> AI Live Solver notice: {ai_ex}")
+
 
 
 
@@ -1721,7 +1769,8 @@ async def process_course_modules(page, answer_key=None):
                         elif act_type == "resource":
                             await process_pdf_activity(page, btn)
                         elif act_type == "h5pactivity":
-                            await process_h5p_activity(page, btn, answer_key)
+                            await process_h5p_activity(page, btn, answer_key, course_title=course_title)
+
                         elif act_type == "quiz":
                             await process_quiz_assessment(page, btn, answer_key, module_name=header_title, module_no=i+1, sub_name=btn_text, sub_no=j)
                         else:
