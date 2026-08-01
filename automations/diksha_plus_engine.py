@@ -1402,9 +1402,11 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
     answers_list = extract_all_qa_items(answer_key)
 
 
-    # Check top-level JSON metadata
-    top_mod_no = answer_key.get("module_no") if isinstance(answer_key, dict) else None
-    top_sub_name = (answer_key.get("subsection_name") or "").strip().lower() if isinstance(answer_key, dict) else ""
+    # Normalize sub_name if it is generic like 'View' or 'Start'
+    effective_sub_name = sub_name or ""
+    if effective_sub_name.strip().lower() in ("view", "start", "continue", "open"):
+        if "feedback" in (module_name or "").lower() or str(module_no) == "8":
+            effective_sub_name = "Feedback Form"
 
     # Pre-scope JSON items matching active Module & Subsection context
     scoped_items = []
@@ -1414,13 +1416,17 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             item_sub_name = (item.get("subsection_name") or top_sub_name or "").strip().lower()
             
             mod_match = not (item_mod_no and module_no and int(item_mod_no) != int(module_no))
-            sub_match = not (item_sub_name and sub_name and item_sub_name not in sub_name.lower() and sub_name.lower() not in item_sub_name)
+            sub_match = not (item_sub_name and effective_sub_name and item_sub_name not in effective_sub_name.lower() and effective_sub_name.lower() not in item_sub_name)
             
+            if "feedback" in (effective_sub_name or "").lower() or "feedback" in (module_name or "").lower() or str(module_no) == "8":
+                sub_match = True
+
             if mod_match and sub_match:
                 scoped_items.append(item)
 
     search_buckets = [scoped_items, answers_list] if scoped_items else [answers_list]
-    logger.info(f"  --> [HIERARCHICAL MATCHING] Scoped {len(scoped_items)} questions for Module #{module_no or 1} || Subsection '{sub_name or ''}'.")
+    logger.info(f"  --> [HIERARCHICAL MATCHING] Scoped {len(scoped_items)} questions for Module #{module_no or 1} || Subsection '{effective_sub_name}'.")
+
 
 
     # 2.5 Navigation Reset Protocol: Click Question 1 in Right-Side Quiz Navigation panel (#quiznavbutton1)
@@ -1487,8 +1493,12 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
 
                 clean_lower = clean_text.lower()
 
-                if any(ignore_kw in clean_lower for ignore_kw in ["clear selection", "give feedback", "feedback", "maximum marks"]):
+                ignore_list = ["clear selection", "maximum marks"]
+                if not ("feedback" in (module_name or "").lower() or "feedback" in (effective_sub_name or "").lower()):
+                    ignore_list.append("give feedback")
+                if any(ignore_kw in clean_lower for ignore_kw in ignore_list):
                     continue
+
 
                 if clean_text and clean_text not in screen_opts:
                     screen_opts.append(clean_text)
