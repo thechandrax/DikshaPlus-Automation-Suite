@@ -35,7 +35,8 @@ Upon launch, DIKSHA+ prompts for a 6-digit Security PIN:
  ✔ [Security] 256-Bit Cryptographic PIN verified! Access granted.
 ```
 
-* **Security PIN**: `541563` (Protected via 256-Bit SHA-256 Salted Hash)
+* **Security PIN**: `******` (Protected via 256-Bit SHA-256 Salted Hash)
+
 * **Live Asterisk (`*`) Feedback**: As you type your PIN digits, live `*` symbols echo on screen.
 * **Backspace Support**: Pressing <kbd>Backspace</kbd> erases asterisks live.
 * **Security Lock**: You have 3 attempts before access is denied.

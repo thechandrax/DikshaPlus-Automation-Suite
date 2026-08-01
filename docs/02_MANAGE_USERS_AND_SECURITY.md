@@ -9,7 +9,8 @@ This guide covers account display names, user management, password encryption, a
 DIKSHA+ Automation Suite stores zero plaintext passwords or security PINs in code.
 
 ### Security PIN Verification
-* **PIN**: `541563` (Masked & Encrypted)
+* **PIN**: `******` (Masked & Encrypted via Salted 256-Bit SHA-256 Hash)
+
 * **Salted SHA-256 Hash**: `c72696e654fb1fdbd727a8b66e35bceb05a5a576e602252cbd927e4ff8116edf`
 * Implementation: [utils/security.py](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/utils/security.py)
 
