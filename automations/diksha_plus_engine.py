@@ -608,17 +608,18 @@ async def process_video_activity(page, view_button):
                         }
                     """)
                     if re_info.get("paused", False) or re_info.get("readyState", 0) < 2:
-                        logger.warning("  --> [STALL RECOVERY] Still buffering after 8s! Rewinding 5s back & resuming play()...")
+                        logger.warning("  --> [STALL RECOVERY] Still buffering after 8s! Rewinding 15s back & resuming play()...")
                         await target_frame.evaluate("""
                             () => {
                                 const v = document.querySelector('video');
                                 if (v) {
-                                    v.currentTime = Math.max(0, v.currentTime - 5);
+                                    v.currentTime = Math.max(0, v.currentTime - 15);
                                     v.playbackRate = 4.0;
                                     v.play().catch(() => {});
                                 }
                             }
                         """)
+
                 except Exception:
                     pass
             else:
