@@ -1,6 +1,6 @@
 # 🧠 ANSWER KEYS, AI LIVE SOLVER & FEEDBACK FORM ENGINE
 
-This document details the dual-pass solving pipeline, Gemini AI Multi-Key Pool integration, Feedback Form auto-filling, Unicode text normalization, and Auto-Learning JSON storage.
+This document details the dual-pass solving pipeline, Gemini AI Multi-Key Pool integration, Stepped Backoff Retries, Total Server Stop Circuit Breaker, Feedback Form auto-filling, Unicode text normalization, and clean Module -> Subsection JSON storage.
 
 ---
 
@@ -18,7 +18,11 @@ When DIKSHA+ encounters any Quiz Question or Feedback Question:
   [ Match Found ]  [ No Match ]
        │               │
        │               ▼
-       │     Gate 1.5: Query Gemini AI Multi-Key Pool (5 Encrypted Keys)
+       │     Gate 1.5: Query Gemini AI Multi-Key Pool
+       │               │
+       │               ├─► Stepped Backoffs (30s -> 45s -> 60s) if Rate Limited
+       │               │
+       │               ├─► ⛔ Circuit Breaker (Total Server Stop) if 0% Solved
        │               │
        │               ├─► Auto-Save New Q&A to Course JSON (Gate 3)
        │               │
@@ -31,17 +35,71 @@ When DIKSHA+ encounters any Quiz Question or Feedback Question:
 
 ---
 
-## 🔑 2. Gemini AI 5-Key Encrypted API Pool
+## 🔑 2. Gemini AI Multi-Key Pool & Stepped Backoff Retries
 
-* **Key Encryption**: All 5 Gemini API keys are encrypted with 256-bit AES encryption in `config.py`:
+* **Key Encryption**: Gemini API keys are encrypted with 256-bit AES encryption in `config.py`:
   `GEMINI_API_KEYS_ENCRYPTED = ["ENC256:...", "ENC256:...", ...]`
-* **Automatic Failover**: If Key #1 encounters HTTP 429 rate limits, DIKSHA+ rotates to Key #2, #3, #4, #5 instantly.
+* **Automatic Failover**: If Key #1 encounters HTTP 429 rate limits, DIKSHA+ rotates to Key #2, #3, etc.
 * **Official Google Spec**: Sends mandatory `x-goog-api-key` header.
-* **3s Pacing & 3 Retry Rounds**: 3-second delay between AI API calls to protect quotas.
+* **Stepped Backoff Retries**:
+  * **Initial 3 Rounds**: Tries keys and models with 3s delays.
+  * **Backoff Retry #1**: Waits **30 seconds** for API quota reset $\rightarrow$ Retries AI solver!
+  * **Backoff Retry #2**: Waits **45 seconds** for API quota reset $\rightarrow$ Retries AI solver!
+  * **Backoff Retry #3**: Waits **60 seconds** for API quota reset $\rightarrow$ Retries AI solver!
+* **⛔ Total Server Stop Circuit Breaker**:
+  * Default Option [A] fallback selection is **COMPLETELY REMOVED**!
+  * If the question cannot be solved after 30s, 45s, 60s backoff retries, DIKSHA+ executes `await page.context.close()` and triggers a total server stop safely.
 
 ---
 
-## 📝 3. Feedback Form Auto-Filling Engine
+## 📂 3. Clean Module -> Subsection JSON Architecture
+
+Course answer keys are organized in the clean standard hierarchy:
+
+```json
+{
+  "course_name": "Power of Audio in Education",
+  "modules": [
+    {
+      "module_no": 7,
+      "module_name": "Assessment",
+      "subsections": [
+        {
+          "subsection_no": 1,
+          "subsection_name": "Assessment",
+          "questions": [
+            {
+              "question": "How many community radio stations are there in India as of May 2025",
+              "options": [
+                "[A] 540",
+                "[B] 100",
+                "[C] 200",
+                "[D] 300"
+              ],
+              "answer": "[A] 540"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module_no": 8,
+      "module_name": "Feedback Form",
+      "subsections": [
+        {
+          "subsection_no": 1,
+          "subsection_name": "Feedback Form",
+          "questions": [ ... ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+## 📝 4. Feedback Form Auto-Filling Engine
 
 DIKSHA+ provides native automation for DIKSHA Feedback Forms:
 
@@ -56,80 +114,3 @@ DIKSHA+ provides native automation for DIKSHA Feedback Forms:
 
 3. **Feedback Submission**:
    * Clicks `Submit Feedback` (`button.submit-feed-btn`, `#submitFeedbackBtn11`).
-
----
-
-## 🔀 4. Shuffled Option Resiliency
-
-DIKSHA+ matches options on screen using **text content**, NOT hardcoded letters or position indices:
-* Stored Answer: `"Hon'ble Vice President of India"`.
-* Screen Option Row 1: `"Hon'ble President of India"` $\rightarrow$ ❌
-* Screen Option Row 2: `"Hon'ble Prime Minister of India"` $\rightarrow$ ❌
-* Screen Option Row 3: `"Hon'ble Vice President of India"` $\rightarrow$ ✅ **MATCH AT ROW 3!**
-* DIKSHA+ clicks the radio button inside Row 3, ensuring 100% accuracy regardless of option shuffling.
-
----
-
-## 🔤 5. Unicode Apostrophe & Text Normalization (`normalize_text`)
-
-Standardizes Unicode characters across screen parsing, JSON matching, and JSON auto-learning saves:
-* `’` (`\u2019`), `‘`, `` ` `` $\rightarrow$ `'`
-* `“`, `”`, `„`, `\u201c`, `\u201d` $\rightarrow$ `"`
-* `–`, `—`, `\u2013`, `\u2014` $\rightarrow$ `-`
-* `\u00a0` $\rightarrow$ `' '` (Standard space)
-
----
-
-## 💾 6. Auto-Learning JSON Schema Reference
-
-Auto-saved JSON files in `data/courses/` follow this standardized structure:
-
-```json
-{
-  "course_name": "Online and Digital Education in the Lens of NEP 2020",
-  "subsections": [
-    {
-      "module_no": 7,
-      "module_name": "Assessment",
-      "subsection_no": 1,
-      "subsection_name": "Assessment",
-      "questions": [
-        {
-          "question": "Who formally launched the DIKSHA platform?",
-          "options": [
-            "[A] Hon’ble President of India",
-            "[B] Hon’ble Vice President of India",
-            "[C] Hon’ble Prime Minister of India",
-            "[D] Hon’ble Education Minister"
-          ],
-          "answer": "[B] Hon’ble Vice President of India"
-        }
-      ]
-    },
-    {
-      "module_no": 8,
-      "module_name": "Feedback Form",
-      "subsection_no": 1,
-      "subsection_name": "Feedback Form",
-      "questions": [
-        {
-          "question": "The resources/materials provided during the training programme were useful and informative.",
-          "options": [
-            "Strongly Agree",
-            "Agree",
-            "Neutral",
-            "Disagree",
-            "Strongly Disagree"
-          ],
-          "answer": "Strongly Agree"
-        },
-        {
-          "question": "What aspects of the training could be improved?",
-          "options": [],
-          "answer": "Incorporating more hands-on practice activities and allocating extra time for interactive Q&A sessions would make the training even more effective."
-        }
-      ]
-    }
-  ]
-}
-```
