@@ -86,11 +86,15 @@ def main():
     if args.auto_close or args.headless:
         config.KEEP_BROWSER_OPEN = False
 
-    if args.auto_submit:
-        config.AUTOMATIC_FINAL_SUBMIT = True
+    if not config.AUTO_START:
+        logger.info("\n===================================================================\n ⏸️ [RAILWAY STANDBY MODE] AUTO_START is set to False.\n Container is standing by on Railway Cloud. Automation paused.\n Set AUTO_START=True in Railway Variables to start execution.\n===================================================================\n")
+        import time
+        while True:
+            time.sleep(3600)
 
     # Environment variable overrides for cloud deployments (e.g. Railway)
     import os
+
     env_user = os.getenv("SELECTED_USER", "").strip()
     if env_user:
         if env_user.lower() == "all":

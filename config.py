@@ -65,6 +65,11 @@ else:
 
 SLOMO_MS = 500
 
+# Railway / Docker Cloud Execution Controls
+AUTO_START_ENV = os.environ.get("AUTO_START", "true").strip().lower()
+AUTO_START = AUTO_START_ENV not in ("false", "0", "no", "f", "off")
+
+
 
 # Automation Behavior Controls
 MIN_VIDEO_WATCH_SECONDS = 30
