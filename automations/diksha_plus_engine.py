@@ -1775,44 +1775,80 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
         view_id = await view_button.get_attribute("data-id") or ""
         await view_button.scroll_into_view_if_needed()
         await view_button.click(force=True)
+
+        # JS Event Dispatcher Backup Click to ensure DIKSHA AJAX handler triggers
+        for frame_target in [page] + page.frames:
+            try:
+                await frame_target.evaluate("""(vid) => {
+                    const btn = document.querySelector(`a[data-id="${vid}"]`) || document.querySelector('a.activity-feedback');
+                    if (btn) {
+                        btn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+                        btn.click();
+                        return true;
+                    }
+                    return false;
+                }""", view_id)
+            except Exception:
+                pass
+
         logger.info(f"  --> Clicked Feedback View button (data-id='{view_id}'). Waiting 3s for Feedback Form popup modal to render...")
         await page.wait_for_timeout(3000)
     except Exception as ex:
         logger.warning(f"  --> Direct click notice on Feedback View button: {ex}")
 
-    # 2. Process all rating questions inside the Feedback popup modal across page and frames
+    # 2. Wait up to 10s for the Feedback popup modal container to become VISIBLE on screen
+    modal_container = None
+    target_frame = page
     for frame_target in [page] + page.frames:
         try:
-            # Find all radio button inputs inside the feedback modal
-            radios = frame_target.locator("input[type='radio'], input[type='checkbox']")
-            r_count = await radios.count()
-            if r_count > 0:
-                logger.info(f"  --> Found {r_count} rating options in Feedback Modal. Selecting 'Strongly Agree' / positive responses...")
-                names_seen = set()
-                for idx in range(r_count):
-                    r_el = radios.nth(idx)
-                    try:
-                        r_name = await r_el.get_attribute("name") or f"q_idx_{idx}"
-                        if r_name not in names_seen:
-                            names_seen.add(r_name)
-                            await r_el.click(force=True)
-                            await page.wait_for_timeout(200)
-                    except Exception:
-                        pass
+            modal_cand = frame_target.locator(".modal-dialog, .modal-content, .modal-body, div[class*='modal']:has-text('Feedback'), div[class*='modal']:has-text('Submit')").first
+            if await modal_cand.count() > 0 and await modal_cand.is_visible():
+                modal_container = modal_cand
+                target_frame = frame_target
+                logger.info("  --> Feedback popup modal is OPEN and VISIBLE on screen!")
+                break
+        except Exception:
+            pass
 
-            # Fill any comment textareas if present
-            textareas = frame_target.locator("textarea, input[type='text']:not([class*='search']):not([id*='search'])")
-            t_count = await textareas.count()
-            for idx in range(t_count):
+    # 3. Process all VISIBLE rating questions inside the Feedback popup modal
+    target_scope = modal_container if modal_container else target_frame
+    try:
+        radios = target_scope.locator("input[type='radio']:visible, input[type='checkbox']:visible")
+        r_count = await radios.count()
+        
+        # Fallback to all radios inside target_scope if :visible filter is strict
+        if r_count == 0:
+            radios = target_scope.locator("input[type='radio'], input[type='checkbox']")
+            r_count = await radios.count()
+
+        if r_count > 0:
+            logger.info(f"  --> Found {r_count} visible rating options in Feedback Modal. Selecting 'Strongly Agree' / positive responses...")
+            names_seen = set()
+            for idx in range(r_count):
+                r_el = radios.nth(idx)
                 try:
-                    ta_el = textareas.nth(idx)
-                    if await ta_el.is_visible():
-                        await ta_el.fill("The course content was excellent, highly informative, and well structured.")
-                        logger.info("  ✍️ [FEEDBACK COMMENT]: Filled positive response.")
+                    r_name = await r_el.get_attribute("name") or f"q_idx_{idx}"
+                    if r_name not in names_seen:
+                        names_seen.add(r_name)
+                        await r_el.click(force=True)
+                        await page.wait_for_timeout(250)
                 except Exception:
                     pass
-        except Exception as f_ex:
-            logger.warning(f"  --> Feedback modal processing notice: {f_ex}")
+
+        # Fill any comment textareas if present
+        textareas = target_scope.locator("textarea:visible, input[type='text']:visible:not([class*='search']):not([id*='search'])")
+        t_count = await textareas.count()
+        for idx in range(t_count):
+            try:
+                ta_el = textareas.nth(idx)
+                if await ta_el.is_visible():
+                    await ta_el.fill("The course content was excellent, highly informative, and well structured.")
+                    logger.info("  ✍️ [FEEDBACK COMMENT]: Filled positive response.")
+            except Exception:
+                pass
+    except Exception as f_ex:
+        logger.warning(f"  --> Feedback modal processing notice: {f_ex}")
+
 
     # 3. Click the brown 'Submit Feedback' button at the bottom of the modal
     logger.info("  --> Searching for brown 'Submit Feedback' button...")
