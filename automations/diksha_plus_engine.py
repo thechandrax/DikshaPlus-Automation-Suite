@@ -1870,8 +1870,21 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                         if ai_ans:
                             matched_target_text = ai_ans
                             logger.info(f"  🤖 [AI LIVE SOLVER MATCH {q_tag}]: AI selected answer: '{matched_target_text}'")
+                            # Auto-save learned Feedback Q&A into Course JSON under exact Module & Subsection!
+                            save_auto_learned_qa(
+                                course_title=course_title,
+                                module_no=module_no or 8,
+                                module_name=module_name or "Feedback Form",
+                                sub_no=sub_no or 1,
+                                sub_name=sub_name or "Feedback Form",
+                                question_text=q_text_dom,
+                                answer_text=matched_target_text,
+                                option_texts=["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"],
+                                is_feedback=True
+                            )
                     except Exception:
                         pass
+
 
                 # 3. Select target option in DOM
                 clicked_option = False
