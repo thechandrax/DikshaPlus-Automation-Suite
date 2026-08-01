@@ -1795,7 +1795,8 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
             except Exception:
                 pass
 
-        logger.info(f"  --> Clicked Feedback View button (data-id='{view_id}'). Waiting 3s for Feedback Form popup modal to render...")
+        logger.info("  --> Clicked Feedback View button. Waiting 3s for Feedback Form popup modal to render...")
+
         await page.wait_for_timeout(3000)
     except Exception as ex:
         logger.warning(f"  --> Direct click notice on Feedback View button: {ex}")
