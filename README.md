@@ -25,6 +25,7 @@ An enterprise-grade, end-to-end automation engine for **DIKSHA / Moodle LMS Port
 * **🔀 Shuffled Option Resiliency**: Matches options on screen by **text content**, NOT hardcoded letters/positions! If Answer B moves to Option C on screen, DIKSHA+ matches the exact text and clicks Option C's radio button.
 * **🤖 Smart Headless Auto-Detection**: Local computer runs default to visible desktop GUI (`HEADLESS = False`). Railway Cloud / Docker deployments automatically detect the container environment and switch to `HEADLESS = True` with zero configuration required!
 * **🌐 2025/2026 Official Google API Auth Standard**: Fully compliant with [Google's official API Key specification](https://ai.google.dev/gemini-api/docs/api-key), sending mandatory `x-goog-api-key` headers and supporting encrypted key pools directly in `config.py`.
+* **⏳ 3-Second Pacing Delay**: Features a smooth 3-second pacing delay before AI API calls to mimic human reading and prevent rate-limit quota exhaustion.
 * **🎯 Question 1 Navigation Reset Protocol**: When starting or continuing an assessment ("Continue Assessment"), DIKSHA+ automatically detects Question 1 in the right-side Quiz Navigation panel (`#quiznavbutton1`), clicks it, and starts solving sequentially from Question 1!
 * **🔤 Unicode Apostrophe & Text Normalization**: Automatically standardizes curly apostrophes (`’`, `\u2019`), curly quotes (`“`, `”`), dashes (`–`, `—`), and non-breaking spaces (`\u00a0`) to standard ASCII straight keyboard characters (`'`) in DOM parsing, JSON matching, and JSON auto-learning storage.
 * **🎯 100% Exact Dual-Pass Radio Selection**:
@@ -40,6 +41,12 @@ An enterprise-grade, end-to-end automation engine for **DIKSHA / Moodle LMS Port
   * `✍️ [TYPED FEEDBACK RESPONSE QUESTION-19]: '...'`
   * `🛡️ [AUTOPLAY SAFEGUARD] Video was paused. Auto-triggered video.play() to keep playback active.`
   * `💾 [AUTO-LEARNING SAVE] Saved to <course.json>: Module #8 ('Feedback Form') || Subsection #1 ('Feedback Form') -> Q: '...'`
+* **⚡ Complete Activity Support**:
+  * **Videos (`url`)**: Multi-speed playback acceleration (16x/4x/1x) with Auto-Play Safeguard & HTML5 screen pause.
+  * **PDFs (`resource`)**: Automated page-down flipping and end-of-doc container scrolling.
+  * **H5P Quizzes (`h5pactivity`)**: Full interactive quiz auto-solving with AI solver.
+  * **Formative Assessments (`quiz`)**: Complete Moodle quiz automation with banner dismissal, Question 1 reset & final submission.
+  * **Feedback Forms (`feedback`)**: Full rating selection, comment box typing & feedback submission.
 * **🔒 256-Bit Cryptographic Security**: 
   * SHA-256 encrypted multi-user PIN lock (`541563`) and credential vault.
   * Gemini API Keys stored as 256-bit encrypted ciphers in `config.py` with dynamic in-memory decryption via `utils/security.py`. No plain text `.env` files required.
