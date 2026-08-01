@@ -159,9 +159,10 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
 
     models_to_try = ["gemini-2.0-flash", "gemini-flash-latest"]
 
-    for key_idx, api_key in enumerate(api_keys, 1):
-        for model_name in models_to_try:
-            for attempt in range(2):
+    for attempt_round in range(1, 4):
+        logger.info(f"  🧠 [AI SOLVER ATTEMPT {attempt_round}/3] Requesting AI solution from Gemini API...")
+        for key_idx, api_key in enumerate(api_keys, 1):
+            for model_name in models_to_try:
                 try:
                     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
                     payload = json.dumps({
@@ -180,13 +181,12 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
                     
                     clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
                     if clean_ans:
-                        logger.info(f"  🧠 [AI LIVE SOLVER SUCCESS] Solved via Key #{key_idx} ({model_name}) -> '{clean_ans}'")
+                        logger.info(f"  🧠 [AI LIVE SOLVER SUCCESS] Solved on Attempt {attempt_round}/3 via Key #{key_idx} ({model_name}) -> '{clean_ans}'")
                         return clean_ans
                 except urllib.error.HTTPError as http_err:
                     if http_err.code in (429, 503):
-                        wait_sec = 3 * (attempt + 1)
-                        logger.warning(f"  ⏳ [AI RATE LIMIT {http_err.code}] Key #{key_idx} rate limit hit ({http_err.reason}). Waiting {wait_sec}s before retry...")
-                        time.sleep(wait_sec)
+                        logger.warning(f"  ⏳ [AI RATE LIMIT {http_err.code}] Key #{key_idx} ({model_name}) rate limited ({http_err.reason}). Trying next model/key...")
+                        time.sleep(2)
                         continue
                     elif http_err.code in (401, 403):
                         logger.error(f"  ❌ [GEMINI API ERROR {http_err.code}] Key #{key_idx} {http_err.reason}. Trying next key...")
@@ -199,9 +199,13 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
                     time.sleep(1)
                     break
 
+        if attempt_round < 3:
+            logger.warning(f"  ⏳ [AI SOLVER RETRY] Attempt {attempt_round}/3 un-successful. Waiting 3s before Attempt {attempt_round + 1}/3...")
+            time.sleep(3)
 
-    logger.warning("  ⚠️ [AI LIVE SOLVER UNABLE TO SOLVE] Falling back to available options.")
+    logger.warning("  ⚠️ [AI 3 ATTEMPTS EXHAUSTED] AI Live Solver attempted 3 times and could not solve question.")
     return None
+
 
 
 
@@ -1373,12 +1377,12 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             except Exception as match_ex:
                 logger.warning(f"  --> Option matching notice: {match_ex}")
 
-        # Fallback ONLY if question was NOT in JSON key
+        # Fallback ONLY if AI solver & JSON cache both failed after 3 full attempts
         if not selected_option:
             if matched_answer_text:
                 logger.warning(f"  --> Question #{q_num + 1} Notice: Answer '{matched_answer_text}' option container not visible. Selecting available radio.")
             else:
-                logger.info(f"  --> Question #{q_num + 1} Notice: Unmatched question not in JSON key. Selecting default option [1].")
+                logger.warning(f"  ⚠️ [AI 3 ATTEMPTS EXHAUSTED Q-{q_num + 1}] Could not solve question after 3 attempts. Selecting default Option [A] (Radio Option 1).")
 
             options = target_frame.locator("input[type='radio'], input[type='checkbox'], .h5p-radio-button, label.radio, .form-check-input")
             if await options.count() == 0:
@@ -1388,8 +1392,10 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                 opt = options.first
                 if await opt.is_visible() and not await opt.is_checked():
                     await opt.click(force=True)
-                    logger.info(f"  --> Question #{q_num + 1} (Fallback): Selected first available option.")
+                    logger.info(f"  🎯 [SELECTED FALLBACK OPTION A] Selected Default Radio Button [A] after 3 un-successful AI attempts.")
+                    logger.info("  " + "-" * 75 + "\n")
                     await page.wait_for_timeout(800)
+
 
 
 
