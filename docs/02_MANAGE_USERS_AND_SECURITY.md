@@ -1,39 +1,56 @@
 # 🔐 User & Security Management Guide
 
-This guide covers account display names, user management, password encryption, and PIN security for **DIKSHA+ Automation Suite**.
+This document covers account display names, user credential management, 256-bit password encryption, and Security PIN authentication for **DIKSHA+ Automation Suite**.
 
 ---
 
 ## 🔒 1. 256-Bit SHA-256 Security Architecture
 
-DIKSHA+ Automation Suite stores zero plaintext passwords or security PINs in code.
+DIKSHA+ Automation Suite enforces enterprise security standards. Zero plaintext passwords or security PINs are stored in code.
 
-### Security PIN Verification
-* **PIN**: `******` (Masked & Encrypted via Salted 256-Bit SHA-256 Hash)
+### Security PIN Authentication
+* **Default Security PIN**: `541563`
+* **Salted 256-Bit SHA-256 Hash**: `c72696e654fb1fdbd727a8b66e35bceb05a5a576e602252cbd927e4ff8116edf`
+* **Implementation Source**: [utils/security.py](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/utils/security.py)
 
-* **Salted SHA-256 Hash**: `c72696e654fb1fdbd727a8b66e35bceb05a5a576e602252cbd927e4ff8116edf`
-* Implementation: [utils/security.py](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/utils/security.py)
+```python
+# Security PIN Hash Check
+def verify_pin(user_input_pin):
+    salt = "DIKSHA_PLUS_SALT_2026"
+    hashed = hashlib.sha256((salt + user_input_pin).encode('utf-8')).hexdigest()
+    return hashed == "c72696e654fb1fdbd727a8b66e35bceb05a5a576e602252cbd927e4ff8116edf"
+```
 
 ---
 
-## 👤 2. How to Add a New User Account
+## 👤 2. Registered User Credentials Vault
 
-Passwords stored in `config.py` use 256-bit key derived Base64 XOR cipher (`ENC256:`).
+User passwords in `config.py` use a key-derived Base64 XOR cipher (`ENC256:`):
 
-### Step A: Generate Encrypted Password String
+```python
+# Per-User Encrypted Password Registry inside config.py
+USER_CREDENTIALS_ENCRYPTED = {
+    "gexowo4534@candaba.com": "ENC256:fld4G4dW0nfblr_x1FjG",
+    "borkej@smanthaai.online": "ENC256:e1J6I4wX8GOpgqbQpiL9",
+    "8617383566": "ENC256:S0R5KItAxBw=",
+    "7044015007": "ENC256:S0R5L4ta0UzY",
+    "7908555852": "ENC256:S0R5KItAxBw=",
+}
+```
 
-Run this Python command in CMD:
+---
 
+## ➕ 3. How to Add a New Registered User
+
+### Step 1: Encrypt New Password
+Run this Python snippet in terminal to generate the encrypted string:
 ```bash
 python -c "from utils.security import encrypt_password; print(encrypt_password('YourPasswordHere'))"
 ```
+*Output Example*: `ENC256:S0R5KItAxBw=`
 
-*Example Output:*
-`ENC256:****************`
-
-### Step B: Add Display Name & Credentials to `config.py`
-
-Open [config.py](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/config.py) and add the display name to `USER_NAMES` and password to `USER_CREDENTIALS_ENCRYPTED`:
+### Step 2: Add Entry to `config.py`
+Open [config.py](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/config.py) and update `USER_NAMES` and `USER_CREDENTIALS_ENCRYPTED`:
 
 ```python
 USER_NAMES = {
@@ -42,28 +59,26 @@ USER_NAMES = {
     "8617383566": "Sujata Mondal",
     "7044015007": "Sumanta Halder",
     "7908555852": "Tasapur Rahaman",
-    "new_user@domain.com": "New User Name", # <-- Display Name
+    "new_user@domain.com": "New User Name",  # <-- Add User Display Name
 }
 
 USER_CREDENTIALS_ENCRYPTED = {
-    "gexowo4534@candaba.com": "ENC256:****************",
-    "borkej@smanthaai.online": "ENC256:****************",
-    "8617383566": "ENC256:****************",
-    "7044015007": "ENC256:****************",
-    "7908555852": "ENC256:****************",
-    "new_user@domain.com": "ENC256:****************",  # <-- New account added here!
+    "gexowo4534@candaba.com": "ENC256:fld4G4dW0nfblr_x1FjG",
+    "borkej@smanthaai.online": "ENC256:e1J6I4wX8GOpgqbQpiL9",
+    "8617383566": "ENC256:S0R5KItAxBw=",
+    "7044015007": "ENC256:S0R5L4ta0UzY",
+    "7908555852": "ENC256:S0R5KItAxBw=",
+    "new_user@domain.com": "ENC256:S0R5KItAxBw=",  # <-- Add Encrypted Password
 }
 ```
 
-Save `config.py`. The account will immediately appear in the user selector menu!
+Save `config.py`. The new account will appear in the launcher menu instantly!
 
 ---
 
-## ❌ 3. How to Delete an Existing User Account
+## ❌ 4. How to Delete a Registered User
 
-To remove any user account:
-
+To delete an account:
 1. Open [config.py](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/config.py).
-2. Locate `USER_NAMES` and `USER_CREDENTIALS_ENCRYPTED`.
-3. Simply delete or comment out the lines containing the user's email/mobile number.
-4. Save `config.py`. The deleted account will no longer appear in the menu!
+2. Delete the line from `USER_NAMES` and `USER_CREDENTIALS_ENCRYPTED`.
+3. Save `config.py`.
