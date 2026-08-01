@@ -51,8 +51,20 @@ COURSES_DIR.mkdir(parents=True, exist_ok=True)
 
 # Browser Engine Launch Options
 BROWSER_TYPE = "chromium"
-HEADLESS = False           # Set to False to watch browser in action
+IS_DOCKER = os.path.exists("/.dockerenv") or bool(os.environ.get("RAILWAY_ENVIRONMENT") or os.environ.get("RAILWAY_PROJECT_ID"))
+HEADLESS_ENV = os.environ.get("HEADLESS", "").strip().lower()
+
+if HEADLESS_ENV in ("true", "1", "yes", "t"):
+    HEADLESS = True
+elif HEADLESS_ENV in ("false", "0", "no", "f"):
+    HEADLESS = False
+elif IS_DOCKER:
+    HEADLESS = True    # Automatically use Headless mode on Railway Cloud / Docker!
+else:
+    HEADLESS = False   # Default to False for local GUI desktop run
+
 SLOMO_MS = 500
+
 
 # Automation Behavior Controls
 MIN_VIDEO_WATCH_SECONDS = 30

@@ -16,6 +16,86 @@
             "[D] 300"
           ],
           "answer": "[A] 540"
+        },
+        {
+          "question": "Why is audio well-suited for multitasking?",
+          "options": [
+            "[A] It runs only on mobile devices",
+            "[B] It relies on visual aids",
+            "[C] It demands constant visual focus",
+            "[D] It allows low mental effort during use"
+          ],
+          "answer": "[D] It allows low mental effort during use"
+        },
+        {
+          "question": "How does community radio benefit local populations?",
+          "options": [
+            "[A] By encouraging international content",
+            "[B] By addressing community-specific needs",
+            "[C] By limiting audience participation",
+            "[D] By delivering national broadcasts"
+          ],
+          "answer": "[B] By addressing community-specific needs"
+        },
+        {
+          "question": "The common name of the State Tree of Assam is :",
+          "options": [
+            "[A] Hollong",
+            "[B] Sal",
+            "[C] Mango",
+            "[D] Neem"
+          ],
+          "answer": "[A] Hollong"
+        },
+        {
+          "question": "Audio can stir up strong emotions like ………",
+          "options": [
+            "[A] Laughter",
+            "[B] Jealousy",
+            "[C] Happiness",
+            "[D] Anger"
+          ],
+          "answer": "[D] Anger"
+        },
+        {
+          "question": "Dr. Rajendra Prasad Memorial Lecture is organised every year by :",
+          "options": [
+            "[A] National Museum",
+            "[B] Delhi University",
+            "[C] Akashvani",
+            "[D] Doordarshan"
+          ],
+          "answer": "[C] Akashvani"
+        },
+        {
+          "question": "Audio in learning should ………. lengthy monologues.",
+          "options": [
+            "[A] Avoid",
+            "[B] Exclude",
+            "[C] Admit",
+            "[D] Include"
+          ],
+          "answer": "[A] Avoid"
+        },
+        {
+          "question": "Which year the Community Radio Policy was announced?",
+          "options": [
+            "[A] 2000",
+            "[B] 2001",
+            "[C] 2002",
+            "[D] 2004"
+          ],
+          "answer": "[C] 2002"
+        },
+        {
+          "question": "Green Broadcasting was a Environment Conservation Endeavour of :",
+          "options": [
+            "[A] Akashvani Delhi",
+            "[B] Akashvani Dibrugarh",
+            "[C] Akashvani Shillong",
+            "[D] Akashvani Guwahati"
+          ],
+          "answer": "[B] Akashvani Dibrugarh"
         }
       ]
     }
