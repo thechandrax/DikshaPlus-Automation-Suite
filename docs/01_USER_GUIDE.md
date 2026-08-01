@@ -1,124 +1,83 @@
-# 📖 User Guide & Complete Automation Workflow
+# 📘 DIKSHA+ USER GUIDE & OPERATIONAL CONTROLS
 
-This document provides step-by-step instructions for launching, configuring, and operating **DIKSHA+ Automation Suite**.
-
----
-
-## 🚀 1. Launching DIKSHA+ Automation Suite
-
-### Method A: 1-Click Windows Batch Script (Recommended)
-Double-click `diksha+.bat` in the project root directory:
-```batch
-diksha+.bat
-```
-
-### Method B: Command Prompt / PowerShell
-Open Terminal or PowerShell in `C:\Users\thego\.gemini\antigravity\scratch\Diksha+ Automation Suite` and run:
-```bash
-python main.py
-```
+Welcome to the official User Guide for **DIKSHA+ Automation Suite**. This document covers system launching, live keyboard controls, navigation reset protocols, and Feedback Form automation.
 
 ---
 
-## 🔒 2. Security Access PIN Verification
+## 🔑 1. Security Authentication & PIN Lock
 
-Upon startup, DIKSHA+ verifies authorization via a 256-Bit Cryptographic SHA-256 PIN check:
+Access to DIKSHA+ is protected by a 256-bit SHA-256 cryptographic security PIN lock:
+* **Default Master Security PIN**: `541563`
 
-```text
-===================================================================
-               LAUNCHING DIKSHA+ AUTOMATION SUITE
-===================================================================
-
-===================================================================
- 🔒 DIKSHA+ SECURITY ACCESS VERIFICATION (256-BIT SHA-256)
-===================================================================
-
-[Security] Enter 6-digit Security PIN to unlock: ******
- ✔ [Security] 256-Bit Cryptographic PIN verified! Access granted.
-```
-
-### Key Security Features:
-* **Default Security PIN**: `541563`
-* **Salted SHA-256 Hash Verification**: `c72696e654fb1fdbd727a8b66e35bceb05a5a576e602252cbd927e4ff8116edf`
-* **Masked Entry**: Asterisks (`*`) echo in real-time as digits are pressed.
-* **Backspace Support**: Pressing <kbd>Backspace</kbd> live erases asterisks.
-* **Circuit Breaker**: 3 failed PIN attempts automatically terminate execution.
+When running `main.py` or double-clicking `diksha+.bat`, enter `541563` to authenticate.
 
 ---
 
-## ⏸️ 3. Built-in Hotkey Live Pause & Resume
+## 🎮 2. Live Keyboard Hotkey Controls
 
-DIKSHA+ features an active background daemon thread (`msvcrt`) listening for keyboard shortcuts in the terminal window:
+DIKSHA+ includes an asynchronous keyboard listener (`msvcrt`) running in a non-blocking background thread:
 
-* **Press `P` or `Spacebar`**: Toggles **PAUSE / RESUME** in real-time.
-* When paused, the log displays:
-  ```text
-  =================================================================
-    ⏸️ [AUTOMATION PAUSED] Press 'P' or 'Spacebar' in terminal to RESUME...
-  =================================================================
-  ```
-* Pressing `P` or `Spacebar` again safely resumes Playwright execution without interrupting state!
+* **Toggle Pause / Resume**: Press **`P`** or **`Spacebar`** in the terminal at any time!
+  * **When Paused**: The engine freezes browser actions safely and logs `⏸️ [ENGINE PAUSED] Press 'P' or 'Spacebar' to resume...`
+  * **When Resumed**: The engine resumes playback/solving immediately and logs `▶️ [ENGINE RESUMED] Continuing automation...`
 
 ---
 
-## 👤 4. Account Selection Menu
+## 🎯 3. Question 1 Navigation Reset Protocol (`#quiznavbutton1`)
 
-After PIN verification, the system lists all registered student accounts:
-
-```text
-===================================================================
- ⚡ DIKSHA+ AUTOMATION SUITE
-===================================================================
-
-[Login] Registered accounts:
-  [1] Gsgs Sdgr                : gexowo4534@candaba.com
-  [2] Bgdh Hdfh                : borkej@smanthaai.online
-  [3] Sujata Mondal            : 8617383566
-  [4] Sumanta Halder           : 7044015007
-  [5] Tasapur Rahaman          : 7908555852
--------------------------------------------------------------------
-👉 Select user number (1-5) or type custom email/mobile:
-```
+When DIKSHA+ clicks **"Continue Assessment"** or **"Start Assessment"**:
+1. The bot waits 5 seconds for the assessment iframe to settle.
+2. It executes DOM JS dismissal triggers for popup banners.
+3. It detects the right-side Quiz Navigation panel (`#quiznavbutton1`).
+4. It clicks **Question 1** button (`#quiznavbutton1`) to guarantee solving starts sequentially from Question 1!
 
 ---
 
-## 🎓 5. Dashboard & Course Selection
+## 📝 4. Feedback Form Automation Engine (Module #8)
 
-Once logged in, the suite scans **Ongoing Courses** and **Finished Courses** tabs and displays the real-time progress dashboard:
+DIKSHA+ includes native automation support for DIKSHA / Moodle Feedback Forms:
 
-```text
-======================================================================
-  🎓 DIKSHA+ ENROLLED COURSES (4 ONGOING • 0 FINISHED)
-======================================================================
+1. **Rating Selection**:
+   * Inspects `.que-no`, `div.feed-ans-div`, and `input.form-check-input`.
+   * Automatically selects your saved JSON rating (`Strongly Agree`, `Agree`, `Appropriate`, `Excellent`, `Yes`).
+   * If not in JSON, Gemini AI selects the optimal positive rating choice.
 
- ⚡ ONGOING COURSES:
-  [01] NISHTHA FLN English                           [█░░░░░░░░░  12%] ⌛ Ongoing
-  [02] Power of Audio in Education                   [█████████░  92%] ⌛ Ongoing
-  [03] Online and Digital Education in the Len... [█████████░  92%] ⌛ Ongoing
-  [04] কাৰ্যভিত্তিক গৱেষণা (Action Research)         [██░░░░░░░░  15%] ⌛ Ongoing
+2. **Comment Textbox Typing**:
+   * Detects `<textarea.form-control>` and `<input type='text'>` fields inside open-ended questions.
+   * Fills your exact custom comment string (e.g., *"Incorporating more hands-on practice activities..."*).
 
------------------------------------------------------------------------
- 👉 Select course number to automate (1-4) [Enter for 1]:
-```
+3. **Form Submission**:
+   * Automatically clicks `Submit Feedback` (`button.submit-feed-btn`, `#submitFeedbackBtn11`).
 
 ---
 
-## ⚙️ 6. Activity Execution Pipeline
+## 🔀 5. Shuffled Option Handling
 
-When a course is selected, DIKSHA+ executes each activity type automatically:
+DIKSHA+ matches options on screen using **text content**, NOT hardcoded letters or position indices:
+* If an answer text is `"Hon'ble Vice President of India"`, DIKSHA+ scans all screen option rows (`row_el`).
+* If DIKSHA shuffles option choices so that `"Hon'ble Vice President of India"` moves from Option B to Option C, DIKSHA+ matches the text at Option C and clicks Option C's radio button.
 
-### A. Video Activities (`act_type="url"`)
-* **Multi-Speed Acceleration**: Plays at 16x/4x speed during playback, then slows to 1.0x for the final 45 seconds to trigger server `ended` telemetry.
-* **100% Checkmark Verification**: Waits 15 seconds for DIKSHA server checkmark confirmation.
+---
 
-### B. PDF Document Activities (`act_type="resource"`)
-* **Page-Down Simulation**: Simulates `PageDown` keystrokes with 2.5s reading pacing per page.
-* **End-of-Doc Scroll**: Auto-scrolls `.pdf-viewer` and `iframe` container elements to exact bottom.
+## 💾 6. Smart Auto-Learning Storage
 
-### C. Formative Assessments & Quizzes (`act_type="quiz"`)
-* **Question 1 Navigation Reset**: When opening or continuing an attempt ("Continue Assessment"), DIKSHA+ automatically detects Question 1 in the right-side Quiz Navigation panel (`#quiznavbutton1`), clicks it, and starts solving from Question 1!
-* **Text Normalization**: `normalize_text()` converts Unicode curly apostrophes (`’`) to standard ASCII straight keyboard apostrophes (`'`).
-* **AI Live Solver & Multi-Key Pool**: If a question is not in local JSON cache, Gemini AI solves it live with a 3s pacing delay.
-* **4-Tier Radio Locator**: Targets `.answer > div.r0`, `.answer > div.r1`, and `preceding-sibling::input[@type='radio']` for 100% radio click precision.
-* **Auto-Learning Storage**: Automatically saves solved Q&As to `data/courses/<course_name>.json` under module and subsection hierarchies.
-* **Automatic Submission**: Executes final submission (`AUTOMATIC_FINAL_SUBMIT = True`).
+When Gemini AI solves a question live:
+* **Quizzes**: Options array saved as `["[A] ...", "[B] ...", "[C] ...", "[D] ..."]` and answer as `"[B] ..."`.
+* **Feedback Forms**: Options array saved as standard strings `["Strongly Agree", "Agree", ...]` without letters.
+* Auto-saved to `data/courses/<course_name>.json` under full module & subsection structures.
+
+---
+
+## 📊 7. Standardized Log Tag Reference
+
+| Log Tag | Description |
+| :--- | :--- |
+| `❓ [QUESTION-03]` | Full question text displayed on screen |
+| `📋 [OPTIONS]` | Parsed option choices ([A], [B], [C], [D]) |
+| `⚡ [VERIFIED JSON 100% MATCH QUESTION-03]` | Matched answer from cached JSON file (0.01s) |
+| `🧠 [AI LIVE SUCCESS]` | Solved live via 5-key Gemini API pool |
+| `✍️ [TYPED FEEDBACK RESPONSE QUESTION-19]` | Filled comment textbox in Feedback Form |
+| `🎯 [SELECTED OPTION B]` | Clicked radio input for matched answer |
+| `💾 [AUTO-LEARNING SAVE]` | Auto-saved Q&A to course JSON |
+| `⏸️ [ENGINE PAUSED]` | Automation paused via hotkey |
+| `▶️ [ENGINE RESUMED]` | Automation resumed via hotkey |

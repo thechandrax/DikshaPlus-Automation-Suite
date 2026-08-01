@@ -1,12 +1,17 @@
 # ⚡ DIKSHA+ AUTOMATION SUITE
 
-An enterprise-grade, end-to-end automation engine for **DIKSHA / Moodle LMS Portals**. Features real-time **Gemini AI Multi-Key Live Solving**, **Auto-Learning Smart JSON Caching**, **Unicode Text Normalization**, **Hot-Key Live Pause/Resume**, **Question 1 Navigation Reset Protocol**, and complete **H5P & Formative Assessment** automation.
+An enterprise-grade, end-to-end automation engine for **DIKSHA / Moodle LMS Portals**. Features real-time **Gemini AI Multi-Key Live Solving**, **Feedback Form Auto-Filling Engine**, **Auto-Learning Smart JSON Caching**, **Unicode Text Normalization**, **Hot-Key Live Pause/Resume**, **Question 1 Navigation Reset Protocol**, and complete **H5P, Formative Assessment & Feedback Form** automation.
 
 ---
 
 ## 🌟 Key Features
 
-* **🧠 Gemini AI Multi-Key Pool Solver Engine**: When a quiz question is not found in your local answer key, the bot passes the question text + option choices to Gemini AI (`gemini-flash-latest` / `gemini-2.0-flash`), which solves the question live! If Key #1 encounters rate limits (HTTP 429), the engine **instantly rotates to Key #2** without stopping!
+* **🧠 Gemini AI Multi-Key Pool Solver Engine**: When a quiz or feedback question is not found in your local answer key, the bot passes the question text + option choices to Gemini AI (`gemini-flash-latest` / `gemini-2.0-flash`), which solves the question live! With **5 active 256-bit encrypted API keys** in `config.py`, if Key #1 encounters rate limits (HTTP 429), the engine **instantly rotates to Key #2** without stopping!
+* **📝 Feedback Form Automation Engine**: Automatically completes course Feedback Forms (Module #8):
+  * Selects positive ratings (`Strongly Agree`, `Agree`, `Appropriate`, `Excellent`, `Yes`).
+  * Types custom/AI constructive comments into text boxes (`textarea.form-control`, `input[type='text']`).
+  * Clicks `Submit Feedback` (`button.submit-feed-btn`, `#submitFeedbackBtn11`).
+* **🔀 Shuffled Option Resiliency**: Matches options on screen by **text content**, NOT hardcoded letters/positions! If Answer B moves to Option C on screen, DIKSHA+ matches the exact text and clicks Option C's radio button.
 * **🌐 2025/2026 Official Google API Auth Standard**: Fully compliant with [Google's official API Key specification](https://ai.google.dev/gemini-api/docs/api-key), sending mandatory `x-goog-api-key` headers and supporting encrypted key pools directly in `config.py`.
 * **⏳ 3-Second Pacing Delay**: Features a smooth 3-second pacing delay before AI API calls to mimic human reading and prevent rate-limit quota exhaustion.
 * **🔁 3-Attempt AI Retry Protocol**: Runs up to 3 full solver retry rounds across models and keys before defaulting to Option A.
@@ -15,21 +20,25 @@ An enterprise-grade, end-to-end automation engine for **DIKSHA / Moodle LMS Port
 * **🔤 Unicode Apostrophe & Text Normalization**: Automatically standardizes curly apostrophes (`’`, `\u2019`), curly quotes (`“`, `”`), dashes (`–`, `—`), and non-breaking spaces (`\u00a0`) to standard ASCII straight keyboard characters (`'`) in DOM parsing, JSON matching, and JSON auto-learning storage.
 * **🎯 100% Exact Dual-Pass Radio Selection**:
   * **Gate 1**: 100% Question Text Match logged as `⚡ [VERIFIED JSON 100% MATCH QUESTION-03]`.
-  * **Gate 2**: Exact 4-tier Moodle DOM Radio Input Locator (`.answer > div.r0`, `.answer > div.r1`, `preceding-sibling::input[@type='radio']`, `aria-labelledby`) ensuring 100% accurate radio button clicks.
-* **💾 Smart Auto-Learning JSON Storage**: AI-solved answers are automatically saved to `data/courses/<course_name>.json` under full module and subsection hierarchies (`module_no`, `module_name`, `subsection_no`, `subsection_name`, `questions`). Future runs use the cached answer in **0.01 seconds**!
+  * **Gate 2**: Exact 4-tier Moodle DOM Radio Input Locator (`.answer > div.r0`, `.answer > div.r1`, `div.feed-ans-div`, `preceding-sibling::input[@type='radio']`, `aria-labelledby`) ensuring 100% accurate radio button clicks.
+* **💾 Smart Auto-Learning JSON Storage**: AI-solved answers are automatically saved to `data/courses/<course_name>.json` under full module and subsection hierarchies (`module_no`, `module_name`, `subsection_no`, `subsection_name`, `questions`, `options`, `answer`).
+  * **Quizzes**: Options formatted as `["[A] ...", "[B] ...", "[C] ...", "[D] ..."]` and answer as `"[B] ..."`.
+  * **Feedback Forms**: Standard options `["Strongly Agree", "Agree", ...]` without letter tags.
 * **📊 Professional Standardized Log Formatting**: Clean, standardized log tags:
   * `❓ [QUESTION-03]: <Full Question Text>`
   * `📋 [OPTIONS]: [A] ... [B] ... [C] ... [D] ...`
   * `🧠 [AI LIVE SUCCESS] Solved on Attempt 1/3 via Key #1 -> '...'`
-  * `💾 [AUTO-LEARNING SAVE] Saved to <course.json>: Module #7 ('Assessment') || Subsection #1 ('Assessment') -> Q: '...'`
+  * `✍️ [TYPED FEEDBACK RESPONSE QUESTION-19]: '...'`
+  * `💾 [AUTO-LEARNING SAVE] Saved to <course.json>: Module #8 ('Feedback Form') || Subsection #1 ('Feedback Form') -> Q: '...'`
 * **⚡ Complete Activity Support**:
   * **Videos (`url`)**: Multi-speed playback acceleration (16x/4x/1x) with telemetry checkmark verification.
   * **PDFs (`resource`)**: Automated page-down flipping and end-of-doc container scrolling.
   * **H5P Quizzes (`h5pactivity`)**: Full interactive quiz auto-solving with AI solver.
-  * **Formative Assessments (`quiz`)**: Complete Moodle quiz automation with banner dismissal & automatic final submission.
+  * **Formative Assessments (`quiz`)**: Complete Moodle quiz automation with banner dismissal, Question 1 reset & final submission.
+  * **Feedback Forms (`feedback`)**: Full rating selection, comment box typing & feedback submission.
 * **🔒 256-Bit Cryptographic Security**: 
   * SHA-256 encrypted multi-user PIN lock (`541563`) and credential vault.
-  * API Keys stored as 256-bit encrypted ciphers (`GEMINI_API_KEYS_ENCRYPTED = ["ENC256:...", "ENC256:..."]`) in `config.py` with dynamic in-memory decryption via `utils/security.py`. No plain text `.env` files required.
+  * 5 Gemini API Keys stored as 256-bit encrypted ciphers in `config.py` with dynamic in-memory decryption via `utils/security.py`. No plain text `.env` files required.
 * **☁️ Railway Cloud Ready**: Fully containerized in `railway/` with Dockerfile and Automated Cron deployment options.
 
 ---
@@ -39,16 +48,16 @@ An enterprise-grade, end-to-end automation engine for **DIKSHA / Moodle LMS Port
 ```text
 Diksha+ Automation Suite/
 ├── automations/
-│   └── diksha_plus_engine.py      # Core Playwright automation, AI Live Solver & Hotkey listener
-├── config.py                      # System configuration & 256-bit encrypted API key pool
+│   └── diksha_plus_engine.py      # Core Playwright automation, AI Solver, Feedback Engine & Hotkeys
+├── config.py                      # System configuration, DOM SELECTORS & 5-Key Encrypted API Pool
 ├── data/
-│   └── courses/                   # Auto-learning per-course JSON answer keys
+│   └── courses/                   # Auto-learning per-course JSON answer keys & Feedback Forms
 ├── docs/                          # Detailed technical documentation
 │   ├── README.md                  # Master documentation index
 │   ├── 01_USER_GUIDE.md           # Operational guide & Keyboard Hotkeys
 │   ├── 02_MANAGE_USERS_AND_SECURITY.md# Security & 256-bit PIN vault
-│   ├── 03_ANSWER_KEYS_AND_QUIZZES.md  # AI Live Solver & Auto-Learning Storage
-│   ├── 04_AUTOMATION_CONTROLS_AND_CONFIG.md# Config & Pacing Controls
+│   ├── 03_ANSWER_KEYS_AND_QUIZZES.md  # AI Live Solver, Feedback Engine & Auto-Learning Storage
+│   ├── 04_AUTOMATION_CONTROLS_AND_CONFIG.md# Config & DOM Selectors
 │   └── 05_RAILWAY_DEPLOYMENT_GUIDE.md # Cloud Deployment Guide
 ├── output/
 │   └── screenshots/               # Single official screenshot directory
@@ -76,7 +85,7 @@ Diksha+ Automation Suite/
    ```
 
 2. **Configure Gemini API Keys**:
-   Gemini API Keys are pre-configured & 256-bit encrypted in `config.py`. You can also set `GOOGLE_API_KEY` or `GEMINI_API_KEY` environment variables.
+   5 active Gemini API Keys are pre-configured & 256-bit encrypted in `config.py`. Key pool auto-decrypts in memory.
 
 3. **Launch Automation**:
    Double click `diksha+.bat` or run:
