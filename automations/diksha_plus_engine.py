@@ -290,11 +290,15 @@ def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name,
 
         is_fb_context = is_feedback or "feedback" in (t_sub_name or "").lower()
 
+        if is_fb_context:
+            norm_q = re.sub(r'^\s*(?:\d+[\.\)]|Q\d+[\.\)]?|Question\s*\d+[\.\)]?)\s*', '', norm_q, flags=re.IGNORECASE).strip()
+
         if option_texts and isinstance(option_texts, list):
             if is_fb_context:
                 formatted_options = [normalize_text(o) for o in option_texts]
                 formatted_answer = norm_a
             else:
+
                 matched_letter = ""
                 clean_target = re.sub(r'[^\w\s]', '', norm_a.lower())
 
