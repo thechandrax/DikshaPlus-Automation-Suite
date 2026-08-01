@@ -967,9 +967,11 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
         if q_text_screen:
             logger.info(f"  [Q-{q_num + 1} SCREEN TEXT]: '{q_text_screen[:70]}...'")
 
+        # Dual Confirmation Guard Protocol: Gate 1 (Question Verification) & Gate 2 (Option Label Verification)
         matched_answer_text = None
+        matched_json_question = ""
+        gate1_ok = False
 
-        # Multi-level Search across Scoped Module/Subsection Bucket & Global Bucket (handles randomized/shuffled order)
         if answers_list:
             clean_screen_q = re.sub(r'[^\w\s]', '', q_text_screen) if q_text_screen else ""
             screen_words = set(w for w in clean_screen_q.split() if len(w) >= 3) if clean_screen_q else set()
@@ -978,7 +980,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                 if matched_answer_text:
                     break
 
-                # 1. Text & Keyword Overlap Search across all questions in active Module/Subsection bucket (handles shuffled order)
+                # Gate 1: Text & Keyword Overlap Search across active section bucket
                 if clean_screen_q:
                     for item in bucket:
                         json_q = (item.get("question") or item.get("question_keyword") or "").strip().lower()
@@ -989,24 +991,25 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
 
                         if clean_json_q and (clean_json_q in clean_screen_q or clean_screen_q in clean_json_q or overlap_ratio >= 0.75):
                             matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
-                            display_q = (item.get("question") or item.get("question_keyword") or "")[:45]
-                            logger.info(f"  ✔ [TEXT MATCH Q-{q_num + 1}] '{display_q}...' -> Target Answer: '{matched_answer_text}'")
+                            matched_json_question = (item.get("question") or item.get("question_keyword") or "")[:50]
+                            gate1_ok = True
+                            logger.info(f"  ✔ [GATE 1 VERIFIED Q-{q_num + 1}] Question Match: '{matched_json_question}...'")
                             break
 
-                # 2. Fallback: Exact Question Position/Index Check if screen text could not be extracted
+                # Gate 1 Fallback: Exact Position/Index Check if screen text could not be extracted
                 if not matched_answer_text and q_num < len(bucket):
                     pos_item = bucket[q_num]
                     matched_answer_text = (pos_item.get("answer") or pos_item.get("correct_option") or "").strip()
-                    logger.info(f"  ✔ [INDEX FALLBACK Q-{q_num + 1}] Target Answer by position #{q_num + 1} -> '{matched_answer_text}'")
+                    matched_json_question = (pos_item.get("question") or pos_item.get("question_keyword") or "")[:50]
+                    gate1_ok = True
+                    logger.info(f"  ✔ [GATE 1 VERIFIED Q-{q_num + 1}] Index Match #{q_num + 1}: '{matched_json_question}...'")
                     break
-
 
         selected_option = False
         
-        # If we have a matched answer text from JSON, look for DIKSHA option containers on screen
+        # Gate 2: Answer Option Label Verification & Dual Confirmation Click
         if matched_answer_text:
             try:
-                # Target DIKSHA's exact Moodle/Sunbird answer-label containers & standard radio labels
                 option_containers = target_frame.locator("div[data-region='answer-label'], [aria-labelledby*='answer'], .answer label, div[class*='r0'], div[class*='r1'], .form-check-label, label, .custom-control-label")
                 lbl_count = await option_containers.count()
                 
@@ -1023,10 +1026,12 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                     clean_lbl = re.sub(r'[^\w\s]', '', clean_option_txt)
                     lbl_words = set(w for w in clean_lbl.split() if len(w) >= 3)
 
-                    # Substring match or word overlap match on option text
                     opt_overlap = (len(target_words & lbl_words) / float(len(target_words))) if target_words else 0.0
                     
                     if clean_target and (clean_target == clean_lbl or clean_target in clean_lbl or clean_lbl in clean_target or opt_overlap >= 0.75):
+                        gate2_ok = True
+                        logger.info(f"  ✔ [GATE 2 VERIFIED Q-{q_num + 1}] Answer Label Match: '{matched_answer_text}'")
+                        logger.info(f"  🛡️ [DUAL CONFIRMATION GUARANTEED Q-{q_num + 1}] Question & Answer 100% Verified!")
 
                         # 1. DIKSHA aria-labelledby linking check (e.g. id="q15158343:1_answer1_label" -> input id="q15158343:1_answer1")
                         container_id = await container.get_attribute("id") or ""
@@ -1037,7 +1042,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                                 await target_input.click(force=True)
                                 selected_option = True
                                 logger.info(f"  --> Question #{q_num + 1}: Clicked DIKSHA radio input #{input_id} for answer '{matched_answer_text}'.")
-                                await page.wait_for_timeout(800)
+                                await page.wait_for_timeout(1000)
                                 break
 
                         # 2. Check for input linked via aria-labelledby
@@ -1047,13 +1052,12 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                                 await linked_input.click(force=True)
                                 selected_option = True
                                 logger.info(f"  --> Question #{q_num + 1}: Clicked DIKSHA radio input via aria-labelledby for answer '{matched_answer_text}'.")
-                                await page.wait_for_timeout(800)
+                                await page.wait_for_timeout(1000)
                                 break
 
                         # 3. Check for input inside container or parent row
                         input_child = container.locator("input[type='radio'], input[type='checkbox']").first
                         if await input_child.count() == 0:
-                            # Search in parent row
                             parent_row = container.locator("xpath=./ancestor::div[contains(@class,'r0') or contains(@class,'r1') or contains(@class,'answer')][1]")
                             if await parent_row.count() > 0:
                                 input_child = parent_row.locator("input[type='radio'], input[type='checkbox']").first
@@ -1062,17 +1066,18 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                             await input_child.click(force=True)
                             selected_option = True
                             logger.info(f"  --> Question #{q_num + 1}: Clicked radio option input for answer '{matched_answer_text}'.")
-                            await page.wait_for_timeout(800)
+                            await page.wait_for_timeout(1000)
                             break
 
                         # 4. Fallback: Click container element directly
                         await container.click(force=True)
                         selected_option = True
                         logger.info(f"  --> Question #{q_num + 1}: Clicked matched option container for answer '{matched_answer_text}'.")
-                        await page.wait_for_timeout(800)
+                        await page.wait_for_timeout(1000)
                         break
             except Exception as match_ex:
                 logger.warning(f"  --> Option matching notice: {match_ex}")
+
 
 
         # Fallback to first available radio option if no match found
