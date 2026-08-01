@@ -934,18 +934,26 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
 
 
     for q_num in range(200):
-        # Extract question text displayed on screen
+        # Extract question text displayed on screen across all potential DIKSHA selectors
         q_text_screen = ""
         try:
-            q_elem = target_frame.locator(".qtext, div.qtext, .question-text, .que .content .qtext, fieldset legend").first
+            q_elem = target_frame.locator(".qtext, div.qtext, .question-text, .que .content .qtext, fieldset legend, .qheader, .question-content, div.que div.content").first
             if await q_elem.count() > 0 and await q_elem.is_visible():
-                q_text_screen = (await q_elem.inner_text()).strip().lower()
+                raw_q = (await q_elem.inner_text()).strip()
+                # Strip leading question numbering (e.g. "1. ", "Q1: ", "Question 1: ")
+                q_text_screen = re.sub(r'^(?:question\s*\d+[:.]?|\d+[:.]?|q\d+[:.]?)\s*', '', raw_q, flags=re.IGNORECASE).strip().lower()
         except Exception:
             pass
+
+        if q_text_screen:
+            logger.info(f"  [Q-{q_num + 1} SCREEN TEXT]: '{q_text_screen[:70]}...'")
 
         # Try matching question in answer_key JSON with Module & Subsection metadata verification
         matched_answer_text = None
         if q_text_screen and answers_list:
+            clean_screen_q = re.sub(r'[^\w\s]', '', q_text_screen)
+            screen_words = set(w for w in clean_screen_q.split() if len(w) >= 3)
+
             for item in answers_list:
                 # 1. Metadata check: verify item or file module_no / subsection_name if specified
                 item_mod_no = item.get("module_no") or top_mod_no
@@ -961,28 +969,38 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
 
                 json_q = (item.get("question") or item.get("question_keyword") or "").strip().lower()
                 clean_json_q = re.sub(r'[^\w\s]', '', json_q)
-                clean_screen_q = re.sub(r'[^\w\s]', '', q_text_screen)
+                json_words = set(w for w in clean_json_q.split() if len(w) >= 3)
                 
-                if clean_json_q and (clean_json_q in clean_screen_q or clean_screen_q in clean_json_q or any(w in clean_screen_q for w in clean_json_q.split() if len(w) > 5)):
+                # Match strategy: Substring match OR >= 50% key word overlap (words >= 3 letters)
+                overlap_ratio = (len(json_words & screen_words) / float(len(json_words))) if json_words else 0.0
+
+                if clean_json_q and (clean_json_q in clean_screen_q or clean_screen_q in clean_json_q or overlap_ratio >= 0.45):
                     matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
                     display_q = (item.get("question") or item.get("question_keyword") or "")[:45]
-                    logger.info(f"  --> Question #{q_num + 1} MATCHED (Mod #{module_no} • Sub #{sub_no}): '{display_q}...' -> '{matched_answer_text}'")
+                    logger.info(f"  ✔ [EXACT MATCH Q-{q_num + 1}] '{display_q}...' -> Target Answer: '{matched_answer_text}'")
                     break
 
         selected_option = False
         
-        # If we have a matched answer text from JSON, look for the option label on screen
+        # If we have a matched answer text from JSON, look for option labels on screen
         if matched_answer_text:
             try:
-                option_labels = target_frame.locator(".answer label, .qtext + div label, label.form-check-label, div[class*='answer'] label, fieldset label, label")
+                option_labels = target_frame.locator(".answer label, .qtext + div label, label.form-check-label, div[class*='answer'] label, fieldset label, label, .form-check-label, .custom-control-label")
                 lbl_count = await option_labels.count()
+                
+                clean_target = re.sub(r'[^\w\s]', '', matched_answer_text.lower())
+                target_words = set(w for w in clean_target.split() if len(w) >= 3)
+
                 for l_idx in range(lbl_count):
                     lbl = option_labels.nth(l_idx)
                     lbl_text = (await lbl.inner_text()).strip().lower()
                     clean_lbl = re.sub(r'[^\w\s]', '', lbl_text)
-                    clean_target = re.sub(r'[^\w\s]', '', matched_answer_text.lower())
+                    lbl_words = set(w for w in clean_lbl.split() if len(w) >= 3)
+
+                    # Substring match or word overlap match on option text
+                    opt_overlap = (len(target_words & lbl_words) / float(len(target_words))) if target_words else 0.0
                     
-                    if clean_target and (clean_target in clean_lbl or any(w in clean_lbl for w in clean_target.split() if len(w) > 4)):
+                    if clean_target and (clean_target == clean_lbl or clean_target in clean_lbl or clean_lbl in clean_target or opt_overlap >= 0.5):
                         # 1. Check for input inside label
                         input_child = lbl.locator("input[type='radio'], input[type='checkbox']").first
                         if await input_child.count() > 0:
@@ -1014,6 +1032,11 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
 
         # Fallback to first available radio option if no match found
         if not selected_option:
+            if matched_answer_text:
+                logger.warning(f"  --> Question #{q_num + 1} Warning: Target answer '{matched_answer_text}' could not be matched to screen labels. Defaulting to first option.")
+            else:
+                logger.info(f"  --> Question #{q_num + 1} Notice: No JSON answer match found for screen question. Selecting first available option.")
+
             options = target_frame.locator("input[type='radio'], input[type='checkbox'], .h5p-radio-button, label.radio, .form-check-input")
             if await options.count() == 0:
                 options = page.locator("input[type='radio'], input[type='checkbox'], .h5p-radio-button, label.radio, .form-check-input")
@@ -1024,6 +1047,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                     await opt.click(force=True)
                     logger.info(f"  --> Question #{q_num + 1} (Fallback): Selected first available option.")
                     await page.wait_for_timeout(800)
+
 
 
         next_nav = target_frame.locator("input[value='Next Question'], input[value='Next'], button:has-text('Next Question'), button:has-text('Next'), .btn-next, a:has-text('Next')").first
