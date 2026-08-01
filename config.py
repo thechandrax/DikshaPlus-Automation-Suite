@@ -63,9 +63,31 @@ AUTOMATIC_FINAL_SUBMIT = True    # Set to True to automatically click final quiz
 
 KEEP_BROWSER_OPEN = True         # Set to True to keep browser open after completion so it doesn't close!
 
-# Gemini AI Live Solver Configuration (Set GEMINI_API_KEY environment variable)
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+# Gemini AI Live Solver Configuration
+def _load_gemini_key():
+    key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if not key:
+        key_file = BASE_DIR / "gemini_key.txt"
+        if key_file.exists():
+            try:
+                key = key_file.read_text(encoding="utf-8").strip()
+            except Exception:
+                pass
+    if not key:
+        env_file = BASE_DIR / ".env"
+        if env_file.exists():
+            try:
+                for line in env_file.read_text(encoding="utf-8").splitlines():
+                    if line.startswith("GEMINI_API_KEY="):
+                        key = line.split("=", 1)[1].strip()
+                        break
+            except Exception:
+                pass
+    return key
+
+GEMINI_API_KEY = _load_gemini_key()
 AI_LIVE_SOLVER_ENABLED = True
+
 
 
 

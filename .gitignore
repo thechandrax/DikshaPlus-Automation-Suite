@@ -19,3 +19,9 @@ output/
 # Playwright & Browser caches
 .playwright/
 ms-playwright/
+
+# Local Environment Keys & Secrets
+.env
+gemini_key.txt
+*.env
+
