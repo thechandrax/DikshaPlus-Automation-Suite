@@ -1028,32 +1028,12 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
         if q_text_screen:
             logger.info(f"  [Q-{q_num + 1} SCREEN TEXT]: '{q_text_screen[:70]}...'")
 
-        # Dual Confirmation Guard Protocol: 100% Direct AI Live Solver First Engine
+        # Dual Confirmation Guard Protocol: Smart Auto-Learning JSON Cache + AI Live Solver Engine
         matched_answer_text = None
         gate1_ok = False
 
-        # 1. Primary Engine: Direct AI Live Solver
-        if q_text_screen:
-            try:
-                option_containers = target_frame.locator("div[data-region='answer-label'], [aria-labelledby*='answer'], .answer label, div[class*='r0'], div[class*='r1'], .form-check-label, label, .custom-control-label")
-                lbl_count = await option_containers.count()
-                screen_opts = []
-                for l_idx in range(lbl_count):
-                    raw_l = await option_containers.nth(l_idx).inner_text()
-                    c_opt = re.sub(r'^(?:[a-d][.)]|option\s*[a-d][:.]?|\d+[.)])\s*', '', raw_l, flags=re.IGNORECASE).strip()
-                    if c_opt:
-                        screen_opts.append(c_opt)
-
-                ai_solved = solve_question_with_ai(q_text_screen, screen_opts)
-                if ai_solved:
-                    matched_answer_text = ai_solved
-                    gate1_ok = True
-                    logger.info(f"  🧠 [PURE AI LIVE SOLVER Q-{q_num + 1}] Target Answer: '{matched_answer_text}'")
-            except Exception as ai_ex:
-                logger.warning(f"  --> AI Live Solver notice: {ai_ex}")
-
-        # 2. Secondary Engine: JSON Answer Key Fallback (if AI API key is missing or rate limited)
-        if not matched_answer_text and q_text_screen and answers_list:
+        # Step 1: Check Auto-Learning JSON Cache First (Instant 0.01s Match)
+        if q_text_screen and answers_list:
             clean_screen_q = re.sub(r'[^\w\s]', '', q_text_screen) if q_text_screen else ""
             screen_words = set(w for w in clean_screen_q.split() if len(w) >= 3) if clean_screen_q else set()
 
@@ -1082,8 +1062,56 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                             matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
                             matched_json_question = (item.get("question") or item.get("question_keyword") or "")[:50]
                             gate1_ok = True
-                            logger.info(f"  ✔ [VERIFIED JSON QUESTION 100% MATCH Q-{q_num + 1}] '{matched_json_question}...'")
+                            logger.info(f"  ⚡ [CACHED JSON 100% MATCH Q-{q_num + 1}] '{matched_json_question}...' -> Target: '{matched_answer_text}'")
                             break
+
+        # Step 2: AI Live Solver Fallback (If Question is NEW & Not in JSON Cache)
+        if not matched_answer_text and q_text_screen:
+            try:
+                option_containers = target_frame.locator("div[data-region='answer-label'], [aria-labelledby*='answer'], .answer label, div[class*='r0'], div[class*='r1'], .form-check-label, label, .custom-control-label")
+                lbl_count = await option_containers.count()
+                screen_opts = []
+                for l_idx in range(lbl_count):
+                    raw_l = await option_containers.nth(l_idx).inner_text()
+                    c_opt = re.sub(r'^(?:[a-d][.)]|option\s*[a-d][:.]?|\d+[.)])\s*', '', raw_l, flags=re.IGNORECASE).strip()
+                    if c_opt:
+                        screen_opts.append(c_opt)
+
+                ai_solved = solve_question_with_ai(q_text_screen, screen_opts)
+                if ai_solved:
+                    matched_answer_text = ai_solved
+                    gate1_ok = True
+                    logger.info(f"  🧠 [AI LIVE SOLVER Q-{q_num + 1}] Solved NEW question -> '{matched_answer_text}'")
+
+                    # Automatically Save New Question & Answer to Course JSON File
+                    try:
+                        c_name = course_title or "unknown_course"
+                        course_key_file = config.COURSES_DIR / f"{re.sub(r'[^a-zA-Z0-9]+', '_', c_name.lower()).strip('_')}.json"
+                        
+                        if not course_key_file.exists():
+                            with open(course_key_file, "w", encoding="utf-8") as f:
+                                json.dump({"course_name": course_title or "Course", "questions": []}, f, indent=2)
+                        
+                        with open(course_key_file, "r+", encoding="utf-8") as f:
+                            data_j = json.load(f)
+                            q_arr = data_j.get("questions")
+                            if q_arr is None:
+                                q_arr = []
+                                data_j["questions"] = q_arr
+                            
+                            # Avoid duplicate auto-save
+                            existing_qs = set((q.get("question") or "").strip().lower() for q in q_arr)
+                            if q_text_screen.strip().lower() not in existing_qs:
+                                q_arr.append({"question": q_text_screen, "answer": ai_solved})
+                                f.seek(0)
+                                json.dump(data_j, f, indent=2)
+                                f.truncate()
+                                logger.info(f"  💾 [AUTO-LEARNING CACHE] Saved new Q&A to {course_key_file.name}!")
+                    except Exception as save_ex:
+                        logger.warning(f"  --> Auto-cache save notice: {save_ex}")
+            except Exception as ai_ex:
+                logger.warning(f"  --> AI Live Solver notice: {ai_ex}")
+
 
 
         selected_option = False
