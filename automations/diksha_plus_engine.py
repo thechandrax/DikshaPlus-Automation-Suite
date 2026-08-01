@@ -1918,26 +1918,73 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                     raise RuntimeError(f"AI_RATE_LIMIT_EXHAUSTED: Question '{q_text_dom[:45]}...' could not be solved after 30s, 45s, 60s retries.")
 
 
-        # Fill any comment textareas if present
-        textareas = target_scope.locator("textarea:visible, input[type='text']:visible:not([class*='search']):not([id*='search'])")
+        # Process all Textarea / Comment / Text Response Questions in Feedback Form
+        textareas = target_scope.locator("textarea, input[type='text']:not([class*='search']):not([id*='search'])")
         t_count = await textareas.count()
-        for idx in range(t_count):
-            try:
-                ta_el = textareas.nth(idx)
-                if await ta_el.is_visible():
-                    # Check if comment text is specified in JSON
-                    comment_text = "The course content was excellent, highly informative, and well structured."
-                    if answers_list:
-                        for item in answers_list:
-                            if "comment" in item.get("question", "").lower() or "feedback" in item.get("question", "").lower():
-                                comment_text = item.get("answer", comment_text)
-                                break
-                    await ta_el.fill(comment_text)
-                    logger.info(f"  ✍️ [FEEDBACK COMMENT]: Filled response: '{comment_text[:40]}...'")
-            except Exception:
-                pass
+        if t_count > 0:
+            logger.info(f"  --> Found {t_count} Textarea/Comment response fields in Feedback Form. Matching against JSON / AI...")
+            for idx in range(t_count):
+                try:
+                    ta_el = textareas.nth(idx)
+                    if await ta_el.is_visible():
+                        # 1. Extract question text from preceding .que-no or parent wrapper
+                        ta_q_text = ""
+                        try:
+                            parent_wrap = ta_el.locator("xpath=ancestor::*[contains(@class,'feed-ans-div') or contains(@class,'que') or contains(@class,'form-group') or contains(@class,'row')][1]/preceding-sibling::*[contains(@class,'que-no') or contains(@class,'qtext')][1]").first
+                            if await parent_wrap.count() == 0:
+                                parent_wrap = ta_el.locator("xpath=ancestor::*[contains(@class,'que') or contains(@class,'form-group') or contains(@class,'card')][1]").first
+                            if await parent_wrap.count() > 0:
+                                ta_q_text = (await parent_wrap.inner_text()).strip()
+                        except Exception:
+                            pass
+
+                        clean_ta_q = re.sub(r'^\s*(?:\d+[\.\)]|Q\d+[\.\)]?|Question\s*\d+[\.\)]?)\s*', '', ta_q_text, flags=re.IGNORECASE).strip()
+                        
+                        # 2. Check JSON Answer Key first!
+                        matched_ta_ans = None
+                        if answers_list and clean_ta_q:
+                            for item in answers_list:
+                                json_q = normalize_text(item.get("question", ""))
+                                if json_q and (normalize_text(clean_ta_q) in json_q or json_q in normalize_text(clean_ta_q)):
+                                    matched_ta_ans = item.get("answer", "")
+                                    logger.info(f"  🎯 [JSON TEXTAREA MATCH Q{idx+1}]: Found exact answer in JSON: '{matched_ta_ans[:50]}...'")
+                                    break
+
+                        # 3. If NOT found in JSON, call AI Live Solver for Textarea Question!
+                        if not matched_ta_ans and clean_ta_q and len(clean_ta_q) > 10:
+                            try:
+                                ai_ans, _ = await solve_question_with_ai(clean_ta_q, [])
+                                if ai_ans:
+                                    matched_ta_ans = ai_ans
+                                    logger.info(f"  🤖 [AI TEXTAREA SOLVER Q{idx+1}]: AI generated response: '{matched_ta_ans[:50]}...'")
+                            except Exception:
+                                pass
+
+                        # Fallback default comment text
+                        if not matched_ta_ans:
+                            matched_ta_ans = "Overall, it was a highly informative and well-executed training program."
+
+                        await ta_el.fill(matched_ta_ans)
+                        logger.info(f"  ✍️ [FILLED FEEDBACK TEXTAREA Q{idx+1}]: '{matched_ta_ans[:50]}...'")
+
+                        # Auto-save learned Textarea Response into Course JSON
+                        if clean_ta_q and matched_ta_ans:
+                            save_auto_learned_qa(
+                                course_title=course_title,
+                                module_no=module_no or 8,
+                                module_name=module_name or "Feedback Form",
+                                sub_no=sub_no or 1,
+                                sub_name=sub_name or "Feedback Form",
+                                question_text=clean_ta_q,
+                                answer_text=matched_ta_ans,
+                                option_texts=[],
+                                is_feedback=True
+                            )
+                except Exception as ta_ex:
+                    logger.warning(f"  --> Textarea filling notice: {ta_ex}")
     except Exception as f_ex:
         logger.warning(f"  --> Feedback modal processing notice: {f_ex}")
+
 
 
 
