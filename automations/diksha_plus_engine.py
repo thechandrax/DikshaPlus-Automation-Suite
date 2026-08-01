@@ -1953,10 +1953,12 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                 try:
                     ta_el = textareas.nth(idx)
                     if await ta_el.is_visible():
-                        # 1. Extract question text from preceding .que-no or parent wrapper
+                        # 1. Extract question text from preceding div.que-no
                         ta_q_text = ""
                         try:
-                            parent_wrap = ta_el.locator("xpath=ancestor::*[contains(@class,'feed-ans-div') or contains(@class,'que') or contains(@class,'form-group') or contains(@class,'row')][1]/preceding-sibling::*[contains(@class,'que-no') or contains(@class,'qtext')][1]").first
+                            parent_wrap = ta_el.locator("xpath=ancestor::*[contains(@class,'feed-ans-div') or contains(@class,'que') or contains(@class,'form-group') or contains(@class,'row')][1]/preceding-sibling::div[contains(@class,'que-no')][1]").first
+                            if await parent_wrap.count() == 0:
+                                parent_wrap = ta_el.locator("xpath=preceding-sibling::div[contains(@class,'que-no')][1]").first
                             if await parent_wrap.count() == 0:
                                 parent_wrap = ta_el.locator("xpath=ancestor::*[contains(@class,'que') or contains(@class,'form-group') or contains(@class,'card')][1]").first
                             if await parent_wrap.count() > 0:
@@ -1966,6 +1968,15 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
 
                         clean_ta_q = re.sub(r'^\s*(?:\d+[\.\)]|Q\d+[\.\)]?|Question\s*\d+[\.\)]?)\s*', '', ta_q_text, flags=re.IGNORECASE).strip()
                         
+                        # Parse exact question number (e.g. 19, 20, 21)
+                        ta_q_num = None
+                        if ta_q_text:
+                            ta_num_m = re.search(r'^\s*(\d+)[\.\)]', ta_q_text)
+                            if ta_num_m:
+                                ta_q_num = int(ta_num_m.group(1))
+
+                        ta_tag = f"Q{ta_q_num:02d}" if ta_q_num else f"Q{idx+19}"
+
                         # 2. Check JSON Answer Key first!
                         matched_ta_ans = None
                         if answers_list and clean_ta_q:
@@ -1973,7 +1984,7 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                                 json_q = normalize_text(item.get("question", ""))
                                 if json_q and (normalize_text(clean_ta_q) in json_q or json_q in normalize_text(clean_ta_q)):
                                     matched_ta_ans = item.get("answer", "")
-                                    logger.info(f"  🎯 [JSON TEXTAREA MATCH Q{idx+1}]: Found exact answer in JSON: '{matched_ta_ans[:50]}...'")
+                                    logger.info(f"  🎯 [JSON TEXTAREA MATCH {ta_tag}]: Found exact answer in JSON: '{matched_ta_ans[:50]}...'")
                                     break
 
                         # 3. If NOT found in JSON, call AI Live Solver for Textarea Question!
@@ -1982,7 +1993,7 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                                 ai_ans, _ = await solve_question_with_ai(clean_ta_q, [])
                                 if ai_ans:
                                     matched_ta_ans = ai_ans
-                                    logger.info(f"  🤖 [AI TEXTAREA SOLVER Q{idx+1}]: AI generated response: '{matched_ta_ans[:50]}...'")
+                                    logger.info(f"  🤖 [AI TEXTAREA SOLVER {ta_tag}]: AI generated response: '{matched_ta_ans[:50]}...'")
                             except Exception:
                                 pass
 
@@ -1991,7 +2002,8 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                             matched_ta_ans = "Overall, it was a highly informative and well-executed training program."
 
                         await ta_el.fill(matched_ta_ans)
-                        logger.info(f"  ✍️ [FILLED FEEDBACK TEXTAREA Q{idx+1}]: '{matched_ta_ans[:50]}...'")
+                        logger.info(f"  ✍️ [FILLED FEEDBACK TEXTAREA {ta_tag}]: '{matched_ta_ans[:50]}...'")
+
 
                         # Auto-save learned Textarea Response into Course JSON
                         if clean_ta_q and matched_ta_ans:
