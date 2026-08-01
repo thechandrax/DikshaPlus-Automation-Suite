@@ -1722,9 +1722,22 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                     pass
 
 
-    # 4. Close Assessment Modal & Confirm Checkmark
+    # 4. Post-Submission 'Continue' button click (Returns to course page to hydrate 100% checkmark)
+    for frame_target in [target_frame, page] + page.frames:
+        try:
+            post_cont = frame_target.locator("a:has-text('Continue'), button:has-text('Continue'), input[value*='Continue']").first
+            if await post_cont.count() > 0 and await post_cont.is_visible():
+                logger.info("  --> Clicking post-submission 'Continue' button to trigger 100% checkmark sync...")
+                await post_cont.click(force=True)
+                await page.wait_for_timeout(3000)
+                break
+        except Exception:
+            pass
+
+    # 5. Close Activity Modal & Confirm Checkmark
     await close_activity_modal(page)
     await wait_for_server_checkmark(page)
+
 
 
 
