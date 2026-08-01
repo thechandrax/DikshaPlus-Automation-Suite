@@ -248,11 +248,19 @@ def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name,
 
         if not target_sub:
             target_sub = {
+                "module_no": int(module_no) if (module_no and str(module_no).isdigit()) else module_no,
+                "module_name": module_name,
                 "subsection_no": t_sub_no,
                 "subsection_name": t_sub_name,
                 "questions": []
             }
             subsections.append(target_sub)
+        else:
+            if module_no and "module_no" not in target_sub:
+                target_sub["module_no"] = int(module_no) if str(module_no).isdigit() else module_no
+            if module_name and "module_name" not in target_sub:
+                target_sub["module_name"] = module_name
+
 
         questions = target_sub.get("questions")
         if not isinstance(questions, list):
