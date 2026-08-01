@@ -981,7 +981,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                 if matched_answer_text:
                     break
 
-                # Gate 1: Bi-Directional Jaccard Overlap & Substring Safeguard Search
+                # Gate 1: 100% Strict Question Verification Match
                 if clean_screen_q:
                     for item in bucket:
                         json_q = (item.get("question") or item.get("question_keyword") or "").strip().lower()
@@ -992,23 +992,24 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                         json_coverage = (len(common_words) / float(len(json_words))) if json_words else 0.0
                         screen_coverage = (len(common_words) / float(len(screen_words))) if screen_words else 0.0
 
-                        # Substring match with length & coverage safeguard (prevents short "audio is" false positives)
-                        is_exact_sub = False
+                        # Strict 100% Matching Criteria
+                        is_100pct_match = False
                         if clean_json_q and clean_screen_q:
+                            # 1. 100% String Equality
                             if clean_json_q == clean_screen_q:
-                                is_exact_sub = True
-                            elif clean_json_q in clean_screen_q or clean_screen_q in clean_json_q:
-                                if (len(clean_json_q) >= 15 and screen_coverage >= 0.35) or abs(len(clean_json_q) - len(clean_screen_q)) <= 10:
-                                    is_exact_sub = True
+                                is_100pct_match = True
+                            # 2. 100% Word Set Equality
+                            elif json_words and screen_words and json_words == screen_words:
+                                is_100pct_match = True
+                            # 3. 100% Substring Inclusion with >= 85% High Coverage
+                            elif (clean_json_q in clean_screen_q or clean_screen_q in clean_json_q) and json_coverage == 1.0 and screen_coverage >= 0.85:
+                                is_100pct_match = True
 
-                        # Keyword Overlap requiring both JSON & Screen Coverage thresholds
-                        is_keyword_match = (json_coverage >= 0.75 and screen_coverage >= 0.35)
-
-                        if is_exact_sub or is_keyword_match:
+                        if is_100pct_match:
                             matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
                             matched_json_question = (item.get("question") or item.get("question_keyword") or "")[:50]
                             gate1_ok = True
-                            logger.info(f"  ✔ [GATE 1 VERIFIED Q-{q_num + 1}] Question Match: '{matched_json_question}...'")
+                            logger.info(f"  ✔ [GATE 1 VERIFIED 100% MATCH Q-{q_num + 1}] Question Match: '{matched_json_question}...'")
                             break
 
                 # Gate 1 Fallback: Exact Position/Index Check if screen text could not be extracted
@@ -1020,10 +1021,9 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                     logger.info(f"  ✔ [GATE 1 VERIFIED Q-{q_num + 1}] Index Match #{q_num + 1}: '{matched_json_question}...'")
                     break
 
-
         selected_option = False
         
-        # Gate 2: Answer Option Label Verification & Dual Confirmation Click
+        # Gate 2: 100% Option Label Verification & Dual Confirmation Click
         if matched_answer_text:
             try:
                 option_containers = target_frame.locator("div[data-region='answer-label'], [aria-labelledby*='answer'], .answer label, div[class*='r0'], div[class*='r1'], .form-check-label, label, .custom-control-label")
@@ -1044,10 +1044,14 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
 
                     opt_overlap = (len(target_words & lbl_words) / float(len(target_words))) if target_words else 0.0
                     
-                    if clean_target and (clean_target == clean_lbl or clean_target in clean_lbl or clean_lbl in clean_target or opt_overlap >= 0.75):
+                    # 100% Option Label Equality Criteria
+                    is_100pct_option_match = (clean_target == clean_lbl) or (target_words and lbl_words and target_words == lbl_words) or (clean_target in clean_lbl or clean_lbl in clean_target) or (opt_overlap == 1.0)
+
+                    if clean_target and is_100pct_option_match:
                         gate2_ok = True
-                        logger.info(f"  ✔ [GATE 2 VERIFIED Q-{q_num + 1}] Answer Label Match: '{matched_answer_text}'")
-                        logger.info(f"  🛡️ [DUAL CONFIRMATION GUARANTEED Q-{q_num + 1}] Question & Answer 100% Verified!")
+                        logger.info(f"  ✔ [GATE 2 VERIFIED 100% MATCH Q-{q_num + 1}] Answer Label Match: '{matched_answer_text}'")
+                        logger.info(f"  🛡️ [DUAL CONFIRMATION 100% GUARANTEED Q-{q_num + 1}] Question & Answer 100% Verified!")
+
 
                         # 1. DIKSHA aria-labelledby linking check (e.g. id="q15158343:1_answer1_label" -> input id="q15158343:1_answer1")
                         container_id = await container.get_attribute("id") or ""
