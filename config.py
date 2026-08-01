@@ -135,5 +135,14 @@ SELECTORS = {
     "start_assessment_btn": "button#single_button6a6cc3ce57dbc3, .singlebutton.quizstartbuttondiv button[type='submit']",
     "quiz_next_nav": "#mod_quiz-next-nav, input[value='Next Question']",
     "quiz_review_submit_nav": "input[value='Review & Submit']",
-    "quiz_final_submit_btn": "button.btn-primary:has-text('Submit'), input[type='submit'][value*='Submit']"
+    "quiz_final_submit_btn": "button.btn-primary:has-text('Submit'), input[type='submit'][value*='Submit']",
+
+    # Feedback Form Selectors
+    "feedback_question_container": ".que-no, .que, div[class*='que']",
+    "feedback_radio_row": "div.feed-ans-div, div.feed-ans-div > div.form-check",
+    "feedback_radio_input": "input.form-check-input[type='radio'], input[type='radio']",
+    "feedback_radio_label": "label.form-check-label, label[for]",
+    "feedback_textarea_input": "textarea.form-control, textarea",
+    "feedback_submit_btn": "button.submit-feed-btn, #submitFeedbackBtn11, button:has-text('Submit Feedback')"
 }
+
