@@ -952,6 +952,7 @@ async def process_video_activity(page, view_button):
         target_final_buffer_time = max(0, duration - 45)
         
         while True:
+            await check_pause_status(page)
             cur_time = 0.0
             is_paused = False
             ready_state = 4
@@ -1018,7 +1019,7 @@ async def process_video_activity(page, view_button):
         # Safeguard Loop: Periodically verifies video is playing, auto-resuming if paused by network/browser
         start_wait_t = time.time()
         while time.time() - start_wait_t < final_wait:
-            await check_pause_status()
+            await check_pause_status(page)
             try:
                 v_st = await target_frame.evaluate("""
                     () => {
@@ -1046,7 +1047,7 @@ async def process_video_activity(page, view_button):
         logger.info("  --> Video playback active (default watch duration)...")
         start_wait_t = time.time()
         while time.time() - start_wait_t < config.MIN_VIDEO_WATCH_SECONDS:
-            await check_pause_status()
+            await check_pause_status(page)
             try:
                 await target_frame.evaluate("() => { const v = document.querySelector('video'); if (v && v.paused) v.play().catch(() => {}); }")
             except Exception:
