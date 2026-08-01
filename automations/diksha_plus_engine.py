@@ -1012,16 +1012,8 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                             logger.info(f"  ✔ [VERIFIED QUESTION 100% MATCH Q-{q_num + 1}] '{matched_json_question}...'")
                             break
 
-                # Gate 1 Fallback: Exact Position/Index Check if screen text could not be extracted
-                if not matched_answer_text and q_num < len(bucket):
-                    pos_item = bucket[q_num]
-                    matched_answer_text = (pos_item.get("answer") or pos_item.get("correct_option") or "").strip()
-                    matched_json_question = (pos_item.get("question") or pos_item.get("question_keyword") or "")[:50]
-                    gate1_ok = True
-                    logger.info(f"  ✔ [VERIFIED INDEX 100% MATCH Q-{q_num + 1}] '{matched_json_question}...'")
-                    break
-
         selected_option = False
+
         
         # Gate 2: 100% Option Label Verification & Exact Target Radio Click
         if matched_answer_text:
