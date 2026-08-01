@@ -34,6 +34,44 @@ You can specify users and courses in Railway Variables using **Index Numbers**, 
    * **By Course Title / Keyword**: `SELECTED_COURSE` = `Power of Audio` (or `audio`, `NEP 2020`, `NEP`, `Action Research`)
 
 
+### 💡 EXACT ANSWER: WHAT HAPPENS WHEN `AUTO_START = False` & `SELECTED_USER = all`
+
+---
+
+### ⏸️ Result: **TOTAL STANDBY / PAUSE MODE (0% Execution)**
+
+Because `AUTO_START` is the **Master On/Off Safety Switch**, setting `AUTO_START = False` takes top priority over everything else:
+
+1. **Automation Pauses Completely**:
+   * **NO browser will open**.
+   * **NO logins will happen**.
+   * **0 API calls / 0 credits will be used**.
+
+2. **Container Log Message on Railway**:
+   DIKSHA+ will print this exact message in the Railway logs and stand by quietly:
+   ```text
+   ===================================================================
+    ⏸️ [RAILWAY STANDBY MODE] AUTO_START is set to False.
+    Container is standing by on Railway Cloud. Automation paused.
+   ===================================================================
+   ```
+
+3. **What Happens When You Later Change `AUTO_START = True`?**
+   * The container will wake up immediately!
+   * Because `SELECTED_USER = all` and `SELECTED_COURSE = all`, it will automatically process **ALL 5 User Accounts** and **ALL Enrolled Courses** one after another in a clean batch!
+
+---
+
+### 📊 Summary Table of Control Settings:
+
+| `AUTO_START` | `SELECTED_USER` | `SELECTED_COURSE` | Behavior on Railway |
+| :---: | :---: | :---: | :--- |
+| **`False`** | `all` | `all` | ⏸️ **STANDBY / PAUSED**: Container stays idle. Nothing runs. |
+| **`True`** | `all` | `all` | 🚀 **FULL AUTOMATION**: Runs ALL 5 users & ALL courses sequentially! |
+| **`True`** | `1` | `audio` | 🎯 **SINGLE TARGET**: Runs User #1 on "Power of Audio" course only! |
+
+
+
 ---
 
 ## 🔑 2. Do I Need to Add Gemini API Keys in Railway Variables?
