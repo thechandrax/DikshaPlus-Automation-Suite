@@ -1,6 +1,6 @@
 # ⚙️ Automation Controls & Configuration Guide
 
-This guide explains all configuration settings, directory paths, and runtime behavior controls inside `config.py` for **DIKSHA+ Automation Suite**.
+This guide explains all configuration settings, directory paths, keyboard hotkey controls, and runtime behavior controls inside `config.py` for **DIKSHA+ Automation Suite**.
 
 ---
 
@@ -16,11 +16,24 @@ SCREENSHOT_DIR = OUTPUT_DIR / "screenshots"  # Single official screenshot folder
 COURSES_DIR = DATA_DIR / "courses"
 ```
 
-> **Note**: Legacy `data/screenshots/` has been removed. All screenshots are stored exclusively inside `output/screenshots/`.
+> **Note**: Legacy `data/screenshots/` and temporary `scratch/` folders have been removed. All output screenshots are stored exclusively inside `output/screenshots/`.
 
 ---
 
-## 🔑 2. Gemini AI Multi-Key Pool Configuration (`config.py`)
+## ⏸️ 2. Hot-Key Live Pause & Resume Controls
+
+DIKSHA+ includes an active background daemon thread (`msvcrt`) listening for keyboard shortcuts in the terminal window:
+
+| Hotkey | Action | Terminal Output |
+| :--- | :--- | :--- |
+| **`P`** | Toggle Pause / Resume | `⏸️ [AUTOMATION PAUSED] Press 'P' or 'Spacebar' in terminal to RESUME...` |
+| **`Spacebar`** | Toggle Pause / Resume | `▶️ [AUTOMATION RESUMED] Continuing DIKSHA execution...` |
+
+When paused, Playwright safely holds execution without missing server sync checkmarks or dropping browser context. Pressing `P` or `Spacebar` again resumes execution instantly!
+
+---
+
+## 🔑 3. Gemini AI Multi-Key Pool Configuration (`config.py`)
 
 `config.py` dynamically decrypts and loads the Gemini API Key Pool from 256-bit encrypted ciphers and environment variables:
 
@@ -43,7 +56,7 @@ AI_LIVE_SOLVER_ENABLED = True
 
 ---
 
-## 🕹️ 3. Automation Pacing & Behavior Controls
+## 🕹️ 4. Automation Pacing & Behavior Controls
 
 | Setting | Default Value | Description |
 | :--- | :--- | :--- |
@@ -57,7 +70,7 @@ AI_LIVE_SOLVER_ENABLED = True
 
 ---
 
-## 🔐 4. Multi-User Credentials Registry
+## 🔐 5. Multi-User Credentials Registry
 
 `config.py` maintains an encrypted user registry dynamically decrypted in memory using 256-Bit cryptographic security (`utils/security.py`):
 
@@ -69,5 +82,4 @@ USER_CREDENTIALS_ENCRYPTED = {
     "7044015007": "ENC256:S0R5L4ta0UzY",
     "7908555852": "ENC256:S0R5KItAxBw=",
 }
-```
 ```

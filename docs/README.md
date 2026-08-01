@@ -9,6 +9,7 @@ Welcome to the complete documentation hub for **DIKSHA+ Automation Suite**. Ever
 1. 📖 **[01_USER_GUIDE.md](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/01_USER_GUIDE.md)**
    * 1-Click execution scripts (`diksha+.bat` and `setup.bat`).
    * Registered user selection menu (`main.py`).
+   * **Hot-Key Live Pause/Resume Protocol** (`Press 'P' or 'Spacebar' in terminal`).
    * Step-by-step course execution workflow (Login $\rightarrow$ My Learning $\rightarrow$ Ongoing Courses $\rightarrow$ Activity Loop).
 
 2. 🔐 **[02_MANAGE_USERS_AND_SECURITY.md](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/02_MANAGE_USERS_AND_SECURITY.md)**
@@ -18,13 +19,16 @@ Welcome to the complete documentation hub for **DIKSHA+ Automation Suite**. Ever
 
 3. 📝 **[03_ANSWER_KEYS_AND_QUIZZES.md](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/03_ANSWER_KEYS_AND_QUIZZES.md)**
    * **Gemini AI Multi-Key Live Solver Engine** (`gemini-flash-latest` / `gemini-2.0-flash`).
-   * **Official 2025/2026 Google API Standard** (`x-goog-api-key` header protocol).
-   * **Structured Sequential Auto-Learning Storage** (`module_no`, `module_name`, `subsection_no`, `subsection_name`, `questions`).
-   * **Dual-Pass 100% Exact Matching** (Gate 1 `⚡ [VERIFIED JSON 100% MATCH Q-x]` & Gate 2 option label target locator).
-   * Complete H5P & Formative Assessment activity automation.
+   * **3-Attempt AI Retry Protocol** & **3s Pacing Delay**.
+   * **Unicode Apostrophe & Text Normalization** (`normalize_text()` converting `’` / `\u2019` to `'`).
+   * **Question 1 Navigation Reset Protocol** (`#quiznavbutton1`).
+   * **4-Tier DOM Radio Input Locator** (`.answer > div.r0`, `.answer > div.r1`, `preceding-sibling::input[@type='radio']`).
+   * **Structured Auto-Learning Storage** (`module_no`, `module_name`, `subsection_no`, `subsection_name`, `questions`).
+   * **Standardized Log Format Specification** (`[QUESTION-03]`, `[OPTIONS]`, `[AI LIVE]`, `[AUTO-LEARNING SAVE]` with `||` separators).
 
 4. ⚙️ **[04_AUTOMATION_CONTROLS_AND_CONFIG.md](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/04_AUTOMATION_CONTROLS_AND_CONFIG.md)**
    * Dynamic Multi-API key pool loading & rate limit failover.
+   * Background hotkey daemon listener (`msvcrt`).
    * Screenshot directory configuration (`output/screenshots/`).
    * Playwright pacing controls (`SLOMO_MS`, `AUTOMATIC_FINAL_SUBMIT`, `KEEP_BROWSER_OPEN`).
 
@@ -40,13 +44,13 @@ Welcome to the complete documentation hub for **DIKSHA+ Automation Suite**. Ever
 Diksha+ Automation Suite/
 ├── docs/                                  # Complete Master Documentation Folder
 │   ├── README.md                          # Master documentation index & summary
-│   ├── 01_USER_GUIDE.md                   # Full user operational guide
+│   ├── 01_USER_GUIDE.md                   # Full user operational guide & Hotkeys
 │   ├── 02_MANAGE_USERS_AND_SECURITY.md    # Security & User Management
 │   ├── 03_ANSWER_KEYS_AND_QUIZZES.md      # AI Live Solver & Auto-Learning Storage
 │   ├── 04_AUTOMATION_CONTROLS_AND_CONFIG.md# Config & Pacing Controls
 │   └── 05_RAILWAY_DEPLOYMENT_GUIDE.md     # Cloud Deployment Guide
 ├── automations/
-│   └── diksha_plus_engine.py              # Playwright Automation & AI Live Solver
+│   └── diksha_plus_engine.py              # Playwright Automation, AI Live Solver & Hotkey listener
 ├── config.py                              # Dynamic System Configuration & 256-bit encrypted keys
 ├── data/
 │   └── courses/                           # Auto-learning Course Answer Keys
@@ -63,4 +67,3 @@ Diksha+ Automation Suite/
 ├── diksha+.bat                            # 1-Click Windows Batch Launcher
 └── setup.bat                              # 1-Click Installer Script
 ```
-

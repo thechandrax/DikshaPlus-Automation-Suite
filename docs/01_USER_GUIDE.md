@@ -46,7 +46,22 @@ Upon startup, DIKSHA+ verifies authorization via a 256-Bit Cryptographic SHA-256
 
 ---
 
-## 👤 3. Account Selection Menu
+## ⏸️ 3. Built-in Hotkey Live Pause & Resume
+
+DIKSHA+ features an active background daemon thread (`msvcrt`) listening for keyboard shortcuts in the terminal window:
+
+* **Press `P` or `Spacebar`**: Toggles **PAUSE / RESUME** in real-time.
+* When paused, the log displays:
+  ```text
+  =================================================================
+    ⏸️ [AUTOMATION PAUSED] Press 'P' or 'Spacebar' in terminal to RESUME...
+  =================================================================
+  ```
+* Pressing `P` or `Spacebar` again safely resumes Playwright execution without interrupting state!
+
+---
+
+## 👤 4. Account Selection Menu
 
 After PIN verification, the system lists all registered student accounts:
 
@@ -65,13 +80,9 @@ After PIN verification, the system lists all registered student accounts:
 👉 Select user number (1-5) or type custom email/mobile:
 ```
 
-### Input Options:
-* **Select Registered Account**: Type `1`, `2`, `3`, `4`, or `5` and press <kbd>Enter</kbd>.
-* **Custom Account**: Type any unregistered email or 10-digit mobile number, then enter the password when prompted.
-
 ---
 
-## 🎓 4. Dashboard & Course Selection
+## 🎓 5. Dashboard & Course Selection
 
 Once logged in, the suite scans **Ongoing Courses** and **Finished Courses** tabs and displays the real-time progress dashboard:
 
@@ -90,31 +101,24 @@ Once logged in, the suite scans **Ongoing Courses** and **Finished Courses** tab
  👉 Select course number to automate (1-4) [Enter for 1]:
 ```
 
-* Enter the target course number (e.g. `1` or `2`) and press <kbd>Enter</kbd>.
-
 ---
 
-## ⚙️ 5. Activity Execution Pipeline
+## ⚙️ 6. Activity Execution Pipeline
 
 When a course is selected, DIKSHA+ executes each activity type automatically:
 
 ### A. Video Activities (`act_type="url"`)
 * **Multi-Speed Acceleration**: Plays at 16x/4x speed during playback, then slows to 1.0x for the final 45 seconds to trigger server `ended` telemetry.
-* **100% Checkmark Verification**: Waits 15 seconds for DIKSHA server checkmark confirmation. If checkmark is not confirmed (e.g., partial 97%), performs 1-time reload/replay recovery.
+* **100% Checkmark Verification**: Waits 15 seconds for DIKSHA server checkmark confirmation.
 
 ### B. PDF Document Activities (`act_type="resource"`)
 * **Page-Down Simulation**: Simulates `PageDown` keystrokes with 2.5s reading pacing per page.
-* **End-of-Doc Scroll**: Auto-scrolls `.pdf-viewer` and `iframe` container elements to exact bottom and presses `End`.
+* **End-of-Doc Scroll**: Auto-scrolls `.pdf-viewer` and `iframe` container elements to exact bottom.
 
-### C. H5P Interactive Quizzes (`act_type="h5pactivity"`)
-* Presses `Start Quiz`.
-* Extracts H5P question text & options.
-* Checks auto-learning JSON cache (`⚡ [VERIFIED JSON 100% MATCH Q-x]`).
-* If NEW, applies 3-second pacing delay, solves live via **Gemini AI Multi-Key Pool** (`x-goog-api-key` header, `gemini-flash-latest` / `gemini-2.0-flash`), clicks matching H5P radio option, and auto-saves to JSON cache.
-
-### D. Formative Assessments / Quizzes (`act_type="quiz"`)
-* Dismisses banner GIF popups (`button.quiz-popup-close`).
-* Checks auto-learning JSON cache (`⚡ [VERIFIED JSON 100% MATCH Q-x]`).
-* If NEW, applies 3-second pacing delay, solves questions live via **Gemini AI Multi-Key Pool**, targets exact `<div data-region='answer-label'>` radio inputs, and auto-saves sequentially under module and subsection hierarchies to JSON.
-* Executes automatic final quiz submission (`AUTOMATIC_FINAL_SUBMIT = True`).
-
+### C. Formative Assessments & Quizzes (`act_type="quiz"`)
+* **Question 1 Navigation Reset**: When opening or continuing an attempt ("Continue Assessment"), DIKSHA+ automatically detects Question 1 in the right-side Quiz Navigation panel (`#quiznavbutton1`), clicks it, and starts solving from Question 1!
+* **Text Normalization**: `normalize_text()` converts Unicode curly apostrophes (`’`) to standard ASCII straight keyboard apostrophes (`'`).
+* **AI Live Solver & Multi-Key Pool**: If a question is not in local JSON cache, Gemini AI solves it live with a 3s pacing delay.
+* **4-Tier Radio Locator**: Targets `.answer > div.r0`, `.answer > div.r1`, and `preceding-sibling::input[@type='radio']` for 100% radio click precision.
+* **Auto-Learning Storage**: Automatically saves solved Q&As to `data/courses/<course_name>.json` under module and subsection hierarchies.
+* **Automatic Submission**: Executes final submission (`AUTOMATIC_FINAL_SUBMIT = True`).
