@@ -1768,11 +1768,13 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
     logger.info(f" 📝 [FEEDBACK FORM] Opening Feedback Form for {ctx_str}...")
     logger.info("=" * 50)
 
-    # 1. Click the brown View / Feedback button
+    # 1. Click the View / Feedback button explicitly
     try:
+        view_id = await view_button.get_attribute("data-id") or ""
         await view_button.scroll_into_view_if_needed()
         await view_button.click(force=True)
-        await page.wait_for_timeout(3000)
+        logger.info(f"  --> Clicked Feedback View button (data-id='{view_id}'). Waiting 4s for Feedback page/modal to hydrate...")
+        await page.wait_for_timeout(4000)
     except Exception as ex:
         logger.warning(f"  --> Direct click notice on Feedback button: {ex}")
 
@@ -1786,23 +1788,30 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                 "button:has-text('Answer the questions')",
                 "a:has-text('Complete Feedback')",
                 "button:has-text('Complete Feedback')",
-                ".singlebutton a",
-                ".singlebutton button",
-                "a.btn-primary"
+                "a[href*='mod/feedback/complete.php']",
+                "form[action*='complete.php'] button",
+                "form[action*='complete.php'] input",
+                ".singlebutton a[href*='feedback']",
+                ".singlebutton button"
             ]
             for sel in ans_selectors:
                 ans_btn = frame_target.locator(sel).first
                 if await ans_btn.count() > 0 and await ans_btn.is_visible():
+                    cand_id = await ans_btn.get_attribute("data-id") or ""
                     btn_t = (await ans_btn.inner_text()).strip()
-                    logger.info(f"  --> Found Feedback launch link '{btn_t}' ({sel})! Clicking to open complete.php...")
-                    await ans_btn.click(force=True)
-                    clicked_ans = True
-                    await page.wait_for_timeout(4000)
-                    break
+                    
+                    # Ensure we are clicking the inner launch link, NOT re-clicking the View button!
+                    if cand_id != view_id and btn_t.lower() not in ("view", ""):
+                        logger.info(f"  --> Found Feedback launch link '{btn_t}' ({sel})! Clicking to open complete.php...")
+                        await ans_btn.click(force=True)
+                        clicked_ans = True
+                        await page.wait_for_timeout(4000)
+                        break
             if clicked_ans:
                 break
         except Exception:
             pass
+
 
     # Fallback JS click for 'Answer the questions...' link
     if not clicked_ans:
