@@ -1028,52 +1028,12 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
         if q_text_screen:
             logger.info(f"  [Q-{q_num + 1} SCREEN TEXT]: '{q_text_screen[:70]}...'")
 
-        # Dual Confirmation Guard Protocol: Gate 1 (Question Verification) & Gate 2 (Option Label Verification)
+        # Dual Confirmation Guard Protocol: 100% Direct AI Live Solver First Engine
         matched_answer_text = None
-        matched_json_question = ""
         gate1_ok = False
 
-        if answers_list:
-            clean_screen_q = re.sub(r'[^\w\s]', '', q_text_screen) if q_text_screen else ""
-            screen_words = set(w for w in clean_screen_q.split() if len(w) >= 3) if clean_screen_q else set()
-
-            for bucket in search_buckets:
-                if matched_answer_text:
-                    break
-
-                # Gate 1: 100% Strict Question Verification Match
-                if clean_screen_q:
-                    for item in bucket:
-                        json_q = (item.get("question") or item.get("question_keyword") or "").strip().lower()
-                        clean_json_q = re.sub(r'[^\w\s]', '', json_q)
-                        json_words = set(w for w in clean_json_q.split() if len(w) >= 3)
-                        
-                        common_words = json_words & screen_words
-                        json_coverage = (len(common_words) / float(len(json_words))) if json_words else 0.0
-                        screen_coverage = (len(common_words) / float(len(screen_words))) if screen_words else 0.0
-
-                        # Strict 100% Matching Criteria
-                        is_100pct_match = False
-                        if clean_json_q and clean_screen_q:
-                            # 1. 100% String Equality
-                            if clean_json_q == clean_screen_q:
-                                is_100pct_match = True
-                            # 2. 100% Word Set Equality
-                            elif json_words and screen_words and json_words == screen_words:
-                                is_100pct_match = True
-                            # 3. 100% Substring Inclusion with >= 85% High Coverage
-                            elif (clean_json_q in clean_screen_q or clean_screen_q in clean_json_q) and json_coverage == 1.0 and screen_coverage >= 0.85:
-                                is_100pct_match = True
-
-                        if is_100pct_match:
-                            matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
-                            matched_json_question = (item.get("question") or item.get("question_keyword") or "")[:50]
-                            gate1_ok = True
-                            logger.info(f"  ✔ [VERIFIED QUESTION 100% MATCH Q-{q_num + 1}] '{matched_json_question}...'")
-                            break
-
-        # AI Live Solver Fallback if question was not matched in JSON answer key
-        if not matched_answer_text and q_text_screen:
+        # 1. Primary Engine: Direct AI Live Solver
+        if q_text_screen:
             try:
                 option_containers = target_frame.locator("div[data-region='answer-label'], [aria-labelledby*='answer'], .answer label, div[class*='r0'], div[class*='r1'], .form-check-label, label, .custom-control-label")
                 lbl_count = await option_containers.count()
@@ -1087,25 +1047,44 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                 ai_solved = solve_question_with_ai(q_text_screen, screen_opts)
                 if ai_solved:
                     matched_answer_text = ai_solved
-                    logger.info(f"  ✔ [AI LIVE SOLVER VERIFIED Q-{q_num + 1}] Target Answer: '{matched_answer_text}'")
-
-                    # Auto-cache to data/courses/<course_name>.json
-                    try:
-                        c_name = course_title or "unknown_course"
-                        course_key_file = config.COURSES_DIR / f"{re.sub(r'[^a-zA-Z0-9]+', '_', c_name.lower()).strip('_')}.json"
-                        if course_key_file.exists():
-                            with open(course_key_file, "r+", encoding="utf-8") as f:
-                                data_j = json.load(f)
-                                q_arr = data_j.get("questions") or data_j.get("answers") or []
-                                q_arr.append({"question": q_text_screen, "answer": ai_solved})
-                                f.seek(0)
-                                json.dump(data_j, f, indent=2)
-                                f.truncate()
-                            logger.info(f"  --> Auto-cached AI solved question to {course_key_file.name}!")
-                    except Exception:
-                        pass
+                    gate1_ok = True
+                    logger.info(f"  🧠 [PURE AI LIVE SOLVER Q-{q_num + 1}] Target Answer: '{matched_answer_text}'")
             except Exception as ai_ex:
                 logger.warning(f"  --> AI Live Solver notice: {ai_ex}")
+
+        # 2. Secondary Engine: JSON Answer Key Fallback (if AI API key is missing or rate limited)
+        if not matched_answer_text and q_text_screen and answers_list:
+            clean_screen_q = re.sub(r'[^\w\s]', '', q_text_screen) if q_text_screen else ""
+            screen_words = set(w for w in clean_screen_q.split() if len(w) >= 3) if clean_screen_q else set()
+
+            for bucket in search_buckets:
+                if matched_answer_text:
+                    break
+
+                if clean_screen_q:
+                    for item in bucket:
+                        json_q = (item.get("question") or item.get("question_keyword") or "").strip().lower()
+                        clean_json_q = re.sub(r'[^\w\s]', '', json_q)
+                        json_words = set(w for w in clean_json_q.split() if len(w) >= 3)
+                        
+                        common_words = json_words & screen_words
+                        json_coverage = (len(common_words) / float(len(json_words))) if json_words else 0.0
+                        screen_coverage = (len(common_words) / float(len(screen_words))) if screen_words else 0.0
+
+                        is_100pct_match = False
+                        if clean_json_q and clean_screen_q:
+                            if clean_json_q == clean_screen_q or (json_words and screen_words and json_words == screen_words):
+                                is_100pct_match = True
+                            elif (clean_json_q in clean_screen_q or clean_screen_q in clean_json_q) and json_coverage == 1.0 and screen_coverage >= 0.85:
+                                is_100pct_match = True
+
+                        if is_100pct_match:
+                            matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
+                            matched_json_question = (item.get("question") or item.get("question_keyword") or "")[:50]
+                            gate1_ok = True
+                            logger.info(f"  ✔ [VERIFIED JSON QUESTION 100% MATCH Q-{q_num + 1}] '{matched_json_question}...'")
+                            break
+
 
         selected_option = False
 
