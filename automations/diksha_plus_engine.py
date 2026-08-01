@@ -1777,32 +1777,54 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
         logger.warning(f"  --> Direct click notice on Feedback button: {ex}")
 
     # 2. Check across page and all frames for 'Answer the questions...' or launch link
+    clicked_ans = False
     for frame_target in [page] + page.frames:
         try:
-            ans_btn = frame_target.locator("a:has-text('Answer the questions'), button:has-text('Answer the questions'), a[href*='complete.php'], button:has-text('Complete Feedback'), a:has-text('Complete Feedback')").first
-            if await ans_btn.count() > 0 and await ans_btn.is_visible():
-                logger.info("  --> Clicking 'Answer the questions...' link...")
-                await ans_btn.click(force=True)
-                await page.wait_for_timeout(3000)
+            ans_selectors = [
+                "a[href*='complete.php']",
+                "a:has-text('Answer the questions')",
+                "button:has-text('Answer the questions')",
+                "a:has-text('Complete Feedback')",
+                "button:has-text('Complete Feedback')",
+                ".singlebutton a",
+                ".singlebutton button",
+                "a.btn-primary"
+            ]
+            for sel in ans_selectors:
+                ans_btn = frame_target.locator(sel).first
+                if await ans_btn.count() > 0 and await ans_btn.is_visible():
+                    btn_t = (await ans_btn.inner_text()).strip()
+                    logger.info(f"  --> Found Feedback launch link '{btn_t}' ({sel})! Clicking to open complete.php...")
+                    await ans_btn.click(force=True)
+                    clicked_ans = True
+                    await page.wait_for_timeout(4000)
+                    break
+            if clicked_ans:
                 break
         except Exception:
             pass
 
     # Fallback JS click for 'Answer the questions...' link
-    for frame_target in [page] + page.frames:
-        try:
-            await frame_target.evaluate("""() => {
-                const links = Array.from(document.querySelectorAll('a, button, input[type="submit"]'));
-                const ans = links.find(l => {
-                    const txt = (l.innerText || l.value || '').toLowerCase();
-                    const href = (l.href || '').toLowerCase();
-                    return href.includes('complete.php') || txt.includes('answer the questions') || txt.includes('complete feedback');
-                });
-                if (ans) { ans.click(); return true; }
-                return false;
-            }""")
-        except Exception:
-            pass
+    if not clicked_ans:
+        for frame_target in [page] + page.frames:
+            try:
+                clicked_ans = await frame_target.evaluate("""() => {
+                    const links = Array.from(document.querySelectorAll('a, button, input[type="submit"]'));
+                    const ans = links.find(l => {
+                        const txt = (l.innerText || l.value || '').toLowerCase();
+                        const href = (l.href || '').toLowerCase();
+                        return href.includes('complete.php') || txt.includes('answer the questions') || txt.includes('complete feedback');
+                    });
+                    if (ans) { ans.click(); return true; }
+                    return false;
+                }""")
+                if clicked_ans:
+                    logger.info("  --> JS fallback successfully clicked 'Answer the questions...' link! Waiting 4s for complete.php...")
+                    await page.wait_for_timeout(4000)
+                    break
+            except Exception:
+                pass
+
 
     await page.wait_for_timeout(2000)
 
