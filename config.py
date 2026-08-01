@@ -9,10 +9,12 @@ from pathlib import Path
 # Base Directories
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
-SCREENSHOT_DIR = DATA_DIR / "screenshots"
+OUTPUT_DIR = BASE_DIR / "output"
+SCREENSHOT_DIR = OUTPUT_DIR / "screenshots"
 
-for d in [DATA_DIR]:
+for d in [DATA_DIR, OUTPUT_DIR, SCREENSHOT_DIR]:
     d.mkdir(parents=True, exist_ok=True)
+
 
 
 # Target Portal URLs
