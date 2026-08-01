@@ -44,7 +44,7 @@ def display_interactive_user_menu():
 
     if not sys.stdin.isatty():
         import os
-        env_user = os.getenv("SELECTED_USER", "1").strip()
+        env_user = os.getenv("SELECTED_USER", "").strip()
         if env_user:
             clean_env_u = env_user.lower()
             if clean_env_u == "all":
@@ -71,11 +71,11 @@ def display_interactive_user_menu():
                     logger.info(f"  🎯 [RAILWAY USER SELECTION] Matched Account by Keyword '{env_user}': '{disp_name}' ({matched_user}).")
                     return [(matched_user, config.USER_CREDENTIALS[matched_user])]
 
-        # Ready-to-run Default to User #1
-        selected_user = user_keys[0]
-        disp_name = config.USER_NAMES.get(selected_user, selected_user)
-        logger.info(f"  🎯 [RAILWAY USER SELECTION] Defaulting to Account #1: '{disp_name}' ({selected_user}).")
-        return [(selected_user, config.USER_CREDENTIALS[selected_user])]
+        logger.warning("\n===================================================================\n ⏸️ [MANUAL USER CONFIGURATION REQUIRED ON RAILWAY]\n No SELECTED_USER variable configured in Railway Variables.\n Default auto-run selection is DISABLED per user preference.\n Please set SELECTED_USER in Railway Variables (e.g., 1, 2, 3, or all) to start.\n===================================================================\n")
+        import time
+        while True:
+            time.sleep(3600)
+
 
 
 

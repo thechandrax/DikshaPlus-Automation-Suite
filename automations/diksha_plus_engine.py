@@ -745,7 +745,7 @@ def display_interactive_course_menu(courses):
     env_course = os.getenv("SELECTED_COURSE", "").strip()
 
     if not sys.stdin.isatty():
-        env_course = os.getenv("SELECTED_COURSE", "1").strip()
+        env_course = os.getenv("SELECTED_COURSE", "").strip()
         if env_course:
             clean_env_c = env_course.lower()
             if clean_env_c == "all":
@@ -769,11 +769,9 @@ def display_interactive_course_menu(courses):
                     logger.info(f"  🎯 [RAILWAY COURSE SELECTION] Matched Course by Keyword '{env_course}': Course #{matched_c['index']} - '{matched_c['title']}'.")
                     return [matched_c]
 
-        # Ready-to-run Default to Course #1
-        if courses:
-            logger.info(f"  🎯 [RAILWAY COURSE SELECTION] Defaulting to Course #1: '{courses[0]['title']}'.")
-            return [courses[0]]
+        logger.warning("\n===================================================================\n ⏸️ [MANUAL COURSE CONFIGURATION REQUIRED ON RAILWAY]\n No SELECTED_COURSE variable configured in Railway Variables.\n Default auto-run selection is DISABLED per user preference.\n Please set SELECTED_COURSE in Railway Variables (e.g., 1, 2, 3, or all) to start.\n===================================================================\n")
         return None
+
 
 
 
