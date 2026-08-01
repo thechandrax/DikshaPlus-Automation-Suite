@@ -1595,11 +1595,21 @@ async def is_header_100_percent_complete(header):
 
     return False
 
-async def process_course_modules(page, answer_key=None):
+async def process_course_modules(page, answer_key=None, course_title="Unknown Course"):
     """
     Clicks 'Lessons' tab (waits 6s for server hydration), lists all Main Modules,
     auto-expands 50%/0% incomplete modules, and executes items without checkmarks.
     """
+    if not course_title or course_title == "Unknown Course":
+        try:
+            h_el = page.locator(".course-title, .page-title, .course-header h1, h1").first
+            if await h_el.count() > 0 and await h_el.is_visible():
+                extracted_t = (await h_el.inner_text()).strip()
+                if extracted_t:
+                    course_title = extracted_t
+        except Exception:
+            pass
+
     logger.info("[COURSE MODULES] Checking for 'Lessons' tab...")
     try:
         lessons_tab = page.locator(config.SELECTORS["lessons_tab"]).first
@@ -1610,6 +1620,7 @@ async def process_course_modules(page, answer_key=None):
             await page.wait_for_timeout(6000)
     except Exception as e:
         logger.warning(f"  --> Lessons tab click notice: {e}")
+
 
     logger.info("[ACCORDION ENGINE] Scanning course section accordions...")
     
@@ -1811,6 +1822,12 @@ async def process_course_modules(page, answer_key=None):
 
 
                     try:
+                        await btn.scroll_into_view_if_needed()
+                        await page.wait_for_timeout(300)
+                    except Exception:
+                        pass
+
+                    try:
                         if act_type == "url":
                             await process_video_activity(page, btn)
                         elif act_type == "resource":
@@ -1819,15 +1836,20 @@ async def process_course_modules(page, answer_key=None):
                             await process_h5p_activity(page, btn, answer_key, course_title=course_title)
 
                         elif act_type == "quiz":
-                            await process_quiz_assessment(page, btn, answer_key, module_name=header_title, module_no=i+1, sub_name=btn_text, sub_no=j, course_title=course_title)
+                            await process_quiz_assessment(page, btn, answer_key, module_name=header_title, module_no=i, sub_name=btn_text, sub_no=j, course_title=course_title)
 
                         else:
+                            try:
+                                await btn.scroll_into_view_if_needed()
+                            except Exception:
+                                pass
                             await btn.click(force=True)
                             await page.wait_for_timeout(3000)
                             await close_activity_modal(page)
                             await wait_for_server_checkmark(page)
                     except Exception as item_ex:
                         logger.error(f"     [-] Subsection execution notice: {item_ex}")
+
 
                     processed_any = True
                     # DIKSHA Server unlock sync delay between subsections
@@ -1953,7 +1975,17 @@ async def run_diksha_automation(target_course_url=None, username=None, password=
             logger.info(f"Opening target course URL: {target_course_url}")
             await page.goto(target_course_url, wait_until="domcontentloaded")
             await page.wait_for_timeout(3000)
-            await process_course_modules(page, answer_key)
+            
+            t_title = "Target Course"
+            try:
+                h_el = page.locator(".course-title, .page-title, .course-header h1, h1").first
+                if await h_el.count() > 0 and await h_el.is_visible():
+                    t_title = (await h_el.inner_text()).strip()
+            except Exception:
+                pass
+            
+            c_key = load_answer_key(t_title)
+            await process_course_modules(page, c_key, course_title=t_title)
         else:
             await navigate_to_my_learning(page)
             enrolled_courses = await fetch_enrolled_courses(page)
@@ -1979,7 +2011,8 @@ async def run_diksha_automation(target_course_url=None, username=None, password=
                     course_answer_key = load_answer_key(c['title'])
                     
                     # Run activity modules for this course
-                    await process_course_modules(page, course_answer_key)
+                    await process_course_modules(page, course_answer_key, course_title=c['title'])
+
 
 
 
