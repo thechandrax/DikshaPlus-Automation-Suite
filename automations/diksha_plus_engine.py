@@ -140,10 +140,11 @@ def extract_all_qa_items(answer_key):
             q_arr = sub.get("questions") or sub.get("answers") or []
             for item in q_arr:
                 qa_list.append({
-                    "module_no": answer_key.get("module_no"),
-                    "module_name": answer_key.get("module_name"),
+                    "module_no": sub.get("module_no") or answer_key.get("module_no"),
+                    "module_name": sub.get("module_name") or answer_key.get("module_name"),
                     "subsection_no": sub_no,
                     "subsection_name": sub_name,
+
                     "question": normalize_text(item.get("question") or item.get("question_keyword") or ""),
                     "answer": normalize_text(item.get("answer") or item.get("correct_option") or "")
                 })
