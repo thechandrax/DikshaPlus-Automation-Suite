@@ -63,20 +63,31 @@ AUTOMATIC_FINAL_SUBMIT = True    # Set to True to automatically click final quiz
 
 KEEP_BROWSER_OPEN = True         # Set to True to keep browser open after completion so it doesn't close!
 
-# Gemini AI Live Solver Configuration (256-Bit Cryptographically Encrypted API Key)
-GEMINI_API_KEY_ENCRYPTED = "ENC256:SkYiA4gM92PfpZXnowXWVpwvAN7i2AXeejQir_fjROpzXEAtsEfrHNGUuJLAOcFqinNNofg="
+# Gemini AI Multi-API Key Pool (256-Bit Cryptographically Encrypted)
+GEMINI_API_KEYS_ENCRYPTED = [
+    "ENC256:SkYiA4gM92PfpZXnowXWVpwvAN7i2AXeejQir_fjROpzXEAtsEfrHNGUuJLAOcFqinNNofg=",
+    "ENC256:SkYiA4gM92PfoK_Np0H4VrYeDei93B2meggq_PP8XoNTZV8hk3D_V4iHosfCA-hezAlaoOg="
+]
 
-def _load_gemini_key():
-    key = os.environ.get("GEMINI_API_KEY", "").strip()
-    if not key and GEMINI_API_KEY_ENCRYPTED:
+def _load_gemini_keys():
+    keys = []
+    env_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if env_key:
+        keys.append(env_key)
+    
+    for enc_k in GEMINI_API_KEYS_ENCRYPTED:
         try:
-            key = decrypt_password(GEMINI_API_KEY_ENCRYPTED)
+            dec_k = decrypt_password(enc_k)
+            if dec_k and dec_k not in keys:
+                keys.append(dec_k)
         except Exception:
             pass
-    return key
+    return keys
 
-GEMINI_API_KEY = _load_gemini_key()
+GEMINI_API_KEYS = _load_gemini_keys()
+GEMINI_API_KEY = GEMINI_API_KEYS[0] if GEMINI_API_KEYS else ""
 AI_LIVE_SOLVER_ENABLED = True
+
 
 
 

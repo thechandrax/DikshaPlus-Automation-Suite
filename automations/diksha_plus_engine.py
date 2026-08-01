@@ -131,18 +131,21 @@ def extract_all_qa_items(answer_key):
 
 def solve_question_with_ai(question_text, option_texts=None):
     """
-    Uses Gemini AI API to solve any live quiz question on screen with 100% accuracy.
-    Handles rate limits (HTTP 429) with exponential backoff retries and explicit log feedback.
+    Uses Gemini AI API Multi-Key Pool to solve live quiz questions with 100% accuracy.
+    If Key #1 encounters rate limit (HTTP 429), immediately switches to Key #2!
     """
     if not getattr(config, "AI_LIVE_SOLVER_ENABLED", True):
         return None
 
-    api_key = getattr(config, "GEMINI_API_KEY", "") or os.environ.get("GEMINI_API_KEY", "")
-    if not api_key:
-        logger.warning("  ⚠️ [AI LIVE SOLVER NOTICE] GEMINI_API_KEY is not configured in config.py!")
+    api_keys = getattr(config, "GEMINI_API_KEYS", [])
+    if not api_keys and hasattr(config, "GEMINI_API_KEY") and config.GEMINI_API_KEY:
+        api_keys = [config.GEMINI_API_KEY]
+
+    if not api_keys:
+        logger.warning("  ⚠️ [AI LIVE SOLVER NOTICE] GEMINI_API_KEYS is not configured in config.py!")
         return None
 
-    # 3-Second Pacing Delay for smooth execution & rate limit prevention
+    # 3-Second Pacing Delay for smooth execution
     logger.info("  ⏳ [AI LIVE SOLVER] Waiting 3s pacing delay before AI API call...")
     time.sleep(3)
 
@@ -158,10 +161,10 @@ Option Choices:
 INSTRUCTIONS:
 Return ONLY the exact text of the correct option choice from the list above. Do NOT include option numbers (1, 2, 3), do NOT include explanations. Return ONLY the exact option text."""
 
-    models_to_try = ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash", "gemini-2.5-flash"]
+    models_to_try = ["gemini-flash-latest", "gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash", "gemini-2.5-flash"]
 
-    for model_name in models_to_try:
-        for attempt in range(3):
+    for key_idx, api_key in enumerate(api_keys, 1):
+        for model_name in models_to_try:
             try:
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
                 payload = json.dumps({
@@ -180,28 +183,25 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
                 
                 clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
                 if clean_ans:
-                    logger.info(f"  🧠 [AI LIVE SOLVER SUCCESS] Solved via {model_name} -> '{clean_ans}'")
+                    logger.info(f"  🧠 [AI LIVE SOLVER SUCCESS] Solved via Key #{key_idx} ({model_name}) -> '{clean_ans}'")
                     return clean_ans
             except urllib.error.HTTPError as http_err:
                 if http_err.code == 429:
-                    wait_sec = 5 * (attempt + 1)
-                    logger.warning(f"  ⏳ [AI RATE LIMIT 429] Gemini API rate limit hit. Waiting {wait_sec}s before retry (Attempt {attempt+1}/3)...")
-                    time.sleep(wait_sec)
-                    continue
+                    logger.warning(f"  🔄 [AI RATE LIMIT 429] Key #{key_idx} rate limited on {model_name}. Switching to next key in pool...")
+                    break  # Switch to next key in pool immediately!
                 elif http_err.code in (401, 403):
-                    logger.error(f"  ❌ [GEMINI API ERROR {http_err.code}] {http_err.reason} for key. Trying next model...")
+                    logger.error(f"  ❌ [GEMINI API ERROR {http_err.code}] Key #{key_idx} {http_err.reason}. Switching to next key...")
                     break
                 else:
                     logger.warning(f"  ⚠️ [AI API HTTP ERROR {http_err.code}] {http_err.reason}")
                     break
             except Exception as ex:
                 logger.warning(f"  ⚠️ [AI SOLVER NOTICE] {ex}")
-                time.sleep(1)
                 break
-
 
     logger.warning("  ⚠️ [AI LIVE SOLVER UNABLE TO SOLVE] Falling back to available options.")
     return None
+
 
 
 
