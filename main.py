@@ -89,6 +89,18 @@ def main():
     if args.auto_submit:
         config.AUTOMATIC_FINAL_SUBMIT = True
 
+    # Environment variable overrides for cloud deployments (e.g. Railway)
+    import os
+    env_user = os.getenv("SELECTED_USER", "").strip()
+    if env_user:
+        if env_user.lower() == "all":
+            args.all_users = True
+        elif env_user.isdigit():
+            u_idx = int(env_user)
+            u_keys = list(config.USER_CREDENTIALS.keys())
+            if 1 <= u_idx <= len(u_keys):
+                args.user_key = u_keys[u_idx - 1]
+
     # 1. Security PIN Verification (541563)
     if not args.skip_pin and sys.stdin.isatty():
         if not verify_security_pin():
@@ -107,6 +119,7 @@ def main():
         else:
             logger.error(f"User key '{args.user_key}' not found in USER_CREDENTIALS registry.")
             sys.exit(1)
+
     elif args.username and args.password:
         users_to_process.append((args.username, args.password))
     else:

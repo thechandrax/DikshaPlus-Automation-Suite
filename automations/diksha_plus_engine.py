@@ -403,9 +403,22 @@ def display_interactive_course_menu(courses):
 
     print("\033[38;5;240m-----------------------------------------------------------------------\033[0m")
 
+    import os
+    env_course = os.getenv("SELECTED_COURSE", "").strip()
+
     if not sys.stdin.isatty():
+        if env_course:
+            if env_course.lower() == "all":
+                logger.info(f"  [!] Environment variable SELECTED_COURSE='all' detected. Processing ALL {len(courses)} enrolled courses.")
+                return courses
+            elif env_course.isdigit():
+                c_idx = int(env_course)
+                if 1 <= c_idx <= len(courses):
+                    logger.info(f"  [!] Environment variable SELECTED_COURSE='{c_idx}' detected. Processing Course #{c_idx}: '{courses[c_idx-1]['title']}'.")
+                    return [courses[c_idx - 1]]
         logger.info("  [!] Non-interactive mode detected. Processing option [1] by default.")
         return [courses[0]]
+
 
     try:
         choice = input(f" \033[38;5;51m👉 Select course number to automate (1-{len(courses)}) [Enter for 1]: \033[0m").strip()

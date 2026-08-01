@@ -7,7 +7,7 @@ This guide provides step-by-step instructions for deploying **DIKSHA+ Automation
 ## 📑 Table of Contents
 1. [Prerequisites](#1-prerequisites)
 2. [Step-by-Step Deployment Instructions](#2-step-by-step-deployment-instructions)
-3. [How Railway Runs Your Project](#3-how-railway-runs-your-project)
+3. [How to Select User & Course on Railway](#3-how-to-select-user--course-on-railway)
 4. [Monitoring Logs & Outputs](#4-monitoring-logs--outputs)
 5. [Frequently Asked Questions (FAQ)](#5-frequently-asked-questions-faq)
 
@@ -38,23 +38,24 @@ Before you begin, ensure you have:
 2. Railway will automatically detect the **[Dockerfile](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/Dockerfile)** and **[railway.json](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/railway.json)** in your repository.
 3. Railway will start building the Playwright Python container image automatically.
 
-### Step 4: Add Environment Variables (Optional)
-If you want to customize execution options:
-1. In your Railway service dashboard, click the **Variables** tab.
-2. Add any custom keys if needed:
-   * `HEADLESS` = `True`
-   * `PYTHONUNBUFFERED` = `1`
-
 ---
 
-## 3. How Railway Runs Your Project
+## 🎛️ 3. How to Select User & Course on Railway
 
-* **Docker Build**: Railway builds a cloud container using `mcr.microsoft.com/playwright/python:v1.40.0-jammy` which has Chromium pre-installed.
-* **Execution Command**:
-  ```bash
-  python main.py --headless --skip-pin --all-users
-  ```
-* **Auto-Restart**: If configured under `railway.json`, Railway will automatically restart the engine if DIKSHA server drops connection.
+Because cloud servers run headlessly without a manual keyboard input prompt, you can easily control **which User** and **which Course** to run using **Railway Environment Variables**:
+
+### In Railway Dashboard $\rightarrow$ **Variables** Tab:
+
+| Variable Name | Value Examples | Description |
+| :--- | :--- | :--- |
+| **`SELECTED_USER`** | `1`, `2`, `3`, `4`, `5`, or `all` | Selects User #1, #2, #3, etc. Set to `all` to process all registered users automatically. (Default: `1`) |
+| **`SELECTED_COURSE`** | `1`, `2`, `3`, or `all` | Selects Course #1, #2, etc. Set to `all` to process all ongoing courses automatically. (Default: `1`) |
+
+### Example Scenarios:
+* **To process User #2 and Course #1**:  
+  Set `SELECTED_USER` = `2` and `SELECTED_COURSE` = `1`.
+* **To process ALL Users and ALL Courses automatically**:  
+  Set `SELECTED_USER` = `all` and `SELECTED_COURSE` = `all`.
 
 ---
 
