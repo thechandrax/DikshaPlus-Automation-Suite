@@ -63,11 +63,15 @@ AUTOMATIC_FINAL_SUBMIT = True    # Set to True to automatically click final quiz
 
 KEEP_BROWSER_OPEN = True         # Set to True to keep browser open after completion so it doesn't close!
 
-# Gemini AI Multi-API Key Pool (256-Bit Cryptographically Encrypted)
+# Gemini AI Multi-API Key Pool (256-Bit Cryptographically Encrypted - 5 Active Keys)
 GEMINI_API_KEYS_ENCRYPTED = [
     "ENC256:SkYiA4gM92PfpZXnowXWVpwvAN7i2AXeejQir_fjROpzXEAtsEfrHNGUuJLAOcFqinNNofg=",
-    "ENC256:SkYiA4gM92PfoK_Np0H4VrYeDei93B2meggq_PP8XoNTZV8hk3D_V4iHosfCA-hezAlaoOg="
+    "ENC256:SkYiA4gM92PfoK_Np0H4VrYeDei93B2meggq_PP8XoNTZV8hk3D_V4iHosfCA-hezAlaoOg=",
+    "ENC256:SkYiA4gM92PfoJWS00HoS5UTU-f8_AyiQyQ72c_HP-VmR3UhvgbvQZykrun_F_xSmAtXxt4=",
+    "ENC256:SkYiA4gM92Pfppmb_gLVHcklX6LNwi-mQh8g6tT0PYtPZFUankbIad-lo5KkLfcVu3dN_s4=",
+    "ENC256:SkYiA4gM92Pfp7z90grBFJUpDKHVgFinBxQF3ObWbPFTUmd7jGPibtufoObWM8UcmBgV4s4="
 ]
+
 
 def _load_gemini_keys():
     keys = []
