@@ -107,10 +107,26 @@ def load_answer_key(course_title=None):
 
 
 
+def normalize_text(text):
+    """
+    Normalizes Unicode apostrophes (\u2019, '), quotes (\u201c, \u201d, "), dashes, and spaces to standard ASCII.
+    Converts curly apostrophes ('Hon’ble') to standard straight keyboard apostrophes ('Hon\'ble').
+    """
+    if not text:
+        return ""
+    text = str(text)
+    text = text.replace("’", "'").replace("‘", "'").replace("`", "'")
+    text = text.replace("\u2019", "'").replace("\u2018", "'").replace("\u201b", "'")
+    text = text.replace("“", '"').replace("”", '"').replace("„", '"')
+    text = text.replace("\u201c", '"').replace("\u201d", '"')
+    text = text.replace("–", "-").replace("—", "-").replace("\u2013", "-").replace("\u2014", "-")
+    text = text.replace("\u00a0", " ")
+    return re.sub(r'\s+', ' ', text).strip()
+
 def extract_all_qa_items(answer_key):
     """
     Normalizes any JSON answer key structure (nested subsections, modules, flat answers/questions)
-    into a unified list of question-answer dicts with metadata.
+    into a unified list of question-answer dicts with normalized metadata.
     """
     qa_list = []
     if not isinstance(answer_key, dict):
@@ -128,8 +144,8 @@ def extract_all_qa_items(answer_key):
                     "module_name": answer_key.get("module_name"),
                     "subsection_no": sub_no,
                     "subsection_name": sub_name,
-                    "question": item.get("question") or item.get("question_keyword") or "",
-                    "answer": item.get("answer") or item.get("correct_option") or ""
+                    "question": normalize_text(item.get("question") or item.get("question_keyword") or ""),
+                    "answer": normalize_text(item.get("answer") or item.get("correct_option") or "")
                 })
 
     # Schema 2: Top-level "modules" array
@@ -148,8 +164,8 @@ def extract_all_qa_items(answer_key):
                         "module_name": mod_name,
                         "subsection_no": sub_no,
                         "subsection_name": sub_name,
-                        "question": item.get("question") or item.get("question_keyword") or "",
-                        "answer": item.get("answer") or item.get("correct_option") or ""
+                        "question": normalize_text(item.get("question") or item.get("question_keyword") or ""),
+                        "answer": normalize_text(item.get("answer") or item.get("correct_option") or "")
                     })
 
     # Schema 3: Flat "answers" or "questions" array
@@ -161,9 +177,10 @@ def extract_all_qa_items(answer_key):
                 "module_name": item.get("module_name") or answer_key.get("module_name"),
                 "subsection_no": item.get("subsection_no") or answer_key.get("subsection_no"),
                 "subsection_name": item.get("subsection_name") or answer_key.get("subsection_name"),
-                "question": item.get("question") or item.get("question_keyword") or "",
-                "answer": item.get("answer") or item.get("correct_option") or ""
+                "question": normalize_text(item.get("question") or item.get("question_keyword") or ""),
+                "answer": normalize_text(item.get("answer") or item.get("correct_option") or "")
             })
+
 
     return qa_list
 
@@ -319,17 +336,21 @@ def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name,
             questions = []
             target_sub["questions"] = questions
 
-        clean_new_q = question_text.strip().lower()
-        existing_qs = set((q.get("question") or "").strip().lower() for q in questions)
+        norm_q = normalize_text(question_text)
+        norm_a = normalize_text(answer_text)
+
+        clean_new_q = norm_q.lower()
+        existing_qs = set(normalize_text(q.get("question") or "").lower() for q in questions)
 
         if clean_new_q not in existing_qs:
             questions.append({
-                "question": question_text.strip(),
-                "answer": answer_text.strip()
+                "question": norm_q,
+                "answer": norm_a
             })
             with open(course_key_file, "w", encoding="utf-8") as f:
                 json.dump(data_j, f, indent=2)
-            logger.info(f"  💾 [AUTO-LEARNING SEQUENTIAL SAVE] Saved to {course_key_file.name}: Module #{module_no or 1} ('{module_name or ''}') • Subsection #{t_sub_no} ('{t_sub_name}') -> Q: '{question_text[:40]}...'")
+            logger.info(f"  💾 [AUTO-LEARNING SEQUENTIAL SAVE] Saved to {course_key_file.name}: Module #{module_no or 1} ('{module_name or ''}') • Subsection #{t_sub_no} ('{t_sub_name}') -> Q: '{norm_q[:40]}...'")
+
     except Exception as ex:
         logger.warning(f"  --> Auto-learning save notice: {ex}")
 
@@ -1284,7 +1305,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             if await q_elem.count() > 0 and await q_elem.is_visible():
                 raw_q = (await q_elem.inner_text()).strip()
                 q_text_screen = re.sub(r'^(?:question\s*text|question\s*\d+[:.]?|\d+[:.]?|q\d+[:.]?)\s*', '', raw_q, flags=re.IGNORECASE)
-                q_text_screen = re.sub(r'\s*(?:select\s*one|question\s*\d+).*$', '', q_text_screen, flags=re.IGNORECASE | re.DOTALL).strip()
+                q_text_screen = normalize_text(re.sub(r'\s*(?:select\s*one|question\s*\d+).*$', '', q_text_screen, flags=re.IGNORECASE | re.DOTALL).strip())
 
             # Select unique option rows cleanly (.answer > div.r0 / div.r1)
             option_rows = target_frame.locator(".answer > div.r0, .answer > div.r1, .answer > div, .que .content .answer > div")
@@ -1298,7 +1319,8 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             for r_idx in range(row_count):
                 row_el = option_rows.nth(r_idx)
                 raw_text = (await row_el.inner_text()).strip()
-                clean_text = re.sub(r'^(?:[a-d][.)]|option\s*[a-d][:.]?|\d+[.)])\s*', '', raw_text, flags=re.IGNORECASE).strip()
+                clean_text = normalize_text(re.sub(r'^(?:[a-d][.)]|option\s*[a-d][:.]?|\d+[.)])\s*', '', raw_text, flags=re.IGNORECASE).strip())
+
                 clean_lower = clean_text.lower()
 
                 if any(ignore_kw in clean_lower for ignore_kw in ["clear selection", "give feedback", "feedback", "maximum marks"]):
