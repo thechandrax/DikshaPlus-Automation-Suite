@@ -829,22 +829,94 @@ async def process_h5p_activity(page, view_button, answer_key):
         await start_btn.click()
         await page.wait_for_timeout(2000)
 
-    # Radio button option selection loop
-    for question_step in range(10):
-        radios = page.locator("input[type='radio'], .h5p-joubelui-button, .h5p-radio-button")
-        if await radios.count() > 0:
-            first_radio = radios.first
-            if await first_radio.is_visible():
-                await first_radio.click()
-                logger.info(f"  --> Selected answer option for question {question_step + 1}.")
-                await page.wait_for_timeout(1000)
+    # Radio button option selection loop with Smart Auto-Learning AI Cache & Live Solver
+    answers_list = extract_all_qa_items(answer_key)
+    for question_step in range(15):
+        h5p_frame = page
+        for f in page.frames:
+            try:
+                if await f.locator(".h5p-question-text, .h5p-content, .h5p-question-introduction").count() > 0:
+                    h5p_frame = f
+                    break
+            except Exception:
+                pass
 
-        next_btn = page.locator(config.SELECTORS["h5p_next_button"]).first
+        q_text_screen = ""
+        try:
+            q_elem = h5p_frame.locator(".h5p-question-introduction, .h5p-question-text, .h5p-task-description").first
+            if await q_elem.count() > 0 and await q_elem.is_visible():
+                raw_q = (await q_elem.inner_text()).strip()
+                q_text_screen = re.sub(r'^(?:question\s*\d+[:.]?|\d+[:.]?)\s*', '', raw_q, flags=re.IGNORECASE).strip()
+        except Exception:
+            pass
+
+        option_elements = h5p_frame.locator(".h5p-answer, .h5p-radio-button, label.h5p-joubelui-button, .h5p-alternative-container")
+        opt_count = await option_elements.count()
+        screen_opts = []
+        for o_idx in range(opt_count):
+            try:
+                raw_o = await option_elements.nth(o_idx).inner_text()
+                c_opt = re.sub(r'^(?:[a-d][.)]|option\s*[a-d][:.]?|\d+[.)])\s*', '', raw_o, flags=re.IGNORECASE).strip()
+                if c_opt:
+                    screen_opts.append(c_opt)
+            except Exception:
+                pass
+
+        matched_answer_text = None
+
+        # 1. Check Auto-Learning JSON Cache
+        if q_text_screen and answers_list:
+            clean_screen_q = re.sub(r'[^\w\s]', '', q_text_screen.lower())
+            screen_words = set(w for w in clean_screen_q.split() if len(w) >= 3) if clean_screen_q else set()
+            for item in answers_list:
+                json_q = (item.get("question") or item.get("question_keyword") or "").strip().lower()
+                clean_json_q = re.sub(r'[^\w\s]', '', json_q)
+                json_words = set(w for w in clean_json_q.split() if len(w) >= 3)
+                if clean_json_q and clean_screen_q and (clean_json_q == clean_screen_q or (json_words and screen_words and json_words == screen_words)):
+                    matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
+                    logger.info(f"  ⚡ [H5P CACHED JSON 100% MATCH Q-{question_step + 1}] Target Answer: '{matched_answer_text}'")
+                    break
+
+        # 2. AI Live Solver Fallback
+        if not matched_answer_text and q_text_screen:
+            ai_solved = solve_question_with_ai(q_text_screen, screen_opts)
+            if ai_solved:
+                matched_answer_text = ai_solved
+                logger.info(f"  🧠 [H5P AI LIVE SOLVER Q-{question_step + 1}] Solved: '{matched_answer_text}'")
+
+        # Click matching option or fallback to first radio
+        selected = False
+        if matched_answer_text and opt_count > 0:
+            clean_target = re.sub(r'[^\w\s]', '', matched_answer_text.lower())
+            for o_idx in range(opt_count):
+                try:
+                    opt_el = option_elements.nth(o_idx)
+                    opt_txt = await opt_el.inner_text()
+                    clean_opt = re.sub(r'[^\w\s]', '', opt_txt.lower())
+                    if clean_target in clean_opt or clean_opt in clean_target:
+                        await opt_el.click(force=True)
+                        selected = True
+                        logger.info(f"  ✔ [H5P EXACT OPTION CLICKED Q-{question_step + 1}] '{opt_txt.strip()}'")
+                        break
+                except Exception:
+                    pass
+
+        if not selected:
+            radios = h5p_frame.locator("input[type='radio'], .h5p-joubelui-button, .h5p-radio-button")
+            if await radios.count() > 0:
+                first_radio = radios.first
+                if await first_radio.is_visible():
+                    await first_radio.click(force=True)
+                    logger.info(f"  --> Selected default H5P answer option for question {question_step + 1}.")
+
+        await page.wait_for_timeout(1000)
+        next_btn = h5p_frame.locator(config.SELECTORS["h5p_next_button"]).first
         if await next_btn.count() > 0 and await next_btn.is_visible():
-            await next_btn.click()
+            await next_btn.click(force=True)
             await page.wait_for_timeout(1500)
         else:
             break
+
 
     # Click Check and Finish
     check_btn = page.locator(config.SELECTORS["h5p_check_button"]).first
