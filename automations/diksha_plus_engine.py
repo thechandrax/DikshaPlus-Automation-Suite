@@ -982,53 +982,76 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
 
         selected_option = False
         
-        # If we have a matched answer text from JSON, look for option labels on screen
+        # If we have a matched answer text from JSON, look for DIKSHA option containers on screen
         if matched_answer_text:
             try:
-                option_labels = target_frame.locator(".answer label, .qtext + div label, label.form-check-label, div[class*='answer'] label, fieldset label, label, .form-check-label, .custom-control-label")
-                lbl_count = await option_labels.count()
+                # Target DIKSHA's exact Moodle/Sunbird answer-label containers & standard radio labels
+                option_containers = target_frame.locator("div[data-region='answer-label'], [aria-labelledby*='answer'], .answer label, div[class*='r0'], div[class*='r1'], .form-check-label, label, .custom-control-label")
+                lbl_count = await option_containers.count()
                 
                 clean_target = re.sub(r'[^\w\s]', '', matched_answer_text.lower())
                 target_words = set(w for w in clean_target.split() if len(w) >= 3)
 
                 for l_idx in range(lbl_count):
-                    lbl = option_labels.nth(l_idx)
-                    lbl_text = (await lbl.inner_text()).strip().lower()
-                    clean_lbl = re.sub(r'[^\w\s]', '', lbl_text)
+                    container = option_containers.nth(l_idx)
+                    
+                    # Extract clean option text (stripping option prefix like "a. ", "b. ", "c. ")
+                    raw_lbl = await container.inner_text()
+                    clean_option_txt = re.sub(r'^(?:[a-d][.)]|option\s*[a-d][:.]?|\d+[.)])\s*', '', raw_lbl, flags=re.IGNORECASE).strip().lower()
+                    
+                    clean_lbl = re.sub(r'[^\w\s]', '', clean_option_txt)
                     lbl_words = set(w for w in clean_lbl.split() if len(w) >= 3)
 
                     # Substring match or word overlap match on option text
                     opt_overlap = (len(target_words & lbl_words) / float(len(target_words))) if target_words else 0.0
                     
-                    if clean_target and (clean_target == clean_lbl or clean_target in clean_lbl or clean_lbl in clean_target or opt_overlap >= 0.5):
-                        # 1. Check for input inside label
-                        input_child = lbl.locator("input[type='radio'], input[type='checkbox']").first
-                        if await input_child.count() > 0:
-                            await input_child.click(force=True)
-                            selected_option = True
-                            logger.info(f"  --> Question #{q_num + 1}: Clicked matched option input '{matched_answer_text}'.")
-                            await page.wait_for_timeout(800)
-                            break
-
-                        # 2. Check label 'for' attribute
-                        for_id = await lbl.get_attribute("for")
-                        if for_id:
-                            target_input = target_frame.locator(f"#{for_id}").first
+                    if clean_target and (clean_target == clean_lbl or clean_target in clean_lbl or clean_lbl in clean_target or opt_overlap >= 0.45):
+                        # 1. DIKSHA aria-labelledby linking check (e.g. id="q15158343:1_answer1_label" -> input id="q15158343:1_answer1")
+                        container_id = await container.get_attribute("id") or ""
+                        if container_id and "_label" in container_id:
+                            input_id = container_id.replace("_label", "")
+                            target_input = target_frame.locator(f"#{input_id}, input[id='{input_id}']").first
                             if await target_input.count() > 0:
                                 await target_input.click(force=True)
                                 selected_option = True
-                                logger.info(f"  --> Question #{q_num + 1}: Clicked matched option by ID '{matched_answer_text}'.")
+                                logger.info(f"  --> Question #{q_num + 1}: Clicked DIKSHA radio input #{input_id} for answer '{matched_answer_text}'.")
                                 await page.wait_for_timeout(800)
                                 break
 
-                        # 3. Click label directly
-                        await lbl.click(force=True)
+                        # 2. Check for input linked via aria-labelledby
+                        if container_id:
+                            linked_input = target_frame.locator(f"input[aria-labelledby='{container_id}']").first
+                            if await linked_input.count() > 0:
+                                await linked_input.click(force=True)
+                                selected_option = True
+                                logger.info(f"  --> Question #{q_num + 1}: Clicked DIKSHA radio input via aria-labelledby for answer '{matched_answer_text}'.")
+                                await page.wait_for_timeout(800)
+                                break
+
+                        # 3. Check for input inside container or parent row
+                        input_child = container.locator("input[type='radio'], input[type='checkbox']").first
+                        if await input_child.count() == 0:
+                            # Search in parent row
+                            parent_row = container.locator("xpath=./ancestor::div[contains(@class,'r0') or contains(@class,'r1') or contains(@class,'answer')][1]")
+                            if await parent_row.count() > 0:
+                                input_child = parent_row.locator("input[type='radio'], input[type='checkbox']").first
+
+                        if await input_child.count() > 0:
+                            await input_child.click(force=True)
+                            selected_option = True
+                            logger.info(f"  --> Question #{q_num + 1}: Clicked radio option input for answer '{matched_answer_text}'.")
+                            await page.wait_for_timeout(800)
+                            break
+
+                        # 4. Fallback: Click container element directly
+                        await container.click(force=True)
                         selected_option = True
-                        logger.info(f"  --> Question #{q_num + 1}: Clicked matched option label '{matched_answer_text}'.")
+                        logger.info(f"  --> Question #{q_num + 1}: Clicked matched option container for answer '{matched_answer_text}'.")
                         await page.wait_for_timeout(800)
                         break
             except Exception as match_ex:
                 logger.warning(f"  --> Option matching notice: {match_ex}")
+
 
         # Fallback to first available radio option if no match found
         if not selected_option:
