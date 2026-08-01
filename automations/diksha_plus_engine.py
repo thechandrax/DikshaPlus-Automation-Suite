@@ -593,11 +593,15 @@ async def fetch_enrolled_courses(page):
         except Exception:
             pass
 
-    cards = page.locator("#pills-inprogress .course-library-link, #pills-inprogress .library-card")
+    # Wait up to 15 seconds for course card elements to hydrate on DIKSHA course_listing.php page
+    cards = page.locator("#pills-inprogress .course-library-link, #pills-inprogress .library-card, .course-library-link, .library-card, a[href*='course.php']")
+    for _ in range(15):
+        if await cards.count() > 0:
+            break
+        await page.wait_for_timeout(1000)
+
     count = await cards.count()
-    if count == 0:
-        cards = page.locator(".course-library-link, .library-card")
-        count = await cards.count()
+
 
     for i in range(count):
         card = cards.nth(i)
