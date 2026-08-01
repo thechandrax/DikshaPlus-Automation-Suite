@@ -925,15 +925,34 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             except Exception:
                 pass
 
-    # 3. Dynamic Question Answering Loop (supports 1 to 200+ questions with smart JSON answer key matching)
+    # 3. Dynamic Question Answering Loop with Hierarchical Module/Subsection Scoping & Position Matching
     answers_list = extract_all_qa_items(answer_key)
+
 
     # Check top-level JSON metadata
     top_mod_no = answer_key.get("module_no") if isinstance(answer_key, dict) else None
     top_sub_name = (answer_key.get("subsection_name") or "").strip().lower() if isinstance(answer_key, dict) else ""
 
+    # Pre-scope JSON items matching active Module & Subsection context
+    scoped_items = []
+    if answers_list:
+        for item in answers_list:
+            item_mod_no = item.get("module_no") or top_mod_no
+            item_sub_name = (item.get("subsection_name") or top_sub_name or "").strip().lower()
+            
+            mod_match = not (item_mod_no and module_no and int(item_mod_no) != int(module_no))
+            sub_match = not (item_sub_name and sub_name and item_sub_name not in sub_name.lower() and sub_name.lower() not in item_sub_name)
+            
+            if mod_match and sub_match:
+                scoped_items.append(item)
+
+    search_buckets = [scoped_items, answers_list] if scoped_items else [answers_list]
+    logger.info(f"  --> [HIERARCHICAL MATCHING] Scoped {len(scoped_items)} questions for Module #{module_no or 1} • Subsection '{sub_name or ''}'.")
 
     for q_num in range(200):
+        # Unlimited time pacing: 1.5s human reading delay
+        await page.wait_for_timeout(1500)
+
         # Extract question text displayed on screen across all potential DIKSHA selectors
         q_text_screen = ""
         try:
@@ -948,37 +967,44 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
         if q_text_screen:
             logger.info(f"  [Q-{q_num + 1} SCREEN TEXT]: '{q_text_screen[:70]}...'")
 
-        # Try matching question in answer_key JSON with Module & Subsection metadata verification
         matched_answer_text = None
-        if q_text_screen and answers_list:
-            clean_screen_q = re.sub(r'[^\w\s]', '', q_text_screen)
-            screen_words = set(w for w in clean_screen_q.split() if len(w) >= 3)
 
-            for item in answers_list:
-                # 1. Metadata check: verify item or file module_no / subsection_name if specified
-                item_mod_no = item.get("module_no") or top_mod_no
-                item_sub_name = (item.get("subsection_name") or top_sub_name or "").strip().lower()
-                
-                # Skip item if module_no is specified and doesn't match active module_no
-                if item_mod_no and module_no and int(item_mod_no) != int(module_no):
-                    continue
-                
-                # Skip item if subsection_name is specified and doesn't match active sub_name
-                if item_sub_name and sub_name and (item_sub_name not in sub_name.lower() and sub_name.lower() not in item_sub_name):
-                    continue
+        # Pass A & B: Multi-level Search (Position Match -> Scoped Bucket -> Global Bucket)
+        if answers_list:
+            clean_screen_q = re.sub(r'[^\w\s]', '', q_text_screen) if q_text_screen else ""
+            screen_words = set(w for w in clean_screen_q.split() if len(w) >= 3) if clean_screen_q else set()
 
-                json_q = (item.get("question") or item.get("question_keyword") or "").strip().lower()
-                clean_json_q = re.sub(r'[^\w\s]', '', json_q)
-                json_words = set(w for w in clean_json_q.split() if len(w) >= 3)
-                
-                # Match strategy: Substring match OR >= 75% key word overlap (words >= 3 letters)
-                overlap_ratio = (len(json_words & screen_words) / float(len(json_words))) if json_words else 0.0
-
-                if clean_json_q and (clean_json_q in clean_screen_q or clean_screen_q in clean_json_q or overlap_ratio >= 0.75):
-                    matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
-                    display_q = (item.get("question") or item.get("question_keyword") or "")[:45]
-                    logger.info(f"  ✔ [EXACT MATCH Q-{q_num + 1}] '{display_q}...' -> Target Answer: '{matched_answer_text}'")
+            for bucket in search_buckets:
+                if matched_answer_text:
                     break
+
+                # 1. Exact Question Position/Index Check (if JSON defines question_no or array position)
+                if q_num < len(bucket):
+                    pos_item = bucket[q_num]
+                    pos_q = (pos_item.get("question") or pos_item.get("question_keyword") or "").strip().lower()
+                    clean_pos_q = re.sub(r'[^\w\s]', '', pos_q)
+                    pos_words = set(w for w in clean_pos_q.split() if len(w) >= 3)
+                    pos_overlap = (len(pos_words & screen_words) / float(len(pos_words))) if (pos_words and screen_words) else 0.0
+
+                    if clean_pos_q and (clean_pos_q in clean_screen_q or clean_screen_q in clean_pos_q or pos_overlap >= 0.65 or not clean_screen_q):
+                        matched_answer_text = (pos_item.get("answer") or pos_item.get("correct_option") or "").strip()
+                        logger.info(f"  ✔ [POSITION MATCH Q-{q_num + 1}] Found answer by exact position/index #{q_num + 1} -> Target Answer: '{matched_answer_text}'")
+                        break
+
+                # 2. Key Word Overlap Search (>= 75%)
+                if clean_screen_q:
+                    for item in bucket:
+                        json_q = (item.get("question") or item.get("question_keyword") or "").strip().lower()
+                        clean_json_q = re.sub(r'[^\w\s]', '', json_q)
+                        json_words = set(w for w in clean_json_q.split() if len(w) >= 3)
+                        
+                        overlap_ratio = (len(json_words & screen_words) / float(len(json_words))) if json_words else 0.0
+
+                        if clean_json_q and (clean_json_q in clean_screen_q or clean_screen_q in clean_json_q or overlap_ratio >= 0.75):
+                            matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
+                            display_q = (item.get("question") or item.get("question_keyword") or "")[:45]
+                            logger.info(f"  ✔ [EXACT MATCH Q-{q_num + 1}] '{display_q}...' -> Target Answer: '{matched_answer_text}'")
+                            break
 
         selected_option = False
         
