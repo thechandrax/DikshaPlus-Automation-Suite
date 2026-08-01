@@ -99,10 +99,6 @@ GEMINI_API_KEY = GEMINI_API_KEYS[0] if GEMINI_API_KEYS else ""
 AI_LIVE_SOLVER_ENABLED = True
 
 
-
-
-
-
 # DOM Selectors extracted from DIKSHA.docx
 SELECTORS = {
     # Login Page

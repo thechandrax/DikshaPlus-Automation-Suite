@@ -127,7 +127,13 @@ def extract_all_qa_items(answer_key):
     """
     Normalizes any JSON answer key structure (nested subsections, modules, flat answers/questions)
     into a unified list of question-answer dicts with normalized metadata.
+    Strips leading option letter tags like [A], [B], b. from answer strings for 100% exact matching.
     """
+    def clean_ans_str(val):
+        val_str = str(val or "")
+        stripped = re.sub(r'^\[[A-Z0-9]+\]\s*', '', val_str).strip()
+        return normalize_text(stripped)
+
     qa_list = []
     if not isinstance(answer_key, dict):
         return qa_list
@@ -144,9 +150,9 @@ def extract_all_qa_items(answer_key):
                     "module_name": sub.get("module_name") or answer_key.get("module_name"),
                     "subsection_no": sub_no,
                     "subsection_name": sub_name,
-
                     "question": normalize_text(item.get("question") or item.get("question_keyword") or ""),
-                    "answer": normalize_text(item.get("answer") or item.get("correct_option") or "")
+                    "answer": clean_ans_str(item.get("answer") or item.get("correct_option") or ""),
+                    "options": [normalize_text(o) for o in (item.get("options") or [])]
                 })
 
     # Schema 2: Top-level "modules" array
@@ -166,7 +172,8 @@ def extract_all_qa_items(answer_key):
                         "subsection_no": sub_no,
                         "subsection_name": sub_name,
                         "question": normalize_text(item.get("question") or item.get("question_keyword") or ""),
-                        "answer": normalize_text(item.get("answer") or item.get("correct_option") or "")
+                        "answer": clean_ans_str(item.get("answer") or item.get("correct_option") or ""),
+                        "options": [normalize_text(o) for o in (item.get("options") or [])]
                     })
 
     # Schema 3: Flat "answers" or "questions" array
@@ -179,11 +186,113 @@ def extract_all_qa_items(answer_key):
                 "subsection_no": item.get("subsection_no") or answer_key.get("subsection_no"),
                 "subsection_name": item.get("subsection_name") or answer_key.get("subsection_name"),
                 "question": normalize_text(item.get("question") or item.get("question_keyword") or ""),
-                "answer": normalize_text(item.get("answer") or item.get("correct_option") or "")
+                "answer": clean_ans_str(item.get("answer") or item.get("correct_option") or ""),
+                "options": [normalize_text(o) for o in (item.get("options") or [])]
             })
 
-
     return qa_list
+
+
+def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name, question_text, answer_text, option_texts=None, is_feedback=False):
+    """
+    Saves auto-learned question & answer sequentially under module and subsection structure.
+    Saves all options:
+    - Quizzes: Formatted as ["[A] ...", "[B] ...", "[C] ...", "[D] ..."] and answer as "[B] ..."
+    - Feedback Forms: Standard options ["Strongly Agree", "Agree", ...] without [A] [B] prefixes.
+    """
+    try:
+        c_name = course_title or "unknown_course"
+        course_key_file = config.COURSES_DIR / f"{re.sub(r'[^a-zA-Z0-9]+', '_', c_name.lower()).strip('_')}.json"
+        
+        data_j = {}
+        if course_key_file.exists():
+            with open(course_key_file, "r", encoding="utf-8") as f:
+                try:
+                    data_j = json.load(f)
+                except Exception:
+                    data_j = {}
+
+        data_j.pop("description", None)
+        data_j.pop("answers", None)
+
+        data_j["course_name"] = course_title or "Course"
+
+        subsections = data_j.get("subsections")
+        if not isinstance(subsections, list):
+            subsections = []
+            data_j["subsections"] = subsections
+
+        target_sub = None
+        t_sub_no = int(sub_no) if (sub_no and str(sub_no).isdigit()) else 1
+        t_sub_name = sub_name or "Assessment"
+
+        for s in subsections:
+            if s.get("subsection_no") == t_sub_no or (s.get("subsection_name") or "").strip().lower() == t_sub_name.strip().lower():
+                target_sub = s
+                break
+
+        if not target_sub:
+            target_sub = {
+                "module_no": int(module_no) if (module_no and str(module_no).isdigit()) else module_no,
+                "module_name": module_name,
+                "subsection_no": t_sub_no,
+                "subsection_name": t_sub_name,
+                "questions": []
+            }
+            subsections.append(target_sub)
+
+        questions = target_sub.get("questions")
+        if not isinstance(questions, list):
+            questions = []
+            target_sub["questions"] = questions
+
+        norm_q = normalize_text(question_text)
+        norm_a = normalize_text(answer_text)
+
+        # Format options & answer based on Feedback Form vs Quiz context
+        formatted_options = []
+        formatted_answer = norm_a
+
+        is_fb_context = is_feedback or "feedback" in (t_sub_name or "").lower()
+
+        if option_texts and isinstance(option_texts, list):
+            if is_fb_context:
+                formatted_options = [normalize_text(o) for o in option_texts]
+                formatted_answer = norm_a
+            else:
+                matched_letter = ""
+                clean_target = re.sub(r'[^\w\s]', '', norm_a.lower())
+
+                for idx, opt_txt in enumerate(option_texts):
+                    letter = chr(65 + idx) if idx < 26 else str(idx + 1)
+                    clean_opt_txt = normalize_text(opt_txt)
+                    formatted_options.append(f"[{letter}] {clean_opt_txt}")
+
+                    clean_opt = re.sub(r'[^\w\s]', '', clean_opt_txt.lower())
+                    if clean_target and clean_opt and (clean_target in clean_opt or clean_opt in clean_target):
+                        matched_letter = letter
+
+                if matched_letter:
+                    raw_clean_a = re.sub(r'^\[[A-Z0-9]+\]\s*', '', norm_a)
+                    formatted_answer = f"[{matched_letter}] {raw_clean_a}"
+
+        clean_new_q = norm_q.lower()
+        existing_qs = set(normalize_text(q.get("question") or "").lower() for q in questions)
+
+        if clean_new_q not in existing_qs:
+            q_entry = {
+                "question": norm_q,
+                "options": formatted_options,
+                "answer": formatted_answer
+            }
+            questions.append(q_entry)
+            with open(course_key_file, "w", encoding="utf-8") as f:
+                json.dump(data_j, f, indent=2, ensure_ascii=False)
+            logger.info(f"  💾 [AUTO-LEARNING SAVE] Saved to {course_key_file.name}: Module #{module_no or 1} ('{module_name or ''}') || Subsection #{t_sub_no} ('{t_sub_name}') -> Q: '{norm_q[:40]}...'")
+
+    except Exception as ex:
+        logger.warning(f"  --> Auto-learning save notice: {ex}")
+
 
 
 def solve_question_with_ai(question_text, option_texts=None):
@@ -1397,7 +1506,8 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                     matched_answer_text = ai_solved
                     gate1_ok = True
                     logger.info(f"  🧠 [AI LIVE {q_tag}] Solved NEW question -> '{matched_answer_text}'")
-                    save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name, q_text_screen, ai_solved)
+                    save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name, q_text_screen, ai_solved, option_texts=screen_opts, is_feedback=("feedback" in (sub_name or "").lower()))
+
             except Exception as ai_ex:
                 logger.warning(f"  --> AI Live Solver notice: {ai_ex}")
 
