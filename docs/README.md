@@ -1,27 +1,13 @@
-# 📚 DIKSHA+ Automation Suite Documentation
+# 📚 DIKSHA+ Technical Documentation Index
 
-Welcome to the official documentation for the **DIKSHA+ Automation Suite**.
-
----
-
-## 📄 Documentation Index
-
-| Guide | Description |
-| :--- | :--- |
-| 📖 [01 User Guide](01_USER_GUIDE.md) | How to run DIKSHA+ Automation Suite, PIN verification, user display names, and interactive menu selection. |
-| 🔐 [02 User & Security Management](02_MANAGE_USERS_AND_SECURITY.md) | Account display names (`USER_NAMES`), 256-Bit SHA-256 password encryption, and PIN security. |
-| 📝 [03 Answer Keys & Quizzes](03_ANSWER_KEYS_AND_QUIZZES.md) | Creating course JSON answer keys with hierarchical `"subsections"` format, question matching, and quiz submission. |
-| ⚙️ [04 Automation Controls & Config](04_AUTOMATION_CONTROLS_AND_CONFIG.md) | Engine module (`diksha_plus_engine.py`), video buffering 3% auto-rewind, timers, headless mode, and exit procedures. |
-| 🚆 [05 Railway Deployment](05_RAILWAY_DEPLOYMENT.md) | Step-by-step instructions to deploy DIKSHA+ to Railway cloud via Docker. |
+Welcome to the comprehensive documentation index for **DIKSHA+ Automation Suite**.
 
 ---
 
-## ⚡ Quick Start Command
+## 📑 Guide Index
 
-To launch **DIKSHA+ Automation Suite**, double-click **`diksha+.bat`** or run:
-
-```bash
-python main.py
-```
-
-* **Security Access PIN**: `******` (Protected via 256-Bit SHA-256 Salted Hash)
+1. 📖 [01 User Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/01_USER_GUIDE.md): 1-click startup, registered accounts, and automation workflow.
+2. 🔐 [02 User & Security Management](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/02_MANAGE_USERS_AND_SECURITY.md): 256-Bit cryptographic security PIN lock & user credential decryption.
+3. 📝 [03 Answer Keys & AI Live Solver Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/03_ANSWER_KEYS_AND_QUIZZES.md): Gemini AI Live Solver, Dual-Pass 100% exact matching, and auto-learning sequential storage.
+4. ⚙️ [04 Automation Controls & Config](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/04_AUTOMATION_CONTROLS_AND_CONFIG.md): Directory paths, Gemini API key loading, and Playwright pacing controls.
+5. ☁️ [05 Railway Deployment Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/05_RAILWAY_DEPLOYMENT_GUIDE.md): Railway Docker container deployment & environment setup.
