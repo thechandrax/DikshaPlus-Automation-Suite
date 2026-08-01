@@ -82,6 +82,10 @@ Course answer keys are organized in the clean standard hierarchy:
         }
       ]
     },
+          ]
+        }
+      ]
+    },
     {
       "module_no": 8,
       "module_name": "Feedback Form",
@@ -89,7 +93,33 @@ Course answer keys are organized in the clean standard hierarchy:
         {
           "subsection_no": 1,
           "subsection_name": "Feedback Form",
-          "questions": [ ... ]
+          "questions": [
+            {
+              "question": "The resources/materials provided during the training programme were useful and informative.",
+              "options": [
+                "Strongly Agree",
+                "Agree",
+                "Neutral",
+                "Disagree",
+                "Strongly Disagree"
+              ],
+              "answer": "Strongly Agree"
+            },
+            {
+              "question": "Time provided to go through the training resources/materials?",
+              "options": [
+                "Too Long",
+                "Appropriate",
+                "Too Short"
+              ],
+              "answer": "Appropriate"
+            },
+            {
+              "question": "What aspects of the training could be improved?",
+              "options": [],
+              "answer": "Incorporating more hands-on practice activities and allocating extra time for interactive Q&A sessions would make the training even more effective."
+            }
+          ]
         }
       ]
     }
@@ -99,18 +129,27 @@ Course answer keys are organized in the clean standard hierarchy:
 
 ---
 
-## 📝 4. Feedback Form Auto-Filling Engine
+## 📝 4. Dedicated DIKSHA Feedback Form Popup Engine
 
-DIKSHA+ provides native automation for DIKSHA Feedback Forms:
+DIKSHA+ features a **100% dedicated `process_feedback_activity()` engine** tailored specifically for DIKSHA Feedback Forms:
 
-1. **Rating Selection**:
-   * Inspects `.que-no`, `div.feed-ans-div`, `input.form-check-input`.
-   * Automatically selects your target rating (`Strongly Agree`, `Agree`, `Appropriate`, `Excellent`, `Yes`).
-   * If not in JSON, Gemini AI generates a positive rating choice.
+1. **Native JS Event Dispatcher**:
+   * Fires a native JavaScript MouseEvent (`dispatchEvent(new MouseEvent('click'))`) on `<a act_type="feedback" data-id="...">View</a>` to trigger DIKSHA's custom AJAX popup handler.
 
-2. **Comment Textbox Typing**:
-   * Fills open-ended comment boxes (`textarea.form-control`, `<input type='text'>`).
-   * Saves text comments into JSON (`options: []`, `answer: "..."`).
+2. **Visible Popup Modal Detection**:
+   * Waits up to 10s for the Feedback popup modal container (`.modal-dialog`, `.modal-content`) to become **OPEN and VISIBLE on screen**.
+   * Scopes option selection strictly to `input[type='radio']:visible` inside the visible modal.
 
-3. **Feedback Submission**:
-   * Clicks `Submit Feedback` (`button.submit-feed-btn`, `#submitFeedbackBtn11`).
+3. **Dual Confirmation Guard for Ratings & Textareas**:
+   * **Tier 1 (JSON Answer Key)**: Checks Course JSON (`data/courses/*.json`) under `Module #8 ("Feedback Form")` $\rightarrow$ `Subsection ("Feedback Form")`. Selects exact saved rating or fills exact textarea paragraph response from JSON!
+   * **Tier 2 (AI Live Solver)**: If a new question is encountered, Gemini AI Live Solver generates the answer and auto-saves it to Course JSON.
+   * **Tier 3 (Strict Circuit Breaker)**: 0% Option [A] / `Strongly Agree` fallback. Performs stepped backoffs (30s $\rightarrow$ 45s $\rightarrow$ 60s) and triggers Circuit Breaker if rate-limited.
+
+4. **Textarea & Open-Text Response Handling**:
+   * Extracts question text from preceding `.que-no` or wrapper (e.g., `"19. What aspects of the training could be improved?"`).
+   * Strips leading numbers (`"19. "`) and fills full paragraph answers into `<textarea class="form-control">`!
+
+5. **Modal Submission**:
+   * Locates and clicks the big brown **Submit Feedback** button (`button:has-text('Submit Feedback')`, `#submitFeedbackBtn11`).
+   * Confirms the **100% brown checkmark** update on the course dashboard!
+

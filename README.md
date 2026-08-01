@@ -18,10 +18,13 @@ An enterprise-grade, end-to-end automation engine for **DIKSHA / Moodle LMS Port
   * `modules` array $\rightarrow$ `subsections` array $\rightarrow$ `questions` array (`question`, `options`, `answer`).
 * **🛡️ Automatic Video Auto-Play & Network Stall Recovery Safeguard**: Continuously monitors the HTML5 video element every 1.5 seconds. If browser or server network lag causes the video stream to pause unexpectedly, DIKSHA+ automatically detects the stall and triggers `video.play()` to keep playback active!
 * **⏸️ Built-in Hotkey Live Pause & Resume (Press `P` or `Spacebar`)**: Real-time terminal keyboard listener (`msvcrt`) lets you toggle **PAUSE / RESUME** instantly at any point! Automatically executes `video.pause()` on the HTML5 video element on screen to freeze video playback instantly, and `video.play()` upon resuming.
-* **📝 Feedback Form Automation Engine**: Automatically completes course Feedback Forms (Module #8):
-  * Selects positive ratings (`Strongly Agree`, `Agree`, `Appropriate`, `Excellent`, `Yes`).
-  * Types custom/AI constructive comments into text boxes (`textarea.form-control`, `input[type='text']`).
-  * Clicks `Submit Feedback` (`button.submit-feed-btn`, `#submitFeedbackBtn11`).
+* **📝 Dedicated DIKSHA Feedback Form Popup Engine**: Automatically opens and completes course Feedback Forms (Module #8):
+  * **Native JS Event Dispatcher**: Triggers DIKSHA's custom AJAX modal handler (`<a act_type="feedback" data-id="...">View</a>`) via native MouseEvents.
+  * **Visible Modal Container Scoping**: Waits up to 10s for the Feedback popup modal (`.modal-dialog`, `.modal-content`) to become open and visible on screen.
+  * **Dual-Pass JSON & AI Solver**: Matches feedback rating questions and open-text textarea questions against Course JSON answer keys or Gemini AI Live Solver!
+  * **Textarea Open-Text Response Handling**: Extracts open-ended textarea questions (e.g. `"What aspects of the training could be improved?"`), strips leading numbers, and fills full paragraph answers into `<textarea class="form-control">`!
+  * **Modal Submission**: Clicks the big brown `Submit Feedback` button (`button:has-text('Submit Feedback')`, `#submitFeedbackBtn11`).
+
 * **🔀 Shuffled Option Resiliency**: Matches options on screen by **text content**, NOT hardcoded letters/positions! If Answer B moves to Option C on screen, DIKSHA+ matches the exact text and clicks Option C's radio button.
 * **🤖 Smart Headless Auto-Detection**: Local computer runs default to visible desktop GUI (`HEADLESS = False`). Railway Cloud / Docker deployments automatically detect the container environment and switch to `HEADLESS = True` with zero configuration required!
 * **🌐 2025/2026 Official Google API Auth Standard**: Fully compliant with [Google's official API Key specification](https://ai.google.dev/gemini-api/docs/api-key), sending mandatory `x-goog-api-key` headers and supporting encrypted key pools directly in `config.py`.
