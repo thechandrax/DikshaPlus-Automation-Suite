@@ -329,6 +329,7 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
 
     models_to_try = ["gemini-2.0-flash", "gemini-flash-latest"]
 
+    # Initial 3 attempts
     for attempt_round in range(1, 4):
         logger.info(f"  🧠 [AI ATTEMPT {attempt_round}/3] Requesting AI solution...")
         for key_idx, api_key in enumerate(api_keys, 1):
@@ -374,8 +375,45 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
             logger.warning(f"  ⏳ [AI SOLVER RETRY] Attempt {attempt_round}/3 un-successful. Waiting 3s before Attempt {attempt_round + 1}/3...")
             time.sleep(3)
 
-    logger.warning("  ⚠️ [AI 3 ATTEMPTS EXHAUSTED] AI Live Solver attempted 3 times and could not solve question.")
+    logger.warning("  ⚠️ [AI 3 INITIAL ATTEMPTS EXHAUSTED] Entering Stepped Backoff Retry Protocol (30s -> 45s -> 60s)...")
+
+    # Stepped Backoff Retry Protocol: 30s -> 45s -> 60s
+    backoff_delays = [30, 45, 60]
+    for b_idx, delay_sec in enumerate(backoff_delays, 1):
+        logger.warning(f"\n  ⏳ [AI RATE LIMIT BACKOFF {b_idx}/3] Waiting {delay_sec} seconds for API quota reset before Retry #{b_idx}...")
+        time.sleep(delay_sec)
+        logger.info(f"  🧠 [AI BACKOFF RETRY {b_idx}/3] Requesting AI solution after {delay_sec}s delay...")
+
+        for key_idx, api_key in enumerate(api_keys, 1):
+            for model_name in models_to_try:
+                try:
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
+                    payload = json.dumps({
+                        "contents": [{"parts": [{"text": prompt}]}]
+                    }).encode('utf-8')
+
+                    headers = {
+                        'Content-Type': 'application/json',
+                        'x-goog-api-key': api_key
+                    }
+
+                    req = urllib.request.Request(url, data=payload, headers=headers)
+                    res = urllib.request.urlopen(req, timeout=12)
+                    resp_data = json.loads(res.read().decode('utf-8'))
+                    ans_text = resp_data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "").strip()
+
+                    clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
+                    if clean_ans:
+                        logger.info(f"  🧠 [AI LIVE BACKOFF SUCCESS] Solved on Backoff Retry {b_idx}/3 ({delay_sec}s) via Key #{key_idx} -> '{clean_ans}'")
+                        return clean_ans
+                except Exception as ex:
+                    logger.warning(f"  --> Backoff retry #{b_idx} Key #{key_idx} notice: {ex}")
+                    time.sleep(1)
+                    continue
+
+    logger.error("  ❌ [AI BACKOFF RETRIES EXHAUSTED] AI Solver failed after 30s, 45s, and 60s backoff retries.")
     return None
+
 
 
 
@@ -1539,24 +1577,16 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             except Exception as text_ex:
                 logger.warning(f"  --> Text response filling notice: {text_ex}")
 
-        # Fallback ONLY if AI solver & JSON cache both failed after 3 full attempts
+        # Circuit Breaker Protocol: If AI solver failed after 30s, 45s, and 60s backoff retries, TOTAL STOP & CLOSE SERVER CONTEXT!
         if not selected_option:
-            if matched_answer_text:
-                logger.warning(f"  --> Question #{q_num + 1} Notice: Answer '{matched_answer_text}' option container not visible. Selecting available radio.")
-            else:
-                logger.warning(f"  ⚠️ [AI 3 ATTEMPTS EXHAUSTED Q-{q_num + 1}] Could not solve question after 3 attempts. Selecting default Option [A] (Radio Option 1).")
+            logger.error(f"\n❌ [CRITICAL AI RATE LIMIT EXHAUSTED {q_tag}] Could not solve Question '{q_text_screen[:45]}...' after 30s, 45s, and 60s backoff retries.")
+            logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Closing server context cleanly and stopping all automation processes!\n")
+            try:
+                await page.context.close()
+            except Exception:
+                pass
+            raise RuntimeError(f"AI_RATE_LIMIT_EXHAUSTED: Question '{q_text_screen[:45]}...' could not be solved after 30s, 45s, 60s retries.")
 
-            options = target_frame.locator("input[type='radio'], input[type='checkbox'], .h5p-radio-button, label.radio, .form-check-input")
-            if await options.count() == 0:
-                options = page.locator("input[type='radio'], input[type='checkbox'], .h5p-radio-button, label.radio, .form-check-input")
-
-            if await options.count() > 0:
-                opt = options.first
-                if await opt.is_visible() and not await opt.is_checked():
-                    await opt.click(force=True)
-                    logger.info(f"  🎯 [SELECTED FALLBACK OPTION A] Selected Default Radio Button [A] after 3 un-successful AI attempts.")
-                    logger.info("  " + "-" * 75 + "\n")
-                    await page.wait_for_timeout(800)
 
         next_nav = target_frame.locator("button.submit-feed-btn, #submitFeedbackBtn11, input[value='Next Question'], input[value='Next'], button:has-text('Next Question'), button:has-text('Next'), .btn-next, a:has-text('Next'), button:has-text('Submit Feedback'), input[value*='Submit Feedback'], button:has-text('Submit'), input[value*='Submit']").first
         if await next_nav.count() == 0:
