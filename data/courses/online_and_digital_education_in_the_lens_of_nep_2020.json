@@ -345,6 +345,21 @@
               "question": "Please provide any additional comments or suggestions to enhance the training experience.",
               "options": [],
               "answer": "Overall, it was a highly informative and well-executed program. Sharing the presentation slides or reference modules a few days before the sessions begin would be a great addition for future training."
+            },
+            {
+              "question": "What aspects of the training could be improved? *",
+              "options": [],
+              "answer": "Incorporating more hands-on practice activities and allocating extra time for interactive Q&A sessions would make the training even more effective."
+            },
+            {
+              "question": "What constraints/challenges did you face while attending the sessions? *",
+              "options": [],
+              "answer": "Balancing regular daily workload and responsibilities alongside the training schedule was a minor challenge."
+            },
+            {
+              "question": "Please provide any additional comments or suggestions to enhance the training experience. *",
+              "options": [],
+              "answer": "Overall, it was a highly informative and well-executed program. Sharing the presentation slides or reference modules a few days before the sessions begin would be a great addition for future training."
             }
           ]
         }

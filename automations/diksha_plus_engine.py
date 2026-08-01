@@ -2448,7 +2448,10 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
 
 
+                    completed_items.add(btn_text)
+                    completed_items.add(real_item_title)
                     processed_any = True
+
                     # DIKSHA Server unlock sync delay between subsections
                     logger.info("  --> DIKSHA Server sync buffer: waiting 4 seconds for next item unlock...")
                     await page.wait_for_timeout(4000)
@@ -2465,6 +2468,9 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
             recheck_btns = await get_section_action_buttons(collapse_panel, header)
             all_done = True
             for r_btn in recheck_btns:
+                r_txt = (await r_btn.inner_text()).strip()
+                if r_txt in completed_items:
+                    continue
                 if not await is_item_100_percent_complete(r_btn):
                     all_done = False
                     break
@@ -2479,6 +2485,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     header_done = await is_header_100_percent_complete(header)
                 except Exception:
                     pass
+
 
             if all_done or header_done:
                 logger.info(f"  --> [CONFIRMED 1/2] Section activities in '{header_title}' verified 100% complete!")
