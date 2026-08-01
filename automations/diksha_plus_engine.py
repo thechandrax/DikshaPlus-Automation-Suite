@@ -951,6 +951,15 @@ async def process_h5p_activity(page, view_button, answer_key, course_title=None)
             except Exception:
                 pass
 
+        if q_text_screen:
+            logger.info("\n" + "  " + "-" * 75)
+            logger.info(f"  ❓ [Q-{question_step + 1} FULL QUESTION]: {q_text_screen}")
+            if screen_opts:
+                logger.info("  📋 [OPTION CHOICES]:")
+                for idx, opt_text in enumerate(screen_opts):
+                    letter = chr(65 + idx) if idx < 26 else str(idx + 1)
+                    logger.info(f"     [{letter}] {opt_text}")
+
         matched_answer_text = None
 
         # 1. Check Auto-Learning JSON Cache
@@ -964,7 +973,6 @@ async def process_h5p_activity(page, view_button, answer_key, course_title=None)
                 if clean_json_q and clean_screen_q and (clean_json_q == clean_screen_q or (json_words and screen_words and json_words == screen_words)):
                     matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
                     logger.info(f"  ⚡ [H5P VERIFIED JSON 100% MATCH Q-{question_step + 1}] Target Answer: '{matched_answer_text}'")
-
                     break
 
         # 2. AI Live Solver Fallback
@@ -974,7 +982,6 @@ async def process_h5p_activity(page, view_button, answer_key, course_title=None)
                 matched_answer_text = ai_solved
                 logger.info(f"  🧠 [H5P AI LIVE SOLVER Q-{question_step + 1}] Solved: '{matched_answer_text}'")
                 save_auto_learned_qa(course_title, 1, "H5P Interactive Quiz", 1, "H5P Interactive Quiz", q_text_screen, ai_solved)
-
 
         # Click matching option or fallback to first radio
         selected = False
@@ -988,10 +995,13 @@ async def process_h5p_activity(page, view_button, answer_key, course_title=None)
                     if clean_target in clean_opt or clean_opt in clean_target:
                         await opt_el.click(force=True)
                         selected = True
-                        logger.info(f"  ✔ [H5P EXACT OPTION CLICKED Q-{question_step + 1}] '{opt_txt.strip()}'")
+                        opt_let = chr(65 + o_idx) if o_idx < 26 else str(o_idx + 1)
+                        logger.info(f"  🎯 [SELECTED OPTION {opt_let}] Selected Radio Button [{opt_let}] for Answer: '{matched_answer_text}'.")
+                        logger.info("  " + "-" * 75 + "\n")
                         break
                 except Exception:
                     pass
+
 
         if not selected:
             radios = h5p_frame.locator("input[type='radio'], .h5p-joubelui-button, .h5p-radio-button")
@@ -1178,20 +1188,34 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
         # Unlimited time pacing: 1.5s human reading delay
         await page.wait_for_timeout(1500)
 
-        # Extract question text displayed on screen across all potential DIKSHA selectors
+        # Extract question text & option choices displayed on screen
         q_text_screen = ""
+        screen_opts = []
         try:
             q_elem = target_frame.locator(".qtext, div.qtext, .question-text, .que .content .qtext, fieldset legend, .qheader, .question-content, div.que div.content").first
             if await q_elem.count() > 0 and await q_elem.is_visible():
                 raw_q = (await q_elem.inner_text()).strip()
-                # 1. Clean DIKSHA question text header & option choice footer noise
                 q_text_screen = re.sub(r'^(?:question\s*text|question\s*\d+[:.]?|\d+[:.]?|q\d+[:.]?)\s*', '', raw_q, flags=re.IGNORECASE)
-                q_text_screen = re.sub(r'\s*(?:select\s*one|question\s*\d+).*$', '', q_text_screen, flags=re.IGNORECASE | re.DOTALL).strip().lower()
+                q_text_screen = re.sub(r'\s*(?:select\s*one|question\s*\d+).*$', '', q_text_screen, flags=re.IGNORECASE | re.DOTALL).strip()
+
+            option_containers = target_frame.locator("div[data-region='answer-label'], [aria-labelledby*='answer'], .answer label, div[class*='r0'], div[class*='r1'], .form-check-label, label, .custom-control-label")
+            lbl_count = await option_containers.count()
+            for l_idx in range(lbl_count):
+                raw_l = await option_containers.nth(l_idx).inner_text()
+                c_opt = re.sub(r'^(?:[a-d][.)]|option\s*[a-d][:.]?|\d+[.)])\s*', '', raw_l, flags=re.IGNORECASE).strip()
+                if c_opt:
+                    screen_opts.append(c_opt)
         except Exception:
             pass
 
         if q_text_screen:
-            logger.info(f"  [Q-{q_num + 1} SCREEN TEXT]: '{q_text_screen[:70]}...'")
+            logger.info("\n" + "  " + "-" * 75)
+            logger.info(f"  ❓ [Q-{q_num + 1} FULL QUESTION]: {q_text_screen}")
+            if screen_opts:
+                logger.info("  📋 [OPTION CHOICES]:")
+                for idx, opt_text in enumerate(screen_opts):
+                    letter = chr(65 + idx) if idx < 26 else str(idx + 1)
+                    logger.info(f"     [{letter}] {opt_text}")
 
         # Dual Confirmation Guard Protocol: Smart Auto-Learning JSON Cache + AI Live Solver Engine
         matched_answer_text = None
@@ -1199,7 +1223,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
 
         # Step 1: Check Auto-Learning JSON Cache First (Instant 0.01s Match)
         if q_text_screen and answers_list:
-            clean_screen_q = re.sub(r'[^\w\s]', '', q_text_screen) if q_text_screen else ""
+            clean_screen_q = re.sub(r'[^\w\s]', '', q_text_screen.lower())
             screen_words = set(w for w in clean_screen_q.split() if len(w) >= 3) if clean_screen_q else set()
 
             for bucket in search_buckets:
@@ -1225,41 +1249,23 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
 
                         if is_100pct_match:
                             matched_answer_text = (item.get("answer") or item.get("correct_option") or "").strip()
-                            matched_json_question = (item.get("question") or item.get("question_keyword") or "")[:50]
                             gate1_ok = True
-                            logger.info(f"  ⚡ [VERIFIED JSON 100% MATCH Q-{q_num + 1}] '{matched_json_question}...' -> Target: '{matched_answer_text}'")
-
+                            logger.info(f"  ⚡ [VERIFIED JSON 100% MATCH Q-{q_num + 1}] Target Answer: '{matched_answer_text}'")
                             break
 
         # Step 2: AI Live Solver Fallback (If Question is NEW & Not in JSON Cache)
         if not matched_answer_text and q_text_screen:
             try:
-                option_containers = target_frame.locator("div[data-region='answer-label'], [aria-labelledby*='answer'], .answer label, div[class*='r0'], div[class*='r1'], .form-check-label, label, .custom-control-label")
-                lbl_count = await option_containers.count()
-                screen_opts = []
-                for l_idx in range(lbl_count):
-                    raw_l = await option_containers.nth(l_idx).inner_text()
-                    c_opt = re.sub(r'^(?:[a-d][.)]|option\s*[a-d][:.]?|\d+[.)])\s*', '', raw_l, flags=re.IGNORECASE).strip()
-                    if c_opt:
-                        screen_opts.append(c_opt)
-
                 ai_solved = solve_question_with_ai(q_text_screen, screen_opts)
                 if ai_solved:
                     matched_answer_text = ai_solved
                     gate1_ok = True
                     logger.info(f"  🧠 [AI LIVE SOLVER Q-{q_num + 1}] Solved NEW question -> '{matched_answer_text}'")
-
-                    # Save sequentially with module_no, module_name, sub_no, sub_name structure
                     save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name, q_text_screen, ai_solved)
             except Exception as ai_ex:
                 logger.warning(f"  --> AI Live Solver notice: {ai_ex}")
 
-
-
-
         selected_option = False
-
-
         
         # Gate 2: 100% Option Label Verification & Exact Target Radio Click
         if matched_answer_text:
@@ -1270,7 +1276,6 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                 clean_target = re.sub(r'[^\w\s]', '', matched_answer_text.lower())
                 target_words = set(w for w in clean_target.split() if len(w) >= 3)
 
-                # Check if target answer is letter prefix e.g. "a", "b", "c", "d" or "option a"
                 letter_idx_map = {"a": 0, "b": 1, "c": 2, "d": 3, "1": 0, "2": 1, "3": 2, "4": 3}
                 target_letter_idx = letter_idx_map.get(clean_target)
 
@@ -1285,32 +1290,29 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                             await target_input.click(force=True)
                             selected_option = True
                             gate2_ok = True
-                            logger.info(f"  ✔ [VERIFIED ANSWER 100% MATCH Q-{q_num + 1}] Target Letter Option [{clean_target.upper()}]: #{input_id}")
-                            logger.info(f"  🛡️ [EXACT RADIO CLICKED Q-{q_num + 1}] Selected radio button for letter '{matched_answer_text}'.")
+                            opt_let = chr(65 + target_letter_idx) if target_letter_idx < 26 else str(target_letter_idx + 1)
+                            logger.info(f"  ✔ [VERIFIED ANSWER MATCH Q-{q_num + 1}] Target Letter Option [{opt_let}]: '{matched_answer_text}'")
+                            logger.info(f"  🎯 [SELECTED OPTION {opt_let}] Selected Radio Button [{opt_let}] for Answer: '{matched_answer_text}'.")
+                            logger.info("  " + "-" * 75 + "\n")
                             await page.wait_for_timeout(1000)
 
-                # Pass 2: Text Matching on Option Containers if not already clicked by letter index
+                # Pass 2: Text Matching on Option Containers
                 if not selected_option:
                     for l_idx in range(lbl_count):
                         container = option_containers.nth(l_idx)
-                        
                         raw_lbl = await container.inner_text()
                         clean_option_txt = re.sub(r'^(?:[a-d][.)]|option\s*[a-d][:.]?|\d+[.)])\s*', '', raw_lbl, flags=re.IGNORECASE).strip().lower()
-                        
                         clean_lbl = re.sub(r'[^\w\s]', '', clean_option_txt)
                         lbl_words = set(w for w in clean_lbl.split() if len(w) >= 3)
-
                         opt_overlap = (len(target_words & lbl_words) / float(len(target_words))) if target_words else 0.0
                         
-                        # 100% Option Label Equality Criteria
                         is_100pct_option_match = (clean_target == clean_lbl) or (target_words and lbl_words and target_words == lbl_words) or (clean_target in clean_lbl or clean_lbl in clean_target) or (opt_overlap == 1.0)
 
                         if clean_target and is_100pct_option_match:
                             gate2_ok = True
-                            logger.info(f"  ✔ [VERIFIED ANSWER 100% MATCH Q-{q_num + 1}] Target Answer: '{matched_answer_text}'")
-                            logger.info(f"  🛡️ [DUAL CONFIRMATION 100% GUARANTEED Q-{q_num + 1}] Question & Answer 100% Verified!")
-
-                            # 1. DIKSHA aria-labelledby linking check (e.g. id="q15158343:1_answer1_label" -> input id="q15158343:1_answer1")
+                            opt_let = chr(65 + l_idx) if l_idx < 26 else str(l_idx + 1)
+                            logger.info(f"  ✔ [VERIFIED ANSWER MATCH Q-{q_num + 1}] Target Answer: '{matched_answer_text}'")
+                            
                             container_id = await container.get_attribute("id") or ""
                             if container_id and "_label" in container_id:
                                 input_id = container_id.replace("_label", "")
@@ -1318,21 +1320,21 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                                 if await target_input.count() > 0:
                                     await target_input.click(force=True)
                                     selected_option = True
-                                    logger.info(f"  --> Question #{q_num + 1}: Clicked DIKSHA radio input #{input_id} for answer '{matched_answer_text}'.")
+                                    logger.info(f"  🎯 [SELECTED OPTION {opt_let}] Selected Radio Button [{opt_let}] for Answer: '{matched_answer_text}'.")
+                                    logger.info("  " + "-" * 75 + "\n")
                                     await page.wait_for_timeout(1000)
                                     break
 
-                            # 2. Check for input linked via aria-labelledby
                             if container_id:
                                 linked_input = target_frame.locator(f"input[aria-labelledby='{container_id}']").first
                                 if await linked_input.count() > 0:
                                     await linked_input.click(force=True)
                                     selected_option = True
-                                    logger.info(f"  --> Question #{q_num + 1}: Clicked DIKSHA radio input via aria-labelledby for answer '{matched_answer_text}'.")
+                                    logger.info(f"  🎯 [SELECTED OPTION {opt_let}] Selected Radio Button [{opt_let}] for Answer: '{matched_answer_text}'.")
+                                    logger.info("  " + "-" * 75 + "\n")
                                     await page.wait_for_timeout(1000)
                                     break
 
-                            # 3. Check for input inside container or parent row
                             input_child = container.locator("input[type='radio'], input[type='checkbox']").first
                             if await input_child.count() == 0:
                                 parent_row = container.locator("xpath=./ancestor::div[contains(@class,'r0') or contains(@class,'r1') or contains(@class,'answer')][1]")
@@ -1342,16 +1344,18 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                             if await input_child.count() > 0:
                                 await input_child.click(force=True)
                                 selected_option = True
-                                logger.info(f"  --> Question #{q_num + 1}: Clicked radio option input for answer '{matched_answer_text}'.")
+                                logger.info(f"  🎯 [SELECTED OPTION {opt_let}] Selected Radio Button [{opt_let}] for Answer: '{matched_answer_text}'.")
+                                logger.info("  " + "-" * 75 + "\n")
                                 await page.wait_for_timeout(1000)
                                 break
 
-                            # 4. Fallback: Click container element directly
                             await container.click(force=True)
                             selected_option = True
-                            logger.info(f"  --> Question #{q_num + 1}: Clicked matched option container for answer '{matched_answer_text}'.")
+                            logger.info(f"  🎯 [SELECTED OPTION {opt_let}] Selected Radio Button [{opt_let}] for Answer: '{matched_answer_text}'.")
+                            logger.info("  " + "-" * 75 + "\n")
                             await page.wait_for_timeout(1000)
                             break
+
             except Exception as match_ex:
                 logger.warning(f"  --> Option matching notice: {match_ex}")
 
