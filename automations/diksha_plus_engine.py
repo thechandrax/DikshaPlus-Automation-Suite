@@ -2410,11 +2410,13 @@ async def is_header_100_percent_complete(header):
     return False
 
 
-async def process_course_modules(page, answer_key=None, course_title="Unknown Course"):
+async def process_course_modules(page, answer_key=None, course_title="Unknown Course", username=""):
     """
     Clicks 'Lessons' tab (waits 6s for server hydration), lists all Main Modules,
     auto-expands 50%/0% incomplete modules, and executes items without checkmarks.
     """
+    disp_user = config.USER_NAMES.get(username, username) if username else "Active User"
+
     if not course_title or course_title == "Unknown Course":
         try:
             h_el = page.locator(".course-title, .page-title, .course-header h1, h1").first
@@ -2472,7 +2474,6 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
             continue
 
 
-
         # Deduplicate identical / singular-plural titles (e.g. Assessment vs Assessments)
         if normalized_t not in seen_normalized_titles:
             seen_normalized_titles.add(normalized_t)
@@ -2499,9 +2500,9 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
             logger.info("=" * 35)
 
 
-            # Certificate Section / Customcert Download Link Protocol
+            # Certificate Section / Customcert Download Link Protocol (Scoped strictly to Certificate module header / panel)
             is_cert_section = any(kw in header_title.lower() for kw in ["certificate", "customcert", "download certificate"])
-            cert_el = page.locator("a[act_type='customcert'], a[href*='customcert'], a:has-text('Download Certificate'), a:has-text('Give Feedback')").first
+            cert_el = header.locator("a[act_type='customcert'], a[href*='customcert'], a:has-text('Download Certificate')").first
             has_customcert_link = await cert_el.count() > 0
 
             if is_cert_section or has_customcert_link:
@@ -2512,12 +2513,13 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                 logger.info("=" * 67)
                 logger.info(" 🎉 🎓 AUTOMATION EXECUTION SUCCESSFUL & COURSE COMPLETED!")
                 logger.info("=" * 67)
-                logger.info(f"  ✔ User Profile : {profile_name} ({user_login_id})")
+                logger.info(f"  ✔ User Profile : {disp_user} ({username})")
                 logger.info(f"  ✔ Course Title : {course_title}")
                 logger.info("  ✔ Certificate  : Download Certificate Available")
                 logger.info("  ✔ Status       : 100% Complete — All Modules & Assessments Done!")
                 logger.info("=" * 67 + "\n")
                 return True
+
 
 
             # Check if Module header is ALREADY 100% complete
