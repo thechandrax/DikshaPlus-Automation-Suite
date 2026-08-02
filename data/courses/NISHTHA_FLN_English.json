@@ -1215,6 +1215,88 @@
           ]
         }
       ]
+    },
+    {
+      "module_no": 13,
+      "module_name": "Module 12: Toy Based Pedagogy for Foundational Stage",
+      "subsections": [
+        {
+          "subsection_no": 34,
+          "subsection_name": "Formative Assessment 12",
+          "questions": [
+            {
+              "question": "The full form of D-I-Y is:",
+              "options": [
+                "[A] Do-It-Yourself",
+                "[B] Deal-It-Yourself",
+                "[C] Draw-It-Yourself",
+                "[D] Dig-It-Yourself"
+              ],
+              "answer": "[A] Do-It-Yourself"
+            },
+            {
+              "question": "Which of the following games is not a popular traditional Indian game?",
+              "options": [
+                "[A] Kabaddi",
+                "[B] Throw and Catch",
+                "[C] Posham Pa-Bhai-Posham Pa",
+                "[D] Cricket"
+              ],
+              "answer": "[D] Cricket"
+            },
+            {
+              "question": "Which of the following is incorrect in relation to ring set puzzles? Ring set puzzle:",
+              "options": [
+                "[A] Improves understanding of colour, shape, etc.",
+                "[B] Is made up of glass",
+                "[C] Enhances gross motor skills",
+                "[D] Can be used to develop fine motor skills"
+              ],
+              "answer": "[B] Is made up of glass"
+            },
+            {
+              "question": "Kaleidoscope is made up of?",
+              "options": [
+                "[A] Wooden board, nails and paint.",
+                "[B] Velvet paper, threads and paintbrush.",
+                "[C] Glass, newspaper and selected pictures.",
+                "[D] Cardboard, glass piece and some random pictures."
+              ],
+              "answer": "[D] Cardboard, glass piece and some random pictures."
+            },
+            {
+              "question": "Toys aid the young children in?",
+              "options": [
+                "[A] Economic development",
+                "[B] Cognitive development",
+                "[C] Political development",
+                "[D] Ritual development"
+              ],
+              "answer": "[B] Cognitive development"
+            },
+            {
+              "question": "Which of the following is the popular name for the toy 'Set of Kitchen utensils' in Gujarat?",
+              "options": [
+                "[A] Kaleidoscope",
+                "[B] Dhingli",
+                "[C] Rasoi",
+                "[D] Nesting dolls"
+              ],
+              "answer": "[B] Dhingli"
+            },
+            {
+              "question": "Ring Set Puzzles help in learning the concept of:",
+              "options": [
+                "[A] Addition",
+                "[B] Subtraction",
+                "[C] Classification",
+                "[D] Seriation"
+              ],
+              "answer": "[D] Seriation"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
