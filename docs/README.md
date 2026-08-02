@@ -48,7 +48,8 @@ Welcome to the central documentation index for **DIKSHA+ Automation Suite**. Sel
    * Complete 8-key API pool architecture & rotation flow.
    * Stepped backoff logs & 0% Option A fallback guarantee.
 
-8. 📱 **[Termux & Ubuntu PRoot Mobile Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/08_MOBILE_EXECUTION_AND_TERMUX_GUIDE.md)**
+8. 📱 **[Termux & Ubuntu PRoot Mobile Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/08_MOBILE_EXECUTION_TERMUX_UBUNTU_GUIDE.md)**
+
    * Complete guide covering 1-word shortcuts (`vnc`, `diksha`, `exit`), Ubuntu PRoot & RealVNC Visible GUI setup.
 
 9. 🚀 **[3-Way Execution Architecture Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/09_THREE_WAY_EXECUTION_ARCHITECTURE.md)**
