@@ -75,17 +75,16 @@ Diksha+ Automation Suite/
 │   └── 05_RAILWAY_DEPLOYMENT_GUIDE.md # Railway Cloud 1-Click Deployment Guide
 ├── output/
 │   └── screenshots/               # Single official screenshot directory
-├── railway/                       # Railway Cloud deployment files
-│   ├── Dockerfile
-│   ├── railway.json
-│   └── .dockerignore
 ├── utils/
 │   ├── logger.py                  # Colorized engine logger
 │   └── security.py                # 256-Bit cryptographic security engine
 ├── Dockerfile                     # Root Dockerfile for 1-click Railway Cloud build
+├── railway.json                   # Railway Cloud deployment configuration
+├── .dockerignore                  # Docker build ignore rules
 ├── main.py                        # CLI Menu launcher with 256-bit PIN lock
 ├── diksha+.bat                    # 1-Click Windows execution script
 └── setup.bat                      # 1-Click environment installer
+
 ```
 
 ---
