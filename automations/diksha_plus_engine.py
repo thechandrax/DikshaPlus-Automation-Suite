@@ -707,37 +707,17 @@ async def fetch_enrolled_courses(page):
     return all_courses
 
 
-def char_display_width(ch):
-    cat = unicodedata.category(ch)
-    if cat in ('Mn', 'Me', 'Cf'):
-        return 0
-    code = ord(ch)
-    if (0x0900 <= code <= 0x0D7F) or (0x4E00 <= code <= 0x9FFF):
-        return 2
-    return 1
-
-
 def pad_title_fixed(text, target_width=48):
     """
-    Pads or truncates text taking into account Indic (Bengali, Devanagari) & Asian 2-column wide characters,
-    ensuring 100% straight vertical column alignment in ANSI terminal fonts.
+    Pads or truncates course titles to an exact character length (48 chars),
+    ensuring 100% straight vertical column alignment below one another across all terminal fonts.
     """
     clean_t = text.strip()
-    tot_w = sum(char_display_width(ch) for ch in clean_t)
-    
-    if tot_w <= target_width:
-        return clean_t + (" " * (target_width - tot_w))
-    
-    avail_w = target_width - 3
-    res = ""
-    curr_w = 0
-    for ch in clean_t:
-        w = char_display_width(ch)
-        if curr_w + w > avail_w:
-            break
-        res += ch
-        curr_w += w
-    return res + "..." + (" " * (target_width - (curr_w + 3)))
+    if len(clean_t) > target_width:
+        return clean_t[:target_width - 3] + "..."
+    else:
+        return clean_t.ljust(target_width)
+
 
 
 
