@@ -443,7 +443,7 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
         for grok_attempt in range(1, 3):
             logger.info(f"  🤖 [GROK AI ATTEMPT {grok_attempt}/2] Gemini keys exhausted. Requesting solution via Grok xAI API...")
             for x_idx, xai_key in enumerate(xai_keys, 1):
-                for model_name in ["grok-4.3", "grok-2-1212", "grok-beta"]:
+                for model_name in ["grok-3", "grok-3-mini"]:
                     try:
                         url = "https://api.x.ai/v1/chat/completions"
                         payload = json.dumps({
@@ -473,6 +473,7 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
                         logger.warning(f"  ⚠️ [GROK AI NOTICE] ({model_name} Key #{x_idx}): {ex}")
             if grok_attempt < 2:
                 time.sleep(2)
+
 
     # 3. STEPPED BACKOFF RETRY PROTOCOL: 30s -> 45s -> 60s
     logger.warning("  ⚠️ [AI INITIAL ATTEMPTS EXHAUSTED] Entering Stepped Backoff Retry Protocol (30s -> 45s -> 60s)...")
@@ -505,8 +506,9 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
         if xai_keys:
             logger.info(f"  🤖 [BACKOFF RETRY #{b_idx}] Retrying ALL Grok xAI API Keys after {delay_sec}s delay...")
             for x_idx, xai_key in enumerate(xai_keys, 1):
-                for model_name in ["grok-4.3", "grok-2-1212", "grok-beta"]:
+                for model_name in ["grok-3", "grok-3-mini"]:
                     try:
+
                         url = "https://api.x.ai/v1/chat/completions"
                         payload = json.dumps({
                             "model": model_name,
