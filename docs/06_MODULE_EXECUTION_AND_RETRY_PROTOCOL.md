@@ -87,45 +87,32 @@ If after 4 attempts and page reloads a regular course lesson or assessment remai
 
 ---
 
-## 6. Stepped Backoff Retry Protocol (30s ➔ 45s ➔ 60s)
+## 6. Dual AI Solver & Stepped Backoff Retry Protocol (30s ➔ 45s ➔ 60s)
 
-When solving new quiz or feedback questions live via Gemini AI API:
+When solving new quiz or feedback questions live via AI:
 
 ```mermaid
 flowchart TD
     A[New Question Encountered] --> B{In JSON Answer Key?}
     B -- Yes 0.01s --> C[Click Exact Answer]
-    B -- No --> D[Call Gemini AI Live Solver]
-    D --> E[Try Key Pool #1, #2, #3]
-    E -- Success --> F[Save to JSON & Click Answer]
-    E -- All Keys Rate Limited HTTP 429 --> G[Stepped Backoff Protocol]
+    B -- No --> D[🧠 1. Gemini AI Multi-Key Pool - 2 Attempts]
+    D -- Success --> E[Save to JSON & Click Answer]
+    D -- Gemini Rate Limited --> F[🤖 2. Grok xAI API Pool - 2 Attempts]
     
-    G --> H[⏳ Backoff #1: Wait 30s for Quota Reset]
-    H --> I{Solved?}
-    I -- Yes --> F
-    I -- No --> J[⏳ Backoff #2: Wait 45s for Quota Reset]
-    J --> K{Solved?}
-    K -- Yes --> F
-    K -- No --> L[⏳ Backoff #3: Wait 60s for Quota Reset]
-    L --> M{Solved?}
-    M -- Yes --> F
-    M -- No --> N[Continuous Execution Fallback]
+    F -- Success --> E
+    F -- Grok Rate Limited --> G[⏳ 3. Stepped Backoff Protocol: 30s -> 45s -> 60s]
+    G -- Success --> E
+    G -- Failed All Backoffs --> H[⛔ Strict Circuit Breaker Stop: Close Server Context]
 ```
 
-### ⏳ Backoff Delays Table:
+### ⏳ AI Execution Priority Table:
 
-| Retry Pass | Delay | Action |
-| :--- | :--- | :--- |
-| **Initial Pool** | 0s (3s pacing) | Rotates across all 256-bit encrypted API keys & models (`gemini-2.0-flash`, `gemini-flash-latest`). |
-| **Backoff #1** | **30 Seconds** | Waits 30s for Google API quota reset $\rightarrow$ Retries AI solver across all keys. |
-| **Backoff #2** | **45 Seconds** | Waits 45s for Google API quota reset $\rightarrow$ Retries AI solver across all keys. |
-| **Backoff #3** | **60 Seconds** | Waits 60s for Google API quota reset $\rightarrow$ Retries AI solver across all keys. |
+| Priority | AI Engine | Attempt Limit | Action |
+| :--- | :--- | :--- | :--- |
+| **1. Primary** | **Google Gemini AI API** | **2 Attempts** | Rotates across encrypted Gemini key pool & models (`gemini-2.0-flash`, `gemini-flash-latest`). |
+| **2. Fallback** | **xAI Grok API** (`console.x.ai`) | **2 Attempts** | Rotates across encrypted Grok key pool & models (`grok-4.3`, `grok-2-1212`, `grok-beta`). |
+| **3. Backoff #1** | Both Gemini & Grok | **Wait 30s** | Waits 30 seconds for quota reset $\rightarrow$ Retries all keys. |
+| **4. Backoff #2** | Both Gemini & Grok | **Wait 45s** | Waits 45 seconds for quota reset $\rightarrow$ Retries all keys. |
+| **5. Backoff #3** | Both Gemini & Grok | **Wait 60s** | Waits 60 seconds for quota reset $\rightarrow$ Retries all keys. |
+| **6. Final Action**| **Circuit Breaker** | **STOP & CLOSE** | **Never uses dummy Option A!** Closes browser context (`page.context.close()`) to protect 100% accuracy. |
 
----
-
-## 7. Continuous Execution Fallback
-
-If after 30s, 45s, and 60s backoff retries the AI API is still rate-limited:
-
-* **Quizzes / Assessments**: Selects **Option A** (`QUIZ AI RATE LIMIT FALLBACK`) so the quiz **continues running smoothly on Railway Cloud without crashing or stopping**.
-* **Feedback Forms**: Selects positive rating response (**'Strongly Agree'**) so feedback form submits cleanly.

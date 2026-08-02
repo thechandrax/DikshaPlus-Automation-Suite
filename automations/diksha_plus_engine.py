@@ -365,8 +365,10 @@ def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name,
 
 def solve_question_with_ai(question_text, option_texts=None):
     """
-    Uses Gemini AI API Multi-Key Pool FIRST to solve live quiz questions with 100% accuracy.
-    If ALL Gemini API keys encounter rate limits or fail, automatically fails over to Grok xAI API (https://console.x.ai/)!
+    Uses Gemini AI API Multi-Key Pool FIRST (2 Attempts).
+    If Gemini keys fail, uses Grok xAI API (2 Attempts) SECOND.
+    If both fail, applies Stepped Backoff Protocol (30s -> 45s -> 60s).
+    Returns None if all attempts fail, triggering strict Circuit Breaker Stop (never uses dummy Option A).
     """
     if not getattr(config, "AI_LIVE_SOLVER_ENABLED", True):
         return None
@@ -383,53 +385,54 @@ Option Choices:
 INSTRUCTIONS:
 Return ONLY the exact text of the correct option choice from the list above. Do NOT include option numbers (1, 2, 3), do NOT include explanations. Return ONLY the exact option text."""
 
-    # 1. PRIORITY 1: Google Gemini AI Multi-Key Pool
+    # 1. PRIORITY 1: Google Gemini AI Multi-Key Pool (2 ATTEMPTS)
     gemini_keys = getattr(config, "GEMINI_API_KEYS", [])
     if not gemini_keys and hasattr(config, "GEMINI_API_KEY") and config.GEMINI_API_KEY:
         gemini_keys = [config.GEMINI_API_KEY]
 
+    models_to_try = ["gemini-2.0-flash", "gemini-flash-latest"]
+
     if gemini_keys:
-        logger.info("  🧠 [GEMINI AI LIVE] Requesting solution via Gemini AI API Multi-Key Pool...")
-        models_to_try = ["gemini-2.0-flash", "gemini-flash-latest"]
-        for key_idx, api_key in enumerate(gemini_keys, 1):
-            for model_name in models_to_try:
-                try:
-                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
-                    payload = json.dumps({
-                        "contents": [{"parts": [{"text": prompt}]}]
-                    }).encode('utf-8')
-                    
-                    headers = {
-                        'Content-Type': 'application/json',
-                        'x-goog-api-key': api_key
-                    }
+        for gemini_attempt in range(1, 3):
+            logger.info(f"  🧠 [GEMINI AI ATTEMPT {gemini_attempt}/2] Requesting solution via Gemini API...")
+            for key_idx, api_key in enumerate(gemini_keys, 1):
+                for model_name in models_to_try:
+                    try:
+                        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
+                        payload = json.dumps({
+                            "contents": [{"parts": [{"text": prompt}]}]
+                        }).encode('utf-8')
+                        
+                        headers = {
+                            'Content-Type': 'application/json',
+                            'x-goog-api-key': api_key
+                        }
 
-                    req = urllib.request.Request(url, data=payload, headers=headers)
-                    res = urllib.request.urlopen(req, timeout=12)
-                    resp_data = json.loads(res.read().decode('utf-8'))
-                    ans_text = resp_data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "").strip()
-                    
-                    clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
-                    if clean_ans:
-                        logger.info(f"  🧠 [GEMINI AI SUCCESS] Solved via Gemini ({model_name}) Key #{key_idx} -> '{clean_ans}'")
-                        return clean_ans
-                except urllib.error.HTTPError as http_err:
-                    if http_err.code in (429, 503):
-                        logger.warning(f"  ⏳ [GEMINI RATE LIMIT] Key #{key_idx} rate limited ({http_err.reason}). Trying next key...")
+                        req = urllib.request.Request(url, data=payload, headers=headers)
+                        res = urllib.request.urlopen(req, timeout=12)
+                        resp_data = json.loads(res.read().decode('utf-8'))
+                        ans_text = resp_data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "").strip()
+                        
+                        clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
+                        if clean_ans:
+                            logger.info(f"  🧠 [GEMINI AI SUCCESS] Solved on Attempt {gemini_attempt}/2 via Key #{key_idx} ({model_name}) -> '{clean_ans}'")
+                            return clean_ans
+                    except urllib.error.HTTPError as http_err:
+                        if http_err.code in (429, 503):
+                            logger.warning(f"  ⏳ [GEMINI RATE LIMIT] Key #{key_idx} rate limited. Trying next key...")
+                            time.sleep(1)
+                            continue
+                        elif http_err.code in (401, 403):
+                            logger.error(f"  ❌ [GEMINI API ERROR {http_err.code}] Key #{key_idx} invalid.")
+                            break
+                    except Exception as ex:
+                        logger.warning(f"  ⚠️ [GEMINI SOLVER NOTICE]: {ex}")
                         time.sleep(1)
-                        continue
-                    elif http_err.code in (401, 403):
-                        logger.error(f"  ❌ [GEMINI API ERROR {http_err.code}] Key #{key_idx} {http_err.reason}. Trying next key...")
                         break
-                    else:
-                        logger.warning(f"  ⚠️ [GEMINI HTTP ERROR {http_err.code}] {http_err.reason}")
-                        break
-                except Exception as ex:
-                    logger.warning(f"  ⚠️ [GEMINI SOLVER NOTICE] {ex}")
-                    time.sleep(1)
-                    break
+            if gemini_attempt < 2:
+                time.sleep(2)
 
-    # 2. PRIORITY 2: xAI Grok API Key Pool Fallback (https://console.x.ai/)
+    # 2. PRIORITY 2: xAI Grok API Key Pool Fallback (2 ATTEMPTS) (https://console.x.ai/)
     xai_keys = getattr(config, "XAI_API_KEYS", [])
     if not xai_keys:
         single_xai = getattr(config, "XAI_API_KEY", "").strip() or getattr(config, "GROK_API_KEY", "").strip() or os.environ.get("XAI_API_KEY", "").strip() or os.environ.get("GROK_API_KEY", "").strip()
@@ -437,122 +440,46 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
             xai_keys = [single_xai]
 
     if xai_keys:
-        logger.info("  🤖 [GROK FALLBACK LIVE] Gemini keys exhausted. Requesting solution via Grok xAI API (https://console.x.ai/)...")
-        for x_idx, xai_key in enumerate(xai_keys, 1):
-            for model_name in ["grok-4.3", "grok-2-1212", "grok-beta"]:
-                try:
-                    url = "https://api.x.ai/v1/chat/completions"
-                    payload = json.dumps({
-                        "model": model_name,
-                        "messages": [
-                            {"role": "system", "content": "You are an expert AI teacher solving quiz questions for an educational course."},
-                            {"role": "user", "content": prompt}
-                        ],
-                        "temperature": 0.1
-                    }).encode('utf-8')
+        for grok_attempt in range(1, 3):
+            logger.info(f"  🤖 [GROK AI ATTEMPT {grok_attempt}/2] Gemini keys exhausted. Requesting solution via Grok xAI API...")
+            for x_idx, xai_key in enumerate(xai_keys, 1):
+                for model_name in ["grok-4.3", "grok-2-1212", "grok-beta"]:
+                    try:
+                        url = "https://api.x.ai/v1/chat/completions"
+                        payload = json.dumps({
+                            "model": model_name,
+                            "messages": [
+                                {"role": "system", "content": "You are an expert AI teacher solving quiz questions for an educational course."},
+                                {"role": "user", "content": prompt}
+                            ],
+                            "temperature": 0.1
+                        }).encode('utf-8')
 
-                    headers = {
-                        'Content-Type': 'application/json',
-                        'Authorization': f'Bearer {xai_key}'
-                    }
+                        headers = {
+                            'Content-Type': 'application/json',
+                            'Authorization': f'Bearer {xai_key}'
+                        }
 
-                    req = urllib.request.Request(url, data=payload, headers=headers)
-                    res = urllib.request.urlopen(req, timeout=12)
-                    resp_data = json.loads(res.read().decode('utf-8'))
-                    ans_text = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
+                        req = urllib.request.Request(url, data=payload, headers=headers)
+                        res = urllib.request.urlopen(req, timeout=12)
+                        resp_data = json.loads(res.read().decode('utf-8'))
+                        ans_text = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
 
-                    clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
-                    if clean_ans:
-                        logger.info(f"  🧠 [GROK AI SUCCESS] Solved via Grok ({model_name}) Key #{x_idx} -> '{clean_ans}'")
-                        return clean_ans
-                except Exception as ex:
-                    logger.warning(f"  ⚠️ [GROK AI NOTICE] ({model_name} Key #{x_idx}): {ex}")
+                        clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
+                        if clean_ans:
+                            logger.info(f"  🧠 [GROK AI SUCCESS] Solved on Attempt {grok_attempt}/2 via Grok ({model_name}) Key #{x_idx} -> '{clean_ans}'")
+                            return clean_ans
+                    except Exception as ex:
+                        logger.warning(f"  ⚠️ [GROK AI NOTICE] ({model_name} Key #{x_idx}): {ex}")
+            if grok_attempt < 2:
+                time.sleep(2)
 
-
-
-    models_to_try = ["gemini-2.0-flash", "gemini-flash-latest"]
-
-    # Initial 3 attempts
-    for attempt_round in range(1, 4):
-        logger.info(f"  🧠 [AI ATTEMPT {attempt_round}/3] Requesting AI solution...")
-        for key_idx, api_key in enumerate(api_keys, 1):
-            for model_name in models_to_try:
-                try:
-                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
-                    payload = json.dumps({
-                        "contents": [{"parts": [{"text": prompt}]}]
-                    }).encode('utf-8')
-                    
-                    headers = {
-                        'Content-Type': 'application/json',
-                        'x-goog-api-key': api_key  # 2025/2026 Official Google API Auth Header
-                    }
-
-                    req = urllib.request.Request(url, data=payload, headers=headers)
-                    res = urllib.request.urlopen(req, timeout=12)
-                    resp_data = json.loads(res.read().decode('utf-8'))
-                    ans_text = resp_data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "").strip()
-                    
-                    clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
-                    if clean_ans:
-                        logger.info(f"  🧠 [AI LIVE SUCCESS] Solved on Attempt {attempt_round}/3 via Key #{key_idx} -> '{clean_ans}'")
-                        return clean_ans
-                except urllib.error.HTTPError as http_err:
-                    if http_err.code in (429, 503):
-                        logger.warning(f"  ⏳ [AI RATE LIMIT] Key #{key_idx} rate limited ({http_err.reason}). Trying next key...")
-                        time.sleep(2)
-                        continue
-
-                    elif http_err.code in (401, 403):
-                        logger.error(f"  ❌ [GEMINI API ERROR {http_err.code}] Key #{key_idx} {http_err.reason}. Trying next key...")
-                        break
-                    else:
-                        logger.warning(f"  ⚠️ [AI API HTTP ERROR {http_err.code}] {http_err.reason}")
-                        break
-                except Exception as ex:
-                    logger.warning(f"  ⚠️ [AI SOLVER NOTICE] {ex}")
-                    time.sleep(1)
-                    break
-
-        if attempt_round < 3:
-            logger.warning(f"  ⏳ [AI SOLVER RETRY] Attempt {attempt_round}/3 un-successful. Waiting 3s before Attempt {attempt_round + 1}/3...")
-            time.sleep(3)
-
-    logger.warning("  ⚠️ [AI 3 INITIAL ATTEMPTS EXHAUSTED] Entering Stepped Backoff Retry Protocol (30s -> 45s -> 60s)...")
-
-    # Stepped Backoff Retry Protocol: 30s -> 45s -> 60s
+    # 3. STEPPED BACKOFF RETRY PROTOCOL: 30s -> 45s -> 60s
+    logger.warning("  ⚠️ [AI INITIAL ATTEMPTS EXHAUSTED] Entering Stepped Backoff Retry Protocol (30s -> 45s -> 60s)...")
     backoff_delays = [30, 45, 60]
     for b_idx, delay_sec in enumerate(backoff_delays, 1):
         logger.warning(f"\n  ⏳ [AI RATE LIMIT BACKOFF {b_idx}/3] Waiting {delay_sec} seconds for API quota reset before Retry #{b_idx}...")
         time.sleep(delay_sec)
-        logger.info(f"  🧠 [AI BACKOFF RETRY {b_idx}/3] Requesting AI solution after {delay_sec}s delay...")
-
-        for key_idx, api_key in enumerate(api_keys, 1):
-            for model_name in models_to_try:
-                try:
-                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
-                    payload = json.dumps({
-                        "contents": [{"parts": [{"text": prompt}]}]
-                    }).encode('utf-8')
-
-                    headers = {
-                        'Content-Type': 'application/json',
-                        'x-goog-api-key': api_key
-                    }
-
-                    req = urllib.request.Request(url, data=payload, headers=headers)
-                    res = urllib.request.urlopen(req, timeout=12)
-                    resp_data = json.loads(res.read().decode('utf-8'))
-                    ans_text = resp_data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "").strip()
-
-                    clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
-                    if clean_ans:
-                        logger.info(f"  🧠 [AI LIVE BACKOFF SUCCESS] Solved on Backoff Retry {b_idx}/3 ({delay_sec}s) via Key #{key_idx} -> '{clean_ans}'")
-                        return clean_ans
-                except Exception as ex:
-                    logger.warning(f"  --> Backoff retry #{b_idx} Key #{key_idx} notice: {ex}")
-                    time.sleep(1)
-                    continue
 
     logger.error("  ❌ [AI BACKOFF RETRIES EXHAUSTED] AI Solver failed after 30s, 45s, and 60s backoff retries.")
     return None
@@ -1838,28 +1765,15 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             except Exception as text_ex:
                 logger.warning(f"  --> Text response filling notice: {text_ex}")
 
-        # Fallback to Option A if AI solver rate limit is exhausted, ensuring the quiz continues smoothly on Railway
-        if not selected_option and parsed_option_elements:
-            try:
-                first_opt_text, first_row_el = parsed_option_elements[0]
-                r_btn = first_row_el.locator("input[type='radio'], input[type='checkbox']").first
-                if await r_btn.count() == 0:
-                    r_btn = first_row_el
-                await r_btn.click(force=True)
-                selected_option = True
-                logger.warning(f"  ⚠️ [QUIZ AI RATE LIMIT FALLBACK {q_tag}]: Selected Option A ('{first_opt_text}') to maintain continuous execution.")
-                await page.wait_for_timeout(500)
-            except Exception as fb_ex:
-                logger.warning(f"  --> Quiz fallback notice: {fb_ex}")
-
         if not selected_option:
-            logger.error(f"\n❌ [CRITICAL AI RATE LIMIT EXHAUSTED {q_tag}] Could not solve Question '{q_text_screen[:45]}...' after 30s, 45s, and 60s backoff retries.")
+            logger.error(f"\n❌ [CRITICAL AI SOLVER EXHAUSTED {q_tag}] Could not solve Question '{q_text_screen[:45]}...' after 2 Gemini attempts, 2 Grok attempts, and 30s, 45s, 60s backoff retries.")
             logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Closing server context cleanly and stopping all automation processes!\n")
             try:
                 await page.context.close()
             except Exception:
                 pass
-            raise RuntimeError(f"AI_RATE_LIMIT_EXHAUSTED: Question '{q_text_screen[:45]}...' could not be solved after 30s, 45s, 60s retries.")
+            raise RuntimeError(f"AI_SOLVER_FAILED_SERVER_STUCK: Question '{q_text_screen[:45]}...' could not be solved without 100% accuracy.")
+
 
 
 
