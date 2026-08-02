@@ -707,16 +707,46 @@ async def fetch_enrolled_courses(page):
     return all_courses
 
 
+def get_real_terminal_columns(text):
+    """
+    Calculates true terminal display columns by ignoring non-spacing combining diacritic marks
+    (like Bengali/Devanagari vowel signs), which attach to base consonants as a single visual glyph.
+    """
+    cols = 0
+    for ch in text:
+        cat = unicodedata.category(ch)
+        if cat in ('Mn', 'Me', 'Cf'):
+            continue
+        cols += 1
+    return cols
+
+
 def pad_title_fixed(text, target_width=45):
     """
-    Pads or truncates course titles to exact 45 character length,
+    Pads or truncates course titles to exact 45 real visual terminal columns,
     guaranteeing 100% straight vertical column alignment across Bengali, Urdu, Hindi, and English.
     """
     clean_t = text.strip()
-    if len(clean_t) > target_width:
-        return clean_t[:target_width - 3] + "..."
+    real_cols = get_real_terminal_columns(clean_t)
+    
+    if real_cols > target_width:
+        res = ""
+        curr_c = 0
+        for ch in clean_t:
+            cat = unicodedata.category(ch)
+            if cat in ('Mn', 'Me', 'Cf'):
+                res += ch
+                continue
+            if curr_c >= target_width - 3:
+                break
+            res += ch
+            curr_c += 1
+        rem_spaces = target_width - (curr_c + 3)
+        return res + "..." + (" " * max(0, rem_spaces))
     else:
-        return clean_t.ljust(target_width)
+        rem_spaces = target_width - real_cols
+        return clean_t + (" " * max(0, rem_spaces))
+
 
 
 
