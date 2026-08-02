@@ -464,61 +464,24 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
 
 
                         req = urllib.request.Request(url, data=payload, headers=headers)
+
                         res = urllib.request.urlopen(req, timeout=12)
+
                         resp_data = json.loads(res.read().decode('utf-8'))
+
                         ans_text = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
 
                         clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
+
                         if clean_ans:
+
                             logger.info(f"  🧠 [GROQ LPU SUCCESS] Solved on Attempt {groq_attempt}/2 via Groq ({model_name}) Key #{g_idx} -> '{clean_ans}'")
                             return clean_ans
                     except Exception as ex:
                         logger.warning(f"  ⚠️ [GROQ AI NOTICE] ({model_name} Key #{g_idx}): {ex}")
+
             if groq_attempt < 2:
                 time.sleep(2)
-
-    # 3. PRIORITY 3: xAI Grok API Key Pool Fallback (2 ATTEMPTS) (https://console.x.ai/)
-    xai_keys = getattr(config, "XAI_API_KEYS", [])
-    if not xai_keys:
-        single_xai = getattr(config, "XAI_API_KEY", "").strip() or os.environ.get("XAI_API_KEY", "").strip()
-        if single_xai:
-            xai_keys = [single_xai]
-
-    if xai_keys:
-        for grok_attempt in range(1, 3):
-            logger.info(f"  🤖 [GROK AI ATTEMPT {grok_attempt}/2] Gemini & Groq keys exhausted. Requesting solution via Grok xAI API...")
-            for x_idx, xai_key in enumerate(xai_keys, 1):
-                for model_name in ["grok-4.3", "grok-latest", "grok-4.20", "grok-code-fast", "grok-4.5"]:
-                    try:
-                        url = "https://api.x.ai/v1/chat/completions"
-                        payload = json.dumps({
-                            "model": model_name,
-                            "messages": [
-                                {"role": "system", "content": "You are an expert AI teacher solving quiz questions for an educational course."},
-                                {"role": "user", "content": prompt}
-                            ],
-                            "temperature": 0.1
-                        }).encode('utf-8')
-
-                        headers = {
-                            'Content-Type': 'application/json',
-                            'Authorization': f'Bearer {xai_key}'
-                        }
-
-                        req = urllib.request.Request(url, data=payload, headers=headers)
-                        res = urllib.request.urlopen(req, timeout=12)
-                        resp_data = json.loads(res.read().decode('utf-8'))
-                        ans_text = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
-
-                        clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
-                        if clean_ans:
-                            logger.info(f"  🧠 [GROK AI SUCCESS] Solved on Attempt {grok_attempt}/2 via Grok ({model_name}) Key #{x_idx} -> '{clean_ans}'")
-                            return clean_ans
-                    except Exception as ex:
-                        logger.warning(f"  ⚠️ [GROK AI NOTICE] ({model_name} Key #{x_idx}): {ex}")
-            if grok_attempt < 2:
-                time.sleep(2)
-
 
 
     # 3. STEPPED BACKOFF RETRY PROTOCOL: 30s -> 45s -> 60s
@@ -554,7 +517,6 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
             for g_idx, groq_key in enumerate(groq_keys, 1):
                 for model_name in ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.3-70b-versatile", "llama-3.1-8b-instant"]:
                     try:
-
                         url = "https://api.groq.com/openai/v1/chat/completions"
                         payload = json.dumps({
                             "model": model_name,
@@ -581,38 +543,9 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
                     except Exception:
                         pass
 
-        # Retry ALL Grok API Keys
-        if xai_keys:
-            logger.info(f"  🤖 [BACKOFF RETRY #{b_idx}] Retrying ALL Grok xAI API Keys after {delay_sec}s delay...")
-
-            for x_idx, xai_key in enumerate(xai_keys, 1):
-                for model_name in ["grok-4.3", "grok-latest", "grok-4.20", "grok-code-fast", "grok-4.5"]:
-                    try:
-
-
-                        url = "https://api.x.ai/v1/chat/completions"
-                        payload = json.dumps({
-                            "model": model_name,
-                            "messages": [
-                                {"role": "system", "content": "You are an expert AI teacher solving quiz questions for an educational course."},
-                                {"role": "user", "content": prompt}
-                            ],
-                            "temperature": 0.1
-                        }).encode('utf-8')
-                        headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {xai_key}'}
-                        req = urllib.request.Request(url, data=payload, headers=headers)
-                        res = urllib.request.urlopen(req, timeout=12)
-                        resp_data = json.loads(res.read().decode('utf-8'))
-                        ans_text = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
-                        clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
-                        if clean_ans:
-                            logger.info(f"  🧠 [AI BACKOFF SUCCESS] Solved on Backoff #{b_idx} ({delay_sec}s) via Grok ({model_name}) Key #{x_idx} -> '{clean_ans}'")
-                            return clean_ans
-                    except Exception:
-                        pass
-
     logger.error("  ❌ [AI BACKOFF RETRIES EXHAUSTED] AI Solver failed after 30s, 45s, and 60s backoff retries.")
     return None
+
 
 
 
