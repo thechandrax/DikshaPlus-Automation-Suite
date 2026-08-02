@@ -72,7 +72,9 @@ Diksha+ Automation Suite/
 │   ├── 02_MANAGE_USERS_AND_SECURITY.md # Security & 256-bit PIN vault
 │   ├── 03_ANSWER_KEYS_AND_QUIZZES.md  # AI Live Solver, Stepped Backoffs & Feedback Engine
 │   ├── 04_AUTOMATION_CONTROLS_AND_CONFIG.md # Config, DOM Selectors & Headless Auto-Detection
-│   └── 05_RAILWAY_DEPLOYMENT_GUIDE.md # Railway Cloud 1-Click Deployment Guide
+│   ├── 05_RAILWAY_DEPLOYMENT_GUIDE.md # Railway Cloud 1-Click Deployment Guide
+│   └── 06_MODULE_EXECUTION_AND_RETRY_PROTOCOL.md # Module Retry Pipeline & Stepped Backoff Guide
+
 ├── output/
 │   └── screenshots/               # Single official screenshot directory
 ├── utils/

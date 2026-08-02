@@ -38,3 +38,10 @@ Welcome to the central documentation index for **DIKSHA+ Automation Suite**. Sel
    * Containerized Railway Cloud 1-click deployment guide.
    * 0-variable setup out of the box (built-in encrypted API key pool).
    * Root Dockerfile & build error troubleshooting.
+
+6. ⚙️ **[Module Execution & Retry Protocol Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/06_MODULE_EXECUTION_AND_RETRY_PROTOCOL.md)**
+   * Module retry pipeline & locked item recovery.
+   * Double confirmation gate check & page reload sync.
+   * Certificate section handling & Circuit Breaker Guard.
+   * Stepped Backoff Retry Protocol (30s ➔ 45s ➔ 60s) & Option A fallback.
+
