@@ -2416,6 +2416,8 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
     auto-expands 50%/0% incomplete modules, and executes items without checkmarks.
     """
     disp_user = config.USER_NAMES.get(username, username) if username else "Active User"
+    user_str = f"{disp_user} ({username})" if username else disp_user
+
 
     if not course_title or course_title == "Unknown Course":
         try:
@@ -2505,8 +2507,6 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
             all_items_completed_in_memory = False
 
 
-
-
             # Certificate Section / Customcert Download Link Protocol (Scoped strictly to Certificate module header / panel)
             is_cert_section = any(kw in header_title.lower() for kw in ["certificate", "customcert", "download certificate"])
             cert_el = header.locator("a[act_type='customcert'], a[href*='customcert'], a:has-text('Download Certificate')").first
@@ -2520,12 +2520,13 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                 logger.info("=" * 67)
                 logger.info(" 🎉 🎓 AUTOMATION EXECUTION SUCCESSFUL & COURSE COMPLETED!")
                 logger.info("=" * 67)
-                logger.info(f"  ✔ User Profile : {disp_user} ({username})")
+                logger.info(f"  ✔ User Profile : {user_str}")
                 logger.info(f"  ✔ Course Title : {course_title}")
                 logger.info("  ✔ Certificate  : Download Certificate Available")
                 logger.info("  ✔ Status       : 100% Complete — All Modules & Assessments Done!")
                 logger.info("=" * 67 + "\n")
                 return True
+
 
 
 
@@ -2980,7 +2981,7 @@ async def run_diksha_automation(target_course_url=None, username=None, password=
                 pass
             
             c_key = load_answer_key(t_title)
-            await process_course_modules(page, c_key, course_title=t_title)
+            await process_course_modules(page, c_key, course_title=t_title, username=username)
         else:
             await navigate_to_my_learning(page)
             enrolled_courses = await fetch_enrolled_courses(page)
@@ -3006,7 +3007,7 @@ async def run_diksha_automation(target_course_url=None, username=None, password=
                     course_answer_key = load_answer_key(c['title'])
                     
                     # Run activity modules for this course
-                    await process_course_modules(page, course_answer_key, course_title=c['title'])
+                    await process_course_modules(page, course_answer_key, course_title=c['title'], username=username)
 
 
 
@@ -3015,9 +3016,10 @@ async def run_diksha_automation(target_course_url=None, username=None, password=
         screenshot_path = config.SCREENSHOT_DIR / "diksha_pipeline_executed.png"
         try:
             await page.screenshot(path=str(screenshot_path), timeout=5000)
-            logger.info(f"Pipeline executed successfully. Screenshot saved to {screenshot_path.name}")
-        except Exception as e:
-            logger.info(f"Pipeline executed successfully. (Screenshot notice: {e})")
+            logger.info("Pipeline executed successfully.")
+        except Exception:
+            logger.info("Pipeline executed successfully.")
+
 
         if config.KEEP_BROWSER_OPEN and not config.HEADLESS:
             logger.info("==========================================================")
