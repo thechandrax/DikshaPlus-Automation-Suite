@@ -51,5 +51,9 @@ Welcome to the central documentation index for **DIKSHA+ Automation Suite**. Sel
 8. 📱 **[Complete Mobile Execution & Termux Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/08_MOBILE_EXECUTION_AND_TERMUX_GUIDE.md)**
    * Method 1: Railway Cloud control via phone browser (0% battery drain).
    * Method 2: Native Android Termux app execution (`termux_setup.sh`).
-   * Complete 4-environment comparison matrix (Laptop, Railway Cloud, Termux Mobile).
+
+9. 🚀 **[4-Way Execution Architecture Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/09_FOUR_WAY_EXECUTION_ARCHITECTURE.md)**
+   * Complete technical breakdown of all 4 execution modes (Laptop, Railway Server, Railway Mobile, Termux App).
+   * 4-Way Execution Comparison Matrix.
+
 
