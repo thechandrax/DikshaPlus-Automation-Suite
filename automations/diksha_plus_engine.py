@@ -14,7 +14,9 @@ import asyncio
 import re
 import time
 import urllib.request
+import unicodedata
 from pathlib import Path
+
 
 
 
