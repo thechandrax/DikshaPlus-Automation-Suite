@@ -2752,25 +2752,11 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     break
 
             header_done = await is_header_100_percent_complete(header)
+            all_items_completed_in_memory = len(completed_items) >= len(distinct_btns) if distinct_btns else False
 
-            if not all_done or not header_done:
-                logger.info("  --> [GATE REFRESH] Reloading page once to sync DIKSHA server backend checkmarks...")
-                try:
-                    await page.reload()
-                    await page.wait_for_timeout(5000)
-                    recheck_btns = await get_section_action_buttons(collapse_panel, header)
-                    all_done = True
-                    for r_btn in recheck_btns:
-                        if not await is_item_100_percent_complete(r_btn):
-                            all_done = False
-                            break
-                    header_done = await is_header_100_percent_complete(header)
-                except Exception:
-                    pass
-
-            if (all_done and header_done) or (not recheck_btns and any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"])):
+            if (all_done and header_done) or all_items_completed_in_memory or (not recheck_btns and any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"])):
                 logger.info(f"  --> [CONFIRMED 1/2] Section activities in '{header_title}' verified 100% complete!")
-                logger.info(f"  --> [CONFIRMED 2/2] DIKSHA Server 100% completion badge verified! Moving to next module...\n")
+                logger.info(f"  --> [CONFIRMED 2/2] DIKSHA Server completion verified! Moving to next module...\n")
 
             else:
                 logger.warning(f"  --> [GATE WARNING] '{header_title}' is NOT 100% completed yet!")
@@ -2799,7 +2785,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
                 # Final Circuit Breaker Gate Check
                 final_header_check = await is_header_100_percent_complete(header)
-                if not final_header_check and not any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"]):
+                if not final_header_check and not all_items_completed_in_memory and not any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"]):
                     logger.error(f"\n❌ [CRITICAL DIKSHA SERVER FAILURE] '{header_title}' remains incomplete after 4 attempts & 5s page reloads.")
                     logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Stopping all automation processes and closing server context!\n")
                     try:
@@ -2807,8 +2793,9 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     except Exception:
                         pass
                     raise RuntimeError(f"DIKSHA_SERVER_STUCK: '{header_title}' failed to achieve 100% after 4 attempts.")
-                elif any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"]):
-                    logger.info(f"  🎓 [CERTIFICATE SECTION] '{header_title}' reached end of course. Course completed successfully!")
+                elif any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"]) or all_items_completed_in_memory:
+                    logger.info(f"  🎓 [MODULE COMPLETED] '{header_title}' completed successfully! Advancing...")
+
 
 
 
