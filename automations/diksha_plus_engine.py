@@ -753,17 +753,17 @@ def display_interactive_course_menu(courses):
     Renders CMD menu listing both Ongoing and Finished courses matching design mockup with rich colors.
     """
     if not courses:
-        print("\n\033[38;5;51m\033[1m" + "="*70)
+        print("\n\033[38;5;51m\033[1m" + "="*67)
         print("  🎓 DIKSHA+ ENROLLED COURSES (0 COURSES FOUND)")
-        print("="*70 + "\033[0m\n")
+        print("="*67 + "\033[0m\n")
         return None
 
     ongoing_list = [c for c in courses if c['status'] == 'Ongoing']
     finished_list = [c for c in courses if c['status'] == 'Finished']
 
-    print("\n\033[38;5;51m\033[1m" + "="*70)
+    print("\n\033[38;5;51m\033[1m" + "="*67)
     print(f"  🎓 DIKSHA+ ENROLLED COURSES ({len(ongoing_list)} ONGOING • {len(finished_list)} FINISHED)")
-    print("="*70 + "\033[0m\n")
+    print("="*67 + "\033[0m\n")
 
     if ongoing_list:
         print(" \033[38;5;82m\033[1m⚡ ONGOING COURSES:\033[0m")
@@ -791,7 +791,7 @@ def display_interactive_course_menu(courses):
 
 
 
-    print("\033[38;5;240m-----------------------------------------------------------------------\033[0m")
+    print("\033[38;5;240m-------------------------------------------------------------------\033[0m")
 
     import os
     env_course = os.getenv("SELECTED_COURSE", "").strip()
