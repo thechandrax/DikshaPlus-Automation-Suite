@@ -71,10 +71,11 @@ def display_interactive_user_menu():
                     logger.info(f"  🎯 [RAILWAY USER SELECTION] Matched Account by Keyword '{env_user}': '{disp_name}' ({matched_user}).")
                     return [(matched_user, config.USER_CREDENTIALS[matched_user])]
 
-        logger.warning("\n===================================================================\n ⏸️ [MANUAL USER CONFIGURATION REQUIRED ON RAILWAY]\n No SELECTED_USER variable configured in Railway Variables.\n Default auto-run selection is DISABLED per user preference.\n Please set SELECTED_USER in Railway Variables (e.g., 1, 2, 3, or all) to start.\n===================================================================\n")
-        import time
-        while True:
-            time.sleep(3600)
+        default_user = user_keys[0]
+        disp_name = config.USER_NAMES.get(default_user, default_user)
+        logger.info(f"  🎯 [RAILWAY DEFAULT AUTO-START] No SELECTED_USER environment variable set. Auto-selecting Account #1: '{disp_name}' ({default_user}).")
+        return [(default_user, config.USER_CREDENTIALS[default_user])]
+
 
 
 
