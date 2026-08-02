@@ -110,6 +110,17 @@
               "answer": "[C] Mission"
             }
           ]
+        },
+        {
+          "subsection_no": 1,
+          "subsection_name": "H5P Interactive Quiz",
+          "questions": [
+            {
+              "question": "Which are the three enabling conditions for competency based education in India? 1. When RTE ACT, 2009 acknowledged the child's capacity to construct knowledge as a natural learner and the teacher's role was visualised as a facilitator of the learning process. 2. Launching of Sarva Shiksha Abhyan 3. The amendment of Rule 23 (2) of RTE ACT, 2009 mandated that all states are required to prepare \"class-wise, subject-wise learning outcomes for all elementary classes. 4. Minimum levels of learning were developed. 5. NCERT developed learning outcomes for all the subjects and classes from grade I to VIII Which of the above mentioned statement are correct",
+              "options": [],
+              "answer": "Option 1, 3 and 5"
+            }
+          ]
         }
       ]
     }
