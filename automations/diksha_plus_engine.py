@@ -3022,10 +3022,11 @@ async def run_diksha_automation(target_course_url=None, username=None, password=
 
 
         if config.KEEP_BROWSER_OPEN and not config.HEADLESS:
-            logger.info("==========================================================")
+            logger.info("=" * 67)
             logger.info("  [KEEP-OPEN] Chrome browser is kept OPEN for your inspection!")
             logger.info("  Close the browser window or press Ctrl+C in console when finished.")
-            logger.info("==========================================================")
+            logger.info("=" * 67)
+
             try:
                 while True:
                     await asyncio.sleep(10)
