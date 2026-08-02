@@ -56,4 +56,11 @@ Welcome to the central documentation index for **DIKSHA+ Automation Suite**. Sel
    * Complete technical breakdown of all 4 execution modes (Laptop, Railway Server, Railway Mobile, Termux App).
    * 4-Way Execution Comparison Matrix.
 
+10. 🛠️ **[Detailed Step-by-Step Workflow Breakdown](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/10_DETAILED_STEP_BY_STEP_WORKFLOW_BREAKDOWN.md)**
+    * Full architectural flowchart & exhaustive 6-step execution breakdown.
+
+11. 📄 **[Complete Real-World Terminal Logs Example](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/11_COMPLETE_REAL_WORLD_TERMINAL_LOGS_EXAMPLE.md)**
+    * Complete, verbatim, first-to-last real-world terminal log trace from startup to completion.
+
+
 

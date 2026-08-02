@@ -571,6 +571,118 @@
           ]
         }
       ]
+    },
+    {
+      "module_no": 8,
+      "module_name": "Module 08: Learning Assessment",
+      "subsections": [
+        {
+          "subsection_no": 32,
+          "subsection_name": "Formative Assessment 08",
+          "questions": [
+            {
+              "question": "By definition, the 360-report is",
+              "options": [
+                "[A] Holistic and three-dimensional",
+                "[B] Holistic and one-dimensional",
+                "[C] Holistic and two-dimensional",
+                "[D] Holistic and multidimensional"
+              ],
+              "answer": "[D] Holistic and multidimensional"
+            },
+            {
+              "question": "Children come from diverse backgrounds and various types of observation provide a genuine detailed data on which the teacher can",
+              "options": [
+                "[A] Reflect and talk to children about their performance.",
+                "[B] Reflect and develop appropriate plans to bring improvement in child's literacy and numeracy proficiency level.",
+                "[C] Reflect and keep all the work samples in the portfolio.",
+                "[D] Reflect and talk to parents about the children's performance."
+              ],
+              "answer": "[B] Reflect and develop appropriate plans to bring improvement in child's literacy and numeracy proficiency level."
+            },
+            {
+              "question": "The teacher collects the best of the children's work in FLN and keeps it in the file folder as evidence of learning. The folder is called as",
+              "options": [
+                "[A] Progress Report",
+                "[B] Portfolio",
+                "[C] Art Folder",
+                "[D] Attendance Record"
+              ],
+              "answer": "[B] Portfolio"
+            },
+            {
+              "question": "When the teacher is asking a child to show the font and back cover of the story book, the teacher is observing and assessing the progress in",
+              "options": [
+                "[A] Foundational literacy",
+                "[B] Foundational EVS",
+                "[C] Foundational fine motor skills",
+                "[D] Foundational numeracy"
+              ],
+              "answer": "[A] Foundational literacy"
+            },
+            {
+              "question": "Which of the following is not correct for using rubric as an assessment tool?",
+              "options": [
+                "[A] Criteria of assessment",
+                "[B] Data for assessment",
+                "[C] Description of a task to be accomplished",
+                "[D] Opportunity to a teacher to pass/fail the child"
+              ],
+              "answer": "[D] Opportunity to a teacher to pass/fail the child"
+            },
+            {
+              "question": "Including humour and fun in the teaching-learning strategies make learning",
+              "options": [
+                "[A] Complex and confusing",
+                "[B] Funny",
+                "[C] Easy and motivating with better understanding",
+                "[D] Challenging and confusing"
+              ],
+              "answer": "[C] Easy and motivating with better understanding"
+            },
+            {
+              "question": "The math or manipulative area would provide teachers a crude assessment about children's",
+              "options": [
+                "[A] Handling materials",
+                "[B] Music Sense",
+                "[C] Cognitive development",
+                "[D] Writing Skills"
+              ],
+              "answer": "[A] Handling materials"
+            },
+            {
+              "question": "The maths or manipulative area is not equipped with",
+              "options": [
+                "[A] Puzzles, matching cards, lacing cards",
+                "[B] Small toys such as cars, trucks, animals, people figures",
+                "[C] Paint and Brushes",
+                "[D] Strings and beads, manipulatives and small toys"
+              ],
+              "answer": "[C] Paint and Brushes"
+            },
+            {
+              "question": "Working and fixing puzzles is an activity for foundational numeracy, but also indicates",
+              "options": [
+                "[A] Colouring abilities",
+                "[B] Fine motor abilities",
+                "[C] Writing skills",
+                "[D] Scribbling abilities"
+              ],
+              "answer": "[B] Fine motor abilities"
+            },
+            {
+              "question": "The assessment information helps the teacher to decide and plan the FLN content to",
+              "options": [
+                "[A] Teach and guide children's learning using the 21st century skills with careful observation.",
+                "[B] Write the anecdote and compile in the portfolio.",
+                "[C] Teach and guide children's learning using the appropriate pedagogy with careful observation.",
+                "[D] Write the teacher's diary and report to the headmaster of the school."
+              ],
+              "answer": "[C] Teach and guide children's learning using the appropriate pedagogy with careful observation."
+            }
+          ]
+        }
+      ]
     }
   ]
 }
