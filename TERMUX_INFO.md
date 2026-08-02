@@ -23,8 +23,8 @@ pkg update -y
 # 2. Install Git, Python 3, Node.js, Chromium, python-pandas & python-pillow
 pkg install git python nodejs-lts chromium python-pandas python-pillow -y
 
-# 3. Install Playwright pure Python package
-pip install --no-deps playwright
+# 3. Install Playwright pure Python wheel & dependencies
+pip install --no-deps "https://files.pythonhosted.org/packages/py3/p/playwright/playwright-1.50.0-py3-none-any.whl"
 pip install pyee greenlet openpyxl
 ```
 
