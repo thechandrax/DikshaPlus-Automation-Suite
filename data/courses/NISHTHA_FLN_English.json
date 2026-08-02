@@ -563,6 +563,102 @@
               "answer": "[A] To extract meaning from the text"
             }
           ]
+        },
+        {
+          "subsection_no": 33,
+          "subsection_name": "Formative Assessment 05",
+          "questions": [
+            {
+              "question": "NEP-2020 advocates that learning of children should be in continuum from",
+              "options": [
+                "[A] Preschool to the early primary grades",
+                "[B] Home to early primary grades",
+                "[C] Home to preschools",
+                "[D] Early primary grades to primary grades"
+              ],
+              "answer": "[B] Home to early primary grades"
+            },
+            {
+              "question": "What language should be preferred as a medium of instruction?",
+              "options": [
+                "[A] English",
+                "[B] Hindi",
+                "[C] Any language",
+                "[D] Mother tongue or the language familiar to most children"
+              ],
+              "answer": "[D] Mother tongue or the language familiar to most children"
+            },
+            {
+              "question": "How will continuous assessment given in Vidya Pravesh and Balvatika help teachers?",
+              "options": [
+                "[A] Adapt and modify teaching-learning strategies, play material, activity areas",
+                "[B] Decide who has performed best",
+                "[C] Prepare final result of each child",
+                "[D] Complete one stage of education/learning"
+              ],
+              "answer": "[A] Adapt and modify teaching-learning strategies, play material, activity areas"
+            },
+            {
+              "question": "What kind of freedom is given to the teachers with respect to the activities, worksheets and illustrations?",
+              "options": [
+                "[A] Modify or contextualise them",
+                "[B] Not to use them",
+                "[C] Make the worksheets colourful for children",
+                "[D] Let children and parents develop them"
+              ],
+              "answer": "[A] Modify or contextualise them"
+            },
+            {
+              "question": "What is the correct example of balance in activities?",
+              "options": [
+                "[A] Teacher-initiated and child-initiated activities",
+                "[B] Greet and meet activities",
+                "[C] Literacy and numeracy activities",
+                "[D] Outdoor and gross motor activities"
+              ],
+              "answer": "[A] Teacher-initiated and child-initiated activities"
+            },
+            {
+              "question": "Among the following, which activities come under the daily/routine activities as per the weekly schedule?",
+              "options": [
+                "[A] Greet and meet, circle time and free expression",
+                "[B] Cultural programme",
+                "[C] PTM",
+                "[D] Bal mela"
+              ],
+              "answer": "[A] Greet and meet, circle time and free expression"
+            },
+            {
+              "question": "Which document is mentioned as level-3 in the FLN Mission Guidelines?",
+              "options": [
+                "[A] National Educational Policy-2020",
+                "[B] Balvatika",
+                "[C] Vidya Pravesh",
+                "[D] The Preschool Curriculum"
+              ],
+              "answer": "[C] Vidya Pravesh"
+            },
+            {
+              "question": "As per the NEP-2020, the learning crisis points out which two aspects?",
+              "options": [
+                "[A] Foundational numeracy and environment awareness",
+                "[B] Fundamental literacy and numeracy",
+                "[C] Health and wellbeing, and numeracy",
+                "[D] Foundational literacy and numeracy"
+              ],
+              "answer": "[D] Foundational literacy and numeracy"
+            },
+            {
+              "question": "The activities and worksheets or the learning experiences for Vidya Pravesh and Balvatika should be developed around",
+              "options": [
+                "[A] All three developmental goals",
+                "[B] Developmental goal 2 and 3",
+                "[C] Two developmental goals",
+                "[D] Developmental goal 1"
+              ],
+              "answer": "[A] All three developmental goals"
+            }
+          ]
         }
       ]
     },

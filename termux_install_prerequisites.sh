@@ -19,9 +19,9 @@ pkg update -y
 echo "[2/3] Installing Git, Python 3, Chromium, python-pandas & python-pillow..."
 pkg install git python nodejs-lts chromium python-pandas python-pillow -y
 
-# 3. Install Playwright pure Python wheel
+# 3. Install Playwright ARM64 manylinux wheel
 echo "[3/3] Installing Playwright for Termux ARM64..."
-pip install --no-deps "https://files.pythonhosted.org/packages/py3/p/playwright/playwright-1.50.0-py3-none-any.whl" 2>/dev/null || pip install --no-deps playwright
+pip install --no-deps --platform manylinux2014_aarch64 --only-binary=:all: playwright 2>/dev/null || pip install --no-deps --platform manylinux_2_17_aarch64 --only-binary=:all: playwright
 pip install pyee greenlet openpyxl 2>/dev/null || true
 
 echo ""
