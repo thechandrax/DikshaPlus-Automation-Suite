@@ -23,34 +23,32 @@ def _sha256_key_derive(salt: str) -> bytes:
 
 def get_masked_pin(prompt: str = "[Security] Enter 6-digit Security PIN to unlock: ") -> str:
     """
-    Reads input character-by-character on Windows CMD / Terminal
+    Reads input character-by-character on Windows, Termux, Android, Linux, & macOS,
     and echoes an asterisk (*) live for each key press. Supports Backspace.
     """
+    sys.stdout.write(prompt)
+    sys.stdout.flush()
+
+    pin_chars = []
+
+    # Windows Platform using msvcrt
     if sys.platform == "win32":
         try:
             import msvcrt
-            sys.stdout.write(prompt)
-            sys.stdout.flush()
-
-            pin_chars = []
             while True:
                 ch = msvcrt.getch()
-                # Enter key press (CR '\r' or LF '\n')
                 if ch in (b'\r', b'\n'):
                     sys.stdout.write('\n')
                     sys.stdout.flush()
                     break
-                # Backspace key press
                 elif ch in (b'\x08', b'\x7f'):
                     if pin_chars:
                         pin_chars.pop()
                         sys.stdout.write('\b \b')
                         sys.stdout.flush()
-                # Ctrl+C or Ctrl+Z
                 elif ch == b'\x03':
                     sys.stdout.write('\n')
                     raise KeyboardInterrupt()
-                # Normal readable key presses
                 else:
                     try:
                         char = ch.decode('utf-8')
@@ -64,11 +62,45 @@ def get_masked_pin(prompt: str = "[Security] Enter 6-digit Security PIN to unloc
         except Exception:
             pass
 
-    # Fallback to standard getpass if msvcrt is unavailable
+    # POSIX / Linux / Termux / Android / macOS using termios & tty
     try:
-        return getpass.getpass(prompt).strip()
+        import termios
+        import tty
+
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(fd)
+            while True:
+                ch = sys.stdin.read(1)
+                if ch in ('\r', '\n'):
+                    sys.stdout.write('\r\n')
+                    sys.stdout.flush()
+                    break
+                elif ch in ('\b', '\x7f'):
+                    if pin_chars:
+                        pin_chars.pop()
+                        sys.stdout.write('\b \b')
+                        sys.stdout.flush()
+                elif ch == '\x03':
+                    sys.stdout.write('\r\n')
+                    raise KeyboardInterrupt()
+                elif ch.isprintable():
+                    pin_chars.append(ch)
+                    sys.stdout.write('*')
+                    sys.stdout.flush()
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return "".join(pin_chars).strip()
     except Exception:
-        return input(prompt).strip()
+        pass
+
+    # Fallback if raw TTY is unavailable
+    try:
+        return getpass.getpass("").strip()
+    except Exception:
+        return input("").strip()
+
 
 def encrypt_password(plain_password: str) -> str:
     """Encrypts a plaintext password into a 256-bit SHA-256 derived Base64 string."""
