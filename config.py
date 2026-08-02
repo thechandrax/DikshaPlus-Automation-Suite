@@ -60,10 +60,11 @@ if HEADLESS_ENV in ("true", "1", "yes", "t"):
     HEADLESS = True
 elif HEADLESS_ENV in ("false", "0", "no", "f"):
     HEADLESS = False
-elif IS_DOCKER or IS_TERMUX:
-    HEADLESS = True    # Automatically use Headless mode on Railway Cloud / Termux!
+elif IS_DOCKER or IS_TERMUX or not os.environ.get("DISPLAY"):
+    HEADLESS = True    # Automatically use Headless mode on Railway Cloud / Termux / No DISPLAY!
 else:
     HEADLESS = False   # Default to False for local GUI desktop run
+
 
 # Auto-configure Termux Node.js & Chromium drivers & patch coreBundle.js Unsupported platform check
 if IS_TERMUX:
