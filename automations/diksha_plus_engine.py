@@ -481,8 +481,56 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
         logger.warning(f"\n  ⏳ [AI RATE LIMIT BACKOFF {b_idx}/3] Waiting {delay_sec} seconds for API quota reset before Retry #{b_idx}...")
         time.sleep(delay_sec)
 
+        # Retry ALL Gemini API Keys
+        if gemini_keys:
+            logger.info(f"  🧠 [BACKOFF RETRY #{b_idx}] Retrying ALL Gemini API Keys after {delay_sec}s delay...")
+            for key_idx, api_key in enumerate(gemini_keys, 1):
+                for model_name in models_to_try:
+                    try:
+                        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
+                        payload = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode('utf-8')
+                        headers = {'Content-Type': 'application/json', 'x-goog-api-key': api_key}
+                        req = urllib.request.Request(url, data=payload, headers=headers)
+                        res = urllib.request.urlopen(req, timeout=12)
+                        resp_data = json.loads(res.read().decode('utf-8'))
+                        ans_text = resp_data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "").strip()
+                        clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
+                        if clean_ans:
+                            logger.info(f"  🧠 [AI BACKOFF SUCCESS] Solved on Backoff #{b_idx} ({delay_sec}s) via Gemini ({model_name}) Key #{key_idx} -> '{clean_ans}'")
+                            return clean_ans
+                    except Exception:
+                        pass
+
+        # Retry ALL Grok API Keys
+        if xai_keys:
+            logger.info(f"  🤖 [BACKOFF RETRY #{b_idx}] Retrying ALL Grok xAI API Keys after {delay_sec}s delay...")
+            for x_idx, xai_key in enumerate(xai_keys, 1):
+                for model_name in ["grok-4.3", "grok-2-1212", "grok-beta"]:
+                    try:
+                        url = "https://api.x.ai/v1/chat/completions"
+                        payload = json.dumps({
+                            "model": model_name,
+                            "messages": [
+                                {"role": "system", "content": "You are an expert AI teacher solving quiz questions for an educational course."},
+                                {"role": "user", "content": prompt}
+                            ],
+                            "temperature": 0.1
+                        }).encode('utf-8')
+                        headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {xai_key}'}
+                        req = urllib.request.Request(url, data=payload, headers=headers)
+                        res = urllib.request.urlopen(req, timeout=12)
+                        resp_data = json.loads(res.read().decode('utf-8'))
+                        ans_text = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
+                        clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
+                        if clean_ans:
+                            logger.info(f"  🧠 [AI BACKOFF SUCCESS] Solved on Backoff #{b_idx} ({delay_sec}s) via Grok ({model_name}) Key #{x_idx} -> '{clean_ans}'")
+                            return clean_ans
+                    except Exception:
+                        pass
+
     logger.error("  ❌ [AI BACKOFF RETRIES EXHAUSTED] AI Solver failed after 30s, 45s, and 60s backoff retries.")
     return None
+
 
 
 
