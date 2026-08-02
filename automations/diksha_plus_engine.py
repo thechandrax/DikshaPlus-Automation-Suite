@@ -2049,12 +2049,26 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
     submitted = False
     for frame_target in [page] + page.frames:
         try:
-            sub_btn = frame_target.locator("button:has-text('Submit Feedback'), input[value*='Submit Feedback'], button.submit-feed-btn, #submitFeedbackBtn11, button:has-text('Submit'), input[type='submit'][value*='Submit']").first
+            sub_btn = frame_target.locator("#submitFeedbackBtn11, button.submit-feed-btn, button:has-text('Submit Feedback'), input[value*='Submit Feedback'], button:has-text('Submit'), input[type='submit'][value*='Submit']").first
             if await sub_btn.count() > 0 and await sub_btn.is_visible():
                 logger.info("  🎯 [SUBMIT FEEDBACK] Clicking brown 'Submit Feedback' button...")
+                await sub_btn.scroll_into_view_if_needed()
                 await sub_btn.click(force=True)
+                
+                # Dispatch native DOM MouseEvent to guarantee DIKSHA AJAX submit handler executes
+                await frame_target.evaluate("""() => {
+                    const btn = document.querySelector('#submitFeedbackBtn11') || document.querySelector('button.submit-feed-btn');
+                    if (btn) {
+                        btn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+                        btn.click();
+                        return true;
+                    }
+                    return false;
+                }""")
+                
                 submitted = True
-                await page.wait_for_timeout(4000)
+                logger.info("  --> Submitted Feedback Form! Waiting 6s for DIKSHA server AJAX sync...")
+                await page.wait_for_timeout(6000)
                 break
         except Exception:
             pass
@@ -2071,19 +2085,36 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                         const cls = (b.className || '').toLowerCase();
                         return txt.includes('submit feedback') || id.includes('submitfeedback') || cls.includes('submit-feed') || txt.includes('submit');
                     });
-                    if (sub) { sub.click(); return true; }
+                    if (sub) { 
+                        sub.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+                        sub.click(); 
+                        return true; 
+                    }
                     return false;
                 }""")
                 if clicked:
                     logger.info("  🎯 [SUBMIT FEEDBACK] JS fallback successfully clicked 'Submit Feedback' button!")
-                    await page.wait_for_timeout(4000)
+                    await page.wait_for_timeout(6000)
                     break
             except Exception:
                 pass
 
-    # 4. Check for modal close & confirm 100% checkmark update
+    # 4. Handle Modal Close / Thank-You Screen Dismissal
+    for frame_target in [page] + page.frames:
+        try:
+            cls_btn = frame_target.locator("button.close, .modal-header .close, button[data-dismiss='modal'], button:has-text('Close'), a:has-text('Close'), .modal-footer button:has-text('OK'), .modal-footer button:has-text('Close')").first
+            if await cls_btn.count() > 0 and await cls_btn.is_visible():
+                logger.info("  --> Clicking Modal Close / Thank-You screen button...")
+                await cls_btn.click(force=True)
+                await page.wait_for_timeout(2000)
+                break
+        except Exception:
+            pass
+
+    # 5. Check for modal close & confirm 100% checkmark update
     await close_activity_modal(page)
     await wait_for_server_checkmark(page)
+
 
 
 
