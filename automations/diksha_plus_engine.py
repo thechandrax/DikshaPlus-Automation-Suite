@@ -2642,11 +2642,17 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                             pass
 
                     # Smart Subsection Item Skipping: check if item row has 100% checkmark OR is in completed_items memory
-                    if btn_text in completed_items or real_item_title in completed_items or await is_item_100_percent_complete(btn):
+                    is_generic_btn = btn_text.lower() in ("view", "start", "open", "continue", "retry")
+                    already_done_in_mem = (real_item_title in completed_items) or (not is_generic_btn and btn_text in completed_items)
+
+                    if already_done_in_mem or await is_item_100_percent_complete(btn):
                         logger.info(f"  --> [✓ ALREADY DONE] Subsection [{j}/{total_sec_items}]: '{real_item_title}' is 100% complete. Skipping!")
-                        completed_items.add(btn_text)
-                        completed_items.add(real_item_title)
+                        if not is_generic_btn:
+                            completed_items.add(btn_text)
+                        if real_item_title and real_item_title.lower() not in ("view", "start", "open", "continue"):
+                            completed_items.add(real_item_title)
                         continue
+
 
                     # Strict Attempt & Page Reload Circuit Breaker Protocol
                     runs_done = item_attempts.get(btn_text, 0)
@@ -2777,9 +2783,12 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
 
 
-                    completed_items.add(btn_text)
-                    completed_items.add(real_item_title)
+                    if not is_generic_btn:
+                        completed_items.add(btn_text)
+                    if real_item_title and real_item_title.lower() not in ("view", "start", "open", "continue"):
+                        completed_items.add(real_item_title)
                     processed_any = True
+
 
                     # DIKSHA Server unlock sync delay between subsections
                     logger.info("  --> DIKSHA Server sync buffer: waiting 4 seconds for next item unlock...")
