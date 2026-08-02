@@ -55,7 +55,10 @@ An enterprise-grade, end-to-end automation engine for **DIKSHA / Moodle LMS Port
 * **🔒 256-Bit Cryptographic Security**: 
   * SHA-256 encrypted multi-user PIN lock (`541563`) and credential vault.
   * API Keys stored as 256-bit encrypted ciphers in `config.py` with dynamic in-memory decryption via `utils/security.py`. No plain text `.env` files required.
-* **☁️ Railway Cloud Ready**: Fully containerized with root `Dockerfile`, `railway/` config, and 0-variable setup required.
+* **☁️ Railway Cloud & 📱 Termux Mobile Ready**: 
+  * **Railway Cloud**: Fully containerized with root `Dockerfile`, `railway/` config, and 0-variable setup required.
+  * **Termux Mobile**: Automated 1-click Termux setup script (`termux_setup.sh`) & full ARM64 Chromium mobile execution guide (`docs/08_TERMUX_MOBILE_EXECUTION_GUIDE.md`).
+
 
 ---
 

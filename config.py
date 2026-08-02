@@ -53,16 +53,18 @@ COURSES_DIR.mkdir(parents=True, exist_ok=True)
 # Browser Engine Launch Options
 BROWSER_TYPE = "chromium"
 IS_DOCKER = os.path.exists("/.dockerenv") or bool(os.environ.get("RAILWAY_ENVIRONMENT") or os.environ.get("RAILWAY_PROJECT_ID"))
+IS_TERMUX = bool(os.environ.get("TERMUX_VERSION") or os.environ.get("PREFIX", "").startswith("/data/data/com.termux"))
 HEADLESS_ENV = os.environ.get("HEADLESS", "").strip().lower()
 
 if HEADLESS_ENV in ("true", "1", "yes", "t"):
     HEADLESS = True
 elif HEADLESS_ENV in ("false", "0", "no", "f"):
     HEADLESS = False
-elif IS_DOCKER:
-    HEADLESS = True    # Automatically use Headless mode on Railway Cloud / Docker!
+elif IS_DOCKER or IS_TERMUX:
+    HEADLESS = True    # Automatically use Headless mode on Railway Cloud / Termux!
 else:
     HEADLESS = False   # Default to False for local GUI desktop run
+
 
 SLOMO_MS = 500
 

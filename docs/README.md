@@ -44,8 +44,11 @@ Welcome to the central documentation index for **DIKSHA+ Automation Suite**. Sel
    * Double confirmation gate check & page reload sync.
    * Certificate section handling & Circuit Breaker Guard.
 
-7. 🤖 **[Multi-AI Solver, Backoffs & Terminal Logs Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/07_DUAL_AI_SOLVER_AND_BACKOFF_LOGS_GUIDE.md)**
-   * Google Gemini AI (5 Keys - 1 Attempt) ➔ Groq Cloud LPU API (3 Keys - 1 Attempt) solver hierarchy.
-   * Stepped Backoff Protocol (30s ➔ 45s ➔ 60s) & full retries across all 8 keys.
-   * Auto-Learning JSON saving rules (only after 100% successful solution).
-   * Full terminal log examples for rate limits, retries & Circuit Breaker Stop.
+7. 📊 **[Dual AI Solver & Backoff Logs Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/07_DUAL_AI_SOLVER_AND_BACKOFF_LOGS_GUIDE.md)**
+   * Complete 8-key API pool architecture & rotation flow.
+   * Stepped backoff logs & 0% Option A fallback guarantee.
+
+8. 📱 **[Termux Mobile Execution Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/08_TERMUX_MOBILE_EXECUTION_GUIDE.md)**
+   * Automated 1-click Termux setup script (`termux_setup.sh`).
+   * Native ARM64 Termux Chromium configuration & environment variables.
+   * 3-Environment Compatibility Matrix (Laptop, Railway Cloud, Termux Mobile).
