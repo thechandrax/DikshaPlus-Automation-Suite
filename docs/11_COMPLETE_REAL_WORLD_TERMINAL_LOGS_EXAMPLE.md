@@ -101,8 +101,7 @@ Select account [1-3] (or press Enter for Account #1): 1
      [B] Physical development
      [C] Cognitive development
      [D] On holistic development of the child
-[18:28:57] INFO  [DikshaEngine]   🧠 [GEMINI AI ATTEMPT 1/1] Requesting solution via Gemini API...
-[18:28:58] INFO  [DikshaEngine]   🧠 [GEMINI AI SUCCESS] Solved via Key #1 (gemini-2.0-flash) -> 'On holistic development of the child'
+[18:28:57] INFO  [DikshaEngine]   ⚡ [GROQ LPU SUCCESS] Key #1 -> 'On holistic development of the child'
 [18:28:58] INFO  [DikshaEngine]   💾 [AUTO-LEARNING SAVE] Saved to NISHTHA_FLN_English.json: Module #2 || Subsection #3 -> Q: 'Focus of foundational learning...'
 [18:28:59] INFO  [DikshaEngine]   🎯 [SELECTED OPTION D] Selected Radio Button [D] for Answer: 'On holistic development of the child'.
 
@@ -114,12 +113,23 @@ Select account [1-3] (or press Enter for Account #1): 1
  [15s RELOAD SYNC & GATE GUARD]
 ==================================================================
 [18:29:10] INFO  [DikshaEngine]   --> [DOUBLE CONFIRMATION] Verifying 100% completion for 'Module 02'...
-[18:29:13] INFO  [DikshaEngine]   ⏳ [MODULE SYNC 1/8] Reloading page & waiting 15s for DIKSHA server checkmarks (Elapsed: 15s / 120s)...
+[18:29:13] INFO  [DikshaEngine]   ⏳ [MODULE SYNC 1/10] Reloading page & waiting 15s for DIKSHA server checkmarks (Elapsed: 15s / 150s)...
 [18:29:28] INFO  [DikshaEngine]   ✅ [MODULE SYNC SUCCESS] DIKSHA server completion verified after 15s!
 [18:29:29] INFO  [DikshaEngine]   --> Closing activity modal & cleanly collapsing completed module accordion panel...
 
-==================================================================
- 🎉 [COURSE COMPLETED] All 3 Modules in 'NISHTHA FLN English' 100% COMPLETED!
-==================================================================
-[18:29:30] INFO  [Main] Process finished cleanly with exit code 0.
+===================================================================
+ 🎉 🎓 AUTOMATION EXECUTION SUCCESSFUL & COURSE COMPLETED!
+===================================================================
+  ✔ User Profile : Sumanta Halder (7044015007)
+  ✔ Course Title : NISHTHA FLN English
+  ✔ Certificate  : Download Certificate Available
+  ✔ Status       : 100% Complete — All Modules & Assessments Done!
+===================================================================
+
+Pipeline executed successfully.
+===================================================================
+  [KEEP-OPEN] Chrome browser is kept OPEN for your inspection!
+  Close the browser window or press Ctrl+C in console when finished.
+===================================================================
+
 ```

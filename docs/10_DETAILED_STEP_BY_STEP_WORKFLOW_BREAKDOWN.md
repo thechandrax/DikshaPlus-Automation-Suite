@@ -104,11 +104,11 @@ When a module finishes, DIKSHA+ enters a **Patient 15-Second Sync Loop**:
 
 ---
 
-## 🌐 4-WAY DEPLOYMENT ARCHITECTURE
+## 🌐 3-WAY DEPLOYMENT ARCHITECTURE
 
-| Mode | Platform | Environment Flags | Interface | Laptop Code Status |
+| Mode | Platform | Environment Flags | Interface | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **Mode 1** | 💻 **Local Laptop** | `HEADLESS=False` | Visible GUI Window | **100% Preserved** ✅ |
 | **Mode 2** | ☁️ **Railway Server** | `HEADLESS=True` | Background Container | **100% Preserved** ✅ |
-| **Mode 3** | 📱 **Railway Mobile** | `HEADLESS=True` | Smartphone Web Browser | **0% Battery Drain** 🔋 |
-| **Mode 4** | 📲 **Termux App** | `IS_TERMUX=True` | Android Native Terminal | **100% Supported** ✅ |
+| **Mode 3** | 📱 **Termux (Ubuntu PRoot)** | `HEADLESS=False` (vnc) | RealVNC Visible GUI | **100% Supported** ✅ |
+
