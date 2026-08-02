@@ -459,6 +459,118 @@
           ]
         }
       ]
+    },
+    {
+      "module_no": 7,
+      "module_name": "Module 07: Multilingual Education in Primary Grades",
+      "subsections": [
+        {
+          "subsection_no": 28,
+          "subsection_name": "Formative Assessment 07",
+          "questions": [
+            {
+              "question": "Which of the following is true -",
+              "options": [
+                "[A] Learning through one's mother tongue for a prolonged period leaves no time to learn other languages",
+                "[B] Development of proficiency in one language hinders development in other languages",
+                "[C] Solid grasp of one's mother tongue makes it difficult to learn a second language",
+                "[D] Proficiency in various languages is developed in an interdependent fashion"
+              ],
+              "answer": "[D] Proficiency in various languages is developed in an interdependent fashion"
+            },
+            {
+              "question": "Census of India (2011) established that -",
+              "options": [
+                "[A] Most people speak more than one language.",
+                "[B] Only 7% of the people can speak two languages.",
+                "[C] Only 7% of the people can speak in English, as and when needed.",
+                "[D] Most people can speak only their mother tongue."
+              ],
+              "answer": "[D] Most people can speak only their mother tongue."
+            },
+            {
+              "question": "Which of the following statements does not feature in National Education Policy 2020?",
+              "options": [
+                "[A] Young children learn the best through their mother tongues.",
+                "[B] Children should be taught in their mother tongues till at least grade 5.",
+                "[C] If children are taught through their mother tongues, they do not have adequate time in school to learn other languages.",
+                "[D] Learning how to read and write must begin in children's home languages."
+              ],
+              "answer": "[C] If children are taught through their mother tongues, they do not have adequate time in school to learn other languages."
+            },
+            {
+              "question": "Making use of L1 in teaching-",
+              "options": [
+                "[A] improves rote learning ability of children.",
+                "[B] creates difficulties for children to understand academic concepts.",
+                "[C] results in children feeling frustrated.",
+                "[D] helps in better learning of all the subjects."
+              ],
+              "answer": "[D] helps in better learning of all the subjects."
+            },
+            {
+              "question": "Which of the following is not a key principle of teaching a second language?",
+              "options": [
+                "[A] Using L2 vocabulary for writing from the beginning years.",
+                "[B] To make L2 simple, comprehensible, interesting, and meaningful for children.",
+                "[C] Focusing on developing L2 based vocabulary from the beginning.",
+                "[D] Giving maximum exposure to students in L2."
+              ],
+              "answer": "[A] Using L2 vocabulary for writing from the beginning years."
+            },
+            {
+              "question": "Kamala ji wants to teach Hindi to grade 2 students. Which of the following strategies should she use?",
+              "options": [
+                "[A] Use of Hindi language as per the level of comprehension by students",
+                "[B] Practice and repetition of long and complex Hindi sentences",
+                "[C] Speaking only in Hindi language and not allowing children to speak in their home languages",
+                "[D] Maximum writing practice in Hindi given to students"
+              ],
+              "answer": "[A] Use of Hindi language as per the level of comprehension by students"
+            },
+            {
+              "question": "What kind of language do we use in our day-to-day life?",
+              "options": [
+                "[A] Mixed language",
+                "[B] Pure language",
+                "[C] Standard language",
+                "[D] National language"
+              ],
+              "answer": "[A] Mixed language"
+            },
+            {
+              "question": "Choose the incorrect statement -",
+              "options": [
+                "[A] By learning through the mother tongue, children find it difficult to understand all the subjects.",
+                "[B] A solid foundation of first language skills helps a child in learning other languages.",
+                "[C] When children learn how to think in their own language, they can use those skills easily to other languages.",
+                "[D] In foundational grades, children must be taught the unfamiliar school language by taking help of their home languages."
+              ],
+              "answer": "[A] By learning through the mother tongue, children find it difficult to understand all the subjects."
+            },
+            {
+              "question": "\"It shall be the endeavour of every State and of every local authority within the State to provide adequate facilities for instruction in the mother-tongue at the primary stage of education to children belonging to linguistic minority groups\" --which document is this statement recorded in?",
+              "options": [
+                "[A] RTE 2009",
+                "[B] NCF 2005",
+                "[C] The Indian Constitution",
+                "[D] National Education Policy 2020"
+              ],
+              "answer": "[C] The Indian Constitution"
+            },
+            {
+              "question": "\"Learning process must gradually move from the familiar to the unfamiliar\". This idea can be found in:",
+              "options": [
+                "[A] RTE-2009",
+                "[B] NEP-1985",
+                "[C] NEP-2000",
+                "[D] NCF-2005"
+              ],
+              "answer": "[D] NCF-2005"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

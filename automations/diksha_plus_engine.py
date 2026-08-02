@@ -2683,6 +2683,11 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                             if await click_target.count() > 0:
                                 await click_target.click(force=True)
                                 await page.wait_for_timeout(2500)
+                            
+                            # Re-query fresh action buttons after page reload
+                            fresh_btns = await get_section_action_buttons(collapse_panel, header)
+                            if j <= len(fresh_btns):
+                                btn = fresh_btns[j - 1]
                         except Exception:
                             pass
 
@@ -2697,6 +2702,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                 raise RuntimeError(f"DIKSHA_SERVER_LOCKED_STUCK: '{real_item_title}' locked after 4 attempts.")
                             logger.info(f"  --> [SKIP LOCKED] Subsection [{j}/{total_sec_items}]: '{real_item_title}' remains locked. Will re-evaluate on next pass...")
                             continue
+
 
                     act_type = await btn.get_attribute("act_type") or "resource"
 
