@@ -2864,8 +2864,17 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
                             if sync_all_done or sync_header_done:
                                 logger.info(f"  ✅ [MODULE SYNC SUCCESS] DIKSHA server completion verified after {sync_step * 15}s!")
+                                await close_activity_modal(page)
+                                try:
+                                    # Cleanly collapse module accordion panel after 100% verification
+                                    if await click_target.count() > 0:
+                                        await click_target.click(force=True)
+                                        await page.wait_for_timeout(1000)
+                                except Exception:
+                                    pass
                                 server_synced = True
                                 break
+
                         except Exception:
                             pass
 
