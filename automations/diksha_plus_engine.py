@@ -74,19 +74,42 @@ async def check_pause_status():
             await asyncio.sleep(0.5)
 
 
+def get_course_filename(course_title):
+    """
+    Generates a clean, full dynamic filename for course JSON files while
+    preserving full Bengali, Hindi, Urdu, and Unicode course names cleanly.
+    """
+    c_name = (course_title or "course").strip()
+    clean_fn = re.sub(r'[\/\\:\*\?"<>\|\n\r\t]+', '_', c_name)
+    clean_fn = re.sub(r'[\s_]+', '_', clean_fn).strip('_')
+    if not clean_fn:
+        clean_fn = "course"
+    return f"{clean_fn}.json"
+
+
 def load_answer_key(course_title=None):
     """
-    Loads course-specific answer key from data/courses/<course_name>.json
-    or falls back to data/answer_key.json. Auto-creates template JSON files per course.
+    Loads course-specific answer key from data/courses/<course_name>.json.
+    Auto-creates clean template JSON files per course matching official modules hierarchy.
     """
     courses_dir = config.DATA_DIR / "courses"
     courses_dir.mkdir(parents=True, exist_ok=True)
 
     if course_title:
-        # Create safe filename: e.g. "Power of Audio in Education" -> "power_of_audio_in_education.json"
-        safe_name = re.sub(r'[^a-zA-Z0-9]+', '_', course_title.lower()).strip('_')
-        course_file = courses_dir / f"{safe_name}.json"
-        
+        fn_name = get_course_filename(course_title)
+        course_file = courses_dir / fn_name
+
+        if not course_file.exists():
+            for f_path in courses_dir.glob("*.json"):
+                try:
+                    with open(f_path, "r", encoding="utf-8") as f_check:
+                        j_data = json.load(f_check)
+                        if normalize_text(j_data.get("course_name", "")).lower() == normalize_text(course_title).lower():
+                            course_file = f_path
+                            break
+                except Exception:
+                    pass
+
         if course_file.exists():
             try:
                 with open(course_file, "r", encoding="utf-8") as f:
@@ -95,17 +118,18 @@ def load_answer_key(course_title=None):
             except Exception as e:
                 logger.warning(f"Could not parse {course_file.name}: {e}")
         else:
-            # Create a clean template JSON file for this course with dynamic subsections array
+            # Create a clean template JSON file for this course with official "modules" hierarchy
             template = {
                 "course_name": course_title,
-                "subsections": []
+                "modules": []
             }
             try:
                 with open(course_file, "w", encoding="utf-8") as f:
-                    json.dump(template, f, indent=2)
+                    json.dump(template, f, indent=2, ensure_ascii=False)
                 logger.info(f"  --> Created clean answer key template file: data/courses/{course_file.name}")
-            except Exception:
-                pass
+            except Exception as ex:
+                logger.warning(f"Notice creating template file: {ex}")
+
 
 
 
@@ -201,7 +225,8 @@ def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name,
     """
     try:
         c_name = course_title or "unknown_course"
-        course_key_file = config.COURSES_DIR / f"{re.sub(r'[^a-zA-Z0-9]+', '_', c_name.lower()).strip('_')}.json"
+        fn_name = get_course_filename(c_name)
+        course_key_file = config.COURSES_DIR / fn_name
         
         data_j = {}
         if course_key_file.exists():
@@ -210,6 +235,7 @@ def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name,
                     data_j = json.load(f)
                 except Exception:
                     data_j = {}
+
 
         data_j.pop("description", None)
         data_j.pop("answers", None)
