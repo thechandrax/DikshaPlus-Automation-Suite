@@ -1,6 +1,6 @@
-# ⚙️ MODULE EXECUTION, RETRY PROTOCOL & STEPPED BACKOFF GUIDE
+# ⚙️ MODULE EXECUTION, RETRY PROTOCOL & 10-ATTEMPT SYNC WINDOW GUIDE
 
-This document provides a comprehensive technical reference for the **Module Execution Pipeline**, **Locked Item Recovery**, **Double Confirmation Gate Guard**, **Certificate Handling**, and the **Stepped Backoff Retry Protocol (30s ➔ 45s ➔ 60s)** in **DIKSHA+ Automation Suite**.
+This document provides a comprehensive technical reference for the **Module Execution Pipeline**, **10-Attempt x 15s (150s) Patient Server Sync Window**, **Certificate `customcert` Auto-Completion Protocol**, **Interleaved Gemini/Groq AI Pool**, and **Circuit Breaker Safeguards** in **DIKSHA+ Automation Suite**.
 
 ---
 
@@ -8,11 +8,10 @@ This document provides a comprehensive technical reference for the **Module Exec
 
 1. [Module Execution Pipeline](#1-module-execution-pipeline)
 2. [Locked Item Session Recovery](#2-locked-item-session-recovery)
-3. [Double Confirmation & Gate Refresh](#3-double-confirmation--gate-refresh)
-4. [Certificate Section Handling](#4-certificate-section-handling)
-5. [Circuit Breaker Guard](#5-circuit-breaker-guard)
-6. [Stepped Backoff Retry Protocol (30s ➔ 45s ➔ 60s)](#6-stepped-backoff-retry-protocol-30s--45s--60s)
-7. [Continuous Execution Fallback](#7-continuous-execution-fallback)
+3. [10-Attempt x 15s (150s) Patient Server Sync Window](#3-10-attempt-x-15s-150s-patient-server-sync-window)
+4. [Certificate `customcert` Auto-Completion Protocol](#4-certificate-customcert-auto-completion-protocol)
+5. [10-Key Interleaved Alternating AI Pool (5 Gemini + 5 Groq)](#5-10-key-interleaved-alternating-ai-pool-5-gemini--5-groq)
+6. [Circuit Breaker Guard (0% Dummy Option A Fallback)](#6-circuit-breaker-guard-0-dummy-option-a-fallback)
 
 ---
 
@@ -21,15 +20,17 @@ This document provides a comprehensive technical reference for the **Module Exec
 DIKSHA+ executes course modules sequentially from Module #1 to Module #N with strict validation at every level:
 
 ```text
-[STEP 01] Navigate & Expand Module Header
-  └── [STEP 02] Check if Module is 100% Completed (Skip if Done)
+[STEP 01] Navigate & Expand Module Accordion Header
+  └── [STEP 02] Check if Module Header is 100% Completed (Skip if Done)
         └── [STEP 03] Execute Subsection Items (Videos, PDFs, H5P, Quizzes, Feedback)
-              └── [STEP 04] Double Confirmation Gate Check
-                    └── [STEP 05] Advance to Next Module
+              └── [STEP 04] Double Confirmation: Re-check DOM Items & 100% Header Badge
+                    └── [STEP 05] 10-Attempt x 15s (150s) Patient Server Sync Window
+                          └── [STEP 06] Advance to Next Module
 ```
 
 * **Item Attempts Tracking**: Tracks execution attempts per subsection item using `item_attempts[btn_text]`.
-* **Automatic Activity Selection**: Dynamically detects activity type (`url`, `resource`, `h5pactivity`, `quiz`, `feedback`) and dispatches the correct dedicated automation engine.
+* **Generic Button Isolation**: Tracks completed items by their full unique title (e.g., `'Chapter 19_1_activity4_try_yourself'`), so generic button names like `"View"` or `"Start"` never cause locked items to be skipped.
+* **Automatic Activity Selection**: Dynamically detects activity type (`url`, `resource`, `h5pactivity`, `quiz`, `feedback`) and dispatches the dedicated automation engine.
 
 ---
 
@@ -47,72 +48,68 @@ When DIKSHA server locks a subsection item because a prerequisite video or lesso
 
 ---
 
-## 3. Double Confirmation & Gate Refresh
+## 3. 10-Attempt x 15s (150s) Patient Server Sync Window
 
-After completing all subsection activities in a module, DIKSHA+ verifies completion:
+Due to DIKSHA server hydration latency, module header badges or checkmarks may take up to **2.5 minutes** to update on the backend after completing all items in a section:
 
-* **Check 1**: Re-scans all individual item checkmarks in the DOM (`is_item_100_percent_complete()`).
-* **Check 2**: Re-scans the main module header percentage badge (`is_header_100_percent_complete()`).
-* **Backend Sync Refresh**: If the badge is not 100% yet due to DIKSHA server latency:
-  ```text
-  --> [GATE REFRESH] Reloading page once to sync DIKSHA server backend checkmarks...
-  ```
-  Executes `page.reload()` once and re-checks completion before advancing.
+```text
+⏳ [DIKSHA SERVER HYDRATION] 'Module 08: Learning Assessment' header badge is not 100% yet.
+⏳ Entering 10-Attempt (150s) Patient Server Sync Window before any Circuit Breaker trigger...
+```
 
----
-
-## 4. Certificate Section Handling
-
-Post-course reward download pages (`'Certificate'`, `'Download Certificate'`):
-
-* **Automatic Skip**: Recognized as optional reward download links rather than interactive lesson activities.
-* **Clean Log**:
-  ```text
-  🎓 [CERTIFICATE SECTION] 'Certificate' reached end of course. Course completed successfully!
-  ```
-* **No Error Thrown**: Finishes execution cleanly without triggering server stuck errors.
+* **10 Attempts x 15-Second Intervals = 150 Seconds (2.5 Minutes Total)**.
+* **On Every 15-Second Reload (`sync_step` 1 to 10)**:
+  1. Reloads page (`await page.reload()`).
+  2. Waits 3 seconds for DOM hydration.
+  3. **Check 1**: Re-evaluates Module Header Badge (`is_header_100_percent_complete()`).
+  4. **Check 2**: Re-opens accordion panel and re-checks all individual subsection checkmarks (`✓`).
+  5. **Instant Sync Success**: If either Check 1 or Check 2 passes, it logs `✅ [MODULE SYNC SUCCESS]`, closes the modal, collapses the accordion panel, and advances cleanly to the next module!
 
 ---
 
-## 5. Circuit Breaker Guard
+## 4. Certificate `customcert` Auto-Completion Protocol
 
-If after 4 attempts and page reloads a regular course lesson or assessment remains incomplete:
+When the automation reaches the **`Certificate`** section (or detects a `customcert` / `Download Certificate` element):
+
+1. **No "View" Click Necessary**:
+   The engine detects `<a act_type="customcert" href="...mod/customcert/view.php...">Download Certificate</a>` directly inside the Certificate module panel and **skips clicking "View"** to prevent PDF popup downloads.
+2. **Instant Course Completion Confirmation**:
+   Prints the Grand Victory Summary in the terminal logs:
+
+```text
+===================================================================
+ 🎉 🎓 AUTOMATION EXECUTION SUCCESSFUL & COURSE COMPLETED!
+===================================================================
+  ✔ User Profile : Sumanta Halder (7044015007)
+  ✔ Course Title : NISHTHA ECCE English
+  ✔ Certificate  : Download Certificate Available
+  ✔ Status       : 100% Complete — All Modules & Assessments Done!
+===================================================================
+```
+
+3. **Clean Automation Finish**: Returns `True` and cleanly completes the course automation!
+
+---
+
+## 5. 10-Key Interleaved Alternating AI Pool (5 Gemini + 5 Groq)
+
+When a new quiz or feedback question is encountered that is not in local JSON cache:
+
+* **Interleaved Sequence**: `Gemini #1` ➔ `Groq #1` ➔ `Gemini #2` ➔ `Groq #2` ➔ `Gemini #3` ➔ `Groq #3` ➔ `Gemini #4` ➔ `Groq #4` ➔ `Gemini #5` ➔ `Groq #5`.
+* **1 Attempt Per Key**: Each key is granted **exactly 1 attempt**. If rate-limited, the engine instantly tries the next provider key in 0.1s.
+* **Stepped Backoff Retries**: If all 10 keys are rate-limited, applies stepped backoffs (**30s ➔ 45s ➔ 60s**) before retrying all keys again.
+
+---
+
+## 6. Circuit Breaker Guard (0% Dummy Option A Fallback)
+
+If after 10 attempts (150s sync window) and stepped backoff retries a regular course lesson or assessment remains incomplete:
 
 * **Trigger Notice**:
   ```text
-  ❌ [CRITICAL DIKSHA SERVER FAILURE] 'Module Title' remains incomplete after 4 attempts & 5s page reloads.
+  ❌ [CRITICAL DIKSHA SERVER FAILURE] 'Module Title' remains incomplete after 10 attempts & 150s sync window.
   ⛔ [CIRCUIT BREAKER TRIGGERED] Stopping all automation processes and closing server context!
   ```
-* **Safety Protocol**: Closes browser context cleanly (`page.context.close()`) to prevent infinite loops and protect your account.
-
----
-
-## 6. Dual AI Solver & Stepped Backoff Retry Protocol (30s ➔ 45s ➔ 60s)
-
-When solving new quiz or feedback questions live via AI:
-
-```mermaid
-flowchart TD
-    A[New Question Encountered] --> B{In JSON Answer Key?}
-    B -- Yes 0.01s --> C[Click Exact Answer]
-    B -- No --> D[🧠 1. Gemini AI Multi-Key Pool - 2 Attempts]
-    D -- Success --> E[Save to JSON & Click Answer]
-    D -- Gemini Rate Limited --> F[🤖 2. Grok xAI API Pool - 2 Attempts]
-    
-    F -- Success --> E
-    F -- Grok Rate Limited --> G[⏳ 3. Stepped Backoff Protocol: 30s -> 45s -> 60s]
-    G -- Success --> E
-    G -- Failed All Backoffs --> H[⛔ Strict Circuit Breaker Stop: Close Server Context]
-```
-
-### ⏳ AI Execution Priority Table:
-
-| Priority | AI Engine | Attempt Limit | Action |
-| :--- | :--- | :--- | :--- |
-| **1. Primary** | **Google Gemini AI API** | **2 Attempts** | Rotates across encrypted Gemini key pool & models (`gemini-2.0-flash`, `gemini-flash-latest`). |
-| **2. Fallback** | **xAI Grok API** (`console.x.ai`) | **2 Attempts** | Rotates across encrypted Grok key pool & models (`grok-4.3`, `grok-2-1212`, `grok-beta`). |
-| **3. Backoff #1** | Both Gemini & Grok | **Wait 30s** | Waits 30 seconds for quota reset $\rightarrow$ Retries all keys. |
-| **4. Backoff #2** | Both Gemini & Grok | **Wait 45s** | Waits 45 seconds for quota reset $\rightarrow$ Retries all keys. |
-| **5. Backoff #3** | Both Gemini & Grok | **Wait 60s** | Waits 60 seconds for quota reset $\rightarrow$ Retries all keys. |
-| **6. Final Action**| **Circuit Breaker** | **STOP & CLOSE** | **Never uses dummy Option A!** Closes browser context (`page.context.close()`) to protect 100% accuracy. |
-
+* **Safety Protocol**:
+  * Default Option [A] selection fallback is **100% completely removed**!
+  * Closes browser context cleanly (`page.context.close()`) to prevent infinite loops and protect your account accuracy.
