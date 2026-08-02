@@ -8,50 +8,60 @@
 
 ---
 
-## ⚡ DIRECT INSTANT LAUNCHER (`run_diksha.sh`) — 0 INSTALLATIONS / 0 DELAYS
+## ⚡ FAST PRE-COMPILED ARM64 BINARIES (`python-playwright` & `python-pandas`)
 
-Once packages are installed on your phone, you **DO NOT need to re-install anything**! Simply run:
-
-```bash
-cd DikshaPlus-Automation-Suite
-chmod +x run_diksha.sh
-./run_diksha.sh
-```
+In Termux on Android ARM64, Playwright and Pandas are installed as pre-compiled binary packages directly via Termux package manager:
+`pkg install python-playwright python-pandas python-pillow -y`.
 
 ---
 
-## 🚀 2-STEP COMPLETE INSTALLATION & LAUNCH WORKFLOW
+## 🚀 2-STEP TERMUX INSTALLATION & LAUNCH WORKFLOW
 
-### 1️⃣ STEP 1: Install Termux System Packages & Python Libraries (RUN ONCE ONLY)
+### 1️⃣ STEP 1: Install Termux Repositories, Pre-Compiled Playwright & Python 3
 
 Open the **Termux app** on your Android phone and paste this exact command block:
 
 ```bash
-# 1. Enable x11-repo and tur-repo FIRST (required for Chromium)
+# 1. Enable x11-repo and tur-repo FIRST (required for Chromium & Playwright)
 pkg update -y && pkg upgrade -y
 pkg install x11-repo tur-repo -y
 pkg update -y
 
-# 2. Install Git, Python 3, Node.js, Chromium, and PRE-COMPILED python-pandas
-pkg install git python nodejs-lts chromium python-pandas python-pillow -y
+# 2. Install Git, Python 3, Node.js, Chromium, python-playwright & python-pandas
+pkg install git python nodejs-lts chromium python-playwright python-pandas python-pillow -y
 
 # 3. Install pure Python libraries (instant 2-second install)
-pip install openpyxl playwright
+pip install openpyxl
 ```
 
 ---
 
 ### 2️⃣ STEP 2: Clone Repository & Launch DIKSHA+ (`run_diksha.sh`)
 
+After Step 1 finishes, copy and paste this command block:
+
 ```bash
 # 1. Clone repository from GitHub
 git clone https://github.com/thechandrax/DikshaPlus-Automation-Suite.git
 
-# 2. Enter project folder
+# 2. Enter project folder (Exact folder name: DikshaPlus-Automation-Suite)
 cd DikshaPlus-Automation-Suite
 
 # 3. Direct launch DIKSHA+!
 chmod +x run_diksha.sh
+./run_diksha.sh
+```
+
+---
+
+## 🔄 HOW TO UPDATE CODE WHEN NEW COMMITS ARE PUSHED
+
+If new updates or commits are pushed to GitHub:
+
+```bash
+cd DikshaPlus-Automation-Suite
+git reset --hard origin/main
+git pull origin main
 ./run_diksha.sh
 ```
 
