@@ -443,8 +443,9 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
         for grok_attempt in range(1, 3):
             logger.info(f"  🤖 [GROK AI ATTEMPT {grok_attempt}/2] Gemini keys exhausted. Requesting solution via Grok xAI API...")
             for x_idx, xai_key in enumerate(xai_keys, 1):
-                for model_name in ["grok-3", "grok-3-mini"]:
+                for model_name in ["grok-4.3", "grok-latest", "grok-4.20", "grok-code-fast", "grok-4.5"]:
                     try:
+
                         url = "https://api.x.ai/v1/chat/completions"
                         payload = json.dumps({
                             "model": model_name,
@@ -506,8 +507,9 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
         if xai_keys:
             logger.info(f"  🤖 [BACKOFF RETRY #{b_idx}] Retrying ALL Grok xAI API Keys after {delay_sec}s delay...")
             for x_idx, xai_key in enumerate(xai_keys, 1):
-                for model_name in ["grok-3", "grok-3-mini"]:
+                for model_name in ["grok-4.3", "grok-latest", "grok-4.20", "grok-code-fast", "grok-4.5"]:
                     try:
+
 
                         url = "https://api.x.ai/v1/chat/completions"
                         payload = json.dumps({
