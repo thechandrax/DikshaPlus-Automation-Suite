@@ -371,9 +371,13 @@ def solve_question_with_ai(question_text, option_texts=None):
     if not getattr(config, "AI_LIVE_SOLVER_ENABLED", True):
         return None
 
-    # Check for xAI Grok API Key (https://console.x.ai/)
-    xai_key = getattr(config, "XAI_API_KEY", "").strip() or getattr(config, "GROK_API_KEY", "").strip() or os.environ.get("XAI_API_KEY", "").strip() or os.environ.get("GROK_API_KEY", "").strip()
-    
+    # Check for xAI Grok API Keys (https://console.x.ai/)
+    xai_keys = getattr(config, "XAI_API_KEYS", [])
+    if not xai_keys:
+        single_xai = getattr(config, "XAI_API_KEY", "").strip() or getattr(config, "GROK_API_KEY", "").strip() or os.environ.get("XAI_API_KEY", "").strip() or os.environ.get("GROK_API_KEY", "").strip()
+        if single_xai:
+            xai_keys = [single_xai]
+
     options_formatted = "\n".join([f"{idx+1}. {opt}" for idx, opt in enumerate(option_texts or [])])
     prompt = f"""You are an expert AI teacher solving a quiz question for an educational course.
 
@@ -386,36 +390,38 @@ Option Choices:
 INSTRUCTIONS:
 Return ONLY the exact text of the correct option choice from the list above. Do NOT include option numbers (1, 2, 3), do NOT include explanations. Return ONLY the exact option text."""
 
-    if xai_key:
+    if xai_keys:
         logger.info("  🤖 [GROK AI LIVE] Requesting solution via xAI Grok API (https://console.x.ai/)...")
-        for model_name in ["grok-2-1212", "grok-beta"]:
-            try:
-                url = "https://api.x.ai/v1/chat/completions"
-                payload = json.dumps({
-                    "model": model_name,
-                    "messages": [
-                        {"role": "system", "content": "You are an expert AI teacher solving quiz questions for an educational course."},
-                        {"role": "user", "content": prompt}
-                    ],
-                    "temperature": 0.1
-                }).encode('utf-8')
+        for x_idx, xai_key in enumerate(xai_keys, 1):
+            for model_name in ["grok-4.3", "grok-2-1212", "grok-beta"]:
+                try:
+                    url = "https://api.x.ai/v1/chat/completions"
+                    payload = json.dumps({
+                        "model": model_name,
+                        "messages": [
+                            {"role": "system", "content": "You are an expert AI teacher solving quiz questions for an educational course."},
+                            {"role": "user", "content": prompt}
+                        ],
+                        "temperature": 0.1
+                    }).encode('utf-8')
 
-                headers = {
-                    'Content-Type': 'application/json',
-                    'Authorization': f'Bearer {xai_key}'
-                }
+                    headers = {
+                        'Content-Type': 'application/json',
+                        'Authorization': f'Bearer {xai_key}'
+                    }
 
-                req = urllib.request.Request(url, data=payload, headers=headers)
-                res = urllib.request.urlopen(req, timeout=12)
-                resp_data = json.loads(res.read().decode('utf-8'))
-                ans_text = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
+                    req = urllib.request.Request(url, data=payload, headers=headers)
+                    res = urllib.request.urlopen(req, timeout=12)
+                    resp_data = json.loads(res.read().decode('utf-8'))
+                    ans_text = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
 
-                clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
-                if clean_ans:
-                    logger.info(f"  🧠 [GROK AI SUCCESS] Solved via Grok ({model_name}) -> '{clean_ans}'")
-                    return clean_ans
-            except Exception as ex:
-                logger.warning(f"  ⚠️ [GROK AI NOTICE] ({model_name}): {ex}")
+                    clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
+                    if clean_ans:
+                        logger.info(f"  🧠 [GROK AI SUCCESS] Solved via Grok ({model_name}) Key #{x_idx} -> '{clean_ans}'")
+                        return clean_ans
+                except Exception as ex:
+                    logger.warning(f"  ⚠️ [GROK AI NOTICE] ({model_name} Key #{x_idx}): {ex}")
+
 
     api_keys = getattr(config, "GEMINI_API_KEYS", [])
     if not api_keys and hasattr(config, "GEMINI_API_KEY") and config.GEMINI_API_KEY:

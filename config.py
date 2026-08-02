@@ -113,11 +113,31 @@ def _load_gemini_keys():
 GEMINI_API_KEYS = _load_gemini_keys()
 GEMINI_API_KEY = GEMINI_API_KEYS[0] if GEMINI_API_KEYS else ""
 
-# xAI Grok API Key (https://console.x.ai/)
-XAI_API_KEY = os.environ.get("XAI_API_KEY", "").strip() or os.environ.get("GROK_API_KEY", "").strip()
+# xAI Grok API Key Pool (256-Bit Cryptographically Encrypted - https://console.x.ai/)
+XAI_API_KEYS_ENCRYPTED = [
+    "ENC256:c3Zlb9ID3GuMoY_q9EvESc41U6Hq_xuPXRMz1d2gQ9hafzor3XzcRJqnvpPVC-VvvhJ84szaWqADGB7R7sNP9UNhNTOhXJYUsKDim6Um8EK4FArS"
+]
+
+def _load_xai_keys():
+    keys = []
+    env_xai = os.environ.get("XAI_API_KEY", "").strip() or os.environ.get("GROK_API_KEY", "").strip()
+    if env_xai:
+        keys.append(env_xai)
+    for enc_k in XAI_API_KEYS_ENCRYPTED:
+        try:
+            dec_k = decrypt_password(enc_k)
+            if dec_k and dec_k not in keys:
+                keys.append(dec_k)
+        except Exception:
+            pass
+    return keys
+
+XAI_API_KEYS = _load_xai_keys()
+XAI_API_KEY = XAI_API_KEYS[0] if XAI_API_KEYS else ""
 GROK_API_KEY = XAI_API_KEY
 
 AI_LIVE_SOLVER_ENABLED = True
+
 
 
 
