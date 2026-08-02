@@ -136,7 +136,10 @@ XAI_API_KEYS = _load_xai_keys()
 XAI_API_KEY = XAI_API_KEYS[0] if XAI_API_KEYS else ""
 
 # Groq Cloud LPU API Key Pool (100% FREE - No Credit Card Required - https://console.groq.com/)
-GROQ_API_KEYS_ENCRYPTED = []
+GROQ_API_KEYS_ENCRYPTED = [
+    "ENC256:bGRnHZwNyl6O2YXsyST8UqIUYOT18QO8YTc259SkT-pOJkkBkFn8So20k9PTFoYXqQZb1tbTOa8="
+]
+
 
 def _load_groq_keys():
     keys = []

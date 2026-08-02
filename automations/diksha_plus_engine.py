@@ -457,8 +457,10 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
 
                         headers = {
                             'Content-Type': 'application/json',
-                            'Authorization': f'Bearer {groq_key}'
+                            'Authorization': f'Bearer {groq_key}',
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
                         }
+
 
                         req = urllib.request.Request(url, data=payload, headers=headers)
                         res = urllib.request.urlopen(req, timeout=12)
@@ -560,7 +562,12 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
                             ],
                             "temperature": 0.1
                         }).encode('utf-8')
-                        headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {groq_key}'}
+                        headers = {
+                            'Content-Type': 'application/json',
+                            'Authorization': f'Bearer {groq_key}',
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                        }
+
                         req = urllib.request.Request(url, data=payload, headers=headers)
                         res = urllib.request.urlopen(req, timeout=12)
                         resp_data = json.loads(res.read().decode('utf-8'))
