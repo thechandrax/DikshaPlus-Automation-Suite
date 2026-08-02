@@ -6,7 +6,9 @@
 
 export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 export PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=$(which chromium)
+export PLAYWRIGHT_NODEJS_PATH=$(which node)
 export HEADLESS=True
+
 
 # Auto-install Playwright ARM64 for Termux if missing
 python -c "import playwright" 2>/dev/null || {

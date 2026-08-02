@@ -65,6 +65,18 @@ elif IS_DOCKER or IS_TERMUX:
 else:
     HEADLESS = False   # Default to False for local GUI desktop run
 
+# Auto-configure Termux Node.js & Chromium drivers to bypass x86_64 ELF mismatch
+if IS_TERMUX:
+    import shutil
+    node_bin = shutil.which("node") or "/data/data/com.termux/files/usr/bin/node"
+    if os.path.exists(node_bin):
+        os.environ["PLAYWRIGHT_NODEJS_PATH"] = node_bin
+    os.environ["PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD"] = "1"
+    chrom_bin = shutil.which("chromium") or "/data/data/com.termux/files/usr/bin/chromium"
+    if os.path.exists(chrom_bin):
+        os.environ["PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH"] = chrom_bin
+
+
 
 SLOMO_MS = 500
 
