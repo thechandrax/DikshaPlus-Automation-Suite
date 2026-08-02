@@ -72,7 +72,8 @@ If you prefer installing packages manually:
 ```bash
 # Step 1: Update Termux & install Linux tools
 pkg update -y && pkg upgrade -y
-pkg install python nodejs-lts chromium x11-repo tur-repo -y
+pkg install git python nodejs-lts chromium x11-repo tur-repo -y
+
 
 # Step 2: Install Python libraries
 pip install pandas openpyxl pillow playwright

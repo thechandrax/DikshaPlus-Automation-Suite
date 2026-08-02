@@ -12,9 +12,10 @@ echo ""
 echo "[1/4] Updating Termux packages..."
 pkg update -y && pkg upgrade -y
 
-# 2. Install Python, Node.js, Chromium & Dependencies
-echo "[2/4] Installing Python, Chromium, & system libraries..."
-pkg install python nodejs-lts chromium x11-repo tur-repo -y
+# 2. Install Git, Python, Node.js, Chromium & Dependencies
+echo "[2/4] Installing Git, Python, Chromium, & system libraries..."
+pkg install git python nodejs-lts chromium x11-repo tur-repo -y
+
 
 # 3. Install Required Python Packages
 echo "[3/4] Installing Python requirements..."
