@@ -19,10 +19,10 @@ pkg update -y
 echo "[2/3] Installing Git, Python 3, Chromium, python-pandas & python-pillow..."
 pkg install git python nodejs-lts chromium python-pandas python-pillow -y
 
-# 3. Install Playwright via tur-repo or TUR PyPI wheel
+# 3. Install Playwright pure Python package
 echo "[3/3] Installing Playwright for Termux ARM64..."
-pkg install python-playwright -y 2>/dev/null || pip install --extra-index-url https://termux-user-repository.github.io/pypi/ playwright
-pip install openpyxl
+pip install --no-deps playwright
+pip install pyee greenlet openpyxl 2>/dev/null || true
 
 echo ""
 echo "========================================================================"

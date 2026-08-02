@@ -23,9 +23,9 @@ pkg update -y
 # 2. Install Git, Python 3, Node.js, Chromium, python-pandas & python-pillow
 pkg install git python nodejs-lts chromium python-pandas python-pillow -y
 
-# 3. Install Playwright for Termux ARM64
-pkg install python-playwright -y || pip install --extra-index-url https://termux-user-repository.github.io/pypi/ playwright
-pip install openpyxl
+# 3. Install Playwright pure Python package
+pip install --no-deps playwright
+pip install pyee greenlet openpyxl
 ```
 
 ---

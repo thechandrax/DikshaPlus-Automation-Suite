@@ -8,11 +8,11 @@ export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 export PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=$(which chromium)
 export HEADLESS=True
 
-# Auto-install Playwright via tur-repo or TUR PyPI wheel if missing
+# Auto-install pure Python Playwright for Termux ARM64 if missing
 python -c "import playwright" 2>/dev/null || {
-    echo "📦 Installing Playwright for Termux ARM64..."
-    pkg install tur-repo -y && pkg update -y
-    pkg install python-playwright -y 2>/dev/null || pip install --extra-index-url https://termux-user-repository.github.io/pypi/ playwright
+    echo "📦 Installing pure Python Playwright package..."
+    pip install --no-deps playwright
+    pip install pyee greenlet 2>/dev/null || true
 }
 
 echo "========================================================================"
