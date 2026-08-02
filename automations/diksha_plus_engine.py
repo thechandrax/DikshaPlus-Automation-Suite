@@ -1837,18 +1837,36 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             except Exception as match_ex:
                 logger.warning(f"  --> Option matching notice: {match_ex}")
 
-        # Gate 2.5: Text / Comment Box Input Filling (For Feedback Forms or Open Text Questions)
+        # Gate 2.5: Text / Short Answer / Blank / Feedback Input Filling
         if matched_answer_text and not selected_option:
             try:
-                textarea_el = target_frame.locator("textarea, input[type='text']:not([class*='search']), .form-control:not([type='hidden'])").first
-                if await textarea_el.count() > 0 and await textarea_el.is_visible():
-                    await textarea_el.fill(matched_answer_text)
-                    selected_option = True
-                    logger.info(f"  ✍️ [TYPED FEEDBACK RESPONSE {q_tag}]: '{matched_answer_text}'")
-                    logger.info("  " + "-" * 75 + "\n")
-                    await page.wait_for_timeout(1000)
+                text_input_found = False
+                for frame_target in [target_frame, page] + page.frames:
+                    text_locs = frame_target.locator("textarea, input[type='text']:not([class*='search']), input.shortanswer, input[name*='answer'], input[id*='answer'], .form-control:not([type='hidden']), div[contenteditable='true']")
+                    count = await text_locs.count()
+                    for t_idx in range(count):
+                        t_el = text_locs.nth(t_idx)
+                        if await t_el.is_visible():
+                            try:
+                                await t_el.fill(matched_answer_text)
+                            except Exception:
+                                await t_el.evaluate("(el, val) => { el.innerText = val; el.value = val; }", matched_answer_text)
+                            selected_option = True
+                            text_input_found = True
+                            logger.info(f"  ✍️ [TYPED TEXT ANSWER {q_tag}]: '{matched_answer_text}'")
+                            logger.info("  " + "-" * 75 + "\n")
+                            await page.wait_for_timeout(1000)
+                            break
+                    if text_input_found:
+                        break
             except Exception as text_ex:
                 logger.warning(f"  --> Text response filling notice: {text_ex}")
+
+        # Fallback for Informative / Continuation slides without choices or when AI answer is provided for text question
+        if not selected_option and matched_answer_text and not screen_opts:
+            selected_option = True
+            logger.info(f"  ℹ️ [INFORMATIVE / CONTINUATION QUESTION {q_tag}] Auto-advancing with AI solution: '{matched_answer_text}'")
+            logger.info("  " + "-" * 75 + "\n")
 
         if not selected_option:
             if not q_text_screen and not screen_opts:
@@ -1862,6 +1880,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                 except Exception:
                     pass
                 raise RuntimeError(f"AI_SOLVER_FAILED_SERVER_STUCK: Question '{q_text_screen[:45]}...' could not be solved without 100% accuracy.")
+
 
 
 
