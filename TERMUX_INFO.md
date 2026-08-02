@@ -90,11 +90,11 @@ Select account [1-3] (or press Enter for Account #1): 1
 
 ---
 
-## 📊 4-WAY EXECUTION COMPARISON MATRIX
+## 📊 3-WAY EXECUTION COMPARISON MATRIX
 
-| Mode | Platform | System Role | Interface | Phone Battery Impact | Laptop Code Status |
+| Mode | Platform | System Role | Interface | Phone Battery Impact | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Mode 1** | 💻 **Laptop** | Local Desktop Run | Visible GUI Window | N/A | **100% Preserved** ✅ |
 | **Mode 2** | ☁️ **Railway Cloud** | Automated Server Backend | Headless Container | None (Cloud Engine) | **100% Preserved** ✅ |
-| **Mode 3** | ☁️ **Railway Cloud** | Mobile Remote Control | Phone Web Browser | **0% Drain** 🔋 | **100% Preserved** ✅ |
-| **Mode 4** | 📱 **Termux App** | Native Mobile Run | Android Terminal | Uses Phone Battery 🔋 | **100% Supported** ✅ |
+| **Mode 3** | 📱 **Termux Ubuntu PRoot** | Native Mobile Run | RealVNC Visible GUI | Uses Phone Battery 🔋 | **100% Supported** ✅ |
+

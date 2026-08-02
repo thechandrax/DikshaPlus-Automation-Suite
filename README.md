@@ -55,12 +55,11 @@ An enterprise-grade, end-to-end automation engine for **DIKSHA / Moodle LMS Port
 * **🔒 256-Bit Cryptographic Security**: 
   * SHA-256 encrypted multi-user PIN lock (`541563`) and credential vault.
   * API Keys stored as 256-bit encrypted ciphers in `config.py` with dynamic in-memory decryption via `utils/security.py`. No plain text `.env` files required.
-* **🚀 4-Way Flexible Execution Architecture**:
+* **🚀 3-Way Flexible Execution Architecture**:
   * **Mode 1 (Laptop Desktop GUI)**: Visible browser window with interactive terminal controls (`python main.py`).
   * **Mode 2 (Railway Cloud Server)**: 24/7 background headless Docker container deployment (`Dockerfile`).
-  * **Mode 3 (Railway Phone Browser)**: Smartphone remote control & live log monitoring with 0% battery drain.
-  * **Mode 4 (Native Termux App)**: Direct on-device Android mobile execution via `termux_setup.sh`.
-  * *See full architecture documentation in [`docs/09_FOUR_WAY_EXECUTION_ARCHITECTURE.md`](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/09_FOUR_WAY_EXECUTION_ARCHITECTURE.md).*
+  * **Mode 3 (Android Termux Ubuntu PRoot)**: Smartphone execution in Ubuntu PRoot with RealVNC Visible GUI (`TERMUX_UBUNTU_GUIDE.md`).
+
 
 
 
