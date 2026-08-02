@@ -5,7 +5,7 @@
 # ==============================================================================
 
 echo "========================================================================"
-echo " 📱 STEP 1: ENABLING TERMUX REPOSITORIES (X11 & TUR REPO)"
+echo " 📱 STEP 1: ENABLING TERMUX REPOSITORIES & PRE-COMPILED BINARIES"
 echo "========================================================================"
 echo ""
 
@@ -15,21 +15,21 @@ pkg update -y && pkg upgrade -y
 pkg install x11-repo tur-repo -y
 pkg update -y
 
-# 2. Install Git, Python 3, Node.js & Chromium
-echo "[2/3] Installing Git, Python 3, Node.js & Chromium..."
-pkg install git python nodejs-lts chromium -y
+# 2. Install Git, Python 3, Node.js, Chromium & Pre-compiled Python Packages (Fast Binary Install)
+echo "[2/3] Installing Git, Python 3, Chromium, python-pandas & python-pillow..."
+pkg install git python nodejs-lts chromium python-pandas python-pillow -y
 
 echo ""
 echo "========================================================================"
-echo " 🐍 [3/3] INSTALLING PYTHON LIBRARIES (Playwright, Pandas, Pillow)"
+echo " 🐍 [3/3] INSTALLING PURE PYTHON PACKAGES (Playwright, OpenPyXL)"
 echo "========================================================================"
 echo ""
 
-pip install pandas openpyxl pillow playwright
+pip install openpyxl playwright
 
 echo ""
 echo "========================================================================"
-echo " ✅ STEP 1 COMPLETE! Chromium & Python 3 installed successfully!"
+echo " ✅ STEP 1 COMPLETE! Pre-compiled Pandas, Chromium & Python 3 ready!"
 echo "------------------------------------------------------------------------"
 echo " git clone https://github.com/thechandrax/DikshaPlus-Automation-Suite.git"
 echo " cd DikshaPlus-Automation-Suite"

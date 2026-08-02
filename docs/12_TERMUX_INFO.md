@@ -8,16 +8,15 @@
 
 ---
 
-## 🐍 PYTHON VERSION REQUIREMENT
+## ⚡ FAST 5-SECOND BINARY INSTALLATION (NO PANDAS COMPILATION HANG)
 
-* **Python 3 REQUIRED** (`pkg install python` in Termux automatically installs Python 3.10+ / 3.11+ / 3.12+).
-* **Python 2** is obsolete and **will NOT work** with Playwright, Pandas, or AI solver libraries.
+To prevent `pip` from spending 1 hour compiling `pandas` from source code on your Android phone, Termux provides **pre-compiled binary packages**: `pkg install python-pandas python-pillow -y`.
 
 ---
 
 ## 🚀 2-STEP TERMUX INSTALLATION & LAUNCH WORKFLOW
 
-### 1️⃣ STEP 1: Install Termux Repositories, Chromium & Python 3 Libraries
+### 1️⃣ STEP 1: Install Termux Repositories, Pre-Compiled Pandas & Python 3
 
 Open the **Termux app** on your Android phone and paste this exact command block:
 
@@ -27,11 +26,11 @@ pkg update -y && pkg upgrade -y
 pkg install x11-repo tur-repo -y
 pkg update -y
 
-# 2. Install Git, Python 3, Node.js, and Chromium
-pkg install git python nodejs-lts chromium -y
+# 2. Install Git, Python 3, Node.js, Chromium, and PRE-COMPILED python-pandas
+pkg install git python nodejs-lts chromium python-pandas python-pillow -y
 
-# 3. Install Python 3 libraries
-pip install pandas openpyxl pillow playwright
+# 3. Install pure Python libraries (instant 2-second install)
+pip install openpyxl playwright
 ```
 
 ---

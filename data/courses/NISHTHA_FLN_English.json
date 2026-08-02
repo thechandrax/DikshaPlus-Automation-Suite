@@ -683,6 +683,118 @@
           ]
         }
       ]
+    },
+    {
+      "module_no": 10,
+      "module_name": "Module 09: Foundational Numeracy",
+      "subsections": [
+        {
+          "subsection_no": 26,
+          "subsection_name": "Formative Assessment 09",
+          "questions": [
+            {
+              "question": "What are numerals?",
+              "options": [
+                "[A] Number names",
+                "[B] Value of numbers",
+                "[C] Symbols for numbers",
+                "[D] Size of numbers"
+              ],
+              "answer": "[C] Symbols for numbers"
+            },
+            {
+              "question": "What is subitising?",
+              "options": [
+                "[A] Ability to identify the number of objects by simply looking at them and without actually counting each object.",
+                "[B] Ability to count",
+                "[C] Ability to discriminate between objects",
+                "[D] Ability to recite number names up to 10"
+              ],
+              "answer": "[A] Ability to identify the number of objects by simply looking at them and without actually counting each object."
+            },
+            {
+              "question": "To ensure strong FLN the children should be assessed ….",
+              "options": [
+                "[A] Annually by state/district authority",
+                "[B] Continuously through formative/adaptive methods",
+                "[C] Through question paper, which have more questions from the textbooks",
+                "[D] Through weekly and monthly tests"
+              ],
+              "answer": "[B] Continuously through formative/adaptive methods"
+            },
+            {
+              "question": "Which of the following is not a component of data handling?",
+              "options": [
+                "[A] Interpretation of data",
+                "[B] Collection of data",
+                "[C] Representation of data",
+                "[D] Construction of data"
+              ],
+              "answer": "[D] Construction of data"
+            },
+            {
+              "question": "A child should be able to seriate objects before learning numbers, because seriation is ….",
+              "options": [
+                "[A] About reciting number names",
+                "[B] Not related to counting",
+                "[C] Related to ordination or placing numbers in order",
+                "[D] Needed for operations on numbers"
+              ],
+              "answer": "[C] Related to ordination or placing numbers in order"
+            },
+            {
+              "question": "Which of the following is not an objective for making a child proficient in numeracy in the foundational years?",
+              "options": [
+                "[A] It helps them to do fast calculations",
+                "[B] It helps in developing logical thinking and reasoning in daily life",
+                "[C] It helps in achieving learning outcomes in later stages",
+                "[D] It helps them in dealing with numbers"
+              ],
+              "answer": "[A] It helps them to do fast calculations"
+            },
+            {
+              "question": "Putting together things that have some characteristics in common enhances the competence of ….",
+              "options": [
+                "[A] Mathematical communication",
+                "[B] Number sense",
+                "[C] Seriation",
+                "[D] Classification"
+              ],
+              "answer": "[D] Classification"
+            },
+            {
+              "question": "Which of the following activities is best suited for the development of spatial understanding among children?",
+              "options": [
+                "[A] Drawing the front view of a bottle",
+                "[B] Memorizing definitions for each basic shape",
+                "[C] Noting the time of sunset",
+                "[D] Drawing numbers on a number line"
+              ],
+              "answer": "[A] Drawing the front view of a bottle"
+            },
+            {
+              "question": "The ability to immediately perceive the cardinality of a collection, usually not more than four or five elements without counting is called ….",
+              "options": [
+                "[A] Seriation",
+                "[B] Subitisation",
+                "[C] Classification",
+                "[D] Conservation"
+              ],
+              "answer": "[B] Subitisation"
+            },
+            {
+              "question": "Which of the following does not involve the ordering of a collection of objects according to the given rule?",
+              "options": [
+                "[A] Classification",
+                "[B] Patterning",
+                "[C] Seriation",
+                "[D] Arrangement"
+              ],
+              "answer": "[A] Classification"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
