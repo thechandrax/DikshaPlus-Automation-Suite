@@ -1847,8 +1847,6 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
             r_count = await radios.count()
 
         if r_count > 0:
-            logger.info(f"  --> Found {r_count} rating options in Feedback Modal. Matching against JSON Answer Key / AI Solver...")
-            
             # Group radio elements by question input name attribute
             radio_groups = {}
             for idx in range(r_count):
@@ -1860,6 +1858,9 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                     radio_groups[r_name].append(r_el)
                 except Exception:
                     pass
+
+            logger.info(f"  --> Found {len(radio_groups)} Rating Questions in Feedback Modal. Matching against JSON Answer Key / AI Solver...")
+
 
             q_counter = 1
             for group_name, group_radios in radio_groups.items():
@@ -1966,7 +1967,8 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
         textareas = target_scope.locator("textarea, input[type='text']:not([class*='search']):not([id*='search'])")
         t_count = await textareas.count()
         if t_count > 0:
-            logger.info(f"  --> Found {t_count} Textarea/Comment response fields in Feedback Form. Matching against JSON / AI...")
+            logger.info(f"  --> Found {t_count} Textarea/Comment Questions in Feedback Form. Matching against JSON / AI...")
+
             for idx in range(t_count):
                 try:
                     ta_el = textareas.nth(idx)
@@ -2291,9 +2293,11 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
         lower_t = header_title.lower().strip()
         normalized_t = lower_t.rstrip('s')
 
-        # Skip empty or non-lesson discussion & guideline sections
-        if not header_title or any(skip in lower_t for skip in ["discussion", "navigation", "file upload", "closed for replies", "pinned"]):
+        # Skip empty or non-lesson discussion, guideline, & certificate sections
+        if not header_title or any(skip in lower_t for skip in ["discussion", "navigation", "file upload", "closed for replies", "pinned", "certificate", "download certificate"]):
+            logger.info(f"  --> [SKIP SECTION] '{header_title}' is a Certificate / Reward section. Skipping!")
             continue
+
 
         # Deduplicate identical / singular-plural titles (e.g. Assessment vs Assessments)
         if normalized_t not in seen_normalized_titles:
@@ -2592,7 +2596,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
                 # Final Circuit Breaker Gate Check
                 final_header_check = await is_header_100_percent_complete(header)
-                if not final_header_check:
+                if not final_header_check and not any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"]):
                     logger.error(f"\n❌ [CRITICAL DIKSHA SERVER FAILURE] '{header_title}' remains incomplete after 4 attempts & 5s page reloads.")
                     logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Stopping all automation processes and closing server context!\n")
                     try:
@@ -2600,6 +2604,9 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     except Exception:
                         pass
                     raise RuntimeError(f"DIKSHA_SERVER_STUCK: '{header_title}' failed to achieve 100% after 4 attempts.")
+                elif any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"]):
+                    logger.info(f"  🎓 [CERTIFICATE SECTION] '{header_title}' reached end of course. Course completed successfully!")
+
 
 
 
