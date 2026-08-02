@@ -2911,45 +2911,76 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     
                     server_synced = False
                     for sync_step in range(1, 11):  # 10 steps x 15s = 150s (2.5 minutes)
-                        logger.info(f"  ⏳ [MODULE SYNC {sync_step}/10] Reloading page & waiting 15s for DIKSHA server checkmarks (Elapsed: {sync_step * 15}s / 150s)...")
+                        logger.info(f"  ⏳ [MODULE SYNC {sync_step}/10] Reloading page & checking module completion (Elapsed: {sync_step * 15}s / 150s)...")
                         await asyncio.sleep(15)
                         try:
                             await page.reload()
                             await asyncio.sleep(3)
                             
-                            # Check 1: Module Header Badge 100% Check
-                            sync_header_done = await is_header_100_percent_complete(header)
+                            # Step 1: Check Module Header Badge first
+                            if await is_header_100_percent_complete(header):
+                                logger.info(f"  ✅ [MODULE SYNC SUCCESS] Module '{header_title}' badge reached 100% on Attempt #{sync_step}!")
+                                server_synced = True
+                                break
 
-                            # Check 2: Re-open accordion & check all individual subsection checkmarks
+                            # Step 2: Expand Module Accordion panel
                             if await click_target.count() > 0:
                                 await click_target.click(force=True)
                                 await page.wait_for_timeout(2000)
                             
+                            # Step 3: Scan all subsection items inside this module
                             sync_btns = await get_section_action_buttons(collapse_panel, header)
-                            sync_all_done = True
-                            if sync_btns:
-                                for s_btn in sync_btns:
-                                    if not await is_item_100_percent_complete(s_btn):
-                                        sync_all_done = False
-                                        break
-                            else:
-                                sync_all_done = False
+                            found_incomplete = False
 
-                            if sync_header_done or sync_all_done:
-                                logger.info(f"  ✅ [MODULE SYNC SUCCESS] DIKSHA server completion verified after {sync_step * 15}s!")
-                                await close_activity_modal(page)
-                                try:
-                                    # Cleanly collapse module accordion panel after 100% verification
-                                    if await click_target.count() > 0:
-                                        await click_target.click(force=True)
-                                        await page.wait_for_timeout(1000)
-                                except Exception:
-                                    pass
+                            if sync_btns:
+                                for s_idx, s_btn in enumerate(sync_btns, 1):
+                                    s_btn_text = (await s_btn.inner_text()).strip()
+                                    s_item_title = s_btn_text
+                                    
+                                    # Step 4: Find incomplete item and execute it
+                                    if not await is_item_100_percent_complete(s_btn) and (s_item_title not in completed_items):
+                                        found_incomplete = True
+                                        logger.info(f"  🔄 [MODULE SYNC RE-EXECUTION Attempt #{sync_step}] Found incomplete item [{s_idx}/{len(sync_btns)}]: '{s_item_title}'. Executing item now...")
+                                        
+                                        s_act_type = await s_btn.get_attribute("act_type") or "resource"
+                                        if s_act_type == "url":
+                                            await process_video_activity(page, s_btn)
+                                        elif s_act_type == "resource":
+                                            await process_pdf_activity(page, s_btn)
+                                        elif s_act_type == "h5pactivity":
+                                            await process_h5p_activity(page, s_btn, answer_key, course_title=course_title)
+                                        elif s_act_type == "quiz":
+                                            await process_quiz_assessment(page, s_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=s_item_title, sub_no=s_idx, course_title=course_title)
+                                        elif s_act_type == "feedback" or "feedback" in s_item_title.lower():
+                                            await process_feedback_activity(page, s_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=s_item_title, sub_no=s_idx, course_title=course_title)
+                                        
+                                        completed_items.add(s_btn_text)
+                                        completed_items.add(s_item_title)
+                                        
+                                        # Step 5: Re-check Module Header Badge after completing incomplete item
+                                        if await is_header_100_percent_complete(header):
+                                            logger.info(f"  ✅ [MODULE RE-EXECUTION SUCCESS] Module '{header_title}' 100% verified after completing '{s_item_title}'!")
+                                            server_synced = True
+                                            break
+
+                            # If all items were checkmarked or header reaches 100%
+                            if not found_incomplete or await is_header_100_percent_complete(header):
+                                logger.info(f"  ✅ [MODULE SYNC SUCCESS] DIKSHA server completion verified for '{header_title}' on Attempt #{sync_step}!")
                                 server_synced = True
                                 break
 
+                        except Exception as m_sync_ex:
+                            logger.warning(f"  --> Module sync attempt #{sync_step} notice: {m_sync_ex}")
+
+                    if server_synced:
+                        await close_activity_modal(page)
+                        try:
+                            if await click_target.count() > 0:
+                                await click_target.click(force=True)
+                                await page.wait_for_timeout(1000)
                         except Exception:
                             pass
+
 
 
 
