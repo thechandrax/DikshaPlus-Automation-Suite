@@ -4,7 +4,10 @@
 
 ## 📌 OVERVIEW
 
-**DIKSHA+ Automation Suite** is 100% compatible with **Android Termux**. You can run the entire automation engine directly on your smartphone using native Termux ARM64 Chromium and Python 3.
+**DIKSHA+ Automation Suite** is 100% compatible with **Android Termux** and **Ubuntu PRoot**. You can run the entire automation engine directly on your smartphone using native Termux ARM64 Chromium or in Ubuntu PRoot with RealVNC Visible GUI!
+
+> 📖 **Full Ubuntu PRoot & RealVNC Guide**: See [`TERMUX_UBUNTU_GUIDE.md`](TERMUX_UBUNTU_GUIDE.md) for complete 1-word shortcut commands (`vnc`, `diksha`, `exit`) and RealVNC setup!
+
 
 ---
 

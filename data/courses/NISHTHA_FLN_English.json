@@ -1031,6 +1031,66 @@
                 "[D] Write the teacher's diary and report to the headmaster of the school."
               ],
               "answer": "[C] Teach and guide children's learning using the appropriate pedagogy with careful observation."
+            },
+            {
+              "question": "Pretend to read is an activity for",
+              "options": [
+                "[A] Foundational creativity",
+                "[B] Foundational literacy",
+                "[C] Foundational listening",
+                "[D] Foundational communication"
+              ],
+              "answer": "[B] Foundational literacy"
+            },
+            {
+              "question": "Assessment is planned, systematic, and structured and is an integral part of",
+              "options": [
+                "[A] The home learning",
+                "[B] Group activities",
+                "[C] Children's performances",
+                "[D] The curriculum"
+              ],
+              "answer": "[D] The curriculum"
+            },
+            {
+              "question": "The teacher should not force the second language",
+              "options": [
+                "[A] If the child comes from a different language background",
+                "[B] If the child speaks Hindi",
+                "[C] If the child speaks English",
+                "[D] If the child is not comfortable"
+              ],
+              "answer": "[D] If the child is not comfortable"
+            },
+            {
+              "question": "The following is not the method for observing children and collecting authentic information",
+              "options": [
+                "[A] Talking to the fellow teacher",
+                "[B] Anecdotes",
+                "[C] Rating scale",
+                "[D] Checklist"
+              ],
+              "answer": "[A] Talking to the fellow teacher"
+            },
+            {
+              "question": "Which of the following is not an FLN activity?",
+              "options": [
+                "[A] Follow directions during class activities.",
+                "[B] Listen to the story and talk about the story.",
+                "[C] Keeps the pencil to the designated box",
+                "[D] Use mathematical vocabulary"
+              ],
+              "answer": "[C] Keeps the pencil to the designated box"
+            },
+            {
+              "question": "The 360-degree report card will include",
+              "options": [
+                "[A] All aspects of the personality of a child.",
+                "[B] The literacy and numeracy aspects.",
+                "[C] Only the academic aspects.",
+                "[D] The creative and psycho-social aspect."
+              ],
+              "answer": "[D] The creative and psycho-social aspect."
             }
           ]
         }
