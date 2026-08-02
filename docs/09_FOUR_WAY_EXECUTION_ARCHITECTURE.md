@@ -1,10 +1,10 @@
-# 🚀 DIKSHA+ AUTOMATION SUITE — 4-WAY EXECUTION ARCHITECTURE
+# 🚀 DIKSHA+ AUTOMATION SUITE — EXECUTION ARCHITECTURE & WORKFLOW GUIDE
 
 ---
 
-## 📌 OVERVIEW & ARCHITECTURE SUMMARY
+## 📌 OVERVIEW & CORE PLATFORMS
 
-**DIKSHA+ Automation Suite** is engineered with a **4-Way Flexible Execution Architecture**. It allows users to execute, monitor, and manage automated course completion across desktop computers, cloud servers, mobile browsers, and native mobile terminals seamlessly.
+**DIKSHA+ Automation Suite** is engineered with a flexible, multi-platform architecture. It spans **3 Core Platforms** and **4 Execution Workflows**, letting you run, monitor, and control your course automations across desktop laptops, cloud containers, mobile browsers, and native mobile terminals seamlessly.
 
 ```
                                ┌─────────────────────────────────────────────────────────┐
@@ -12,15 +12,25 @@
                                │        (256-Bit SHA-256 Encrypted Security)            │
                                └────────────────────────────┬────────────────────────────┘
                                                             │
-         ┌───────────────────────────┬──────────────────────┴────┬───────────────────────────┐
-         │                           │                           │                           │
-         ▼                           ▼                           ▼                           ▼
-┌─────────────────┐         ┌─────────────────┐         ┌─────────────────┐         ┌─────────────────┐
-│     MODE 1      │         │     MODE 2      │         │     MODE 3      │         │     MODE 4      │
-│  LOCAL LAPTOP   │         │ RAILWAY CLOUD   │         │ RAILWAY MOBILE  │         │ TERMUX MOBILE   │
-│  (DESKTOP GUI)  │         │  (24/7 DOCKER)  │         │ (PHONE BROWSER) │         │ (NATIVE APP)    │
-└─────────────────┘         └─────────────────┘         └─────────────────┘         └─────────────────┘
+         ┌───────────────────────────┬──────────────────────┴────────────────────────────┐
+         │                           │                                                   │
+         ▼                           ▼                                                   ▼
+┌─────────────────┐       ┌──────────────────────────────────────────────────┐  ┌─────────────────┐
+│   PLATFORM 1    │       │                    PLATFORM 2                    │  │   PLATFORM 3    │
+│  LOCAL LAPTOP   │       │               RAILWAY CLOUD SYSTEM               │  │  TERMUX MOBILE  │
+│  (DESKTOP GUI)  │       │                                                  │  │  (NATIVE APP)   │
+└────────┬────────┘       └──────────┬────────────────────────────┬──────────┘  └────────┬────────┘
+         │                           │                            │                      │
+         ▼                           ▼                            ▼                      ▼
+    [ MODE 1 ]                  [ MODE 2 ]                   [ MODE 3 ]              [ MODE 4 ]
+ Local Laptop GUI          Railway Cloud Server         Railway Mobile Browser     Termux Mobile Run
+ (Visible Window)         (Background Container)        (Remote Control 0% Battery) (Native Terminal)
 ```
+
+> 💡 **Note on Railway Cloud (Mode 2 vs Mode 3)**:
+> Mode 2 and Mode 3 share the **EXACT SAME Railway Cloud deployment backend**!
+> * **Mode 2** is the automated Playwright container engine running 24/7 on Railway servers.
+> * **Mode 3** is the mobile phone web dashboard interface (`https://railway.app/dashboard`) used to control Mode 2, switch user profiles (`SELECTED_USER`), and monitor live logs from your phone with 0% battery drain.
 
 ---
 
@@ -42,15 +52,15 @@ python main.py
 
 ---
 
-## ☁️ MODE 2: RAILWAY CLOUD AUTONOMOUS SERVER (24/7 DOCKER)
+## ☁️ MODE 2: RAILWAY CLOUD AUTONOMOUS SERVER (BACKGROUND CONTAINER)
 
 ### 📖 Description:
-Mode 2 runs as a containerized 24/7 background service on Railway Cloud. It requires zero user interaction and automatically processes enrolled courses and modules in headless mode.
+Mode 2 is the automated engine of your Railway Cloud deployment. It runs as a containerized 24/7 background service on Railway Cloud, requiring zero user interaction and processing enrolled courses in headless mode.
 
 ### 🔑 Features & Characteristics:
 * **Environment Flags**: `IS_DOCKER=True`, `IS_TERMUX=False`, `HEADLESS=True`.
 * **Container**: Official Playwright Python Docker environment (`Dockerfile`).
-* **Auto-Start**: Automatically triggers execution upon container boot using `SELECTED_USER=1` (Sumanta Halder) or configured default.
+* **Auto-Start**: Automatically triggers execution upon container boot using `SELECTED_USER=1` (Sumanta Halder `7044015007`) or configured default.
 * **Resiliency**: Built-in 8-Key Multi-AI API Pool (5 Gemini + 3 Groq Cloud LPU) and Circuit Breaker safeguards.
 
 ### 🚀 How to Deploy:
@@ -63,10 +73,10 @@ Mode 2 runs as a containerized 24/7 background service on Railway Cloud. It requ
 ## 📱 MODE 3: RAILWAY CLOUD MOBILE CONTROL (VIA PHONE BROWSER)
 
 ### 📖 Description:
-Mode 3 allows you to control, monitor, and trigger your Railway Cloud deployment directly from your smartphone's web browser (Chrome, Safari, Firefox, Brave) with **0% battery drain on your phone**.
+Mode 3 is the smartphone control interface for your Mode 2 Railway deployment. It allows you to control, monitor, and trigger your Railway Cloud deployment directly from your phone's web browser with **0% battery drain on your phone**.
 
 ### 🔑 Features & Characteristics:
-* **Phone Battery Drain**: **0%** (All processing occurs on Railway Cloud servers).
+* **Phone Battery Drain**: **0%** (All browser automation runs on Railway Cloud servers).
 * **Remote User Selection**: Change `SELECTED_USER` variable from your phone screen (`1`, `2`, `3`, `4`, `5`, `all`).
 * **Real-Time Live Logs**: View color-coded terminal log output live on your phone screen.
 
@@ -99,14 +109,11 @@ chmod +x termux_setup.sh
 
 ---
 
-## 📊 4-WAY EXECUTION COMPARISON MATRIX
+## 📊 4-MODE EXECUTION COMPARISON MATRIX
 
-| Feature | 💻 Mode 1: Laptop | ☁️ Mode 2: Railway Server | 📱 Mode 3: Railway Mobile | 📲 Mode 4: Termux App |
-| :--- | :--- | :--- | :--- | :--- |
-| **`IS_DOCKER`** | `False` | `True` | `True` | `False` |
-| **`IS_TERMUX`** | `False` | `False` | `False` | `True` |
-| **`HEADLESS`** | `False` (GUI Window) | `True` (Headless) | `True` (Headless) | `True` (Headless) |
-| **Primary Device** | Laptop / PC | Cloud Server | Phone Browser | Android Phone |
-| **Phone Battery Impact** | N/A | None (Cloud Run) | **0% Drain** 🔋 | Uses Phone Battery 🔋 |
-| **Interactive Menu** | Yes (Terminal Menu) | No (Auto-Start) | Remote Variables | Command Line |
-| **Code Preservation** | **100% Untouched** ✅ | **100% Optimized** ✅ | **100% Accessible** ✅ | **100% Supported** ✅ |
+| Mode | Platform | System Role | Interface | Phone Battery Impact | Laptop Code Status |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Mode 1** | 💻 **Laptop** | Local Desktop Run | Visible GUI Window | N/A | **100% Preserved** ✅ |
+| **Mode 2** | ☁️ **Railway Cloud** | Automated Server Backend | Headless Container | None (Cloud Engine) | **100% Preserved** ✅ |
+| **Mode 3** | ☁️ **Railway Cloud** | Mobile Remote Control | Phone Web Browser | **0% Drain** 🔋 | **100% Preserved** ✅ |
+| **Mode 4** | 📱 **Termux App** | Native Mobile Run | Android Terminal | Uses Phone Battery 🔋 | **100% Supported** ✅ |
