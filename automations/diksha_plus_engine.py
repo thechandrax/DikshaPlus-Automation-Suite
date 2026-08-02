@@ -2499,6 +2499,10 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
             logger.info(f" 📚 MODULE [{i}/{total_real_modules}]: {header_title}")
             logger.info("=" * 35)
 
+            item_attempts = {}
+            completed_items = set()
+
+
 
             # Certificate Section / Customcert Download Link Protocol (Scoped strictly to Certificate module header / panel)
             is_cert_section = any(kw in header_title.lower() for kw in ["certificate", "customcert", "download certificate"])
