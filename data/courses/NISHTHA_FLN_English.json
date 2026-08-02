@@ -793,6 +793,22 @@
               "answer": "[A] Classification"
             }
           ]
+        },
+        {
+          "subsection_no": 23,
+          "subsection_name": "Formative Assessment 10",
+          "questions": [
+            {
+              "question": "How can the school leader build effective relations with preschool teachers?",
+              "options": [
+                "[A] Asking teachers to follow a strict routine",
+                "[B] Sharing school account details",
+                "[C] Discussing and planning with teachers around developmental needs of children",
+                "[D] Encouraging teachers to teach children of 3-6 years of age"
+              ],
+              "answer": "[C] Discussing and planning with teachers around developmental needs of children"
+            }
+          ]
         }
       ]
     }

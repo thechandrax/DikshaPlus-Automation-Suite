@@ -1,6 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # ==============================================================================
-# DIKSHA+ TERMUX LAUNCHER SCRIPT (Direct Run - No Package Installs)
+# DIKSHA+ DIRECT INSTANT LAUNCHER FOR TERMUX (0 Installs, Instant Execution)
+# Run: ./run_diksha.sh
 # ==============================================================================
 
 export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
@@ -8,7 +9,7 @@ export PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=$(which chromium)
 export HEADLESS=True
 
 echo "========================================================================"
-echo " 📱 LAUNCHING DIKSHA+ AUTOMATION SUITE IN TERMUX"
+echo " ⚡ LAUNCHING DIKSHA+ AUTOMATION SUITE"
 echo "========================================================================"
 echo ""
 

@@ -8,15 +8,21 @@
 
 ---
 
-## ⚡ FAST 5-SECOND BINARY INSTALLATION (NO PANDAS COMPILATION HANG)
+## ⚡ DIRECT INSTANT LAUNCHER (`run_diksha.sh`) — 0 INSTALLATIONS / 0 DELAYS
 
-To prevent `pip` from spending 1 hour compiling `pandas` from source code on your Android phone, Termux provides **pre-compiled binary packages**: `pkg install python-pandas python-pillow -y`.
+Once packages are installed on your phone, you **DO NOT need to re-install anything**! Simply run:
+
+```bash
+cd DikshaPlus-Automation-Suite
+chmod +x run_diksha.sh
+./run_diksha.sh
+```
 
 ---
 
-## 🚀 2-STEP TERMUX INSTALLATION & LAUNCH WORKFLOW
+## 🚀 2-STEP COMPLETE INSTALLATION & LAUNCH WORKFLOW
 
-### 1️⃣ STEP 1: Install Termux Repositories, Pre-Compiled Pandas & Python 3
+### 1️⃣ STEP 1: Install Termux System Packages & Python Libraries (RUN ONCE ONLY)
 
 Open the **Termux app** on your Android phone and paste this exact command block:
 
@@ -35,48 +41,25 @@ pip install openpyxl playwright
 
 ---
 
-### 2️⃣ STEP 2: Clone Repository & Launch DIKSHA+ (`termux_setup.sh`)
-
-After Step 1 finishes, copy and paste this command block:
+### 2️⃣ STEP 2: Clone Repository & Launch DIKSHA+ (`run_diksha.sh`)
 
 ```bash
 # 1. Clone repository from GitHub
 git clone https://github.com/thechandrax/DikshaPlus-Automation-Suite.git
 
-# 2. Enter project folder (Exact folder name: DikshaPlus-Automation-Suite)
+# 2. Enter project folder
 cd DikshaPlus-Automation-Suite
 
-# 3. Make launcher script executable & run
-chmod +x termux_setup.sh
-./termux_setup.sh
-```
-
----
-
-## 🔄 HOW TO UPDATE CODE WHEN NEW COMMITS ARE PUSHED
-
-If new updates or commits are pushed to GitHub:
-
-### 🌟 Method 1: Automatic Auto-Update (Recommended)
-`termux_setup.sh` automatically checks GitHub and pulls latest commits every time it is launched! Simply run:
-```bash
-cd DikshaPlus-Automation-Suite
-./termux_setup.sh
-```
-
-### 🛠️ Method 2: Manual `git pull` Update
-If you want to manually update:
-```bash
-cd DikshaPlus-Automation-Suite
-git pull origin main
-./termux_setup.sh
+# 3. Direct launch DIKSHA+!
+chmod +x run_diksha.sh
+./run_diksha.sh
 ```
 
 ---
 
 ## 📋 INTERACTIVE USER & COURSE SELECTION MENU IN TERMUX
 
-When `./termux_setup.sh` runs in Termux, it displays the interactive CLI selection menu:
+When `./run_diksha.sh` runs in Termux, it displays the interactive CLI selection menu:
 
 ```text
 ===================================================================
