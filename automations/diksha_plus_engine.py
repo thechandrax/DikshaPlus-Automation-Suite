@@ -982,7 +982,25 @@ async def wait_for_server_checkmark(page, timeout=15):
     logger.info("  --> Checkmark sync window completed.")
     return False
 
+async def safe_action_click(locator):
+    """
+    Safely clicks an action button (View / Start / Continue) even if hidden or in scroll view.
+    Combines scroll_into_view_if_needed, force=True click, and native JS element.click() fallback.
+    """
+    try:
+        await locator.scroll_into_view_if_needed()
+        await locator.click(force=True, timeout=5000)
+    except Exception:
+        try:
+            await locator.evaluate("el => el.click()")
+        except Exception:
+            try:
+                await locator.click(force=True)
+            except Exception as e:
+                logger.warning(f"  --> Safe action click notice: {e}")
+
 async def process_video_activity(page, view_button):
+
     """
     STEP-07 (Video Activity - act_type="url"):
     Implements technical specification for Video Acceleration & Telemetry:
@@ -1007,8 +1025,9 @@ async def process_video_activity(page, view_button):
         row_saved_pct = 0
 
     logger.info("[VIDEO ACTIVITY] Opening video module...")
-    await view_button.click(force=True)
+    await safe_action_click(view_button)
     await page.wait_for_timeout(3000)
+
 
     # 1. Nested iFrame Support: Locate <video> across main page & all frames
     target_frame = page
@@ -1274,8 +1293,9 @@ async def process_pdf_activity(page, view_button):
       3. End-of-Doc Scroll (auto-scrolls viewer container to exact bottom for checkmarks)
     """
     logger.info("[PDF ACTIVITY] Opening PDF document resource...")
-    await view_button.click(force=True)
+    await safe_action_click(view_button)
     await page.wait_for_timeout(3000)
+
 
     # 1. Automated Page Flipping & Reading Time Simulation
     logger.info("  --> Automated Page Flipping: simulating PageDown key presses...")
@@ -1310,8 +1330,9 @@ async def process_h5p_activity(page, view_button, answer_key, course_title=None)
     clicks Next, Check, Finish, and closes modal.
     """
     logger.info("[H5P ACTIVITY] Opening H5P interactive content...")
-    await view_button.click()
+    await safe_action_click(view_button)
     await page.wait_for_timeout(4000)
+
 
     start_btn = page.locator(config.SELECTORS["h5p_start_button"]).first
     if await start_btn.count() > 0 and await start_btn.is_visible():
@@ -1451,8 +1472,9 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
 
         logger.info("[FORMATIVE ASSESSMENT] Opening Assessment...")
 
-    await view_button.click(force=True)
+    await safe_action_click(view_button)
     logger.info("  --> Waiting 5 seconds for DIKSHA assessment modal & banner popup to render...")
+
     await page.wait_for_timeout(5000)
 
     # 1. Close inner "Stay Calm" banner popup across main page and all frames
@@ -1955,8 +1977,8 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
     # 1. Click the brown 'View' button to open the Feedback Form popup modal
     try:
         view_id = await view_button.get_attribute("data-id") or ""
-        await view_button.scroll_into_view_if_needed()
-        await view_button.click(force=True)
+        await safe_action_click(view_button)
+
 
         # JS Event Dispatcher Backup Click to ensure DIKSHA AJAX handler triggers
         for frame_target in [page] + page.frames:
