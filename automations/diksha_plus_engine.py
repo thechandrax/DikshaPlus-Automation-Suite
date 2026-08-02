@@ -2501,6 +2501,9 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
             item_attempts = {}
             completed_items = set()
+            distinct_btns = []
+            all_items_completed_in_memory = False
+
 
 
 
