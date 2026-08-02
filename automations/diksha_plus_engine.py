@@ -705,6 +705,30 @@ async def fetch_enrolled_courses(page):
     return all_courses
 
 
+def pad_title_fixed(text, target_width=45):
+    """
+    Pads or truncates text taking into account Indic (Bengali, Devanagari) & Asian 2-column wide characters,
+    ensuring 100% straight vertical column alignment in ANSI terminal fonts.
+    """
+    clean_t = text.strip()
+    w = 0
+    for ch in clean_t:
+        w += 2 if ord(ch) >= 0x0900 else 1
+    
+    if w > target_width:
+        res = ""
+        curr_w = 0
+        for ch in clean_t:
+            ch_w = 2 if ord(ch) >= 0x0900 else 1
+            if curr_w + ch_w > target_width - 3:
+                break
+            res += ch
+            curr_w += ch_w
+        return res + "..." + " " * (target_width - (curr_w + 3))
+    else:
+        return clean_t + " " * (target_width - w)
+
+
 def display_interactive_course_menu(courses):
     """
     Renders CMD menu listing both Ongoing and Finished courses matching design mockup with rich colors.
@@ -730,7 +754,7 @@ def display_interactive_course_menu(courses):
             filled_str = "█" * filled
             empty_str = "░" * (10 - filled)
             bar = f"\033[38;5;46m[{filled_str}\033[38;5;238m{empty_str} \033[38;5;220m{pct:>3}%\033[38;5;46m]\033[0m"
-            formatted_title = (c['title'][:42] + '...') if len(c['title']) > 45 else c['title'].ljust(45)
+            formatted_title = pad_title_fixed(c['title'], 45)
             print(f"  \033[38;5;220m[{c['index']:02d}]\033[0m \033[38;5;231m{formatted_title}\033[0m {bar} \033[38;5;214m{c['icon']} {c['status']}\033[0m")
         print()
 
@@ -740,10 +764,11 @@ def display_interactive_course_menu(courses):
             pct = c['progress_pct']
             filled_str = "█" * 10
             bar = f"\033[38;5;207m[{filled_str} \033[38;5;220m{pct:>3}%\033[38;5;207m]\033[0m"
-            formatted_title = (c['title'][:42] + '...') if len(c['title']) > 45 else c['title'].ljust(45)
+            formatted_title = pad_title_fixed(c['title'], 45)
             print(f"  \033[38;5;220m[{c['index']:02d}]\033[0m \033[38;5;231m{formatted_title}\033[0m {bar} \033[38;5;220m{c['icon']} {c['status']}\033[0m")
 
         print()
+
 
 
 
