@@ -112,7 +112,13 @@ def _load_gemini_keys():
 
 GEMINI_API_KEYS = _load_gemini_keys()
 GEMINI_API_KEY = GEMINI_API_KEYS[0] if GEMINI_API_KEYS else ""
+
+# xAI Grok API Key (https://console.x.ai/)
+XAI_API_KEY = os.environ.get("XAI_API_KEY", "").strip() or os.environ.get("GROK_API_KEY", "").strip()
+GROK_API_KEY = XAI_API_KEY
+
 AI_LIVE_SOLVER_ENABLED = True
+
 
 
 # DOM Selectors extracted from DIKSHA.docx
