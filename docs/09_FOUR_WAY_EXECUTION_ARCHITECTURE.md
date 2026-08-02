@@ -102,7 +102,8 @@ Mode 4 runs `python main.py` directly inside the **Termux terminal app** on your
 Open **Termux** on your Android phone and paste:
 ```bash
 git clone https://github.com/thechandrax/DikshaPlus-Automation-Suite.git
-cd "Diksha+ Automation Suite"
+cd DikshaPlus-Automation-Suite
+
 chmod +x termux_setup.sh
 ./termux_setup.sh
 ```

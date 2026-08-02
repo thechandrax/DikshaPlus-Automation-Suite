@@ -55,7 +55,8 @@ Open **Termux** on your Android phone and run:
 ```bash
 # 1. Clone repository
 git clone https://github.com/thechandrax/DikshaPlus-Automation-Suite.git
-cd "Diksha+ Automation Suite"
+cd DikshaPlus-Automation-Suite
+
 
 # 2. Run 1-click Termux setup script
 chmod +x termux_setup.sh
