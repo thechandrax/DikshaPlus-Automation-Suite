@@ -2630,13 +2630,35 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     runs_done = item_attempts.get(btn_text, 0)
                     
                     if runs_done >= 4:
-                        logger.error(f"\n❌ [CRITICAL DIKSHA SERVER FAILURE] Subsection item '{real_item_title}' failed to unlock/complete after 4 attempts & 5s page refreshes.")
+                        logger.warning(f"\n  ⏳ [DIKSHA SERVER HYDRATION] Subsection item '{real_item_title}' is taking longer to sync checkmark.")
+                        logger.info("  ⏳ Entering 2-Minute (120s) Patient Server Sync Window before any Circuit Breaker trigger...")
+                        item_synced = False
+                        for sync_step in range(1, 9):
+                            logger.info(f"  ⏳ [ITEM SYNC {sync_step}/8] Waiting 15s for DIKSHA server checkmark sync (Elapsed: {sync_step * 15}s / 120s)...")
+                            await asyncio.sleep(15)
+                            try:
+                                await page.reload()
+                                await asyncio.sleep(3)
+                                if await is_item_100_percent_complete(btn):
+                                    logger.info(f"  ✅ [ITEM SYNC SUCCESS] DIKSHA server checkmark confirmed after {sync_step * 15}s!")
+                                    completed_items.add(btn_text)
+                                    completed_items.add(real_item_title)
+                                    item_synced = True
+                                    break
+                            except Exception:
+                                pass
+                        
+                        if item_synced:
+                            continue
+
+                        logger.error(f"\n❌ [CRITICAL DIKSHA SERVER FAILURE] Subsection item '{real_item_title}' failed to unlock/complete after 4 attempts & 2-minute server sync window.")
                         logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Stopping all automation processes and closing server context cleanly!\n")
                         try:
                             await page.context.close()
                         except Exception:
                             pass
-                        raise RuntimeError(f"DIKSHA_SERVER_STUCK: '{real_item_title}' did not complete after 4 attempts.")
+                        raise RuntimeError(f"DIKSHA_SERVER_STUCK: '{real_item_title}' did not complete after 4 attempts & 2-minute sync window.")
+
 
                     if runs_done == 2:
                         logger.warning(f"  --> [ATTEMPT 2 FAILED] Subsection '{real_item_title}' not unlocked yet. Waiting 5s gap & reloading page (page.reload())...")
@@ -2783,18 +2805,39 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                             elif r_act_type == "resource":
                                 await process_pdf_activity(page, r_btn)
 
-                # Final Circuit Breaker Gate Check
+                # Final Circuit Breaker Gate Check with 2-Minute Patient Server Hydration Window
                 final_header_check = await is_header_100_percent_complete(header)
                 if not final_header_check and not all_items_completed_in_memory and not any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"]):
-                    logger.error(f"\n❌ [CRITICAL DIKSHA SERVER FAILURE] '{header_title}' remains incomplete after 4 attempts & 5s page reloads.")
-                    logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Stopping all automation processes and closing server context!\n")
-                    try:
-                        await page.context.close()
-                    except Exception:
-                        pass
-                    raise RuntimeError(f"DIKSHA_SERVER_STUCK: '{header_title}' failed to achieve 100% after 4 attempts.")
+                    logger.warning(f"\n  ⏳ [DIKSHA SERVER HYDRATION] '{header_title}' header badge is not 100% yet.")
+                    logger.info("  ⏳ Entering 2-Minute (120s) Patient Server Sync Window before any Circuit Breaker trigger...")
+                    
+                    server_synced = False
+                    for sync_step in range(1, 9):  # 8 steps x 15s = 120s (2 minutes)
+                        logger.info(f"  ⏳ [MODULE SYNC {sync_step}/8] Waiting 15s for DIKSHA server backend checkmark sync (Elapsed: {sync_step * 15}s / 120s)...")
+                        await asyncio.sleep(15)
+                        try:
+                            await page.reload()
+                            await asyncio.sleep(3)
+                            if await is_header_100_percent_complete(header):
+                                logger.info(f"  ✅ [MODULE SYNC SUCCESS] DIKSHA server 100% completion badge confirmed after {sync_step * 15}s!")
+                                server_synced = True
+                                break
+                        except Exception:
+                            pass
+
+                    if not server_synced:
+                        final_recheck = await is_header_100_percent_complete(header)
+                        if not final_recheck and not all_items_completed_in_memory and not any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"]):
+                            logger.error(f"\n❌ [CRITICAL DIKSHA SERVER FAILURE] '{header_title}' remains incomplete after 4 attempts & 2-minute server sync window.")
+                            logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Stopping all automation processes and closing server context!\n")
+                            try:
+                                await page.context.close()
+                            except Exception:
+                                pass
+                            raise RuntimeError(f"DIKSHA_SERVER_STUCK: '{header_title}' failed to achieve 100% after 2-minute sync window.")
                 elif any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"]) or all_items_completed_in_memory:
                     logger.info(f"  🎓 [MODULE COMPLETED] '{header_title}' completed successfully! Advancing...")
+
 
 
 
