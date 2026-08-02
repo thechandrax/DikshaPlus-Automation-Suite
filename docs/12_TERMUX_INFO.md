@@ -17,16 +17,20 @@
 
 ## 🚀 2-STEP TERMUX INSTALLATION & LAUNCH WORKFLOW
 
-### 1️⃣ STEP 1: Install Termux System Packages & Python 3 Libraries
+### 1️⃣ STEP 1: Install Termux Repositories, Chromium & Python 3 Libraries
 
 Open the **Termux app** on your Android phone and paste this exact command block:
 
 ```bash
-# 1. Update Termux repositories & install Git, Python 3, Node.js, Chromium
+# 1. Enable x11-repo and tur-repo FIRST (required for Chromium)
 pkg update -y && pkg upgrade -y
-pkg install git python nodejs-lts chromium x11-repo tur-repo -y
+pkg install x11-repo tur-repo -y
+pkg update -y
 
-# 2. Install Python 3 libraries
+# 2. Install Git, Python 3, Node.js, and Chromium
+pkg install git python nodejs-lts chromium -y
+
+# 3. Install Python 3 libraries
 pip install pandas openpyxl pillow playwright
 ```
 
