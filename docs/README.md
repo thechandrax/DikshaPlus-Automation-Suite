@@ -51,7 +51,8 @@ Welcome to the central documentation index for **DIKSHA+ Automation Suite**. Sel
 8. 📱 **[Termux & Ubuntu PRoot Mobile Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/08_MOBILE_EXECUTION_AND_TERMUX_GUIDE.md)**
    * Complete guide covering 1-word shortcuts (`vnc`, `diksha`, `exit`), Ubuntu PRoot & RealVNC Visible GUI setup.
 
-9. 🚀 **[3-Way Execution Architecture Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/09_FOUR_WAY_EXECUTION_ARCHITECTURE.md)**
+9. 🚀 **[3-Way Execution Architecture Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/09_THREE_WAY_EXECUTION_ARCHITECTURE.md)**
+
    * Technical breakdown of 3 Core Platforms (Laptop Windows, Railway Cloud, Termux Ubuntu PRoot).
    * 3-Way Execution Comparison Matrix.
 
