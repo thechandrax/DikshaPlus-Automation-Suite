@@ -48,7 +48,8 @@ Welcome to the central documentation index for **DIKSHA+ Automation Suite**. Sel
    * Complete 8-key API pool architecture & rotation flow.
    * Stepped backoff logs & 0% Option A fallback guarantee.
 
-8. 📱 **[Termux Mobile Execution Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/08_TERMUX_MOBILE_EXECUTION_GUIDE.md)**
-   * Automated 1-click Termux setup script (`termux_setup.sh`).
-   * Native ARM64 Termux Chromium configuration & environment variables.
-   * 3-Environment Compatibility Matrix (Laptop, Railway Cloud, Termux Mobile).
+8. 📱 **[Complete Mobile Execution & Termux Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/08_MOBILE_EXECUTION_AND_TERMUX_GUIDE.md)**
+   * Method 1: Railway Cloud control via phone browser (0% battery drain).
+   * Method 2: Native Android Termux app execution (`termux_setup.sh`).
+   * Complete 4-environment comparison matrix (Laptop, Railway Cloud, Termux Mobile).
+
