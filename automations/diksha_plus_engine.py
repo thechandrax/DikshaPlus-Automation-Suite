@@ -707,16 +707,43 @@ async def fetch_enrolled_courses(page):
     return all_courses
 
 
+def calc_visual_width(text):
+    vw = 0.0
+    for ch in text:
+        cat = unicodedata.category(ch)
+        if cat in ('Mn', 'Me', 'Cf'):
+            continue
+        code = ord(ch)
+        if 0x0900 <= code <= 0x0D7F:
+            vw += 1.45
+        else:
+            vw += 1.0
+    return int(round(vw))
+
+
 def pad_title_fixed(text, target_width=48):
     """
-    Pads or truncates course titles to an exact character length (48 chars),
-    ensuring 100% straight vertical column alignment below one another across all terminal fonts.
+    Pads or truncates course titles taking into account OS font rendering width for Indic (Bengali, Devanagari) characters (1.45x factor),
+    ensuring 100% straight visual column alignment below one another in terminal fonts.
     """
     clean_t = text.strip()
-    if len(clean_t) > target_width:
-        return clean_t[:target_width - 3] + "..."
+    vw = calc_visual_width(clean_t)
+    if vw > target_width:
+        res = ""
+        curr_w = 0.0
+        for ch in clean_t:
+            cat = unicodedata.category(ch)
+            ch_w = 0.0 if cat in ('Mn', 'Me', 'Cf') else (1.45 if 0x0900 <= ord(ch) <= 0x0D7F else 1.0)
+            if curr_w + ch_w > target_width - 3:
+                break
+            res += ch
+            curr_w += ch_w
+        rem_spaces = target_width - int(round(curr_w)) - 3
+        return res + "..." + (" " * max(0, rem_spaces))
     else:
-        return clean_t.ljust(target_width)
+        rem_spaces = target_width - vw
+        return clean_t + (" " * max(0, rem_spaces))
+
 
 
 
