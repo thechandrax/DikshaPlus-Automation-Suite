@@ -73,7 +73,9 @@ Diksha+ Automation Suite/
 │   ├── 03_ANSWER_KEYS_AND_QUIZZES.md  # AI Live Solver, Stepped Backoffs & Feedback Engine
 │   ├── 04_AUTOMATION_CONTROLS_AND_CONFIG.md # Config, DOM Selectors & Headless Auto-Detection
 │   ├── 05_RAILWAY_DEPLOYMENT_GUIDE.md # Railway Cloud 1-Click Deployment Guide
-│   └── 06_MODULE_EXECUTION_AND_RETRY_PROTOCOL.md # Module Retry Pipeline & Stepped Backoff Guide
+│   ├── 06_MODULE_EXECUTION_AND_RETRY_PROTOCOL.md # Module Retry Pipeline & Circuit Breaker Guide
+│   └── 07_DUAL_AI_SOLVER_AND_BACKOFF_LOGS_GUIDE.md # Dual AI Solver (Gemini+Grok) & Terminal Logs Guide
+
 
 ├── output/
 │   └── screenshots/               # Single official screenshot directory

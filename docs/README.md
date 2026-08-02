@@ -43,5 +43,11 @@ Welcome to the central documentation index for **DIKSHA+ Automation Suite**. Sel
    * Module retry pipeline & locked item recovery.
    * Double confirmation gate check & page reload sync.
    * Certificate section handling & Circuit Breaker Guard.
-   * Stepped Backoff Retry Protocol (30s ➔ 45s ➔ 60s) & Option A fallback.
+
+7. 🤖 **[Dual AI Solver, Backoffs & Terminal Logs Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/07_DUAL_AI_SOLVER_AND_BACKOFF_LOGS_GUIDE.md)**
+   * Gemini AI (2 Attempts) ➔ Grok xAI API (2 Attempts) solver hierarchy.
+   * Stepped Backoff Protocol (30s ➔ 45s ➔ 60s) & full retries.
+   * Auto-Learning JSON saving rules (only after 100% successful solution).
+   * Full terminal log examples for rates limits, retries & Circuit Breaker Stop.
+
 
