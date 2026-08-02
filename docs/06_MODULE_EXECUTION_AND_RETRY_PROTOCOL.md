@@ -1,6 +1,6 @@
 # ⚙️ MODULE EXECUTION, RETRY PROTOCOL & 10-ATTEMPT SYNC WINDOW GUIDE
 
-This document provides a comprehensive technical reference for the **Module Execution Pipeline**, **Video Playback Automation Engine**, **Locked Item Recovery**, **10-Attempt Sync & Re-Execution Protocol**, **Certificate `customcert` Auto-Completion Protocol**, **Interleaved Gemini/Groq AI Pool**, and **Circuit Breaker Safeguards** in **DIKSHA+ Automation Suite**.
+This document provides a comprehensive technical reference for the **Module Execution Pipeline**, **Video Playback Automation Engine**, **Locked Item Recovery**, **Targeted Single-Item Re-Execution & Dual Confirmation Sync Protocol**, **Certificate `customcert` Auto-Completion Protocol**, **Interleaved Gemini/Groq AI Pool**, and **Circuit Breaker Safeguards** in **DIKSHA+ Automation Suite**.
 
 ---
 
@@ -9,7 +9,7 @@ This document provides a comprehensive technical reference for the **Module Exec
 1. [Module Execution Pipeline](#1-module-execution-pipeline)
 2. [📹 Video Playback Automation Engine (16x / 10x Speed)](#2--video-playback-automation-engine-16x--10x-speed)
 3. [Locked Item Session Recovery](#3-locked-item-session-recovery)
-4. [🔄 10-Attempt Reload, Check & Re-Execution Sync Protocol](#4--10-attempt-reload-check--re-execution-sync-protocol)
+4. [🎯 Targeted Single-Item Re-Execution & Dual Confirmation Sync Protocol](#4--targeted-single-item-re-execution--dual-confirmation-sync-protocol)
 5. [Certificate `customcert` Auto-Completion Protocol](#5-certificate-customcert-auto-completion-protocol)
 6. [10-Key Interleaved Alternating AI Pool (5 Gemini + 5 Groq)](#6-10-key-interleaved-alternating-ai-pool-5-gemini--5-groq)
 7. [Circuit Breaker Guard (0% Dummy Option A Fallback)](#7-circuit-breaker-guard-0-dummy-option-a-fallback)
@@ -24,8 +24,8 @@ DIKSHA+ executes course modules sequentially from Module #1 to Module #N with st
 [STEP 01] Navigate & Expand Module Accordion Header
   └── [STEP 02] Check if Module Header is 100% Completed (Skip if Done)
         └── [STEP 03] Execute Subsection Items (Videos, PDFs, H5P, Quizzes, Feedback)
-              └── [STEP 04] Double Confirmation: Re-check DOM Items & 100% Header Badge
-                    └── [STEP 05] 🔄 10-Attempt Reload, Check & Re-Execution Sync Window
+              └── [STEP 04] 🎯 Targeted Single-Item Re-Execution & Dual Confirmation
+                    └── [STEP 05] 10-Attempt Patient Server Sync Window
                           └── [STEP 06] Advance to Next Module
 ```
 
@@ -50,9 +50,9 @@ When DIKSHA server locks a subsection item because a prerequisite video or lesso
 
 ---
 
-## 4. 🔄 10-Attempt Reload, Check & Re-Execution Sync Protocol
+## 4. 🎯 Targeted Single-Item Re-Execution & Dual Confirmation Sync Protocol
 
-When a module or subsection item requires progress verification:
+When verifying completion for an incomplete subsection item:
 
 ```text
 On Every Reload Attempt (sync_step 1 to 10):
@@ -66,26 +66,28 @@ On Every Reload Attempt (sync_step 1 to 10):
   [ YES ]          [ NO ]
        │              │
        ▼              ▼
-✅ Log SUCCESS   3. Check 2: Item still incomplete?
-& Advance        🔄 RE-EXECUTE Activity (Re-run Video/PDF/Quiz/Feedback)!
+✅ Log SUCCESS   3. Target ONLY the Single Incomplete Item!
+& Advance        🎯 RE-EXECUTE THAT SPECIFIC ITEM ONLY (Re-run Video/PDF/Quiz/Feedback)!
                       │
                       ▼
-                 4. Re-check Checkmark (✓) immediately after re-execution!
+                 4. 🛡️ DUAL CONFIRMATION GATE:
+                    ├─► Check 4A: Is Item itself checkmarked (✓)?
+                    └─► Check 4B: Is Module Header Badge 100%?
                       │
        ┌──────────────┴──────────────┐
   [ YES ]                         [ NO ]
        │                             │
        ▼                             ▼
-✅ Log SUCCESS                Repeat Reload & Re-execution Loop
-& Advance                     (Attempts 2 to 10)
+✅ Log SUCCESS &              Repeat Targeted Loop
+Advance to Next Item          (Attempts 2 to 10)
 ```
 
-### 🔑 Workflow Logic:
-1. **Step 1: Reload & Re-Expand**: Executes `await page.reload()` and re-opens the target module accordion header.
-2. **Step 2: Check Module Header Badge & Subsection Checkmark (`✓`)**: Evaluates if `is_header_100_percent_complete()` or `is_item_100_percent_complete()` passes.
-3. **Step 3: Auto Re-Execution**: If the subsection item is **NOT** checkmarked `✓` yet, DIKSHA+ **automatically re-launches and re-executes that exact activity** (re-running video stream, scrolling PDF, or answering quiz/feedback)!
-4. **Step 4: Post Re-Execution Verification**: Immediately re-verifies checkmark status. If complete, logs `✅ [RE-EXECUTION SUCCESS]` and advances cleanly!
-5. **Step 5: Repeat Loop**: Repeats this reload, check, and re-execution cycle up to **10 attempts maximum** before triggering Circuit Breaker safeguards.
+### 🔑 Targeted Re-Execution & Dual Confirmation Rules:
+1. **Targeted Execution ONLY**: DIKSHA+ **never re-runs completed items**. It isolates and re-executes **ONLY the single specific item** that is still incomplete!
+2. **🛡️ Dual Confirmation Gate**: Immediately after re-executing the targeted item, DIKSHA+ re-checks **BOTH**:
+   * **Check 4A**: Did the specific item display a green checkmark (`✓`)?
+   * **Check 4B**: Did the main Module Header Badge update to `100%`?
+3. **Instant Victory Exit**: If either Check 4A or Check 4B passes, DIKSHA+ logs `✅ [DUAL CONFIRMATION SUCCESS]`, locks the item in memory, and advances cleanly to the next item!
 
 ---
 
@@ -107,5 +109,5 @@ When the automation reaches the **`Certificate`** section (or detects a `customc
 
 ## 7. Circuit Breaker Guard (0% Dummy Option A Fallback)
 
-If after 10 attempts (reload, check, and re-execution window) and stepped backoff retries a lesson or assessment remains incomplete:
+If after 10 attempts (targeted re-execution and Dual Confirmation window) and stepped backoff retries a lesson or assessment remains incomplete:
 * Closes browser context cleanly (`page.context.close()`) to prevent infinite loops and protect your account accuracy.

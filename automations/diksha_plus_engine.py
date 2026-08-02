@@ -2700,13 +2700,17 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                         elif re_act_type == "feedback" or "feedback" in (real_item_title or "").lower():
                                             await process_feedback_activity(page, re_btn, answer_key, course_title=course_title)
 
-                                        # Re-check item status immediately after re-execution
-                                        if await is_item_100_percent_complete(re_btn):
-                                            logger.info(f"  ✅ [RE-EXECUTION SUCCESS] Subsection item '{real_item_title}' checkmarked successfully!")
+                                        # Dual Confirmation: Re-check both Item checkmark AND Module Header Badge after targeted re-execution
+                                        item_ok = await is_item_100_percent_complete(re_btn)
+                                        header_ok = await is_header_100_percent_complete(header)
+                                        
+                                        if item_ok or header_ok:
+                                            logger.info(f"  ✅ [DUAL CONFIRMATION SUCCESS] Targeted item '{real_item_title}' & module checkmark verified!")
                                             completed_items.add(btn_text)
                                             completed_items.add(real_item_title)
                                             item_synced = True
                                             break
+
                             except Exception as sync_ex:
                                 logger.warning(f"  --> Sync attempt #{sync_step} notice: {sync_ex}")
 
