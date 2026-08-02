@@ -5,7 +5,7 @@
 # ==============================================================================
 
 echo "========================================================================"
-echo " 📱 STEP 1: ENABLING TERMUX REPOSITORIES & PRE-COMPILED BINARIES"
+echo " 📱 STEP 1: ENABLING TERMUX REPOSITORIES (X11 & TUR REPO)"
 echo "========================================================================"
 echo ""
 
@@ -15,16 +15,13 @@ pkg update -y && pkg upgrade -y
 pkg install x11-repo tur-repo -y
 pkg update -y
 
-# 2. Install Git, Python 3, Node.js, Chromium & Pre-compiled ARM64 Packages (Playwright, Pandas, Pillow)
-echo "[2/3] Installing Git, Python 3, Chromium, python-playwright, python-pandas & python-pillow..."
-pkg install git python nodejs-lts chromium python-playwright python-pandas python-pillow -y
+# 2. Install Git, Python 3, Node.js, Chromium & Pre-compiled ARM64 Packages
+echo "[2/3] Installing Git, Python 3, Chromium, python-pandas & python-pillow..."
+pkg install git python nodejs-lts chromium python-pandas python-pillow -y
 
-echo ""
-echo "========================================================================"
-echo " 🐍 [3/3] INSTALLING PURE PYTHON PACKAGES (OpenPyXL)"
-echo "========================================================================"
-echo ""
-
+# 3. Install Playwright via tur-repo or TUR PyPI wheel
+echo "[3/3] Installing Playwright for Termux ARM64..."
+pkg install python-playwright -y 2>/dev/null || pip install --extra-index-url https://termux-user-repository.github.io/pypi/ playwright
 pip install openpyxl
 
 echo ""

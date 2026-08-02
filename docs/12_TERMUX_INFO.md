@@ -8,29 +8,23 @@
 
 ---
 
-## ⚡ FAST PRE-COMPILED ARM64 BINARIES (`python-playwright` & `python-pandas`)
-
-In Termux on Android ARM64, Playwright and Pandas are installed as pre-compiled binary packages directly via Termux package manager:
-`pkg install python-playwright python-pandas python-pillow -y`.
-
----
-
 ## 🚀 2-STEP TERMUX INSTALLATION & LAUNCH WORKFLOW
 
-### 1️⃣ STEP 1: Install Termux Repositories, Pre-Compiled Playwright & Python 3
+### 1️⃣ STEP 1: Enable Repositories & Install Packages (Run ONCE Only)
 
 Open the **Termux app** on your Android phone and paste this exact command block:
 
 ```bash
-# 1. Enable x11-repo and tur-repo FIRST (required for Chromium & Playwright)
+# 1. Enable x11-repo and tur-repo FIRST
 pkg update -y && pkg upgrade -y
 pkg install x11-repo tur-repo -y
 pkg update -y
 
-# 2. Install Git, Python 3, Node.js, Chromium, python-playwright & python-pandas
-pkg install git python nodejs-lts chromium python-playwright python-pandas python-pillow -y
+# 2. Install Git, Python 3, Node.js, Chromium, python-pandas & python-pillow
+pkg install git python nodejs-lts chromium python-pandas python-pillow -y
 
-# 3. Install pure Python libraries (instant 2-second install)
+# 3. Install Playwright for Termux ARM64
+pkg install python-playwright -y || pip install --extra-index-url https://termux-user-repository.github.io/pypi/ playwright
 pip install openpyxl
 ```
 
