@@ -63,6 +63,10 @@ Welcome to the central documentation index for **DIKSHA+ Automation Suite**. Sel
 11. 📄 **[Complete Real-World Terminal Logs Example](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/11_COMPLETE_REAL_WORLD_TERMINAL_LOGS_EXAMPLE.md)**
     * Complete, verbatim real-world terminal log trace from startup to completion.
 
+12. 🛑 **[Automation Stop Conditions & Safeguards Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/12_AUTOMATION_STOP_CONDITIONS_AND_SAFEGUARDS.md)**
+    * Comprehensive technical breakdown of all victory completion triggers, security gates, Circuit Breakers, and standby modes.
+
+
 
 
 
