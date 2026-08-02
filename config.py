@@ -62,10 +62,13 @@ if HEADLESS_ENV in ("true", "1", "yes", "t"):
     HEADLESS = True
 elif HEADLESS_ENV in ("false", "0", "no", "f"):
     HEADLESS = False
+elif os.environ.get("DISPLAY"):
+    HEADLESS = False   # VNC / X11 Display active (e.g. export DISPLAY=:1) -> VISIBLE GUI BROWSER MODE!
 elif IS_DOCKER or IS_TERMUX or IS_NO_DISPLAY_LINUX:
-    HEADLESS = True    # Automatically use Headless mode on Railway Cloud / Termux / Linux Cloud!
+    HEADLESS = True    # Automatically use Headless mode on Railway Cloud / Termux without DISPLAY!
 else:
     HEADLESS = False   # ALWAYS HEADLESS=False for local GUI desktop run on Laptop (Windows)!
+
 
 
 
