@@ -561,6 +561,76 @@
                 "[D] To read with intonation"
               ],
               "answer": "[A] To extract meaning from the text"
+            },
+            {
+              "question": "The priority of a language classroom is",
+              "options": [
+                "[A] to teach error free writing",
+                "[B] to teach decoding",
+                "[C] to make the classroom beautiful.",
+                "[D] to create a print-rich environment for children"
+              ],
+              "answer": "[D] to create a print-rich environment for children"
+            },
+            {
+              "question": "What is the silent period?",
+              "options": [
+                "[A] period of self-negotiated learning",
+                "[B] period of silence",
+                "[C] no learning period",
+                "[D] period of no intake"
+              ],
+              "answer": "[B] period of silence"
+            },
+            {
+              "question": "Print rich environment of a classroom is described as",
+              "options": [
+                "[A] Story book corner inside a classroom",
+                "[B] Children's literature, charts, children's work, stories",
+                "[C] A room filled with lots of charts",
+                "[D] A room with toys"
+              ],
+              "answer": "[B] Children's literature, charts, children's work, stories"
+            },
+            {
+              "question": "What is guided reading?",
+              "options": [
+                "[A] When most instructions are given by the teacher",
+                "[B] When fewer instructions are given by the teacher",
+                "[C] When no instruction is given by the teacher",
+                "[D] When less help is given by the teacher"
+              ],
+              "answer": "[B] When fewer instructions are given by the teacher"
+            },
+            {
+              "question": "Children who receive meaningful foundational literacy and numeracy skills are/have",
+              "options": [
+                "[A] better grades",
+                "[B] average learners",
+                "[C] better learning levels across grades",
+                "[D] good speakers"
+              ],
+              "answer": "[C] better learning levels across grades"
+            },
+            {
+              "question": "Reading essentially is a process of _____________",
+              "options": [
+                "[A] decoding",
+                "[B] meaning making",
+                "[C] intonation",
+                "[D] pronunciation"
+              ],
+              "answer": "[B] meaning making"
+            },
+            {
+              "question": "What is independent reading?",
+              "options": [
+                "[A] When minimal support given by peer",
+                "[B] When most minimal support is given by the teacher",
+                "[C] When most of the help provided by the teacher",
+                "[D] When most of the instructions given by the teacher"
+              ],
+              "answer": "[B] When most minimal support is given by the teacher"
             }
           ]
         },
@@ -1293,6 +1363,52 @@
                 "[D] Seriation"
               ],
               "answer": "[D] Seriation"
+            },
+            {
+              "question": "Children love to _________ objects because they are curious and eager to learn by nature.",
+              "options": [
+                "[A] Destruct",
+                "[B] Throw",
+                "[C] Manipulate",
+                "[D] Borrow"
+              ],
+              "answer": "[C] Manipulate"
+            },
+            {
+              "question": "Kaleidoscope is very useful in developing understanding of the?",
+              "options": [
+                "[A] Science concepts of reflection and refraction.",
+                "[B] Water properties concepts",
+                "[C] Fraction concept",
+                "[D] Spatial concepts"
+              ],
+              "answer": "[D] Spatial concepts"
+            },
+            {
+              "question": "Which among the following is a technology-based game?",
+              "options": [
+                "[A] Ludo",
+                "[B] Carrom Board",
+                "[C] Marble Game",
+                "[D] Video Game"
+              ],
+              "answer": "[D] Video Game"
+            }
+          ]
+        },
+        {
+          "subsection_no": 1,
+          "subsection_name": "Summative Assessment",
+          "questions": [
+            {
+              "question": "How many senses do we have?",
+              "options": [
+                "[A] Five",
+                "[B] Four",
+                "[C] Three",
+                "[D] Seven"
+              ],
+              "answer": "[A] Five"
             }
           ]
         }

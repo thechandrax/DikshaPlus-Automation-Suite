@@ -17,7 +17,7 @@ python -c "import playwright" 2>/dev/null || {
     pip install --no-deps --platform manylinux2014_aarch64 --only-binary=:all: --target "$SP_PATH" playwright
 }
 
-# Auto-patch coreBundle.js to bypass 'Unsupported platform: android' & hostPlatform undefined
+# Auto-patch coreBundle.js to bypass 'Unsupported platform: android' & fix calculateHostPlatform
 python -c "
 import sys
 from pathlib import Path
@@ -25,6 +25,7 @@ for sp in sys.path:
     cb = Path(sp) / 'playwright' / 'driver' / 'package' / 'lib' / 'coreBundle.js'
     if cb.exists():
         t = cb.read_text(encoding='utf-8', errors='ignore')
+        t = t.replace('function calculateHostPlatform(){', 'function calculateHostPlatform(){if(process.platform===\"android\")return\"linux-arm64\";')
         t = t.replace('throw new Error(\"Unsupported platform: \" + process.platform);', '/* patched android */')
         t = t.replace('throw new Error(\`Unsupported platform: \${process.platform}\`);', '/* patched android */')
         t = t.replace('throw new Error(\"Unsupported platform: \"', 'console.warn(\"Termux Android platform bypass: \"')
@@ -32,6 +33,7 @@ for sp in sys.path:
         t = t.replace('path.join(hostPlatform,', 'path.join(hostPlatform || \"linux-arm64\",')
         cb.write_text(t, encoding='utf-8')
 " 2>/dev/null || true
+
 
 
 
