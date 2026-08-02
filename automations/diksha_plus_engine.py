@@ -2311,35 +2311,42 @@ async def is_item_100_percent_complete(btn):
     return False
 
 async def is_header_100_percent_complete(header):
-
     """
     Determines if a module header is 100% completed on DIKSHA.
-    Returns False if header contains ANY percentage badge from 0% to 99% (e.g. 0%, 12%, 45%, 50%, 97%, 99%).
+    Returns False if header contains ANY percentage badge from 0% to 99% (e.g. 0%, 13%, 26%, 50%, 97%, 99%).
+    Returns True ONLY IF 100% badge/checkmark is present AND no incomplete percentage is present.
     """
     try:
         raw_text = (await header.inner_text()).strip().lower()
         
-        # Regex search for any 1 or 2 digit percentage badge (0% to 99%)
+        # Regex search for any percentage badge (0% to 99%)
         pct_matches = re.findall(r"(\d{1,2})%", raw_text)
         if pct_matches:
             for val_str in pct_matches:
                 val = int(val_str)
                 if val < 100:
-                    return False  # Any % between 0% and 99% is incomplete!
-                elif val == 100:
-                    return True
+                    return False  # Incomplete percentage detected!
 
-        # Check for 100% completion checkmark icon or .p100 class
-        check_icon = header.locator("i.fa-check, .c100.p100, .fa-check-circle, div[class*='p100']").first
-        if await check_icon.count() > 0 and await check_icon.is_visible():
+        # Check element class attributes for incomplete circle badges (e.g. p0, p13, p26, p50)
+        classes = (await header.get_attribute("class") or "").split()
+        for cl in classes:
+            if cl.startswith("p") and cl[1:].isdigit():
+                if int(cl[1:]) < 100:
+                    return False
+
+        # If 100% explicitly in text or p100 class
+        if "100%" in raw_text:
             return True
 
-        if "100%" in raw_text:
+        # Check for 100% completion checkmark icon or .p100 class strictly on the header level
+        check_icon = header.locator("i.fa-check, .c100.p100, div[class*='p100']").first
+        if await check_icon.count() > 0 and await check_icon.is_visible():
             return True
     except Exception:
         pass
 
     return False
+
 
 async def process_course_modules(page, answer_key=None, course_title="Unknown Course"):
     """
@@ -2647,32 +2654,35 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
             logger.info(f"  --> [DOUBLE CONFIRMATION] Verifying 100% completion for '{header_title}'...")
             await page.wait_for_timeout(3000)
 
-            # Check 1: Re-verify section item checkmarks
+            # Check 1: Re-verify section item checkmarks strictly from live DOM
             recheck_btns = await get_section_action_buttons(collapse_panel, header)
             all_done = True
             for r_btn in recheck_btns:
-                r_txt = (await r_btn.inner_text()).strip()
-                if r_txt in completed_items:
-                    continue
                 if not await is_item_100_percent_complete(r_btn):
                     all_done = False
                     break
 
             header_done = await is_header_100_percent_complete(header)
 
-            if not all_done and not header_done:
+            if not all_done or not header_done:
                 logger.info("  --> [GATE REFRESH] Reloading page once to sync DIKSHA server backend checkmarks...")
                 try:
                     await page.reload()
-                    await page.wait_for_timeout(4000)
+                    await page.wait_for_timeout(5000)
+                    recheck_btns = await get_section_action_buttons(collapse_panel, header)
+                    all_done = True
+                    for r_btn in recheck_btns:
+                        if not await is_item_100_percent_complete(r_btn):
+                            all_done = False
+                            break
                     header_done = await is_header_100_percent_complete(header)
                 except Exception:
                     pass
 
-
-            if all_done or header_done:
+            if (all_done and header_done) or (not recheck_btns and any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"])):
                 logger.info(f"  --> [CONFIRMED 1/2] Section activities in '{header_title}' verified 100% complete!")
                 logger.info(f"  --> [CONFIRMED 2/2] DIKSHA Server 100% completion badge verified! Moving to next module...\n")
+
             else:
                 logger.warning(f"  --> [GATE WARNING] '{header_title}' is NOT 100% completed yet!")
                 logger.info(f"  --> Retrying section execution to achieve 100% checkmark before advancing...")
