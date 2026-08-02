@@ -1,17 +1,18 @@
 # ⚙️ MODULE EXECUTION, RETRY PROTOCOL & 10-ATTEMPT SYNC WINDOW GUIDE
 
-This document provides a comprehensive technical reference for the **Module Execution Pipeline**, **10-Attempt x 15s (150s) Patient Server Sync Window**, **Certificate `customcert` Auto-Completion Protocol**, **Interleaved Gemini/Groq AI Pool**, and **Circuit Breaker Safeguards** in **DIKSHA+ Automation Suite**.
+This document provides a comprehensive technical reference for the **Module Execution Pipeline**, **Video Playback Automation Engine**, **Locked Item Recovery**, **10-Attempt x 15s (150s) Patient Server Sync Window**, **Certificate `customcert` Auto-Completion Protocol**, **Interleaved Gemini/Groq AI Pool**, and **Circuit Breaker Safeguards** in **DIKSHA+ Automation Suite**.
 
 ---
 
 ## 📑 Table of Contents
 
 1. [Module Execution Pipeline](#1-module-execution-pipeline)
-2. [Locked Item Session Recovery](#2-locked-item-session-recovery)
-3. [10-Attempt x 15s (150s) Patient Server Sync Window](#3-10-attempt-x-15s-150s-patient-server-sync-window)
-4. [Certificate `customcert` Auto-Completion Protocol](#4-certificate-customcert-auto-completion-protocol)
-5. [10-Key Interleaved Alternating AI Pool (5 Gemini + 5 Groq)](#5-10-key-interleaved-alternating-ai-pool-5-gemini--5-groq)
-6. [Circuit Breaker Guard (0% Dummy Option A Fallback)](#6-circuit-breaker-guard-0-dummy-option-a-fallback)
+2. [📹 Video Playback Automation Engine](#2--video-playback-automation-engine)
+3. [Locked Item Session Recovery](#3-locked-item-session-recovery)
+4. [10-Attempt x 15s (150s) Patient Server Sync Window](#4-10-attempt-x-15s-150s-patient-server-sync-window)
+5. [Certificate `customcert` Auto-Completion Protocol](#5-certificate-customcert-auto-completion-protocol)
+6. [10-Key Interleaved Alternating AI Pool (5 Gemini + 5 Groq)](#6-10-key-interleaved-alternating-ai-pool-5-gemini--5-groq)
+7. [Circuit Breaker Guard (0% Dummy Option A Fallback)](#7-circuit-breaker-guard-0-dummy-option-a-fallback)
 
 ---
 
@@ -34,7 +35,39 @@ DIKSHA+ executes course modules sequentially from Module #1 to Module #N with st
 
 ---
 
-## 2. Locked Item Session Recovery
+## 2. 📹 Video Playback Automation Engine
+
+When DIKSHA+ opens a video lesson (`act_type == "url"` or HTML5 `<video>` element):
+
+```text
+[ Open Video Activity Modal ]
+              │
+              ▼
+   Step 1: Set Video Muted (video.muted = true) & Resolution (360p)
+              │
+              ▼
+   Step 2: Accelerate Playback Speed (video.playbackRate = 4.0)
+              │
+              ▼
+   Step 3: 🛡️ Autoplay Safeguard (Monitors video every 1.5s -> Auto-triggers video.play() if paused)
+              │
+              ▼
+   Step 4: Dispatch HTML5 'ended' Event & Wait 5s for DIKSHA Server Tracking
+              │
+              ▼
+   Step 5: Verify 100% Checkmark (✓) & Close Modal
+```
+
+### 🔑 Video Engine Features:
+* **Audio Muting & Data Saver**: Mutes audio (`video.muted = true`) and sets stream resolution to 360p to minimize mobile data usage.
+* **Playback Acceleration**: Accelerates video playback speed (`video.playbackRate = 4.0`) to complete video lessons rapidly.
+* **🛡️ Autoplay Safeguard**: An automated background watcher inspects the video element every **1.5 seconds**. If DIKSHA server lag or browser autoplay restrictions pause the video, DIKSHA+ automatically logs:
+  `🛡️ [AUTOPLAY SAFEGUARD] Video was paused. Auto-triggered video.play() to keep playback active.`
+* **HTML5 Completion Sync**: Dispatches the native `ended` event to the HTML5 video element, waits 5 seconds for backend progress tracking, and verifies the 100% checkmark (`✓`).
+
+---
+
+## 3. Locked Item Session Recovery
 
 When DIKSHA server locks a subsection item because a prerequisite video or lesson is processing:
 
@@ -48,7 +81,7 @@ When DIKSHA server locks a subsection item because a prerequisite video or lesso
 
 ---
 
-## 3. 10-Attempt x 15s (150s) Patient Server Sync Window
+## 4. 10-Attempt x 15s (150s) Patient Server Sync Window
 
 Due to DIKSHA server hydration latency, module header badges or checkmarks may take up to **2.5 minutes** to update on the backend after completing all items in a section:
 
@@ -67,7 +100,7 @@ Due to DIKSHA server hydration latency, module header badges or checkmarks may t
 
 ---
 
-## 4. Certificate `customcert` Auto-Completion Protocol
+## 5. Certificate `customcert` Auto-Completion Protocol
 
 When the automation reaches the **`Certificate`** section (or detects a `customcert` / `Download Certificate` element):
 
@@ -91,7 +124,7 @@ When the automation reaches the **`Certificate`** section (or detects a `customc
 
 ---
 
-## 5. 10-Key Interleaved Alternating AI Pool (5 Gemini + 5 Groq)
+## 6. 10-Key Interleaved Alternating AI Pool (5 Gemini + 5 Groq)
 
 When a new quiz or feedback question is encountered that is not in local JSON cache:
 
@@ -101,7 +134,7 @@ When a new quiz or feedback question is encountered that is not in local JSON ca
 
 ---
 
-## 6. Circuit Breaker Guard (0% Dummy Option A Fallback)
+## 7. Circuit Breaker Guard (0% Dummy Option A Fallback)
 
 If after 10 attempts (150s sync window) and stepped backoff retries a regular course lesson or assessment remains incomplete:
 
