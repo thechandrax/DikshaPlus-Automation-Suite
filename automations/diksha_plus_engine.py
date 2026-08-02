@@ -432,20 +432,61 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
             if gemini_attempt < 2:
                 time.sleep(2)
 
-    # 2. PRIORITY 2: xAI Grok API Key Pool Fallback (2 ATTEMPTS) (https://console.x.ai/)
+    # 2. PRIORITY 2: Groq Cloud LPU API Key Pool (100% FREE - 14,400 RPD) (https://console.groq.com/)
+    groq_keys = getattr(config, "GROQ_API_KEYS", [])
+    if not groq_keys:
+        single_groq = getattr(config, "GROQ_API_KEY", "").strip() or os.environ.get("GROQ_API_KEY", "").strip()
+        if single_groq:
+            groq_keys = [single_groq]
+
+    if groq_keys:
+        for groq_attempt in range(1, 3):
+            logger.info(f"  ⚡ [GROQ LPU ATTEMPT {groq_attempt}/2] Gemini keys exhausted. Requesting ultra-fast solution via Groq Cloud API...")
+            for g_idx, groq_key in enumerate(groq_keys, 1):
+                for model_name in ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768", "gemma2-9b-it"]:
+                    try:
+                        url = "https://api.groq.com/openai/v1/chat/completions"
+                        payload = json.dumps({
+                            "model": model_name,
+                            "messages": [
+                                {"role": "system", "content": "You are an expert AI teacher solving quiz questions for an educational course."},
+                                {"role": "user", "content": prompt}
+                            ],
+                            "temperature": 0.1
+                        }).encode('utf-8')
+
+                        headers = {
+                            'Content-Type': 'application/json',
+                            'Authorization': f'Bearer {groq_key}'
+                        }
+
+                        req = urllib.request.Request(url, data=payload, headers=headers)
+                        res = urllib.request.urlopen(req, timeout=12)
+                        resp_data = json.loads(res.read().decode('utf-8'))
+                        ans_text = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
+
+                        clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
+                        if clean_ans:
+                            logger.info(f"  🧠 [GROQ LPU SUCCESS] Solved on Attempt {groq_attempt}/2 via Groq ({model_name}) Key #{g_idx} -> '{clean_ans}'")
+                            return clean_ans
+                    except Exception as ex:
+                        logger.warning(f"  ⚠️ [GROQ AI NOTICE] ({model_name} Key #{g_idx}): {ex}")
+            if groq_attempt < 2:
+                time.sleep(2)
+
+    # 3. PRIORITY 3: xAI Grok API Key Pool Fallback (2 ATTEMPTS) (https://console.x.ai/)
     xai_keys = getattr(config, "XAI_API_KEYS", [])
     if not xai_keys:
-        single_xai = getattr(config, "XAI_API_KEY", "").strip() or getattr(config, "GROK_API_KEY", "").strip() or os.environ.get("XAI_API_KEY", "").strip() or os.environ.get("GROK_API_KEY", "").strip()
+        single_xai = getattr(config, "XAI_API_KEY", "").strip() or os.environ.get("XAI_API_KEY", "").strip()
         if single_xai:
             xai_keys = [single_xai]
 
     if xai_keys:
         for grok_attempt in range(1, 3):
-            logger.info(f"  🤖 [GROK AI ATTEMPT {grok_attempt}/2] Gemini keys exhausted. Requesting solution via Grok xAI API...")
+            logger.info(f"  🤖 [GROK AI ATTEMPT {grok_attempt}/2] Gemini & Groq keys exhausted. Requesting solution via Grok xAI API...")
             for x_idx, xai_key in enumerate(xai_keys, 1):
                 for model_name in ["grok-4.3", "grok-latest", "grok-4.20", "grok-code-fast", "grok-4.5"]:
                     try:
-
                         url = "https://api.x.ai/v1/chat/completions"
                         payload = json.dumps({
                             "model": model_name,
@@ -476,6 +517,7 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
                 time.sleep(2)
 
 
+
     # 3. STEPPED BACKOFF RETRY PROTOCOL: 30s -> 45s -> 60s
     logger.warning("  ⚠️ [AI INITIAL ATTEMPTS EXHAUSTED] Entering Stepped Backoff Retry Protocol (30s -> 45s -> 60s)...")
     backoff_delays = [30, 45, 60]
@@ -503,9 +545,37 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
                     except Exception:
                         pass
 
+        # Retry ALL Groq LPU API Keys
+        if groq_keys:
+            logger.info(f"  ⚡ [BACKOFF RETRY #{b_idx}] Retrying ALL Groq LPU API Keys after {delay_sec}s delay...")
+            for g_idx, groq_key in enumerate(groq_keys, 1):
+                for model_name in ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768", "gemma2-9b-it"]:
+                    try:
+                        url = "https://api.groq.com/openai/v1/chat/completions"
+                        payload = json.dumps({
+                            "model": model_name,
+                            "messages": [
+                                {"role": "system", "content": "You are an expert AI teacher solving quiz questions for an educational course."},
+                                {"role": "user", "content": prompt}
+                            ],
+                            "temperature": 0.1
+                        }).encode('utf-8')
+                        headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {groq_key}'}
+                        req = urllib.request.Request(url, data=payload, headers=headers)
+                        res = urllib.request.urlopen(req, timeout=12)
+                        resp_data = json.loads(res.read().decode('utf-8'))
+                        ans_text = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
+                        clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
+                        if clean_ans:
+                            logger.info(f"  🧠 [AI BACKOFF SUCCESS] Solved on Backoff #{b_idx} ({delay_sec}s) via Groq ({model_name}) Key #{g_idx} -> '{clean_ans}'")
+                            return clean_ans
+                    except Exception:
+                        pass
+
         # Retry ALL Grok API Keys
         if xai_keys:
             logger.info(f"  🤖 [BACKOFF RETRY #{b_idx}] Retrying ALL Grok xAI API Keys after {delay_sec}s delay...")
+
             for x_idx, xai_key in enumerate(xai_keys, 1):
                 for model_name in ["grok-4.3", "grok-latest", "grok-4.20", "grok-code-fast", "grok-4.5"]:
                     try:

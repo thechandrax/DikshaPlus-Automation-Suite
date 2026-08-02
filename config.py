@@ -120,7 +120,7 @@ XAI_API_KEYS_ENCRYPTED = [
 
 def _load_xai_keys():
     keys = []
-    env_xai = os.environ.get("XAI_API_KEY", "").strip() or os.environ.get("GROK_API_KEY", "").strip()
+    env_xai = os.environ.get("XAI_API_KEY", "").strip() or os.environ.get("GROK_XAI_API_KEY", "").strip()
     if env_xai:
         keys.append(env_xai)
     for enc_k in XAI_API_KEYS_ENCRYPTED:
@@ -134,9 +134,29 @@ def _load_xai_keys():
 
 XAI_API_KEYS = _load_xai_keys()
 XAI_API_KEY = XAI_API_KEYS[0] if XAI_API_KEYS else ""
-GROK_API_KEY = XAI_API_KEY
+
+# Groq Cloud LPU API Key Pool (100% FREE - No Credit Card Required - https://console.groq.com/)
+GROQ_API_KEYS_ENCRYPTED = []
+
+def _load_groq_keys():
+    keys = []
+    env_groq = os.environ.get("GROQ_API_KEY", "").strip()
+    if env_groq:
+        keys.append(env_groq)
+    for enc_k in GROQ_API_KEYS_ENCRYPTED:
+        try:
+            dec_k = decrypt_password(enc_k)
+            if dec_k and dec_k not in keys:
+                keys.append(dec_k)
+        except Exception:
+            pass
+    return keys
+
+GROQ_API_KEYS = _load_groq_keys()
+GROQ_API_KEY = GROQ_API_KEYS[0] if GROQ_API_KEYS else ""
 
 AI_LIVE_SOLVER_ENABLED = True
+
 
 
 
