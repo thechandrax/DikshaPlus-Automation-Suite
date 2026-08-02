@@ -55,15 +55,18 @@ BROWSER_TYPE = "chromium"
 IS_DOCKER = os.path.exists("/.dockerenv") or bool(os.environ.get("RAILWAY_ENVIRONMENT") or os.environ.get("RAILWAY_PROJECT_ID"))
 IS_TERMUX = bool(os.environ.get("TERMUX_VERSION") or os.environ.get("PREFIX", "").startswith("/data/data/com.termux"))
 HEADLESS_ENV = os.environ.get("HEADLESS", "").strip().lower()
+IS_NO_DISPLAY_LINUX = (os.name != "nt") and not os.environ.get("DISPLAY")
+
 
 if HEADLESS_ENV in ("true", "1", "yes", "t"):
     HEADLESS = True
 elif HEADLESS_ENV in ("false", "0", "no", "f"):
     HEADLESS = False
-elif IS_DOCKER or IS_TERMUX or not os.environ.get("DISPLAY"):
-    HEADLESS = True    # Automatically use Headless mode on Railway Cloud / Termux / No DISPLAY!
+elif IS_DOCKER or IS_TERMUX or IS_NO_DISPLAY_LINUX:
+    HEADLESS = True    # Automatically use Headless mode on Railway Cloud / Termux / Linux Cloud!
 else:
-    HEADLESS = False   # Default to False for local GUI desktop run
+    HEADLESS = False   # ALWAYS HEADLESS=False for local GUI desktop run on Laptop (Windows)!
+
 
 
 # Auto-configure Termux Node.js & Chromium drivers & patch coreBundle.js Unsupported platform check
