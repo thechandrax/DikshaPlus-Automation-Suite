@@ -705,28 +705,38 @@ async def fetch_enrolled_courses(page):
     return all_courses
 
 
-def pad_title_fixed(text, target_width=45):
+def char_display_width(ch):
+    cat = unicodedata.category(ch)
+    if cat in ('Mn', 'Me', 'Cf'):
+        return 0
+    code = ord(ch)
+    if (0x0900 <= code <= 0x0D7F) or (0x4E00 <= code <= 0x9FFF):
+        return 2
+    return 1
+
+
+def pad_title_fixed(text, target_width=48):
     """
     Pads or truncates text taking into account Indic (Bengali, Devanagari) & Asian 2-column wide characters,
     ensuring 100% straight vertical column alignment in ANSI terminal fonts.
     """
     clean_t = text.strip()
-    w = 0
-    for ch in clean_t:
-        w += 2 if ord(ch) >= 0x0900 else 1
+    tot_w = sum(char_display_width(ch) for ch in clean_t)
     
-    if w > target_width:
-        res = ""
-        curr_w = 0
-        for ch in clean_t:
-            ch_w = 2 if ord(ch) >= 0x0900 else 1
-            if curr_w + ch_w > target_width - 3:
-                break
-            res += ch
-            curr_w += ch_w
-        return res + "..." + " " * (target_width - (curr_w + 3))
-    else:
-        return clean_t + " " * (target_width - w)
+    if tot_w <= target_width:
+        return clean_t + (" " * (target_width - tot_w))
+    
+    avail_w = target_width - 3
+    res = ""
+    curr_w = 0
+    for ch in clean_t:
+        w = char_display_width(ch)
+        if curr_w + w > avail_w:
+            break
+        res += ch
+        curr_w += w
+    return res + "..." + (" " * (target_width - (curr_w + 3)))
+
 
 
 def display_interactive_course_menu(courses):
