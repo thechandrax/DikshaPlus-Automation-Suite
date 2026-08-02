@@ -62,5 +62,9 @@ Welcome to the central documentation index for **DIKSHA+ Automation Suite**. Sel
 11. 📄 **[Complete Real-World Terminal Logs Example](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/11_COMPLETE_REAL_WORLD_TERMINAL_LOGS_EXAMPLE.md)**
     * Complete, verbatim, first-to-last real-world terminal log trace from startup to completion.
 
+12. 📱 **[Termux Info Guide & All Steps](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/12_TERMUX_INFO.md)**
+    * Comprehensive guide covering Python 3 requirements, 2-step setup scripts, user selection, and auto-updating git commits in Termux.
+
+
 
 
