@@ -2506,7 +2506,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
             if is_cert_section or has_customcert_link:
                 logger.info(f"  🎓 [CERTIFICATE SECTION DETECTED] '{header_title}' reached!")
-                logger.info("  --> Verified Download Certificate link (act_type='customcert'). All course requirements 100% satisfied!")
+                logger.info("  --> Verified Download Certificate link. All course requirements 100% satisfied!")
                 logger.info("  --> Skipping 'View' button click to prevent unexpected PDF download popups.\n")
 
                 logger.info("=" * 67)
@@ -2514,10 +2514,11 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                 logger.info("=" * 67)
                 logger.info(f"  ✔ User Profile : {profile_name} ({user_login_id})")
                 logger.info(f"  ✔ Course Title : {course_title}")
-                logger.info("  ✔ Certificate  : Download Certificate Available (act_type='customcert')")
+                logger.info("  ✔ Certificate  : Download Certificate Available")
                 logger.info("  ✔ Status       : 100% Complete — All Modules & Assessments Done!")
                 logger.info("=" * 67 + "\n")
                 return True
+
 
             # Check if Module header is ALREADY 100% complete
             if await is_header_100_percent_complete(header):
