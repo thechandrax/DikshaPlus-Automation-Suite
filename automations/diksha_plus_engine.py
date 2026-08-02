@@ -365,18 +365,11 @@ def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name,
 
 def solve_question_with_ai(question_text, option_texts=None):
     """
-    Uses Gemini AI API or xAI Grok API (https://console.x.ai/) to solve live quiz questions with 100% accuracy.
-    If XAI_API_KEY / GROK_API_KEY is configured, uses Grok (grok-2-1212 / grok-beta) seamlessly!
+    Uses Gemini AI API Multi-Key Pool FIRST to solve live quiz questions with 100% accuracy.
+    If ALL Gemini API keys encounter rate limits or fail, automatically fails over to Grok xAI API (https://console.x.ai/)!
     """
     if not getattr(config, "AI_LIVE_SOLVER_ENABLED", True):
         return None
-
-    # Check for xAI Grok API Keys (https://console.x.ai/)
-    xai_keys = getattr(config, "XAI_API_KEYS", [])
-    if not xai_keys:
-        single_xai = getattr(config, "XAI_API_KEY", "").strip() or getattr(config, "GROK_API_KEY", "").strip() or os.environ.get("XAI_API_KEY", "").strip() or os.environ.get("GROK_API_KEY", "").strip()
-        if single_xai:
-            xai_keys = [single_xai]
 
     options_formatted = "\n".join([f"{idx+1}. {opt}" for idx, opt in enumerate(option_texts or [])])
     prompt = f"""You are an expert AI teacher solving a quiz question for an educational course.
@@ -390,8 +383,61 @@ Option Choices:
 INSTRUCTIONS:
 Return ONLY the exact text of the correct option choice from the list above. Do NOT include option numbers (1, 2, 3), do NOT include explanations. Return ONLY the exact option text."""
 
+    # 1. PRIORITY 1: Google Gemini AI Multi-Key Pool
+    gemini_keys = getattr(config, "GEMINI_API_KEYS", [])
+    if not gemini_keys and hasattr(config, "GEMINI_API_KEY") and config.GEMINI_API_KEY:
+        gemini_keys = [config.GEMINI_API_KEY]
+
+    if gemini_keys:
+        logger.info("  🧠 [GEMINI AI LIVE] Requesting solution via Gemini AI API Multi-Key Pool...")
+        models_to_try = ["gemini-2.0-flash", "gemini-flash-latest"]
+        for key_idx, api_key in enumerate(gemini_keys, 1):
+            for model_name in models_to_try:
+                try:
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
+                    payload = json.dumps({
+                        "contents": [{"parts": [{"text": prompt}]}]
+                    }).encode('utf-8')
+                    
+                    headers = {
+                        'Content-Type': 'application/json',
+                        'x-goog-api-key': api_key
+                    }
+
+                    req = urllib.request.Request(url, data=payload, headers=headers)
+                    res = urllib.request.urlopen(req, timeout=12)
+                    resp_data = json.loads(res.read().decode('utf-8'))
+                    ans_text = resp_data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "").strip()
+                    
+                    clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
+                    if clean_ans:
+                        logger.info(f"  🧠 [GEMINI AI SUCCESS] Solved via Gemini ({model_name}) Key #{key_idx} -> '{clean_ans}'")
+                        return clean_ans
+                except urllib.error.HTTPError as http_err:
+                    if http_err.code in (429, 503):
+                        logger.warning(f"  ⏳ [GEMINI RATE LIMIT] Key #{key_idx} rate limited ({http_err.reason}). Trying next key...")
+                        time.sleep(1)
+                        continue
+                    elif http_err.code in (401, 403):
+                        logger.error(f"  ❌ [GEMINI API ERROR {http_err.code}] Key #{key_idx} {http_err.reason}. Trying next key...")
+                        break
+                    else:
+                        logger.warning(f"  ⚠️ [GEMINI HTTP ERROR {http_err.code}] {http_err.reason}")
+                        break
+                except Exception as ex:
+                    logger.warning(f"  ⚠️ [GEMINI SOLVER NOTICE] {ex}")
+                    time.sleep(1)
+                    break
+
+    # 2. PRIORITY 2: xAI Grok API Key Pool Fallback (https://console.x.ai/)
+    xai_keys = getattr(config, "XAI_API_KEYS", [])
+    if not xai_keys:
+        single_xai = getattr(config, "XAI_API_KEY", "").strip() or getattr(config, "GROK_API_KEY", "").strip() or os.environ.get("XAI_API_KEY", "").strip() or os.environ.get("GROK_API_KEY", "").strip()
+        if single_xai:
+            xai_keys = [single_xai]
+
     if xai_keys:
-        logger.info("  🤖 [GROK AI LIVE] Requesting solution via xAI Grok API (https://console.x.ai/)...")
+        logger.info("  🤖 [GROK FALLBACK LIVE] Gemini keys exhausted. Requesting solution via Grok xAI API (https://console.x.ai/)...")
         for x_idx, xai_key in enumerate(xai_keys, 1):
             for model_name in ["grok-4.3", "grok-2-1212", "grok-beta"]:
                 try:
@@ -422,18 +468,6 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
                 except Exception as ex:
                     logger.warning(f"  ⚠️ [GROK AI NOTICE] ({model_name} Key #{x_idx}): {ex}")
 
-
-    api_keys = getattr(config, "GEMINI_API_KEYS", [])
-    if not api_keys and hasattr(config, "GEMINI_API_KEY") and config.GEMINI_API_KEY:
-        api_keys = [config.GEMINI_API_KEY]
-
-    if not api_keys:
-        logger.warning("  ⚠️ [AI LIVE SOLVER NOTICE] Neither GEMINI_API_KEYS nor XAI_API_KEY is configured in config.py!")
-        return None
-
-    # 3-Second Pacing Delay for smooth execution
-    logger.info("  ⏳ [AI LIVE] Waiting 3s pacing delay before Gemini AI API call...")
-    time.sleep(3)
 
 
     models_to_try = ["gemini-2.0-flash", "gemini-flash-latest"]
