@@ -25,19 +25,22 @@ flowchart TD
     B -- No --> D[🧠 Priority 1: Gemini AI API Pool - 2 Attempts]
     
     D -- Success --> E[Save Q&A to JSON & Click Answer]
-    D -- All Gemini Keys Rate Limited 429 --> F[🤖 Priority 2: Grok xAI API Pool - 2 Attempts]
+    D -- All Gemini Keys Rate Limited 429 --> F[⚡ Priority 2: Groq Cloud LPU Pool - 2 Attempts FREE]
     
     F -- Success --> E
-    F -- All Grok Keys Rate Limited 429 --> G[⏳ Priority 3: Stepped Backoff Protocol]
+    F -- All Groq Keys Rate Limited 429 --> G[🤖 Priority 3: Grok xAI API Pool - 2 Attempts]
     
-    G --> H[Wait 30s -> Retry ALL Gemini & Grok Keys]
-    H -- Success --> E
-    H -- Failed --> I[Wait 45s -> Retry ALL Gemini & Grok Keys]
+    G -- Success --> E
+    G -- All Grok Keys Rate Limited 429 --> H[⏳ Priority 4: Stepped Backoff Protocol]
+    
+    H --> I[Wait 30s -> Retry ALL Gemini, Groq & Grok Keys]
     I -- Success --> E
-    I -- Failed --> J[Wait 60s -> Retry ALL Gemini & Grok Keys]
+    I -- Failed --> J[Wait 45s -> Retry ALL Gemini, Groq & Grok Keys]
     J -- Success --> E
-    J -- Failed --> K[⛔ Strict Circuit Breaker Stop]
-    K --> L[Close Server Context & Stop All Execution]
+    J -- Failed --> K[Wait 60s -> Retry ALL Gemini, Groq & Grok Keys]
+    K -- Success --> E
+    K -- Failed --> L[⛔ Strict Circuit Breaker Stop]
+    L --> M[Close Server Context & Stop All Execution]
 ```
 
 ---
@@ -47,11 +50,13 @@ flowchart TD
 | Stage | AI Engine | Attempt Limit | Action Details |
 | :--- | :--- | :--- | :--- |
 | **Priority 1** | **Google Gemini AI** | **2 Attempts** | Rotates across encrypted Gemini key pool & models (`gemini-2.0-flash`, `gemini-flash-latest`). |
-| **Priority 2** | **xAI Grok API** (`console.x.ai`) | **2 Attempts** | Rotates across encrypted Grok key pool & models (`grok-4.3`, `grok-2-1212`, `grok-beta`). |
-| **Backoff #1** | Both Gemini & Grok | **Wait 30s** | Pauses 30s for API quota reset $\rightarrow$ Retries **ALL** Gemini & Grok keys. |
-| **Backoff #2** | Both Gemini & Grok | **Wait 45s** | Pauses 45s for API quota reset $\rightarrow$ Retries **ALL** Gemini & Grok keys. |
-| **Backoff #3** | Both Gemini & Grok | **Wait 60s** | Pauses 60s for API quota reset $\rightarrow$ Retries **ALL** Gemini & Grok keys. |
+| **Priority 2** | **Groq Cloud LPU** (`console.groq.com`) | **2 Attempts** | Rotates across 1,000 tokens/sec models (`openai/gpt-oss-120b`, `openai/gpt-oss-20b`, `llama-3.3-70b-versatile`, `llama-3.1-8b-instant`). |
+| **Priority 3** | **xAI Grok API** (`console.x.ai`) | **2 Attempts** | Rotates across encrypted Grok key pool & models (`grok-4.3`, `grok-latest`, `grok-4.20`, `grok-code-fast`, `grok-4.5`). |
+| **Backoff #1** | Gemini, Groq & Grok | **Wait 30s** | Pauses 30s for API quota reset $\rightarrow$ Retries **ALL** Gemini, Groq & Grok keys. |
+| **Backoff #2** | Gemini, Groq & Grok | **Wait 45s** | Pauses 45s for API quota reset $\rightarrow$ Retries **ALL** Gemini, Groq & Grok keys. |
+| **Backoff #3** | Gemini, Groq & Grok | **Wait 60s** | Pauses 60s for API quota reset $\rightarrow$ Retries **ALL** Gemini, Groq & Grok keys. |
 | **Circuit Breaker**| **Engine Stop** | **STOP & CLOSE** | **Never uses dummy Option A!** Closes browser context (`page.context.close()`) to guarantee 100% accuracy. |
+
 
 ---
 

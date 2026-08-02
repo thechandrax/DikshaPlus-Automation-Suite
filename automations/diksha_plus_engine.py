@@ -443,8 +443,9 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
         for groq_attempt in range(1, 3):
             logger.info(f"  ⚡ [GROQ LPU ATTEMPT {groq_attempt}/2] Gemini keys exhausted. Requesting ultra-fast solution via Groq Cloud API...")
             for g_idx, groq_key in enumerate(groq_keys, 1):
-                for model_name in ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768", "gemma2-9b-it"]:
+                for model_name in ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.3-70b-versatile", "llama-3.1-8b-instant"]:
                     try:
+
                         url = "https://api.groq.com/openai/v1/chat/completions"
                         payload = json.dumps({
                             "model": model_name,
@@ -551,8 +552,9 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
         if groq_keys:
             logger.info(f"  ⚡ [BACKOFF RETRY #{b_idx}] Retrying ALL Groq LPU API Keys after {delay_sec}s delay...")
             for g_idx, groq_key in enumerate(groq_keys, 1):
-                for model_name in ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768", "gemma2-9b-it"]:
+                for model_name in ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.3-70b-versatile", "llama-3.1-8b-instant"]:
                     try:
+
                         url = "https://api.groq.com/openai/v1/chat/completions"
                         payload = json.dumps({
                             "model": model_name,
