@@ -347,6 +347,78 @@
           ]
         }
       ]
+    },
+    {
+      "module_no": 6,
+      "module_name": "Module 06: Foundational Language and Literacy",
+      "subsections": [
+        {
+          "subsection_no": 31,
+          "subsection_name": "Formative Assessment 06",
+          "questions": [
+            {
+              "question": "The genres of literature, such as story, poem, rhymes, etc. helps a teacher to engage children in",
+              "options": [
+                "[A] The classroom",
+                "[B] Meaningful and relevant ways",
+                "[C] Assessments",
+                "[D] Activities"
+              ],
+              "answer": "[B] Meaningful and relevant ways"
+            },
+            {
+              "question": "Children who are multilingual have the advantage of being",
+              "options": [
+                "[A] calm",
+                "[B] courageous",
+                "[C] constructive and critical thinkers",
+                "[D] critical thinkers"
+              ],
+              "answer": "[D] constructive and critical thinkers"
+            },
+            {
+              "question": "The activity of reading and writing",
+              "options": [
+                "[A] Occur separately",
+                "[B] Are not linked to each other",
+                "[C] Occur parallel to each other",
+                "[D] Happens only inside the classroom"
+              ],
+              "answer": "[C] Occur parallel to each other"
+            },
+            {
+              "question": "A child's language is not just a medium of learning but also an expression of thoughts, _____ and innovation.",
+              "options": [
+                "[A] ideas",
+                "[B] opinion",
+                "[C] judgment",
+                "[D] creativity"
+              ],
+              "answer": "[D] creativity"
+            },
+            {
+              "question": "Children understand and explore the nuances of language when they",
+              "options": [
+                "[A] read aloud",
+                "[B] participate in classroom discussions",
+                "[C] listen quietly to their teacher",
+                "[D] engage more and more with LSRW activities"
+              ],
+              "answer": "[D] engage more and more with LSRW activities"
+            },
+            {
+              "question": "Linguistic aspect of reading believes in the development of these skills",
+              "options": [
+                "[A] semantic, syntax and pragmatics understanding",
+                "[B] semantic and syntax understanding",
+                "[C] grapho-phonemic awareness",
+                "[D] grapho-phonic awareness, semantic, syntax and pragmatics"
+              ],
+              "answer": "[D] grapho-phonic awareness, semantic, syntax and pragmatics"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

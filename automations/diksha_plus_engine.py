@@ -2359,11 +2359,9 @@ async def is_button_enabled(btn):
     return True
 
 async def is_item_100_percent_complete(btn):
-
     """
     Determines if a subsection item row on DIKSHA is 100% complete.
-    Item is complete ONLY IF it contains a visible checkmark (i.fa-check, brown check circle)
-    and does NOT contain an incomplete percentage badge ('0%', '50%', etc.).
+    Item is complete ONLY IF it contains a visible checkmark, .completed class, or 100% badge.
     """
     try:
         row = btn.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'list') or contains(@class,'card-body') or contains(@class,'activity')][1]").first
@@ -2380,14 +2378,23 @@ async def is_item_100_percent_complete(btn):
                     elif val == 100:
                         return True
 
-            # Check for visible brown checkmark icon or .p100 class on the item row
-            check_icon = row.locator("i.fa-check, .fa-check, .fa-check-circle, .c100.p100, div[class*='p100']").first
-            if await check_icon.count() > 0 and await check_icon.is_visible():
-                return True
+            # Comprehensive DIKSHA / Moodle checkmark & completion selectors
+            check_selectors = [
+                "i.fa-check", ".fa-check", ".fa-check-circle", ".fa-check-square",
+                ".completed", "span.completed", "i.completed", "div.completed",
+                "[class*='completed']", ".c100.p100", "div[class*='p100']",
+                ".text-success", ".badge-success", "img[src*='check']",
+                "img[src*='complete']", "svg[class*='check']"
+            ]
+            for sel in check_selectors:
+                chk = row.locator(sel).first
+                if await chk.count() > 0 and await chk.is_visible():
+                    return True
     except Exception:
         pass
 
     return False
+
 
 async def is_header_100_percent_complete(header):
     """
@@ -2598,63 +2605,6 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
                     btn_text = (await btn.inner_text()).strip()
 
-                    # Smart Subsection Item Skipping: check if item row has 100% brown checkmark
-                    if await is_item_100_percent_complete(btn):
-                        logger.info(f"  --> [✓ ALREADY DONE] Subsection [{j}/{total_sec_items}]: '{btn_text}' is 100% complete. Skipping!")
-                        continue
-
-                    # Strict Attempt & Page Reload Circuit Breaker Protocol
-                    runs_done = item_attempts.get(btn_text, 0)
-                    
-                    if runs_done >= 4:
-                        logger.error(f"\n❌ [CRITICAL DIKSHA SERVER FAILURE] Subsection item '{btn_text}' failed to unlock/complete after 4 attempts & 5s page refreshes.")
-                        logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Stopping all automation processes and closing server context cleanly!\n")
-                        try:
-                            await page.context.close()
-                        except Exception:
-                            pass
-                        raise RuntimeError(f"DIKSHA_SERVER_STUCK: '{btn_text}' did not complete after 4 attempts.")
-
-                    if runs_done == 2:
-                        logger.warning(f"  --> [ATTEMPT 2 FAILED] Subsection '{btn_text}' not unlocked yet. Waiting 5s gap & reloading page (page.reload())...")
-                        await asyncio.sleep(5)
-                        try:
-                            await page.reload()
-                            await asyncio.sleep(5)
-                            if await click_target.count() > 0:
-                                await click_target.click(force=True)
-                                await page.wait_for_timeout(2500)
-                        except Exception:
-                            pass
-
-                    # Check if item is locked / disabled by DIKSHA server
-                    if not await is_button_enabled(btn):
-                        logger.info(f"  --> [LOCKED ITEM] Subsection [{j}/{total_sec_items}]: '{btn_text}' is currently LOCKED.")
-                        logger.info("  --> [SERVER REFRESH] Waiting 5s gap & reloading page (page.reload()) to fetch updated DIKSHA server session unlock status...")
-                        await asyncio.sleep(5)
-                        try:
-                            await page.reload()
-                            await asyncio.sleep(5)
-                            if await click_target.count() > 0:
-                                await click_target.click(force=True)
-                                await page.wait_for_timeout(2500)
-                        except Exception:
-                            pass
-
-                        if not await is_button_enabled(btn):
-                            if runs_done >= 3:
-                                logger.error(f"\n❌ [CRITICAL DIKSHA SERVER FAILURE] Subsection item '{btn_text}' remains locked after 4 attempts.")
-                                logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Stopping all automation processes and closing server context!\n")
-                                try:
-                                    await page.context.close()
-                                except Exception:
-                                    pass
-                                raise RuntimeError(f"DIKSHA_SERVER_LOCKED_STUCK: '{btn_text}' locked after 4 attempts.")
-                            logger.info(f"  --> [SKIP LOCKED] Subsection [{j}/{total_sec_items}]: '{btn_text}' remains locked. Will re-evaluate on next pass...")
-                            continue
-
-                    act_type = await btn.get_attribute("act_type") or "resource"
-                    
                     # Extract real item title if button text is generic like 'View'
                     real_item_title = btn_text
                     if btn_text.lower() in ("view", "start", "open", "continue"):
@@ -2668,6 +2618,66 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                         real_item_title = extracted_t
                         except Exception:
                             pass
+
+                    # Smart Subsection Item Skipping: check if item row has 100% checkmark OR is in completed_items memory
+                    if btn_text in completed_items or real_item_title in completed_items or await is_item_100_percent_complete(btn):
+                        logger.info(f"  --> [✓ ALREADY DONE] Subsection [{j}/{total_sec_items}]: '{real_item_title}' is 100% complete. Skipping!")
+                        completed_items.add(btn_text)
+                        completed_items.add(real_item_title)
+                        continue
+
+                    # Strict Attempt & Page Reload Circuit Breaker Protocol
+                    runs_done = item_attempts.get(btn_text, 0)
+                    
+                    if runs_done >= 4:
+                        logger.error(f"\n❌ [CRITICAL DIKSHA SERVER FAILURE] Subsection item '{real_item_title}' failed to unlock/complete after 4 attempts & 5s page refreshes.")
+                        logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Stopping all automation processes and closing server context cleanly!\n")
+                        try:
+                            await page.context.close()
+                        except Exception:
+                            pass
+                        raise RuntimeError(f"DIKSHA_SERVER_STUCK: '{real_item_title}' did not complete after 4 attempts.")
+
+                    if runs_done == 2:
+                        logger.warning(f"  --> [ATTEMPT 2 FAILED] Subsection '{real_item_title}' not unlocked yet. Waiting 5s gap & reloading page (page.reload())...")
+                        await asyncio.sleep(5)
+                        try:
+                            await page.reload()
+                            await asyncio.sleep(5)
+                            if await click_target.count() > 0:
+                                await click_target.click(force=True)
+                                await page.wait_for_timeout(2500)
+                        except Exception:
+                            pass
+
+                    # Check if item is locked / disabled by DIKSHA server
+                    if not await is_button_enabled(btn):
+                        logger.info(f"  --> [LOCKED ITEM] Subsection [{j}/{total_sec_items}]: '{real_item_title}' is currently LOCKED.")
+                        logger.info("  --> [SERVER REFRESH] Waiting 5s gap & reloading page (page.reload()) to fetch updated DIKSHA server session unlock status...")
+                        await asyncio.sleep(5)
+                        try:
+                            await page.reload()
+                            await asyncio.sleep(5)
+                            if await click_target.count() > 0:
+                                await click_target.click(force=True)
+                                await page.wait_for_timeout(2500)
+                        except Exception:
+                            pass
+
+                        if not await is_button_enabled(btn):
+                            if runs_done >= 3:
+                                logger.error(f"\n❌ [CRITICAL DIKSHA SERVER FAILURE] Subsection item '{real_item_title}' remains locked after 4 attempts.")
+                                logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Stopping all automation processes and closing server context!\n")
+                                try:
+                                    await page.context.close()
+                                except Exception:
+                                    pass
+                                raise RuntimeError(f"DIKSHA_SERVER_LOCKED_STUCK: '{real_item_title}' locked after 4 attempts.")
+                            logger.info(f"  --> [SKIP LOCKED] Subsection [{j}/{total_sec_items}]: '{real_item_title}' remains locked. Will re-evaluate on next pass...")
+                            continue
+
+                    act_type = await btn.get_attribute("act_type") or "resource"
+
 
                     logger.info("\n" + "=" * 35)
                     logger.info(f" ▶ SUBSECTION [{j}/{total_sec_items}]: '{real_item_title}' (Type: '{act_type}') [Attempt {runs_done + 1}/4]")
