@@ -345,6 +345,112 @@
               "answer": "[B] When they engage in hands-on activities"
             }
           ]
+        },
+        {
+          "subsection_no": 25,
+          "subsection_name": "Formative Assessment 04",
+          "questions": [
+            {
+              "question": "Which of the following is a good practice by the teacher to send regular updates to parents?",
+              "options": [
+                "[A] Loose circulars kept in the child's bag",
+                "[B] Diary note",
+                "[C] Tell verbally to a child",
+                "[D] Pin up the note on the child's uniform"
+              ],
+              "answer": "[B] Diary note"
+            },
+            {
+              "question": "Which of the following methods should be used to educate parents to support children's learning?",
+              "options": [
+                "[A] Asking them to seek guidance from community leaders",
+                "[B] Asking them to stay in touch with other parents",
+                "[C] Keeping formal and informal interactions open to the convenience of parents",
+                "[D] Asking them to read the newspaper daily"
+              ],
+              "answer": "[C] Keeping formal and informal interactions open to the convenience of parents"
+            },
+            {
+              "question": "Parents can sing along with their children (to promote Foundational Literacy) and encourage them to identify the",
+              "options": [
+                "[A] Printed words",
+                "[B] Number of pages",
+                "[C] Rhyming words in a poem/song",
+                "[D] Number of paragraph in a poem"
+              ],
+              "answer": "[C] Rhyming words in a poem/song"
+            },
+            {
+              "question": "Teacher is following a good communication practice if the teacher",
+              "options": [
+                "[A] Acknowledges the note from the parent but blocks further communication",
+                "[B] Acknowledges the note from the parent and does not facilitate further communication",
+                "[C] Acknowledges the note from the parent and adds own comments to facilitate further communication",
+                "[D] Talks to and communicates to selected parents"
+              ],
+              "answer": "[C] Acknowledges the note from the parent and adds own comments to facilitate further communication"
+            },
+            {
+              "question": "Providing developmentally appropriate toys/games to children at the foundational stage gives them chances to practice new skills in",
+              "options": [
+                "[A] Sports and fitness",
+                "[B] Music and movement",
+                "[C] Math and literacy",
+                "[D] Movement, creativity, thinking and interaction"
+              ],
+              "answer": "[D] Movement, creativity, thinking and interaction"
+            },
+            {
+              "question": "Regular sustained communication with parents and motivating them is important to",
+              "options": [
+                "[A] Involve parents and families for cultural programme of the school",
+                "[B] Involve parents and families for FLN",
+                "[C] Involve parents and families for school fair",
+                "[D] Involve parents and families for SMC"
+              ],
+              "answer": "[D] Involve parents and families for SMC"
+            },
+            {
+              "question": "Creating a FLN resource center in the classroom/school for the parents/families will help parents to",
+              "options": [
+                "[A] Develop interest in books/reading materials, resources",
+                "[B] Visit school often and meet teacher on a regular basis",
+                "[C] Build a bonding with school",
+                "[D] Borrow relevant books/materials to support children's learning"
+              ],
+              "answer": "[D] Borrow relevant books/materials to support children's learning"
+            },
+            {
+              "question": "The stimulating learning environment at home can be created by providing",
+              "options": [
+                "[A] Lots of toys to stimulate thinking",
+                "[B] Creating a manipulative area",
+                "[C] Magazines, story books, toys, manipulatives and rich interaction",
+                "[D] Regular observing children's play and work"
+              ],
+              "answer": "[C] Magazines, story books, toys, manipulatives and rich interaction"
+            },
+            {
+              "question": "The Lakshya or the Targets for Foundational Literacy and Numeracy have been stated in four areas",
+              "options": [
+                "[A] Oral language, Reading, Writing and Numeracy",
+                "[B] Oral language, Listening, Writing and Numeracy",
+                "[C] Oral language, Drawing, Writing and Numeracy",
+                "[D] Oral language, Speaking, Writing and Numeracy"
+              ],
+              "answer": "[A] Oral language, Reading, Writing and Numeracy"
+            },
+            {
+              "question": "How can the parents/guardians be assisted in providing home schooling to children with disabilities?",
+              "options": [
+                "[A] Appointment of special educators",
+                "[B] Special teacher takes care of the children at home",
+                "[C] No need of any assistance as the parents are already capable",
+                "[D] Resource centres working in conjunction with special educators for home schooling"
+              ],
+              "answer": "[D] Resource centres working in conjunction with special educators for home schooling"
+            }
+          ]
         }
       ]
     },
@@ -807,6 +913,96 @@
                 "[D] Encouraging teachers to teach children of 3-6 years of age"
               ],
               "answer": "[C] Discussing and planning with teachers around developmental needs of children"
+            },
+            {
+              "question": "Which of these concepts is not relevant to leading FLN in schools?",
+              "options": [
+                "[A] Coaching of teachers on pedagogies relevant for 3-9 years of age group",
+                "[B] Not communicating with community and parents",
+                "[C] Enabling effective usage of culturally responsive learning resources",
+                "[D] Children become motivated learners"
+              ],
+              "answer": "[B] Not communicating with community and parents"
+            },
+            {
+              "question": "In which model of leadership, one talks about designing school processes based on cultural and linguistic background of children?",
+              "options": [
+                "[A] Context-specific leadership",
+                "[B] Innovative leadership",
+                "[C] Academic leadership",
+                "[D] Strategic leadership"
+              ],
+              "answer": "[A] Context-specific leadership"
+            },
+            {
+              "question": "Children's ability to reason and to apply simple numerical concepts in daily life can be considered as part of ....",
+              "options": [
+                "[A] Foundational listening",
+                "[B] Foundational measurement",
+                "[C] Foundational literacy",
+                "[D] Foundational numeracy"
+              ],
+              "answer": "[D] Foundational numeracy"
+            },
+            {
+              "question": "One of the appropriate strategies for assessment of learning of children of 3-9 years of age group would be through ....",
+              "options": [
+                "[A] Observation of children on their multiple activities",
+                "[B] Collective quantitative information",
+                "[C] Monthly tests",
+                "[D] Asking children to adhere to set routine"
+              ],
+              "answer": "[A] Observation of children on their multiple activities"
+            },
+            {
+              "question": "Which of the following is not included in the involvement type of 'learning at home'?",
+              "options": [
+                "[A] Help parents understand about their children' learning needs, interests and strengths",
+                "[B] Teachers to discuss with parents on how they can create a learning environment at home",
+                "[C] Discriminate parents if they are illiterate",
+                "[D] Share with parents a list of activities they can do at home to support learning"
+              ],
+              "answer": "[C] Discriminate parents if they are illiterate"
+            },
+            {
+              "question": "Which of these pedagogies is not relevant for children of 3-9 years of age group?",
+              "options": [
+                "[A] Socrates dialogue",
+                "[B] Activity-based",
+                "[C] Play-way",
+                "[D] Toy-based"
+              ],
+              "answer": "[A] Socrates dialogue"
+            },
+            {
+              "question": "Ability to read a text with accuracy, speed, expression and comprehension that allows children to make meaning from text, refers to ....",
+              "options": [
+                "[A] Reading fluency",
+                "[B] Reading comprehension",
+                "[C] Decoding",
+                "[D] Oral language development"
+              ],
+              "answer": "[A] Reading fluency"
+            },
+            {
+              "question": "Leaders who believe in effective school-parent engagement are more likely to state that ....",
+              "options": [
+                "[A] Poor parents cannot support their children",
+                "[B] Only few parents can support their children",
+                "[C] Only English-speaking parents can help their children",
+                "[D] All parents can support their children"
+              ],
+              "answer": "[D] All parents can support their children"
+            },
+            {
+              "question": "Which of these is not part of the framework on pedagogical leadership?",
+              "options": [
+                "[A] Networking with stakeholders",
+                "[B] Defining vision and curricular goals",
+                "[C] Leading experimentation in science laboratories",
+                "[D] Enabling learning-teaching processes"
+              ],
+              "answer": "[C] Leading experimentation in science laboratories"
             }
           ]
         }

@@ -8,9 +8,13 @@ export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 export PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=$(which chromium)
 export HEADLESS=True
 
+# Auto-install python requirements if missing
+python -c "import playwright" 2>/dev/null || pip install playwright openpyxl pandas pillow
+
 echo "========================================================================"
 echo " ⚡ LAUNCHING DIKSHA+ AUTOMATION SUITE"
 echo "========================================================================"
 echo ""
 
 python main.py
+
