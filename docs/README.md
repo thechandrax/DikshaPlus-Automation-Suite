@@ -48,22 +48,19 @@ Welcome to the central documentation index for **DIKSHA+ Automation Suite**. Sel
    * Complete 8-key API pool architecture & rotation flow.
    * Stepped backoff logs & 0% Option A fallback guarantee.
 
-8. 📱 **[Complete Mobile Execution & Termux Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/08_MOBILE_EXECUTION_AND_TERMUX_GUIDE.md)**
-   * Method 1: Railway Cloud control via phone browser (0% battery drain).
-   * Method 2: Native Android Termux app execution (`termux_setup.sh`).
+8. 📱 **[Termux & Ubuntu PRoot Mobile Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/08_MOBILE_EXECUTION_AND_TERMUX_GUIDE.md)**
+   * Complete guide covering 1-word shortcuts (`vnc`, `diksha`, `exit`), Ubuntu PRoot & RealVNC Visible GUI setup.
 
-9. 🚀 **[4-Way Execution Architecture Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/09_FOUR_WAY_EXECUTION_ARCHITECTURE.md)**
-   * Complete technical breakdown of all 4 execution modes (Laptop, Railway Server, Railway Mobile, Termux App).
-   * 4-Way Execution Comparison Matrix.
+9. 🚀 **[3-Way Execution Architecture Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/09_FOUR_WAY_EXECUTION_ARCHITECTURE.md)**
+   * Technical breakdown of 3 Core Platforms (Laptop Windows, Railway Cloud, Termux Ubuntu PRoot).
+   * 3-Way Execution Comparison Matrix.
 
 10. 🛠️ **[Detailed Step-by-Step Workflow Breakdown](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/10_DETAILED_STEP_BY_STEP_WORKFLOW_BREAKDOWN.md)**
     * Full architectural flowchart & exhaustive 6-step execution breakdown.
 
 11. 📄 **[Complete Real-World Terminal Logs Example](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/11_COMPLETE_REAL_WORLD_TERMINAL_LOGS_EXAMPLE.md)**
-    * Complete, verbatim, first-to-last real-world terminal log trace from startup to completion.
+    * Complete, verbatim real-world terminal log trace from startup to completion.
 
-12. 📱 **[Termux Info Guide & All Steps](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/12_TERMUX_INFO.md)**
-    * Comprehensive guide covering Python 3 requirements, 2-step setup scripts, user selection, and auto-updating git commits in Termux.
 
 
 
