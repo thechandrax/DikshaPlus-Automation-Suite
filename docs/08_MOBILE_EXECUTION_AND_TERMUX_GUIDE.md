@@ -46,46 +46,35 @@ This method lets you control your entire automation suite from your phone's web 
 
 ## 📱 METHOD 2: Native Android Execution inside Termux App
 
-This method runs Playwright Python and Chromium directly inside the **Termux app** on your Android device.
+This method runs Playwright Python and Chromium directly inside the **Termux app** on your Android device using **2 separate installation scripts**:
 
-### 🚀 1-Click Automated Setup:
+---
 
+### 1️⃣ STEP 1: Install Termux System Packages & Python Libraries
 Open **Termux** on your Android phone and run:
 
 ```bash
-# 1. Clone repository
-git clone https://github.com/thechandrax/DikshaPlus-Automation-Suite.git
-cd DikshaPlus-Automation-Suite
-
-
-# 2. Run 1-click Termux setup script
-chmod +x termux_setup.sh
-./termux_setup.sh
+# Download and run Step 1 prerequisites installer script
+pkg update -y && pkg upgrade -y
+pkg install git python nodejs-lts chromium x11-repo tur-repo -y
+pip install pandas openpyxl pillow playwright
 ```
 
 ---
 
-### 🛠️ Manual Step-by-Step Installation:
-
-If you prefer installing packages manually:
+### 2️⃣ STEP 2: Clone Repository & Launch DIKSHA+
+After Step 1 completes, clone the repository and run Step 2:
 
 ```bash
-# Step 1: Update Termux & install Linux tools
-pkg update -y && pkg upgrade -y
-pkg install git python nodejs-lts chromium x11-repo tur-repo -y
+# Clone repository
+git clone https://github.com/thechandrax/DikshaPlus-Automation-Suite.git
+cd DikshaPlus-Automation-Suite
 
-
-# Step 2: Install Python libraries
-pip install pandas openpyxl pillow playwright
-
-# Step 3: Set Termux environment variables
-export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
-export PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=$(which chromium)
-export HEADLESS=True
-
-# Step 4: Run DIKSHA+
-python main.py
+# Make launcher script executable & run
+chmod +x termux_setup.sh
+./termux_setup.sh
 ```
+
 
 ---
 
