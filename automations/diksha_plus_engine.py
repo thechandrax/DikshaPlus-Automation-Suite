@@ -2665,26 +2665,54 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     
                     if runs_done >= 4:
                         logger.warning(f"\n  ⏳ [DIKSHA SERVER HYDRATION] Subsection item '{real_item_title}' is taking longer to sync checkmark.")
-                        logger.info("  ⏳ Entering 10-Attempt (150s) Patient Server Sync Window before any Circuit Breaker trigger...")
+                        logger.info("  ⏳ Entering 10-Attempt (150s) Patient Server Sync & Re-Execution Window before any Circuit Breaker trigger...")
                         item_synced = False
                         for sync_step in range(1, 11):
-                            logger.info(f"  ⏳ [ITEM SYNC {sync_step}/10] Waiting 15s for DIKSHA server checkmark sync (Elapsed: {sync_step * 15}s / 150s)...")
+                            logger.info(f"  ⏳ [ITEM SYNC {sync_step}/10] Waiting 15s gap & reloading page to verify checkmarks or re-execute item (Elapsed: {sync_step * 15}s / 150s)...")
                             await asyncio.sleep(15)
                             try:
                                 await page.reload()
                                 await asyncio.sleep(3)
-                                if await is_item_100_percent_complete(btn):
-                                    logger.info(f"  ✅ [ITEM SYNC SUCCESS] DIKSHA server checkmark confirmed after {sync_step * 15}s!")
+                                if await click_target.count() > 0:
+                                    await click_target.click(force=True)
+                                    await page.wait_for_timeout(2000)
+
+                                # Check 1: Header 100% or Item 100% Checkmark
+                                if await is_header_100_percent_complete(header) or await is_item_100_percent_complete(btn):
+                                    logger.info(f"  ✅ [ITEM SYNC SUCCESS] DIKSHA server checkmark confirmed on Attempt #{sync_step}!")
                                     completed_items.add(btn_text)
                                     completed_items.add(real_item_title)
                                     item_synced = True
                                     break
-                            except Exception:
-                                pass
+                                else:
+                                    # Check 2: If item is still incomplete, re-execute the activity!
+                                    logger.info(f"  🔄 [SYNC RE-EXECUTION Attempt #{sync_step}] Item '{real_item_title}' still incomplete. Re-running activity...")
+                                    fresh_btns = await get_section_action_buttons(collapse_panel, header)
+                                    if j <= len(fresh_btns):
+                                        re_btn = fresh_btns[j - 1]
+                                        re_act_type = await re_btn.get_attribute("act_type") or "resource"
+                                        if re_act_type == "url":
+                                            await process_url_activity(page, re_btn)
+                                        elif re_act_type == "resource":
+                                            await process_pdf_activity(page, re_btn)
+                                        elif re_act_type == "quiz":
+                                            await process_quiz_activity(page, re_btn, answer_key, course_title=course_title)
+                                        elif re_act_type == "feedback" or "feedback" in (real_item_title or "").lower():
+                                            await process_feedback_activity(page, re_btn, answer_key, course_title=course_title)
 
-                        
+                                        # Re-check item status immediately after re-execution
+                                        if await is_item_100_percent_complete(re_btn):
+                                            logger.info(f"  ✅ [RE-EXECUTION SUCCESS] Subsection item '{real_item_title}' checkmarked successfully!")
+                                            completed_items.add(btn_text)
+                                            completed_items.add(real_item_title)
+                                            item_synced = True
+                                            break
+                            except Exception as sync_ex:
+                                logger.warning(f"  --> Sync attempt #{sync_step} notice: {sync_ex}")
+
                         if item_synced:
                             continue
+
 
                         logger.error(f"\n❌ [CRITICAL DIKSHA SERVER FAILURE] Subsection item '{real_item_title}' failed to unlock/complete after 4 attempts & 2-minute server sync window.")
                         logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Stopping all automation processes and closing server context cleanly!\n")
