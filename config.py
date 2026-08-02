@@ -74,9 +74,10 @@ if IS_TERMUX:
         os.environ["PLAYWRIGHT_NODEJS_PATH"] = node_bin
     os.environ["PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD"] = "1"
     os.environ["PLAYWRIGHT_BROWSERS_PATH"] = "0"
-    chrom_bin = shutil.which("chromium") or "/data/data/com.termux/files/usr/bin/chromium"
-    if os.path.exists(chrom_bin):
+    chrom_bin = shutil.which("chromium-browser") or shutil.which("chromium") or "/usr/bin/chromium-browser" or "/data/data/com.termux/files/usr/bin/chromium"
+    if chrom_bin and os.path.exists(chrom_bin):
         os.environ["PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH"] = chrom_bin
+
 
     # Auto-patch Playwright coreBundle.js to allow 'android' platform execution & fix calculateHostPlatform
     try:

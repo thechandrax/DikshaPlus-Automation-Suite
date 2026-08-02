@@ -839,6 +839,76 @@
                 "[D] NCF-2005"
               ],
               "answer": "[D] NCF-2005"
+            },
+            {
+              "question": "Kamala lives in the Kota district of Rajasthan and speaks Hadoti at home. She has joined grade 1 after a delay of 4 months; today is her first day at school. What will you do so that she feels comfortable in the classroom?",
+              "options": [
+                "[A] I will ask Kamala to catch up on all the class work that she has missed.",
+                "[B] I will speak with her in Hindi from the very first day, so that she is able to understand all the subjects being taught in school.",
+                "[C] I will sing some English action songs with her and ask her to remember them.",
+                "[D] I will informally chit-chat with her in Hadoti."
+              ],
+              "answer": "[D] I will informally chit-chat with her in Hadoti."
+            },
+            {
+              "question": "In which situations, is a link language used?",
+              "options": [
+                "[A] When the language of any one community is considered to be the standard.",
+                "[B] When people from the same linguistic community live together.",
+                "[C] When the language of any one community is made as a medium of instruction.",
+                "[D] When various linguistic communities live together."
+              ],
+              "answer": "[D] When various linguistic communities live together."
+            },
+            {
+              "question": "By the term 'First Language'(L1), one means:",
+              "options": [
+                "[A] Language that the child understands",
+                "[B] Standard language of the school",
+                "[C] Link language",
+                "[D] Academic language"
+              ],
+              "answer": "[A] Language that the child understands"
+            },
+            {
+              "question": "Who amongst the following children will struggle the most while learning?",
+              "options": [
+                "[A] Ramesh, who speaks Bhojpuri in his family and community and studies in an English medium school",
+                "[B] Shabana, who speaks English at home, and attending an English medium school",
+                "[C] Kamala, who speaks Wagdi at home, and her classroom makes use of Hindi-Wagadi mixed language",
+                "[D] Deepak, whose home language is Santhali; he gets some exposure to Hindi in the marketplace and studies in a Hindi medium school"
+              ],
+              "answer": "[A] Ramesh, who speaks Bhojpuri in his family and community and studies in an English medium school"
+            },
+            {
+              "question": "Why do about 25% of children in elementary school face a severe learning disadvantage in foundational years?",
+              "options": [
+                "[A] Language used in school and at home are different.",
+                "[B] Schools being far away from children's homes.",
+                "[C] Caregiver refusal to send children to schools.",
+                "[D] Lack of basic necessary facilities in school."
+              ],
+              "answer": "[D] Lack of basic necessary facilities in school."
+            },
+            {
+              "question": "In the foundational years of learning, medium of instruction should be children's home language because-",
+              "options": [
+                "[A] Language is the basis of learning and comprehension of all subjects.",
+                "[B] Languages are scoring subjects.",
+                "[C] It is impossible to memorize anythings without language.",
+                "[D] Language is an important subjects."
+              ],
+              "answer": "[A] Language is the basis of learning and comprehension of all subjects."
+            },
+            {
+              "question": "Which of the following statements regarding multilingual education is true?",
+              "options": [
+                "[A] Multilingual education strategies are employed only in the context of language education.",
+                "[B] Children's languages are used as scaffolds for learning new/unfamiliar languages.",
+                "[C] New and unfamiliar languages should be made the medium of instruction as early as possible.",
+                "[D] When a new language is introduced as a medium of instruction, children's languages must cease to be used."
+              ],
+              "answer": "[B] Children's languages are used as scaffolds for learning new/unfamiliar languages."
             }
           ]
         }
@@ -1409,6 +1479,356 @@
                 "[D] Seven"
               ],
               "answer": "[A] Five"
+            },
+            {
+              "question": "Excess uses of ICT in pre primary and primary education will be ____",
+              "options": [
+                "[A] Enhances learning skill",
+                "[B] Harmful physically",
+                "[C] Expand the social network",
+                "[D] Beneficial for cognition and social emotion"
+              ],
+              "answer": "[B] Harmful physically"
+            },
+            {
+              "question": "Choose a myth related to language teaching:",
+              "options": [
+                "[A] The earlier children are given textbooks to read in an unfamiliar language, the sooner they will learn that language.",
+                "[B] Children's home language provides a solid foundation for learning other languages",
+                "[C] In multilingual education, children's languages are also used in the pedagogy of teaching unfamiliar (L2) languages",
+                "[D] Using home language boosts children's self-confidence"
+              ],
+              "answer": "[A] The earlier children are given textbooks to read in an unfamiliar language, the sooner they will learn that language."
+            },
+            {
+              "question": "Protein, fat, and carbohydrates in the diet provide",
+              "options": [
+                "[A] Immunity",
+                "[B] Micronutrients",
+                "[C] Balanced nutrition",
+                "[D] Macronutrients"
+              ],
+              "answer": "[D] Macronutrients"
+            },
+            {
+              "question": "Kaleidoscope is made up of?",
+              "options": [
+                "[A] Cardboard, glass piece and some random pictures.",
+                "[B] Velvet paper, threads and paintbrush.",
+                "[C] Glass, newspaper and selected pictures.",
+                "[D] Wooden board, nails and paint."
+              ],
+              "answer": "[A] Cardboard, glass piece and some random pictures."
+            },
+            {
+              "question": "What influences most children's preferences to learning?",
+              "options": [
+                "[A] School uniform",
+                "[B] Family and drinking water facility in school",
+                "[C] Peer group and neighbour",
+                "[D] Brain wiring, history, gender, and personal experiences"
+              ],
+              "answer": "[D] Brain wiring, history, gender, and personal experiences"
+            },
+            {
+              "question": "For the holistic development of children a teacher needs to design activities by integrating ______________.",
+              "options": [
+                "[A] LSRW",
+                "[B] speaking and writing skills",
+                "[C] reading and listening skills",
+                "[D] reading and writing skills"
+              ],
+              "answer": "[A] LSRW"
+            },
+            {
+              "question": "TPACK stands for",
+              "options": [
+                "[A] Technology Packed Content Knowledge",
+                "[B] Technology Pedagogy and Creation Knowledge",
+                "[C] Technology Pedagogy and Content Knowledge",
+                "[D] Technology Produced Assessing Content Knowledge"
+              ],
+              "answer": "[C] Technology Pedagogy and Content Knowledge"
+            },
+            {
+              "question": "The purpose of assessment in FLN is to",
+              "options": [
+                "[A] Provide teachers working at the foundational stage with abstract information about the children's learning level for literacy and numeracy.",
+                "[B] Provide teachers working at the foundational stage with concrete information about the children's learning level for literacy and numeracy.",
+                "[C] Provide teachers working at the primary school stage with education information about the children's learning level for literacy and numeracy.",
+                "[D] Provide teachers working at the Balvatika stage with some information about the children's learning level for literacy and numeracy."
+              ],
+              "answer": "[B] Provide teachers working at the foundational stage with concrete information about the children's learning level for literacy and numeracy."
+            },
+            {
+              "question": "What is the specific purpose of Vidya Pravesh and Balvatika?",
+              "options": [
+                "[A] Provide learning environment to the children",
+                "[B] Ensure smooth transition of children to the preschools",
+                "[C] Provide developmentally appropriate material to the children",
+                "[D] Ensure smooth transition of children to the primary grades"
+              ],
+              "answer": "[D] Ensure smooth transition of children to the primary grades"
+            },
+            {
+              "question": "Which of the following is the famous indigenious toy of Gujarat?",
+              "options": [
+                "[A] Nesting Dolls",
+                "[B] Cotton Dolls",
+                "[C] Dhingli Dolls",
+                "[D] Barbie Dolls"
+              ],
+              "answer": "[C] Dhingli Dolls"
+            },
+            {
+              "question": "Parents and community members should be involved in the preschool programme through",
+              "options": [
+                "[A] Parents Teacher Meetings (PTMs)",
+                "[B] Writing letters and mails only",
+                "[C] Workshops by professionals",
+                "[D] Regular communication, workshops, PTMs and Parents' Conferences"
+              ],
+              "answer": "[D] Regular communication, workshops, PTMs and Parents' Conferences"
+            },
+            {
+              "question": "Why do about 25% of children in elementary school face a severe learning disadvantage in foundational years?",
+              "options": [
+                "[A] Schools being far away from children's homes.",
+                "[B] Language used in school and at home are different.",
+                "[C] Lack of basic necessary facilities in school.",
+                "[D] Caregiver refusal to send children to schools."
+              ],
+              "answer": "[B] Language used in school and at home are different."
+            },
+            {
+              "question": "The process by which information is exchanged between individuals through mathematical symbols, signs, diagrams, graphs is known as ….",
+              "options": [
+                "[A] Mathematical language",
+                "[B] Mathematical communication",
+                "[C] First language learning",
+                "[D] Language acquisition"
+              ],
+              "answer": "[B] Mathematical communication"
+            },
+            {
+              "question": "What should be the role of a teacher in the learning of children?",
+              "options": [
+                "[A] Partner",
+                "[B] Caretaker",
+                "[C] Monitor",
+                "[D] Facilitator"
+              ],
+              "answer": "[D] Facilitator"
+            },
+            {
+              "question": "Parents can find locally available toys and materials, which are not harmful for their child and",
+              "options": [
+                "[A] Force them to learn using toys",
+                "[B] Make them learn in their own exploratory way",
+                "[C] Make them learn only through the toys",
+                "[D] Make them learn in a rote learning way"
+              ],
+              "answer": "[B] Make them learn in their own exploratory way"
+            },
+            {
+              "question": "Ring Set Puzzles help in learning the concept of:",
+              "options": [
+                "[A] Classification",
+                "[B] Seriation",
+                "[C] Subtraction",
+                "[D] Addition"
+              ],
+              "answer": "[B] Seriation"
+            },
+            {
+              "question": "Which of the following statements regarding multilingual education is true?",
+              "options": [
+                "[A] New and unfamiliar languages should be made the medium of instruction as early as possible.",
+                "[B] Multilingual education strategies are employed only in the context of language education.",
+                "[C] When a new language is introduced as a medium of instruction, children's languages must cease to be used.",
+                "[D] Children's languages are used as scaffolds for learning new/unfamiliar languages."
+              ],
+              "answer": "[D] Children's languages are used as scaffolds for learning new/unfamiliar languages."
+            },
+            {
+              "question": "What should be the appropriate sequence in learning/understanding multiplication? i. Applying distributive law of multiplication with regard to addition ii. Understanding the meaning of multiplication iii. Learning the algorithm of multiplication iv. Understanding and using the language of multiplication",
+              "options": [
+                "[A] i, ii, iii, iv",
+                "[B] iv, ii, iii, i",
+                "[C] ii, iv, i, iii",
+                "[D] iv, iii, i, ii"
+              ],
+              "answer": "[C] ii, iv, i, iii"
+            },
+            {
+              "question": "What is the correct example of phonological awareness?",
+              "options": [
+                "[A] Identification of rhyming words",
+                "[B] Flipping pages of a book from front-to-back",
+                "[C] Awareness of punctuation marks, logos and labels",
+                "[D] Identification of book's title, author, illustrator, front page"
+              ],
+              "answer": "[A] Identification of rhyming words"
+            },
+            {
+              "question": "What is the essential component in implementing a play way, activity-based approach across the foundational stage?",
+              "options": [
+                "[A] Absolutely Formal Environment",
+                "[B] Child-friendly Environment",
+                "[C] Instruction oriented Environment",
+                "[D] Teacher dominated Environment"
+              ],
+              "answer": "[B] Child-friendly Environment"
+            },
+            {
+              "question": "A sum total of cognitive elements, functional aspects as well as interpersonal attributes and ethical values is known as",
+              "options": [
+                "[A] Competency",
+                "[B] Learning Outcomes",
+                "[C] Skill",
+                "[D] Attitude"
+              ],
+              "answer": "[A] Competency"
+            },
+            {
+              "question": "Lakshya /Targets have been defined to monitor the progress of FLN mission by the",
+              "options": [
+                "[A] State Functionaries",
+                "[B] Students",
+                "[C] Teachers",
+                "[D] Parents"
+              ],
+              "answer": "[A] State Functionaries"
+            },
+            {
+              "question": "Which of the following is incorrect in relation to ring set puzzles? Ring set puzzle:",
+              "options": [
+                "[A] Improves understanding of colour, shape, etc.",
+                "[B] Can be used to develop fine motor skills",
+                "[C] Enhances gross motor skills",
+                "[D] Is made up of glass"
+              ],
+              "answer": "[C] Enhances gross motor skills"
+            },
+            {
+              "question": "Which of the following is not a dimension of assessments of mathematics learning?",
+              "options": [
+                "[A] Mathematical reasoning",
+                "[B] Disposition towards mathematics",
+                "[C] Procedural knowledge",
+                "[D] Communication"
+              ],
+              "answer": "[D] Communication"
+            },
+            {
+              "question": "NCERT, as a leading academic institution in the country, has to play an important role in attaining ____________ goals by developing material and conducting training for teacher and teacher educators.",
+              "options": [
+                "[A] Socialisation",
+                "[B] Cognitive",
+                "[C] Foundational literacy and numeracy",
+                "[D] Creative"
+              ],
+              "answer": "[C] Foundational literacy and numeracy"
+            },
+            {
+              "question": "Early years are 'critical' in any child's life span since the _________ is more rapid than at any other stage of development.",
+              "options": [
+                "[A] Rate of development",
+                "[B] Rate of life",
+                "[C] Rate of speed",
+                "[D] Rate of growth"
+              ],
+              "answer": "[A] Rate of development"
+            },
+            {
+              "question": "Pedagogical leadership is a comprehensive field of expertise wherein a leader needs to possess ....",
+              "options": [
+                "[A] Deep understanding of teaching subjects of primary class",
+                "[B] In-depth knowledge of pedagogies useful for children of 3-9 years of age",
+                "[C] Deep understanding of experimental models",
+                "[D] Deep knowledge of transaction pedagogies for children of 6-14 years of age"
+              ],
+              "answer": "[D] Deep knowledge of transaction pedagogies for children of 6-14 years of age"
+            },
+            {
+              "question": "The indicators of a HPC include the",
+              "options": [
+                "[A] The 21st century skills such as Critical Thinking, Consumer, Problem Solving, Creativity, Communication, and Collaboration.",
+                "[B] The 21st century skills such as Critical Thinking, Change Management, Problem Solving, Creativity, Communication, Collaboration.",
+                "[C] 21st century skills such as Critical Thinking, Problem Solving, Creativity, Communication and Collaboration.",
+                "[D] 21st century skills such as Critical Thinking, Problem Solving, Creativity, Communication, Construction and Collaboration."
+              ],
+              "answer": "[C] 21st century skills such as Critical Thinking, Problem Solving, Creativity, Communication and Collaboration."
+            },
+            {
+              "question": "According to the New Education Policy - 2020 (NEP - 2020) the progress card of all children for school-based assessment, which the school must communicate to the parents, will be",
+              "options": [
+                "[A] Futuristic in nature",
+                "[B] Creative in nature",
+                "[C] Holistic in nature",
+                "[D] Progressive in nature"
+              ],
+              "answer": "[C] Holistic in nature"
+            },
+            {
+              "question": "_______ cannot be adopted for children with special needs.",
+              "options": [
+                "[A] Digital Resources",
+                "[B] Assistive technologies",
+                "[C] Printed Materials",
+                "[D] Energied books"
+              ],
+              "answer": "[C] Printed Materials"
+            },
+            {
+              "question": "The objective of introducing toys across the foundational stages is:",
+              "options": [
+                "[A] to remove poverty",
+                "[B] to promote experiential learning from an early age",
+                "[C] to rehabilitate toy makers",
+                "[D] to bring equity in community"
+              ],
+              "answer": "[B] to promote experiential learning from an early age"
+            },
+            {
+              "question": "When should the worksheets be given to the children?",
+              "options": [
+                "[A] Before children have sufficient opportunities to play with concrete objects or toys and play-based activities",
+                "[B] At the beginning of the activities",
+                "[C] Whenever children want",
+                "[D] After children have sufficient opportunities to play with concrete objects or toys and play-based activities"
+              ],
+              "answer": "[D] After children have sufficient opportunities to play with concrete objects or toys and play-based activities"
+            },
+            {
+              "question": "What term is used for preschool III in NEP-2020?",
+              "options": [
+                "[A] Balbadi",
+                "[B] Balvatika",
+                "[C] Anganwadi",
+                "[D] Balvikas"
+              ],
+              "answer": "[B] Balvatika"
+            },
+            {
+              "question": "The basic aim of the ______________ is to enable all children to read and respond with comprehension, independently write with understanding, understand the reasoning in the domains of number, measurement and shapes, and become independent in problem-solving by way of numeracy spatial understanding skills.",
+              "options": [
+                "[A] National mission on Foundational Literacy and Numeracy",
+                "[B] National mission on family and welfare",
+                "[C] National mission on health and education",
+                "[D] National mission on social welfare"
+              ],
+              "answer": "[A] National mission on Foundational Literacy and Numeracy"
+            },
+            {
+              "question": "ICT stands for _______________",
+              "options": [
+                "[A] Information to Communication Technology",
+                "[B] Information and Communication Technology",
+                "[C] Information and Common Technology",
+                "[D] Information and Communication Terminology"
+              ],
+              "answer": "[B] Information and Communication Technology"
             }
           ]
         }
