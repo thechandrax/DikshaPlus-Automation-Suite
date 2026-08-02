@@ -385,7 +385,7 @@ Option Choices:
 INSTRUCTIONS:
 Return ONLY the exact text of the correct option choice from the list above. Do NOT include option numbers (1, 2, 3), do NOT include explanations. Return ONLY the exact option text."""
 
-    # 1. PRIORITY 1: Google Gemini AI Multi-Key Pool (2 ATTEMPTS)
+    # 1. PRIORITY 1: Google Gemini AI Multi-Key Pool (1 ATTEMPT PER KEY)
     gemini_keys = getattr(config, "GEMINI_API_KEYS", [])
     if not gemini_keys and hasattr(config, "GEMINI_API_KEY") and config.GEMINI_API_KEY:
         gemini_keys = [config.GEMINI_API_KEY]
@@ -393,44 +393,42 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
     models_to_try = ["gemini-2.0-flash", "gemini-flash-latest"]
 
     if gemini_keys:
-        for gemini_attempt in range(1, 3):
-            logger.info(f"  🧠 [GEMINI AI ATTEMPT {gemini_attempt}/2] Requesting solution via Gemini API...")
-            for key_idx, api_key in enumerate(gemini_keys, 1):
-                for model_name in models_to_try:
-                    try:
-                        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
-                        payload = json.dumps({
-                            "contents": [{"parts": [{"text": prompt}]}]
-                        }).encode('utf-8')
-                        
-                        headers = {
-                            'Content-Type': 'application/json',
-                            'x-goog-api-key': api_key
-                        }
+        logger.info("  🧠 [GEMINI AI ATTEMPT 1/1] Requesting solution via Gemini API...")
+        for key_idx, api_key in enumerate(gemini_keys, 1):
+            for model_name in models_to_try:
+                try:
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
+                    payload = json.dumps({
+                        "contents": [{"parts": [{"text": prompt}]}]
+                    }).encode('utf-8')
+                    
+                    headers = {
+                        'Content-Type': 'application/json',
+                        'x-goog-api-key': api_key
+                    }
 
-                        req = urllib.request.Request(url, data=payload, headers=headers)
-                        res = urllib.request.urlopen(req, timeout=12)
-                        resp_data = json.loads(res.read().decode('utf-8'))
-                        ans_text = resp_data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "").strip()
-                        
-                        clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
-                        if clean_ans:
-                            logger.info(f"  🧠 [GEMINI AI SUCCESS] Solved on Attempt {gemini_attempt}/2 via Key #{key_idx} ({model_name}) -> '{clean_ans}'")
-                            return clean_ans
-                    except urllib.error.HTTPError as http_err:
-                        if http_err.code in (429, 503):
-                            logger.warning(f"  ⏳ [GEMINI RATE LIMIT] Key #{key_idx} rate limited. Trying next key...")
-                            time.sleep(1)
-                            continue
-                        elif http_err.code in (401, 403):
-                            logger.error(f"  ❌ [GEMINI API ERROR {http_err.code}] Key #{key_idx} invalid.")
-                            break
-                    except Exception as ex:
-                        logger.warning(f"  ⚠️ [GEMINI SOLVER NOTICE]: {ex}")
+                    req = urllib.request.Request(url, data=payload, headers=headers)
+                    res = urllib.request.urlopen(req, timeout=12)
+                    resp_data = json.loads(res.read().decode('utf-8'))
+                    ans_text = resp_data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "").strip()
+                    
+                    clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
+                    if clean_ans:
+                        logger.info(f"  🧠 [GEMINI AI SUCCESS] Solved via Key #{key_idx} ({model_name}) -> '{clean_ans}'")
+                        return clean_ans
+                except urllib.error.HTTPError as http_err:
+                    if http_err.code in (429, 503):
+                        logger.warning(f"  ⏳ [GEMINI RATE LIMIT] Key #{key_idx} rate limited. Trying next key...")
                         time.sleep(1)
+                        continue
+                    elif http_err.code in (401, 403):
+                        logger.error(f"  ❌ [GEMINI API ERROR {http_err.code}] Key #{key_idx} invalid.")
                         break
-            if gemini_attempt < 2:
-                time.sleep(2)
+                except Exception as ex:
+                    logger.warning(f"  ⚠️ [GEMINI SOLVER NOTICE]: {ex}")
+                    time.sleep(1)
+                    break
+
 
     # 2. PRIORITY 2: Groq Cloud LPU API Key Pool (100% FREE - 14,400 RPD) (https://console.groq.com/)
     groq_keys = getattr(config, "GROQ_API_KEYS", [])
@@ -440,51 +438,42 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
             groq_keys = [single_groq]
 
     if groq_keys:
-        for groq_attempt in range(1, 3):
-            logger.info(f"  ⚡ [GROQ LPU ATTEMPT {groq_attempt}/2] Gemini keys exhausted. Requesting ultra-fast solution via Groq Cloud API...")
-            for g_idx, groq_key in enumerate(groq_keys, 1):
-                for model_name in ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.3-70b-versatile", "llama-3.1-8b-instant"]:
-                    try:
+        logger.info("  ⚡ [GROQ LPU ATTEMPT 1/1] Gemini keys exhausted. Requesting ultra-fast solution via Groq Cloud API...")
+        for g_idx, groq_key in enumerate(groq_keys, 1):
+            for model_name in ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.3-70b-versatile", "llama-3.1-8b-instant"]:
+                try:
+                    url = "https://api.groq.com/openai/v1/chat/completions"
+                    payload = json.dumps({
+                        "model": model_name,
+                        "messages": [
+                            {"role": "system", "content": "You are an expert AI teacher solving quiz questions for an educational course."},
+                            {"role": "user", "content": prompt}
+                        ],
+                        "temperature": 0.1
+                    }).encode('utf-8')
 
-                        url = "https://api.groq.com/openai/v1/chat/completions"
-                        payload = json.dumps({
-                            "model": model_name,
-                            "messages": [
-                                {"role": "system", "content": "You are an expert AI teacher solving quiz questions for an educational course."},
-                                {"role": "user", "content": prompt}
-                            ],
-                            "temperature": 0.1
-                        }).encode('utf-8')
+                    headers = {
+                        'Content-Type': 'application/json',
+                        'Authorization': f'Bearer {groq_key}',
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                    }
 
-                        headers = {
-                            'Content-Type': 'application/json',
-                            'Authorization': f'Bearer {groq_key}',
-                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-                        }
+                    req = urllib.request.Request(url, data=payload, headers=headers)
+                    res = urllib.request.urlopen(req, timeout=12)
+                    resp_data = json.loads(res.read().decode('utf-8'))
+                    ans_text = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
 
+                    clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
+                    if clean_ans:
+                        logger.info(f"  🧠 [GROQ LPU SUCCESS] Solved via Groq ({model_name}) Key #{g_idx} -> '{clean_ans}'")
+                        return clean_ans
+                except Exception as ex:
+                    logger.warning(f"  ⚠️ [GROQ AI NOTICE] ({model_name} Key #{g_idx}): {ex}")
 
-                        req = urllib.request.Request(url, data=payload, headers=headers)
-
-                        res = urllib.request.urlopen(req, timeout=12)
-
-                        resp_data = json.loads(res.read().decode('utf-8'))
-
-                        ans_text = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
-
-                        clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
-
-                        if clean_ans:
-
-                            logger.info(f"  🧠 [GROQ LPU SUCCESS] Solved on Attempt {groq_attempt}/2 via Groq ({model_name}) Key #{g_idx} -> '{clean_ans}'")
-                            return clean_ans
-                    except Exception as ex:
-                        logger.warning(f"  ⚠️ [GROQ AI NOTICE] ({model_name} Key #{g_idx}): {ex}")
-
-            if groq_attempt < 2:
-                time.sleep(2)
 
 
     # 3. STEPPED BACKOFF RETRY PROTOCOL: 30s -> 45s -> 60s
+
     logger.warning("  ⚠️ [AI INITIAL ATTEMPTS EXHAUSTED] Entering Stepped Backoff Retry Protocol (30s -> 45s -> 60s)...")
     backoff_delays = [30, 45, 60]
     for b_idx, delay_sec in enumerate(backoff_delays, 1):
