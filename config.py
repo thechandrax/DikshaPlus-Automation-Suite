@@ -65,9 +65,10 @@ elif IS_DOCKER or IS_TERMUX:
 else:
     HEADLESS = False   # Default to False for local GUI desktop run
 
-# Auto-configure Termux Node.js & Chromium drivers to bypass x86_64 ELF mismatch
+# Auto-configure Termux Node.js & Chromium drivers & patch coreBundle.js Unsupported platform check
 if IS_TERMUX:
     import shutil
+    import sys
     node_bin = shutil.which("node") or "/data/data/com.termux/files/usr/bin/node"
     if os.path.exists(node_bin):
         os.environ["PLAYWRIGHT_NODEJS_PATH"] = node_bin
@@ -75,6 +76,21 @@ if IS_TERMUX:
     chrom_bin = shutil.which("chromium") or "/data/data/com.termux/files/usr/bin/chromium"
     if os.path.exists(chrom_bin):
         os.environ["PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH"] = chrom_bin
+
+    # Auto-patch Playwright coreBundle.js to allow 'android' platform execution
+    try:
+        for sp in sys.path:
+            cb_path = Path(sp) / "playwright" / "driver" / "package" / "lib" / "coreBundle.js"
+            if cb_path.exists():
+                cb_text = cb_path.read_text(encoding="utf-8", errors="ignore")
+                if "Unsupported platform" in cb_text:
+                    cb_text = cb_text.replace('throw new Error("Unsupported platform: " + process.platform);', '/* patched termux android */')
+                    cb_text = cb_text.replace('throw new Error(`Unsupported platform: ${process.platform}`);', '/* patched termux android */')
+                    cb_text = cb_text.replace('throw new Error("Unsupported platform: "', 'console.warn("Termux Android platform bypass: "')
+                    cb_path.write_text(cb_text, encoding="utf-8")
+    except Exception:
+        pass
+
 
 
 

@@ -17,6 +17,22 @@ python -c "import playwright" 2>/dev/null || {
     pip install --no-deps --platform manylinux2014_aarch64 --only-binary=:all: --target "$SP_PATH" playwright
 }
 
+# Auto-patch coreBundle.js to bypass 'Unsupported platform: android' error
+python -c "
+import sys
+from pathlib import Path
+for sp in sys.path:
+    cb = Path(sp) / 'playwright' / 'driver' / 'package' / 'lib' / 'coreBundle.js'
+    if cb.exists():
+        t = cb.read_text(encoding='utf-8', errors='ignore')
+        if 'Unsupported platform' in t:
+            t = t.replace('throw new Error(\"Unsupported platform: \" + process.platform);', '/* patched android */')
+            t = t.replace('throw new Error(\`Unsupported platform: \${process.platform}\`);', '/* patched android */')
+            t = t.replace('throw new Error(\"Unsupported platform: \"', 'console.warn(\"Termux Android platform bypass: \"')
+            cb.write_text(t, encoding='utf-8')
+" 2>/dev/null || true
+
+
 echo "========================================================================"
 echo " ⚡ LAUNCHING DIKSHA+ AUTOMATION SUITE"
 echo "========================================================================"

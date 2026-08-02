@@ -1103,6 +1103,118 @@
           ]
         }
       ]
+    },
+    {
+      "module_no": 11,
+      "module_name": "Module 11: Integration of ICT in Teaching, Learning and Assessment",
+      "subsections": [
+        {
+          "subsection_no": 28,
+          "subsection_name": "Formative Assessment 11",
+          "questions": [
+            {
+              "question": "Which of the following is a software where a child can express through stamp drawing.",
+              "options": [
+                "[A] Educative8",
+                "[B] GCompris",
+                "[C] Tux paint",
+                "[D] Compris"
+              ],
+              "answer": "[C] Tux paint"
+            },
+            {
+              "question": "Which of the following tools can be used for creativity?",
+              "options": [
+                "[A] Gcompris",
+                "[B] Eduactiv8",
+                "[C] Tuxmath",
+                "[D] Tuxpaint"
+              ],
+              "answer": "[D] Tuxpaint"
+            },
+            {
+              "question": "ICT integration in teaching-learning means i. only the use of internet and digital devices ii. Thoughful use of technology iii. Use of digital devices as a means to achieve the required objectives and learning outcomes iv. Usage of technology seamlessly for educational processes Choose the correct option",
+              "options": [
+                "[A] ii and iii only",
+                "[B] i only",
+                "[C] ii, iii and iv",
+                "[D] i and iv"
+              ],
+              "answer": "[D] ii, iii and iv"
+            },
+            {
+              "question": "Micro-level indicates",
+              "options": [
+                "[A] The level of the actual classroom where teaching learning takes place",
+                "[B] The National Level",
+                "[C] The State level",
+                "[D] The regional level"
+              ],
+              "answer": "[A] The level of the actual classroom where teaching learning takes place"
+            },
+            {
+              "question": "ICT is a set of technological tools and resources which create, store and transmit digital information, has been defined by ____",
+              "options": [
+                "[A] UNESCO",
+                "[B] World Bank",
+                "[C] UNICEF",
+                "[D] NCERT"
+              ],
+              "answer": "[D] NCERT"
+            },
+            {
+              "question": "Content transacted at the _______ stage may include readiness for reading, writing and numeracy.",
+              "options": [
+                "[A] Middle",
+                "[B] Foundational",
+                "[C] Higher Secondary",
+                "[D] Secondary"
+              ],
+              "answer": "[B] Foundational"
+            },
+            {
+              "question": "The hierarchy of the content transacted at the pre primary/ primary stage under the dimensions of knowledge is",
+              "options": [
+                "[A] Metacognition, Factual, Procedural, Conceptual",
+                "[B] Factual, Procedural, Metacognition, Conceptual",
+                "[C] Factual, Procedural, Conceptual, Metacognition",
+                "[D] Factual, Conceptual,Procedural, Metacognition"
+              ],
+              "answer": "[D] Factual, Conceptual,Procedural, Metacognition"
+            },
+            {
+              "question": "Excess uses of ICT in pre primary and primary education will be ____",
+              "options": [
+                "[A] Beneficial for cognition and social emotion",
+                "[B] Harmful physically",
+                "[C] Enhances learning skill",
+                "[D] Expand the social network"
+              ],
+              "answer": "[B] Harmful physically"
+            },
+            {
+              "question": "SWAYAM refers to",
+              "options": [
+                "[A] Study Webs of Assessment-Learning for Young Aspiring Minds",
+                "[B] Study Wide for Active-Learning for Young Aspiring Minds",
+                "[C] Study Webs of Active-Learning for Young Aspiring Minds",
+                "[D] School Webs of Active-Learning for Young Aspiring Minds"
+              ],
+              "answer": "[C] Study Webs of Active-Learning for Young Aspiring Minds"
+            },
+            {
+              "question": "One of the focus areas of NEP 2020 is Foundation Literacy and Numeracy (FLN) which was always a focus of-",
+              "options": [
+                "[A] Distance education",
+                "[B] Secondary Education",
+                "[C] Higher Education",
+                "[D] Pre-primary and Primary education"
+              ],
+              "answer": "[D] Pre-primary and Primary education"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
