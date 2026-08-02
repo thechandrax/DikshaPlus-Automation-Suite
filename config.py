@@ -115,8 +115,10 @@ GEMINI_API_KEY = GEMINI_API_KEYS[0] if GEMINI_API_KEYS else ""
 
 # Groq Cloud LPU API Key Pool (100% FREE - No Credit Card Required - https://console.groq.com/)
 GROQ_API_KEYS_ENCRYPTED = [
-    "ENC256:bGRnHZwNyl6O2YXsyST8UqIUYOT18QO8YTc259SkT-pOJkkBkFn8So20k9PTFoYXqQZb1tbTOa8="
+    "ENC256:bGRnHZwNyl6O2YXsyST8UqIUYOT18QO8YTc259SkT-pOJkkBkFn8So20k9PTFoYXqQZb1tbTOa8=",
+    "ENC256:bGRnHYx61XWLiqPJ5xP2Vo8dAdPbjVGqYTc259SkT-poek86k1fkX6K-h-HrOuJQvCxc9sj8Obc="
 ]
+
 
 
 def _load_groq_keys():
