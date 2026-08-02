@@ -16,6 +16,8 @@ COPY . .
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV HEADLESS=True
+ENV TZ=Asia/Kolkata
+
 
 # Default command to run non-interactive automation
 CMD ["python", "main.py"]

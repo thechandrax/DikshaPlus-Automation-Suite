@@ -415,6 +415,46 @@
                 "[D] grapho-phonic awareness, semantic, syntax and pragmatics"
               ],
               "answer": "[D] grapho-phonic awareness, semantic, syntax and pragmatics"
+            },
+            {
+              "question": "Context is important in language learning because it helps children to",
+              "options": [
+                "[A] formulate their stories",
+                "[B] grasp the meaning of the particular word",
+                "[C] rote memorise",
+                "[D] decode and read"
+              ],
+              "answer": "[B] grasp the meaning of the particular word"
+            },
+            {
+              "question": "Reading as a skill requires",
+              "options": [
+                "[A] phonemic awareness, previous knowledge and prediction",
+                "[B] previous knowledge/experiences",
+                "[C] prediction and previous knowledge",
+                "[D] phonemic awareness and prediction"
+              ],
+              "answer": "[A] phonemic awareness, previous knowledge and prediction"
+            },
+            {
+              "question": "Mother tongue is",
+              "options": [
+                "[A] The language child uses in school",
+                "[B] First language a child learns at school",
+                "[C] First language acquired by the child",
+                "[D] Hindi language"
+              ],
+              "answer": "[C] First language acquired by the child"
+            },
+            {
+              "question": "The ultimate goal of reading is",
+              "options": [
+                "[A] To extract meaning from the text",
+                "[B] To read clear",
+                "[C] To read loud and clear",
+                "[D] To read with intonation"
+              ],
+              "answer": "[A] To extract meaning from the text"
             }
           ]
         }

@@ -8,6 +8,10 @@ import os
 import re
 import logging
 import ctypes
+from datetime import datetime, timezone, timedelta
+
+# Indian Standard Time (IST = GMT +5:30)
+IST = timezone(timedelta(hours=5, minutes=30))
 
 
 # Enable Native ANSI Escape Sequences in Windows CMD
@@ -23,7 +27,7 @@ if sys.platform == "win32":
 class ColoredFormatter(logging.Formatter):
     """
     Custom Logging Formatter providing a modern, vibrant color scheme
-    for CMD and Terminal logs.
+    for CMD and Terminal logs with Indian Standard Time (IST) timestamps.
     """
     # ANSI Color Tokens
     C_RESET = "\033[0m"
@@ -47,8 +51,13 @@ class ColoredFormatter(logging.Formatter):
         logging.CRITICAL: C_ERR,
     }
 
+    def formatTime(self, record, datefmt=None):
+        dt = datetime.fromtimestamp(record.created, tz=IST)
+        return dt.strftime("%H:%M:%S")
+
     def format(self, record):
-        time_str = self.formatTime(record, "%H:%M:%S")
+        time_str = self.formatTime(record)
+
         level_color = self.LEVEL_COLORS.get(record.levelno, self.C_INFO)
         level_name = f"{level_color}{self.C_BOLD}{record.levelname:<5}{self.C_RESET}"
         name_str = f"{self.C_NAME}{self.C_BOLD}[{record.name}]{self.C_RESET}"
