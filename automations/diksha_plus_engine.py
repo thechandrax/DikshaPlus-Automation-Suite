@@ -2667,10 +2667,10 @@ async def run_diksha_automation(target_course_url=None, username=None, password=
     start_keyboard_pause_listener()
     answer_key = load_answer_key()
 
-    logger.info("=" * 35)
     logger.info("   DIKSHA AUTOMATION PIPELINE")
     logger.info("  💡 [HOTKEY ENABLED] Press 'P' or 'Spacebar' in terminal to PAUSE / RESUME!")
     logger.info("=" * 35)
+
 
 
 
