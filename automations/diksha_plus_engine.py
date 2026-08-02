@@ -1659,7 +1659,20 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             except Exception as text_ex:
                 logger.warning(f"  --> Text response filling notice: {text_ex}")
 
-        # Circuit Breaker Protocol: If AI solver failed after 30s, 45s, and 60s backoff retries, TOTAL STOP & CLOSE SERVER CONTEXT!
+        # Fallback to Option A if AI solver rate limit is exhausted, ensuring the quiz continues smoothly on Railway
+        if not selected_option and parsed_option_elements:
+            try:
+                first_opt_text, first_row_el = parsed_option_elements[0]
+                r_btn = first_row_el.locator("input[type='radio'], input[type='checkbox']").first
+                if await r_btn.count() == 0:
+                    r_btn = first_row_el
+                await r_btn.click(force=True)
+                selected_option = True
+                logger.warning(f"  ⚠️ [QUIZ AI RATE LIMIT FALLBACK {q_tag}]: Selected Option A ('{first_opt_text}') to maintain continuous execution.")
+                await page.wait_for_timeout(500)
+            except Exception as fb_ex:
+                logger.warning(f"  --> Quiz fallback notice: {fb_ex}")
+
         if not selected_option:
             logger.error(f"\n❌ [CRITICAL AI RATE LIMIT EXHAUSTED {q_tag}] Could not solve Question '{q_text_screen[:45]}...' after 30s, 45s, and 60s backoff retries.")
             logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Closing server context cleanly and stopping all automation processes!\n")
@@ -1668,6 +1681,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             except Exception:
                 pass
             raise RuntimeError(f"AI_RATE_LIMIT_EXHAUSTED: Question '{q_text_screen[:45]}...' could not be solved after 30s, 45s, 60s retries.")
+
 
 
         next_nav = target_frame.locator("button.submit-feed-btn, #submitFeedbackBtn11, input[value='Next Question'], input[value='Next'], button:has-text('Next Question'), button:has-text('Next'), .btn-next, a:has-text('Next'), button:has-text('Submit Feedback'), input[value*='Submit Feedback'], button:has-text('Submit'), input[value*='Submit']").first
@@ -2277,8 +2291,10 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
 
             item_attempts = {}
+            completed_items = set()
 
             # Check if Module header is ALREADY 100% complete
+
             if await is_header_100_percent_complete(header):
                 logger.info(f"  --> [SKIP MODULE] '{header_title}' is ALREADY 100% COMPLETED. Skipping!")
                 continue
