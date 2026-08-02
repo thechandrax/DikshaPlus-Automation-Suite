@@ -1,13 +1,13 @@
 # ⚙️ MODULE EXECUTION, RETRY PROTOCOL & 10-ATTEMPT SYNC WINDOW GUIDE
 
-This document provides a comprehensive technical reference for the **Module Execution Pipeline**, **Video Playback Automation Engine**, **Locked Item Recovery**, **10-Attempt x 15s (150s) Patient Server Sync Window**, **Certificate `customcert` Auto-Completion Protocol**, **Interleaved Gemini/Groq AI Pool**, and **Circuit Breaker Safeguards** in **DIKSHA+ Automation Suite**.
+This document provides a comprehensive technical reference for the **Module Execution Pipeline**, **Video Playback Automation Engine (16x / 10x Dynamic Acceleration)**, **Locked Item Recovery**, **10-Attempt x 15s (150s) Patient Server Sync Window**, **Certificate `customcert` Auto-Completion Protocol**, **Interleaved Gemini/Groq AI Pool**, and **Circuit Breaker Safeguards** in **DIKSHA+ Automation Suite**.
 
 ---
 
 ## 📑 Table of Contents
 
 1. [Module Execution Pipeline](#1-module-execution-pipeline)
-2. [📹 Video Playback Automation Engine](#2--video-playback-automation-engine)
+2. [📹 Video Playback Automation Engine (16x / 10x Speed)](#2--video-playback-automation-engine-16x--10x-speed)
 3. [Locked Item Session Recovery](#3-locked-item-session-recovery)
 4. [10-Attempt x 15s (150s) Patient Server Sync Window](#4-10-attempt-x-15s-150s-patient-server-sync-window)
 5. [Certificate `customcert` Auto-Completion Protocol](#5-certificate-customcert-auto-completion-protocol)
@@ -35,7 +35,7 @@ DIKSHA+ executes course modules sequentially from Module #1 to Module #N with st
 
 ---
 
-## 2. 📹 Video Playback Automation Engine
+## 2. 📹 Video Playback Automation Engine (16x / 10x Speed)
 
 When DIKSHA+ opens a video lesson (`act_type == "url"` or HTML5 `<video>` element):
 
@@ -46,24 +46,32 @@ When DIKSHA+ opens a video lesson (`act_type == "url"` or HTML5 `<video>` elemen
    Step 1: Set Video Muted (video.muted = true) & Resolution (360p)
               │
               ▼
-   Step 2: Accelerate Playback Speed (video.playbackRate = 4.0)
+   Step 2: 15s Warm-up Buffer @ 1.0x Speed (for telemetry initialization)
               │
               ▼
-   Step 3: 🛡️ Autoplay Safeguard (Monitors video every 1.5s -> Auto-triggers video.play() if paused)
+   Step 3: 🚀 Dynamic Playback Acceleration:
+           ├─► 16x Speed (for Long Videos >= 5 min / 300s)
+           └─► 10x Speed (for Short Videos < 5 min / 300s)
               │
               ▼
-   Step 4: Dispatch HTML5 'ended' Event & Wait 5s for DIKSHA Server Tracking
+   Step 4: 45s Final Buffer @ 1.0x Speed for natural telemetry ended event
               │
               ▼
-   Step 5: Verify 100% Checkmark (✓) & Close Modal
+   Step 5: 🛡️ Autoplay Safeguard (Monitors video every 1.5s -> Auto-triggers video.play() if paused)
+              │
+              ▼
+   Step 6: Dispatch HTML5 'ended' Event & Verify 100% Checkmark (✓)
 ```
 
-### 🔑 Video Engine Features:
+### 🔑 Video Engine Speed & Acceleration Rules:
 * **Audio Muting & Data Saver**: Mutes audio (`video.muted = true`) and sets stream resolution to 360p to minimize mobile data usage.
-* **Playback Acceleration**: Accelerates video playback speed (`video.playbackRate = 4.0`) to complete video lessons rapidly.
+* **15s Warm-up Buffer (@ 1.0x Speed)**: Plays initial 15 seconds at normal 1.0x speed so DIKSHA server telemetry records clean video session initialization.
+* **🚀 16x Speed Acceleration (Long Videos $\ge$ 5 min / 300s)**: If video duration is 5 minutes or longer, DIKSHA+ accelerates playback to **16x Speed** (`video.playbackRate = 16.0`)!
+* **⚡ 10x Speed Acceleration (Short Videos $<$ 5 min / 300s)**: If video duration is less than 5 minutes, DIKSHA+ accelerates playback to **10x Speed** (`video.playbackRate = 10.0`)!
+* **45s Final Buffer (@ 1.0x Speed)**: Slows video back down to 1.0x speed for the final 45 seconds to ensure DIKSHA server receives natural telemetry completion events.
 * **🛡️ Autoplay Safeguard**: An automated background watcher inspects the video element every **1.5 seconds**. If DIKSHA server lag or browser autoplay restrictions pause the video, DIKSHA+ automatically logs:
   `🛡️ [AUTOPLAY SAFEGUARD] Video was paused. Auto-triggered video.play() to keep playback active.`
-* **HTML5 Completion Sync**: Dispatches the native `ended` event to the HTML5 video element, waits 5 seconds for backend progress tracking, and verifies the 100% checkmark (`✓`).
+* **HTML5 Completion Sync**: Dispatches the native `ended` event to the HTML5 video element, waits 10s-15s for backend progress tracking, and verifies the 100% checkmark (`✓`).
 
 ---
 
