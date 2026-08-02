@@ -72,43 +72,13 @@ else:
 
 
 
-# Auto-configure Termux Node.js & Chromium drivers & patch coreBundle.js Unsupported platform check
-if IS_TERMUX:
+# Auto-configure system Chromium driver paths when running on Linux / Ubuntu PRoot
+if os.name != "nt":
     import shutil
-    import sys
-    node_bin = shutil.which("node") or "/data/data/com.termux/files/usr/bin/node"
-    if os.path.exists(node_bin):
-        os.environ["PLAYWRIGHT_NODEJS_PATH"] = node_bin
-    os.environ["PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD"] = "1"
-    os.environ["PLAYWRIGHT_BROWSERS_PATH"] = "0"
-    chrom_bin = shutil.which("chromium-browser") or shutil.which("chromium") or "/usr/bin/chromium-browser" or "/data/data/com.termux/files/usr/bin/chromium"
+    chrom_bin = shutil.which("chromium-browser") or shutil.which("chromium") or "/usr/bin/chromium-browser"
     if chrom_bin and os.path.exists(chrom_bin):
         os.environ["PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH"] = chrom_bin
 
-
-    # Auto-patch Playwright coreBundle.js to allow 'android' platform execution & fix calculateHostPlatform
-    try:
-        for sp in sys.path:
-            cb_path = Path(sp) / "playwright" / "driver" / "package" / "lib" / "coreBundle.js"
-            if cb_path.exists():
-                cb_text = cb_path.read_text(encoding="utf-8", errors="ignore")
-                patched = False
-                if 'calculateHostPlatform' in cb_text:
-                    cb_text = cb_text.replace('function calculateHostPlatform(){', 'function calculateHostPlatform(){if(process.platform==="android")return"linux-arm64";')
-                    patched = True
-                if "Unsupported platform" in cb_text:
-                    cb_text = cb_text.replace('throw new Error("Unsupported platform: " + process.platform);', '/* patched termux android */')
-                    cb_text = cb_text.replace('throw new Error(`Unsupported platform: ${process.platform}`);', '/* patched termux android */')
-                    cb_text = cb_text.replace('throw new Error("Unsupported platform: "', 'console.warn("Termux Android platform bypass: "')
-                    patched = True
-                if "hostPlatform" in cb_text:
-                    cb_text = cb_text.replace('path.join(hostPlatform', 'path.join(hostPlatform || "linux-arm64"')
-                    cb_text = cb_text.replace('path.join(hostPlatform,', 'path.join(hostPlatform || "linux-arm64",')
-                    patched = True
-                if patched:
-                    cb_path.write_text(cb_text, encoding="utf-8")
-    except Exception:
-        pass
 
 
 
