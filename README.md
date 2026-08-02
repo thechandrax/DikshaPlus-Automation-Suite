@@ -1,19 +1,21 @@
 # ⚡ DIKSHA+ AUTOMATION SUITE
 
-An enterprise-grade, end-to-end automation engine for **DIKSHA / Moodle LMS Portals**. Features real-time **Gemini AI Multi-Key Live Solving**, **Stepped Backoff Retries (30s -> 45s -> 60s)**, **Total Server Stop Circuit Breaker**, **Feedback Form Auto-Filling Engine**, **Automatic Video Auto-Play & Stall Recovery Safeguard**, **HTML5 Video Element Screen Pause/Play Control**, **Clean Module -> Subsection JSON Architecture**, **Unicode Text Normalization**, **Hot-Key Live Pause/Resume**, **Question 1 Navigation Reset Protocol**, and complete **H5P, Formative Assessment & Feedback Form** automation.
+An enterprise-grade, end-to-end automation engine for **DIKSHA / Moodle LMS Portals**. Features real-time **Multi-AI Live Solving (Google Gemini + Groq Cloud LPU)**, **8-Key 256-Bit Encrypted Key Pool**, **1 Attempt Per Key Initial Pass**, **Stepped Backoff Retries (30s -> 45s -> 60s)**, **Total Server Stop Circuit Breaker**, **Feedback Form Auto-Filling Engine**, **Automatic Video Auto-Play & Stall Recovery Safeguard**, **HTML5 Video Element Screen Pause/Play Control**, **Clean Module -> Subsection JSON Architecture**, **Unicode Text Normalization**, **Hot-Key Live Pause/Resume**, **Question 1 Navigation Reset Protocol**, and complete **H5P, Formative Assessment & Feedback Form** automation.
 
 ---
 
 ## 🌟 Key Features
 
-* **🧠 Gemini AI Multi-Key Pool Solver Engine**: When a quiz or feedback question is not found in your local answer key, the bot passes the question text + option choices to Gemini AI (`gemini-flash-latest` / `gemini-2.0-flash`), which solves the question live! With active 256-bit encrypted API keys in `config.py`, if Key #1 encounters rate limits (HTTP 429), the engine **instantly rotates to Key #2** without stopping!
+* **🧠 Multi-AI 8-Key Pool Solver Engine**: When a quiz or feedback question is not found in your local answer key:
+  * **Priority 1**: Tries **5 Encrypted Google Gemini Keys** (`gemini-2.0-flash`, `gemini-flash-latest`) for 1 attempt per key.
+  * **Priority 2**: Tries **3 Encrypted Groq Cloud LPU Keys** (`openai/gpt-oss-120b`, `openai/gpt-oss-20b`, `llama-3.3-70b-versatile`, `llama-3.1-8b-instant` - 1,000 tokens/sec) for 1 attempt per key.
 * **⏳ Stepped Backoff Retry Protocol (30s -> 45s -> 60s)**: If initial AI solver attempts run out due to API quota limits:
-  * **Retry #1**: Waits **30 seconds** for Gemini API quota reset $\rightarrow$ Retries AI solver across all keys/models!
-  * **Retry #2**: If still rate-limited, waits **45 seconds** $\rightarrow$ Retries AI solver across all keys/models!
-  * **Retry #3**: If still rate-limited, waits **60 seconds** $\rightarrow$ Retries AI solver across all keys/models!
-* **⛔ Total Server Stop Circuit Breaker (0% Default Fallback)**:
-  * Default Option [A] selection fallback is **completely removed**!
-  * If after the 30s, 45s, and 60s backoff retries a question cannot be solved, DIKSHA+ cleanly closes browser context (`page.context.close()`) and stops all server automation processes safely.
+  * **Retry #1**: Waits **30 seconds** for API quota reset $\rightarrow$ Retries AI solver across ALL 8 keys & models!
+  * **Retry #2**: If still rate-limited, waits **45 seconds** $\rightarrow$ Retries AI solver across ALL 8 keys & models!
+  * **Retry #3**: If still rate-limited, waits **60 seconds** $\rightarrow$ Retries AI solver across ALL 8 keys & models!
+* **⛔ Total Server Stop Circuit Breaker (0% Option A Fallback)**:
+  * Default Option [A] selection fallback is **100% completely removed**!
+  * If after the 30s, 45s, and 60s backoff retries a question cannot be solved with 100% accuracy, DIKSHA+ cleanly closes browser context (`page.context.close()`) and stops all server automation processes safely.
 * **📂 Clean Module -> Subsection JSON Architecture**: Course answer keys use the standard, clean hierarchy:
   * `modules` array $\rightarrow$ `subsections` array $\rightarrow$ `questions` array (`question`, `options`, `answer`).
 * **🛡️ Automatic Video Auto-Play & Network Stall Recovery Safeguard**: Continuously monitors the HTML5 video element every 1.5 seconds. If browser or server network lag causes the video stream to pause unexpectedly, DIKSHA+ automatically detects the stall and triggers `video.play()` to keep playback active!
@@ -21,13 +23,13 @@ An enterprise-grade, end-to-end automation engine for **DIKSHA / Moodle LMS Port
 * **📝 Dedicated DIKSHA Feedback Form Popup Engine**: Automatically opens and completes course Feedback Forms (Module #8):
   * **Native JS Event Dispatcher**: Triggers DIKSHA's custom AJAX modal handler (`<a act_type="feedback" data-id="...">View</a>`) via native MouseEvents.
   * **Visible Modal Container Scoping**: Waits up to 10s for the Feedback popup modal (`.modal-dialog`, `.modal-content`) to become open and visible on screen.
-  * **Dual-Pass JSON & AI Solver**: Matches feedback rating questions and open-text textarea questions against Course JSON answer keys or Gemini AI Live Solver!
+  * **Dual-Pass JSON & AI Solver**: Matches feedback rating questions and open-text textarea questions against Course JSON answer keys or Gemini/Groq AI Live Solver!
   * **Textarea Open-Text Response Handling**: Extracts open-ended textarea questions (e.g. `"What aspects of the training could be improved?"`), strips leading numbers, and fills full paragraph answers into `<textarea class="form-control">`!
   * **Modal Submission**: Clicks the big brown `Submit Feedback` button (`button:has-text('Submit Feedback')`, `#submitFeedbackBtn11`).
 
 * **🔀 Shuffled Option Resiliency**: Matches options on screen by **text content**, NOT hardcoded letters/positions! If Answer B moves to Option C on screen, DIKSHA+ matches the exact text and clicks Option C's radio button.
 * **🤖 Smart Headless Auto-Detection**: Local computer runs default to visible desktop GUI (`HEADLESS = False`). Railway Cloud / Docker deployments automatically detect the container environment and switch to `HEADLESS = True` with zero configuration required!
-* **🌐 2025/2026 Official Google API Auth Standard**: Fully compliant with [Google's official API Key specification](https://ai.google.dev/gemini-api/docs/api-key), sending mandatory `x-goog-api-key` headers and supporting encrypted key pools directly in `config.py`.
+* **🌐 2025/2026 Official Google & Groq API Standard**: Fully compliant with official API Key specifications, sending mandatory auth headers and supporting encrypted key pools directly in `config.py`.
 * **⏳ 3-Second Pacing Delay**: Features a smooth 3-second pacing delay before AI API calls to mimic human reading and prevent rate-limit quota exhaustion.
 * **🎯 Question 1 Navigation Reset Protocol**: When starting or continuing an assessment ("Continue Assessment"), DIKSHA+ automatically detects Question 1 in the right-side Quiz Navigation panel (`#quiznavbutton1`), clicks it, and starts solving sequentially from Question 1!
 * **🔤 Unicode Apostrophe & Text Normalization**: Automatically standardizes curly apostrophes (`’`, `\u2019`), curly quotes (`“`, `”`), dashes (`–`, `—`), and non-breaking spaces (`\u00a0`) to standard ASCII straight keyboard characters (`'`) in DOM parsing, JSON matching, and JSON auto-learning storage.
@@ -40,7 +42,7 @@ An enterprise-grade, end-to-end automation engine for **DIKSHA / Moodle LMS Port
 * **📊 Professional Standardized Log Formatting**: Clean, standardized log tags:
   * `❓ [QUESTION-03]: <Full Question Text>`
   * `📋 [OPTIONS]: [A] ... [B] ... [C] ... [D] ...`
-  * `🧠 [AI LIVE SUCCESS] Solved on Attempt 1/3 via Key #1 -> '...'`
+  * `🧠 [GROQ LPU SUCCESS] Solved via Groq (openai/gpt-oss-120b) Key #1 -> '...'`
   * `✍️ [TYPED FEEDBACK RESPONSE QUESTION-19]: '...'`
   * `🛡️ [AUTOPLAY SAFEGUARD] Video was paused. Auto-triggered video.play() to keep playback active.`
   * `💾 [AUTO-LEARNING SAVE] Saved to <course.json>: Module #8 ('Feedback Form') || Subsection #1 ('Feedback Form') -> Q: '...'`
@@ -52,7 +54,7 @@ An enterprise-grade, end-to-end automation engine for **DIKSHA / Moodle LMS Port
   * **Feedback Forms (`feedback`)**: Full rating selection, comment box typing & feedback submission.
 * **🔒 256-Bit Cryptographic Security**: 
   * SHA-256 encrypted multi-user PIN lock (`541563`) and credential vault.
-  * Gemini API Keys stored as 256-bit encrypted ciphers in `config.py` with dynamic in-memory decryption via `utils/security.py`. No plain text `.env` files required.
+  * API Keys stored as 256-bit encrypted ciphers in `config.py` with dynamic in-memory decryption via `utils/security.py`. No plain text `.env` files required.
 * **☁️ Railway Cloud Ready**: Fully containerized with root `Dockerfile`, `railway/` config, and 0-variable setup required.
 
 ---
@@ -74,9 +76,7 @@ Diksha+ Automation Suite/
 │   ├── 04_AUTOMATION_CONTROLS_AND_CONFIG.md # Config, DOM Selectors & Headless Auto-Detection
 │   ├── 05_RAILWAY_DEPLOYMENT_GUIDE.md # Railway Cloud 1-Click Deployment Guide
 │   ├── 06_MODULE_EXECUTION_AND_RETRY_PROTOCOL.md # Module Retry Pipeline & Circuit Breaker Guide
-│   └── 07_DUAL_AI_SOLVER_AND_BACKOFF_LOGS_GUIDE.md # Dual AI Solver (Gemini+Grok) & Terminal Logs Guide
-
-
+│   └── 07_DUAL_AI_SOLVER_AND_BACKOFF_LOGS_GUIDE.md # Multi-AI Solver (Gemini+Groq) & Terminal Logs Guide
 ├── output/
 │   └── screenshots/               # Single official screenshot directory
 ├── utils/
@@ -88,7 +88,6 @@ Diksha+ Automation Suite/
 ├── main.py                        # CLI Menu launcher with 256-bit PIN lock
 ├── diksha+.bat                    # 1-Click Windows execution script
 └── setup.bat                      # 1-Click environment installer
-
 ```
 
 ---

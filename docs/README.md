@@ -20,8 +20,8 @@ Welcome to the central documentation index for **DIKSHA+ Automation Suite**. Sel
    * 256-Bit encrypted API key pool decryption.
 
 3. 🧠 **[Answer Keys, AI Live Solver & Feedback Form Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/03_ANSWER_KEYS_AND_QUIZZES.md)**
-   * Dual-pass solving pipeline (JSON cache vs. Gemini AI live solver).
-   * Gemini API encrypted pool & rotation protocol.
+   * Dual-pass solving pipeline (JSON cache vs. Multi-AI live solver).
+   * 8-Key encrypted pool (5 Gemini + 3 Groq Cloud LPU) & rotation protocol.
    * Stepped Backoff Retries & Total Server Stop Circuit Breaker (0% Option A fallback).
    * Clean Module -> Subsection JSON architecture.
    * Feedback Form auto-filling & comment typing engine.
@@ -44,10 +44,8 @@ Welcome to the central documentation index for **DIKSHA+ Automation Suite**. Sel
    * Double confirmation gate check & page reload sync.
    * Certificate section handling & Circuit Breaker Guard.
 
-7. 🤖 **[Dual AI Solver, Backoffs & Terminal Logs Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/07_DUAL_AI_SOLVER_AND_BACKOFF_LOGS_GUIDE.md)**
-   * Gemini AI (2 Attempts) ➔ Grok xAI API (2 Attempts) solver hierarchy.
-   * Stepped Backoff Protocol (30s ➔ 45s ➔ 60s) & full retries.
+7. 🤖 **[Multi-AI Solver, Backoffs & Terminal Logs Guide](file:///C:/Users/thego/.gemini/antigravity/scratch/Diksha+%20Automation%20Suite/docs/07_DUAL_AI_SOLVER_AND_BACKOFF_LOGS_GUIDE.md)**
+   * Google Gemini AI (5 Keys - 1 Attempt) ➔ Groq Cloud LPU API (3 Keys - 1 Attempt) solver hierarchy.
+   * Stepped Backoff Protocol (30s ➔ 45s ➔ 60s) & full retries across all 8 keys.
    * Auto-Learning JSON saving rules (only after 100% successful solution).
-   * Full terminal log examples for rates limits, retries & Circuit Breaker Stop.
-
-
+   * Full terminal log examples for rate limits, retries & Circuit Breaker Stop.
