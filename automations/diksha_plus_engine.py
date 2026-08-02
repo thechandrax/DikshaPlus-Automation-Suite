@@ -441,8 +441,9 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
                 ans_text = resp_data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "").strip()
                 clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
                 if clean_ans:
-                    logger.info(f"  🧠 [GEMINI AI SUCCESS] Solved via Gemini Key #{key_idx} ({model_name}) -> '{clean_ans}'")
+                    logger.info(f"\n  🧠 [GEMINI AI SUCCESS] Key #{key_idx} -> '{clean_ans}'")
                     return clean_ans
+
             except urllib.error.HTTPError as http_err:
                 if http_err.code in (429, 503):
                     logger.warning(f"  ⏳ [GEMINI RATE LIMIT] Key #{key_idx} rate limited. Trying next key in sequence...")
@@ -476,7 +477,7 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
                 ans_text = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
                 clean_ans = re.sub(r'^["`\']|["`\']$', '', ans_text, flags=re.MULTILINE).strip()
                 if clean_ans:
-                    logger.info(f"  ⚡ [GROQ LPU SUCCESS] Solved via Groq Key #{g_idx} ({model_name}) -> '{clean_ans}'")
+                    logger.info(f"\n  ⚡ [GROQ LPU SUCCESS] Key #{g_idx} -> '{clean_ans}'")
                     return clean_ans
             except Exception as ex:
                 logger.warning(f"  ⚠️ [GROQ AI NOTICE] ({model_name} Key #{g_idx}): {ex}")
@@ -491,8 +492,8 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
         if i < len(groq_keys):
             interleaved_sequence.append(("groq", i + 1, groq_keys[i]))
 
-    logger.info("  🧠⚡ [ALTERNATING AI POOL] Requesting solution via Interleaved Gemini/Groq Pool (1 Attempt per key)...")
     for provider, k_idx, k_val in interleaved_sequence:
+
         if provider == "gemini":
             sol = _try_gemini_key(k_idx, k_val)
             if sol:
