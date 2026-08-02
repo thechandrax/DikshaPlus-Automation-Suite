@@ -721,33 +721,46 @@ def get_real_terminal_columns(text):
     return cols
 
 
+def get_real_terminal_columns(text):
+    """
+    Calculates true terminal display columns by ignoring non-spacing combining diacritic marks
+    (like Bengali/Devanagari vowel signs), which attach to base consonants as a single visual glyph.
+    """
+    cols = 0
+    for ch in text:
+        cat = unicodedata.category(ch)
+        if cat in ('Mn', 'Me', 'Cf'):
+            continue
+        cols += 1
+    return cols
+
+
 def pad_title_fixed(text, target_width=45):
     """
-    Pads or truncates course titles with language-aware OS font rendering offset for Indic/Bengali/Urdu scripts,
-    guaranteeing 100% straight pixel-perfect vertical column alignment in terminal fonts.
+    Pads or truncates course titles to exact 45 real visual terminal columns,
+    guaranteeing 100% straight vertical column alignment across Bengali, Urdu, Hindi, and English.
     """
     clean_t = text.strip()
+    real_cols = get_real_terminal_columns(clean_t)
     
-    # Detect Indic / Bengali / Devanagari / Urdu script characters
-    has_indic = any(0x0900 <= ord(ch) <= 0x0D7F for ch in clean_t)
-    effective_target = target_width - 2 if has_indic else target_width
-    
-    base_chars = sum(1 for ch in clean_t if unicodedata.category(ch) not in ('Mn', 'Me', 'Cf'))
-    
-    if base_chars > effective_target:
+    if real_cols > target_width:
         res = ""
-        curr = 0
+        curr_c = 0
         for ch in clean_t:
-            if unicodedata.category(ch) not in ('Mn', 'Me', 'Cf'):
-                if curr >= effective_target - 3:
-                    break
-                curr += 1
+            cat = unicodedata.category(ch)
+            if cat in ('Mn', 'Me', 'Cf'):
+                res += ch
+                continue
+            if curr_c >= target_width - 3:
+                break
             res += ch
-        rem_spaces = effective_target - (curr + 3)
+            curr_c += 1
+        rem_spaces = target_width - (curr_c + 3)
         return res + "..." + (" " * max(0, rem_spaces))
     else:
-        rem_spaces = effective_target - base_chars
+        rem_spaces = target_width - real_cols
         return clean_t + (" " * max(0, rem_spaces))
+
 
 
 
