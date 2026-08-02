@@ -2595,9 +2595,31 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                         logger.info("     [-] No action buttons inside this section. Moving to next...")
                     break
 
+                # Print clean Subsection Breakdown Checklist Summary on initial pass
+                if pass_num == 0:
+                    logger.info(f"  📋 [SUBSECTION BREAKDOWN ({total_sec_items} ITEMS)]:")
+                    for idx, b in enumerate(distinct_btns, 1):
+                        try:
+                            b_txt = (await b.inner_text()).strip()
+                            r_txt = b_txt
+                            if b_txt.lower() in ("view", "start", "open", "continue"):
+                                row = b.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'card-body')][1]").first
+                                if await row.count() > 0:
+                                    t_el = row.locator("h4, h5, .title, .activity-title, bdi, strong, .name").first
+                                    if await t_el.count() > 0:
+                                        extracted_t = (await t_el.inner_text()).strip()
+                                        if extracted_t and extracted_t.lower() not in ("view", "start"):
+                                            r_txt = extracted_t
+                            chk = "✓" if await is_item_100_percent_complete(b) else "⏳"
+                            logger.info(f"     [{idx}/{total_sec_items}] {chk} {r_txt}")
+                        except Exception:
+                            pass
+                    logger.info("  " + "-" * 55)
+
                 processed_any = False
 
                 for j, btn in enumerate(distinct_btns, 1):
+
                     await check_pause_status()
                     if not await btn.is_visible():
                         continue
