@@ -1,0 +1,117 @@
+{
+  "course_name": "NISHTHA FLN English",
+  "modules": [
+    {
+      "module_no": 1,
+      "module_name": "Module 01: Introduction to FLN Mission",
+      "subsections": [
+        {
+          "subsection_no": 25,
+          "subsection_name": "Formative Assessment 01",
+          "questions": [
+            {
+              "question": "Target 4.2 of the SDG, aims to ensure that all girls and boys including those belonging to disadvantaged groups and with disability, health conditions have access to quality _________, care and pre-primary education by 2030 so that they are ready for primary education.",
+              "options": [
+                "[A] Child development",
+                "[B] Education",
+                "[C] Early childhood development",
+                "[D] Care and stimulation"
+              ],
+              "answer": "[C] Early childhood development"
+            },
+            {
+              "question": "Focus of foundational learning is _________.",
+              "options": [
+                "[A] Reading and writing",
+                "[B] Physical development",
+                "[C] Cognitive development",
+                "[D] On holistic development of the child"
+              ],
+              "answer": "[D] On holistic development of the child"
+            },
+            {
+              "question": "Role of States and UTs will be to _________",
+              "options": [
+                "[A] Frame policy",
+                "[B] Wait for the action plan",
+                "[C] Depend on the government to take action",
+                "[D] Make the action plan to achieve the targets"
+              ],
+              "answer": "[D] Make the action plan to achieve the targets"
+            },
+            {
+              "question": "The ability to_______, and perform basic operations with numbers, is a necessary foundation and an indispensable prerequisite for all future schooling and lifelong learning (NEP 2020).",
+              "options": [
+                "[A] Write only",
+                "[B] Read and write",
+                "[C] Speak only",
+                "[D] show emotions"
+              ],
+              "answer": "[B] Read and write"
+            },
+            {
+              "question": "The ECCE training of Anganwadi workers/teachers will be _________by the Cluster Resource Centres of the School Education Department.",
+              "options": [
+                "[A] Evaluated",
+                "[B] Mentored",
+                "[C] Conducted",
+                "[D] Coached"
+              ],
+              "answer": "[B] Mentored"
+            },
+            {
+              "question": "Foundational Literacy and Numeracy refers to building adequate________ during the foundational stage of school education.",
+              "options": [
+                "[A] Literacy and numeracy skills",
+                "[B] Music and movement skills",
+                "[C] Listening and speaking skills",
+                "[D] Drawing and colouring skills"
+              ],
+              "answer": "[A] Literacy and numeracy skills"
+            },
+            {
+              "question": "Attaining FLN for all children must become an immediate national_________",
+              "options": [
+                "[A] Mission",
+                "[B] Target",
+                "[C] Agenda",
+                "[D] Service"
+              ],
+              "answer": "[A] Mission"
+            },
+            {
+              "question": "NEP has set a deadline of __________ to achieve FLN.",
+              "options": [
+                "[A] 2022",
+                "[B] 2030",
+                "[C] 2025",
+                "[D] 2035"
+              ],
+              "answer": "[C] 2025"
+            },
+            {
+              "question": "The planning and implementation of ECCE curriculum will be carried out _________ by the MoE, Women and Child Development (WCD), Health and Family Welfare (HFW), and Tribal Affairs.",
+              "options": [
+                "[A] In competition",
+                "[B] Jointly",
+                "[C] Separately",
+                "[D] Independently"
+              ],
+              "answer": "[B] Jointly"
+            },
+            {
+              "question": "States and UTs have a critical role to play to achieve the goal of FLN in a _______ mode.",
+              "options": [
+                "[A] Direct",
+                "[B] Parallel",
+                "[C] Mission",
+                "[D] Indirect"
+              ],
+              "answer": "[C] Mission"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

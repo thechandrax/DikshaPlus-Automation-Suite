@@ -1819,13 +1819,18 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                 logger.warning(f"  --> Text response filling notice: {text_ex}")
 
         if not selected_option:
-            logger.error(f"\n❌ [CRITICAL AI SOLVER EXHAUSTED {q_tag}] Could not solve Question '{q_text_screen[:45]}...' after 2 Gemini attempts, 2 Grok attempts, and 30s, 45s, 60s backoff retries.")
-            logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Closing server context cleanly and stopping all automation processes!\n")
-            try:
-                await page.context.close()
-            except Exception:
-                pass
-            raise RuntimeError(f"AI_SOLVER_FAILED_SERVER_STUCK: Question '{q_text_screen[:45]}...' could not be solved without 100% accuracy.")
+            if not q_text_screen and not screen_opts:
+                logger.info("  🏁 [QUIZ SUMMARY DETECTED] Reached end of questions / Summary of Attempt page! Proceeding to Final Assessment Submit...")
+                break
+            else:
+                logger.error(f"\n❌ [CRITICAL AI SOLVER EXHAUSTED {q_tag}] Could not solve Question '{q_text_screen[:45]}...' after 5 Gemini keys, 3 Grok keys, and 30s, 45s, 60s backoff retries.")
+                logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Closing server context cleanly and stopping all automation processes!\n")
+                try:
+                    await page.context.close()
+                except Exception:
+                    pass
+                raise RuntimeError(f"AI_SOLVER_FAILED_SERVER_STUCK: Question '{q_text_screen[:45]}...' could not be solved without 100% accuracy.")
+
 
 
 
