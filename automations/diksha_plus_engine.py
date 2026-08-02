@@ -35,6 +35,8 @@ logger = get_logger("DikshaEngine")
 
 IS_PAUSED = False
 KEYBOARD_LISTENER_STARTED = False
+ACTIVE_COURSE_TITLE = ""
+
 
 def start_keyboard_pause_listener():
     global KEYBOARD_LISTENER_STARTED
@@ -92,8 +94,13 @@ def load_answer_key(course_title=None):
     Loads course-specific answer key from data/courses/<course_name>.json.
     Auto-creates clean template JSON files per course matching official modules hierarchy.
     """
+    global ACTIVE_COURSE_TITLE
     courses_dir = config.DATA_DIR / "courses"
     courses_dir.mkdir(parents=True, exist_ok=True)
+
+    if course_title and course_title not in ("Course", "unknown_course", "Unknown Course"):
+        ACTIVE_COURSE_TITLE = course_title
+
 
     if course_title:
         fn_name = get_course_filename(course_title)
@@ -223,11 +230,32 @@ def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name,
     """
     Saves auto-learned question & answer sequentially under clean modules -> subsections hierarchy.
     """
+    global ACTIVE_COURSE_TITLE
     try:
-        c_name = course_title or "unknown_course"
-        fn_name = get_course_filename(c_name)
-        course_key_file = config.COURSES_DIR / fn_name
-        
+        # Resolve course_title using global memory if missing or generic
+        valid_title = course_title
+        if not valid_title or valid_title in ("Course", "unknown_course", "Unknown Course"):
+            valid_title = ACTIVE_COURSE_TITLE
+
+        # Search existing course JSON files in data/courses/
+        courses_dir = config.COURSES_DIR
+        course_key_file = None
+
+        if valid_title:
+            fn_name = get_course_filename(valid_title)
+            course_key_file = courses_dir / fn_name
+
+        if not course_key_file or not course_key_file.exists():
+            # Check for non-unknown JSON files in data/courses/
+            valid_files = [f for f in courses_dir.glob("*.json") if f.name != "unknown_course.json"]
+            if valid_files:
+                course_key_file = valid_files[0]
+            elif valid_title:
+                fn_name = get_course_filename(valid_title)
+                course_key_file = courses_dir / fn_name
+            else:
+                course_key_file = courses_dir / "course.json"
+
         data_j = {}
         if course_key_file.exists():
             with open(course_key_file, "r", encoding="utf-8") as f:
@@ -236,11 +264,15 @@ def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name,
                 except Exception:
                     data_j = {}
 
-
         data_j.pop("description", None)
         data_j.pop("answers", None)
 
-        data_j["course_name"] = course_title or "Course"
+        if valid_title and valid_title not in ("Course", "unknown_course", "Unknown Course"):
+            data_j["course_name"] = valid_title
+            ACTIVE_COURSE_TITLE = valid_title
+        elif "course_name" not in data_j or data_j["course_name"] in ("Course", "unknown_course"):
+            data_j["course_name"] = "Course"
+
 
         t_mod_no = int(module_no) if (module_no and str(module_no).isdigit()) else (module_no or 1)
         t_mod_name = module_name or "Module"

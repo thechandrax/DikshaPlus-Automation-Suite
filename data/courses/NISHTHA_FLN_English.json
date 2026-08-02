@@ -123,6 +123,230 @@
           ]
         }
       ]
+    },
+    {
+      "module_no": 3,
+      "module_name": "Module 02: Shifting Towards Competency Based Education",
+      "subsections": [
+        {
+          "subsection_no": 26,
+          "subsection_name": "Formative Assessment 02",
+          "questions": [
+            {
+              "question": "The amendment of Rule 23 (2) of the Right to Education Act, 2009 highlighted that",
+              "options": [
+                "[A] No detention policy should be enforced",
+                "[B] All the states should prepare class-wise, subject-wise learning outcomes",
+                "[C] Children can be detained if they fail in the examination",
+                "[D] Public examinations should be held in Class III and V."
+              ],
+              "answer": "[B] All the states should prepare class-wise, subject-wise learning outcomes"
+            },
+            {
+              "question": "It is not one of the developmental goals of FLN Framework",
+              "options": [
+                "[A] Children participate in games and sports",
+                "[B] Children maintain good health and wellbeing",
+                "[C] Children become involved learners and connect with their environment",
+                "[D] Children become effective communicators"
+              ],
+              "answer": "[A] Children participate in games and sports"
+            },
+            {
+              "question": "The guiding points for the teachers and the stakeholders to assess the progress of learning by children are",
+              "options": [
+                "[A] Competency",
+                "[B] Attitude",
+                "[C] Learning Outcomes",
+                "[D] Skills"
+              ],
+              "answer": "[C] Learning Outcomes"
+            },
+            {
+              "question": "Early childhood is a critical period of development for learning social and emotional skills, also known as",
+              "options": [
+                "[A] Physical health",
+                "[B] Mental health",
+                "[C] Social health",
+                "[D] Inter-personal skills"
+              ],
+              "answer": "[B] Mental health"
+            },
+            {
+              "question": "Acknowledging the child's capacity to construct knowledge as a natural learner is",
+              "options": [
+                "[A] Nativist Approach",
+                "[B] Naturalist Approach",
+                "[C] Constructivist Approach",
+                "[D] Behaviourist Approach"
+              ],
+              "answer": "[C] Constructivist Approach"
+            },
+            {
+              "question": "Instruction which does not serve the learning needs of children but focuses on completing the syllabus without monitoring what children are learning is known as",
+              "options": [
+                "[A] Student centric instruction",
+                "[B] Adaptive instruction",
+                "[C] Non-responsive instruction",
+                "[D] Responsive instruction"
+              ],
+              "answer": "[D] Non-responsive instruction"
+            },
+            {
+              "question": "The framework for Foundational Literacy and Numeracy has been divided into",
+              "options": [
+                "[A] Five developmental goals",
+                "[B] Three developmental goals",
+                "[C] Four developmental goals",
+                "[D] Six developmental goals"
+              ],
+              "answer": "[B] Three developmental goals"
+            },
+            {
+              "question": "In the FLN Framework, competencies and learning outcomes have been derived from",
+              "options": [
+                "[A] Subjects",
+                "[B] Developmental Goals",
+                "[C] Textbooks",
+                "[D] Chapters"
+              ],
+              "answer": "[B] Developmental Goals"
+            },
+            {
+              "question": "In Competency Based Education system, learning outcomes for each class are",
+              "options": [
+                "[A] Well defined and fixed",
+                "[B] Developed by class teacher",
+                "[C] Variable",
+                "[D] Developed by students"
+              ],
+              "answer": "[A] Well defined and fixed"
+            },
+            {
+              "question": "Activities like cutting, pasting, tearing, stringing the beads, fixing the puzzles, playing with blocks, and playing with clay, dough, sand, water lead to",
+              "options": [
+                "[A] Balance",
+                "[B] Large muscle development",
+                "[C] Stability",
+                "[D] Fine muscle development"
+              ],
+              "answer": "[D] Fine muscle development"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module_no": 4,
+      "module_name": "Module 03: Understanding Learners: How Children Learn?",
+      "subsections": [
+        {
+          "subsection_no": 24,
+          "subsection_name": "Formative Assessment 03",
+          "questions": [
+            {
+              "question": "Learning is",
+              "options": [
+                "[A] Reading books",
+                "[B] One way interaction",
+                "[C] An active, collaborative, and social process",
+                "[D] Playing"
+              ],
+              "answer": "[C] An active, collaborative, and social process"
+            },
+            {
+              "question": "What do we mean by 'knowing learning styles'?",
+              "options": [
+                "[A] School preferences",
+                "[B] Practical preferences",
+                "[C] Personal preferences",
+                "[D] Family preferences"
+              ],
+              "answer": "[C] Personal preferences"
+            },
+            {
+              "question": "Grouping preference means",
+              "options": [
+                "[A] Interaction in small group only",
+                "[B] Interaction in large and small group",
+                "[C] Preferred interaction like working alone, with a partner, in a small/large group",
+                "[D] Interaction in large group only"
+              ],
+              "answer": "[C] Preferred interaction like working alone, with a partner, in a small/large group"
+            },
+            {
+              "question": "Maximum learning happens when",
+              "options": [
+                "[A] Class attendance is full",
+                "[B] All senses are involved in learning",
+                "[C] Time schedule is followed",
+                "[D] Children laugh"
+              ],
+              "answer": "[B] All senses are involved in learning"
+            },
+            {
+              "question": "What leads to a child's different learning styles and the rate of learning?",
+              "options": [
+                "[A] Socio-economic condition",
+                "[B] Ways to absorb the information, analyse the situation, and make decision",
+                "[C] Peer influence",
+                "[D] Family background"
+              ],
+              "answer": "[B] Ways to absorb the information, analyse the situation, and make decision"
+            },
+            {
+              "question": "What includes potential interest?",
+              "options": [
+                "[A] Interest to which children may transfer the interest of other children",
+                "[B] Interest children get rid off",
+                "[C] Interest to which children have not been exposed and might become strong ones, once exposed",
+                "[D] Interest which children suppress"
+              ],
+              "answer": "[C] Interest to which children have not been exposed and might become strong ones, once exposed"
+            },
+            {
+              "question": "What is the term used for 'hands-on experience'?",
+              "options": [
+                "[A] Clay moulding",
+                "[B] Learning by doing",
+                "[C] Eye-hand coordination",
+                "[D] Fine motor activities"
+              ],
+              "answer": "[B] Learning by doing"
+            },
+            {
+              "question": "Children with high levels of creative intelligence are",
+              "options": [
+                "[A] Skilled",
+                "[B] Frequently divergent thinkers",
+                "[C] Knowledgeable",
+                "[D] Good at math"
+              ],
+              "answer": "[B] Frequently divergent thinkers"
+            },
+            {
+              "question": "What are the three types of interactions in the classroom?",
+              "options": [
+                "[A] Peer interaction, adult interaction, and material interaction",
+                "[B] Self interaction, adult interaction, and material interaction",
+                "[C] Peer interaction, neighbour interaction, and material interaction",
+                "[D] Peer interaction, family interaction, and material interaction"
+              ],
+              "answer": "[A] Peer interaction, adult interaction, and material interaction"
+            },
+            {
+              "question": "When do children learn better?",
+              "options": [
+                "[A] When they sit and listen to their teachers",
+                "[B] When they engage in hands-on activities",
+                "[C] When they reach school on time",
+                "[D] When they share their belongings with each other"
+              ],
+              "answer": "[B] When they engage in hands-on activities"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
