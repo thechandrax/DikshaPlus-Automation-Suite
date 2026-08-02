@@ -2635,10 +2635,10 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     
                     if runs_done >= 4:
                         logger.warning(f"\n  ⏳ [DIKSHA SERVER HYDRATION] Subsection item '{real_item_title}' is taking longer to sync checkmark.")
-                        logger.info("  ⏳ Entering 2-Minute (120s) Patient Server Sync Window before any Circuit Breaker trigger...")
+                        logger.info("  ⏳ Entering 10-Attempt (150s) Patient Server Sync Window before any Circuit Breaker trigger...")
                         item_synced = False
-                        for sync_step in range(1, 9):
-                            logger.info(f"  ⏳ [ITEM SYNC {sync_step}/8] Waiting 15s for DIKSHA server checkmark sync (Elapsed: {sync_step * 15}s / 120s)...")
+                        for sync_step in range(1, 11):
+                            logger.info(f"  ⏳ [ITEM SYNC {sync_step}/10] Waiting 15s for DIKSHA server checkmark sync (Elapsed: {sync_step * 15}s / 150s)...")
                             await asyncio.sleep(15)
                             try:
                                 await page.reload()
@@ -2651,6 +2651,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                     break
                             except Exception:
                                 pass
+
                         
                         if item_synced:
                             continue
@@ -2822,15 +2823,20 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                 final_header_check = await is_header_100_percent_complete(header)
                 if not final_header_check and not all_items_completed_in_memory and not any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"]):
                     logger.warning(f"\n  ⏳ [DIKSHA SERVER HYDRATION] '{header_title}' header badge is not 100% yet.")
-                    logger.info("  ⏳ Entering 2-Minute (120s) Patient Server Sync Window before any Circuit Breaker trigger...")
+                    logger.info("  ⏳ Entering 10-Attempt (150s) Patient Server Sync Window before any Circuit Breaker trigger...")
                     
                     server_synced = False
-                    for sync_step in range(1, 9):  # 8 steps x 15s = 120s (2 minutes)
-                        logger.info(f"  ⏳ [MODULE SYNC {sync_step}/8] Reloading page & waiting 15s for DIKSHA server checkmarks (Elapsed: {sync_step * 15}s / 120s)...")
+                    for sync_step in range(1, 11):  # 10 steps x 15s = 150s (2.5 minutes)
+                        logger.info(f"  ⏳ [MODULE SYNC {sync_step}/10] Reloading page & waiting 15s for DIKSHA server checkmarks (Elapsed: {sync_step * 15}s / 150s)...")
                         await asyncio.sleep(15)
                         try:
                             await page.reload()
                             await asyncio.sleep(3)
+                            
+                            # Check 1: Module Header Badge 100% Check
+                            sync_header_done = await is_header_100_percent_complete(header)
+
+                            # Check 2: Re-open accordion & check all individual subsection checkmarks
                             if await click_target.count() > 0:
                                 await click_target.click(force=True)
                                 await page.wait_for_timeout(2000)
@@ -2845,9 +2851,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                             else:
                                 sync_all_done = False
 
-                            sync_header_done = await is_header_100_percent_complete(header)
-
-                            if sync_all_done or sync_header_done:
+                            if sync_header_done or sync_all_done:
                                 logger.info(f"  ✅ [MODULE SYNC SUCCESS] DIKSHA server completion verified after {sync_step * 15}s!")
                                 await close_activity_modal(page)
                                 try:
@@ -2862,6 +2866,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
                         except Exception:
                             pass
+
 
 
                     if not server_synced:
