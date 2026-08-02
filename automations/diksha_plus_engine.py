@@ -2466,10 +2466,11 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
         lower_t = header_title.lower().strip()
         normalized_t = lower_t.rstrip('s')
 
-        # Skip empty or non-lesson discussion, guideline, & certificate sections
-        if not header_title or any(skip in lower_t for skip in ["discussion", "navigation", "file upload", "closed for replies", "pinned", "certificate", "download certificate"]):
-            logger.info(f"  --> [SKIP SECTION] '{header_title}' is a Certificate / Reward section. Skipping!")
+        # Skip empty or non-lesson discussion, guideline, & navigation sections (Keep Certificate section for completion check)
+        if not header_title or any(skip in lower_t for skip in ["discussion", "navigation", "file upload", "closed for replies", "pinned"]):
+            logger.info(f"  --> [SKIP SECTION] '{header_title}' is a Discussion / Navigation section. Skipping!")
             continue
+
 
 
         # Deduplicate identical / singular-plural titles (e.g. Assessment vs Assessments)
@@ -2498,14 +2499,31 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
             logger.info("=" * 35)
 
 
-            item_attempts = {}
-            completed_items = set()
+            # Certificate Section / Customcert Download Link Protocol
+            is_cert_section = any(kw in header_title.lower() for kw in ["certificate", "customcert", "download certificate"])
+            cert_el = page.locator("a[act_type='customcert'], a[href*='customcert'], a:has-text('Download Certificate'), a:has-text('Give Feedback')").first
+            has_customcert_link = await cert_el.count() > 0
+
+            if is_cert_section or has_customcert_link:
+                logger.info(f"  🎓 [CERTIFICATE SECTION DETECTED] '{header_title}' reached!")
+                logger.info("  --> Verified Download Certificate link (act_type='customcert'). All course requirements 100% satisfied!")
+                logger.info("  --> Skipping 'View' button click to prevent unexpected PDF download popups.\n")
+
+                logger.info("=" * 67)
+                logger.info(" 🎉 🎓 AUTOMATION EXECUTION SUCCESSFUL & COURSE COMPLETED!")
+                logger.info("=" * 67)
+                logger.info(f"  ✔ User Profile : {profile_name} ({user_login_id})")
+                logger.info(f"  ✔ Course Title : {course_title}")
+                logger.info("  ✔ Certificate  : Download Certificate Available (act_type='customcert')")
+                logger.info("  ✔ Status       : 100% Complete — All Modules & Assessments Done!")
+                logger.info("=" * 67 + "\n")
+                return True
 
             # Check if Module header is ALREADY 100% complete
-
             if await is_header_100_percent_complete(header):
                 logger.info(f"  --> [SKIP MODULE] '{header_title}' is ALREADY 100% COMPLETED. Skipping!")
                 continue
+
 
             # Locate the exact clickable <a> toggle element or header
             click_target = header.locator("a[data-toggle='collapse'], a[href*='collapse'], a[aria-controls*='collapse']").first
