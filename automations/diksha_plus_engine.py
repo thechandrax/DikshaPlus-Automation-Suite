@@ -2841,17 +2841,34 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     
                     server_synced = False
                     for sync_step in range(1, 9):  # 8 steps x 15s = 120s (2 minutes)
-                        logger.info(f"  ⏳ [MODULE SYNC {sync_step}/8] Waiting 15s for DIKSHA server backend checkmark sync (Elapsed: {sync_step * 15}s / 120s)...")
+                        logger.info(f"  ⏳ [MODULE SYNC {sync_step}/8] Reloading page & waiting 15s for DIKSHA server checkmarks (Elapsed: {sync_step * 15}s / 120s)...")
                         await asyncio.sleep(15)
                         try:
                             await page.reload()
                             await asyncio.sleep(3)
-                            if await is_header_100_percent_complete(header):
-                                logger.info(f"  ✅ [MODULE SYNC SUCCESS] DIKSHA server 100% completion badge confirmed after {sync_step * 15}s!")
+                            if await click_target.count() > 0:
+                                await click_target.click(force=True)
+                                await page.wait_for_timeout(2000)
+                            
+                            sync_btns = await get_section_action_buttons(collapse_panel, header)
+                            sync_all_done = True
+                            if sync_btns:
+                                for s_btn in sync_btns:
+                                    if not await is_item_100_percent_complete(s_btn):
+                                        sync_all_done = False
+                                        break
+                            else:
+                                sync_all_done = False
+
+                            sync_header_done = await is_header_100_percent_complete(header)
+
+                            if sync_all_done or sync_header_done:
+                                logger.info(f"  ✅ [MODULE SYNC SUCCESS] DIKSHA server completion verified after {sync_step * 15}s!")
                                 server_synced = True
                                 break
                         except Exception:
                             pass
+
 
                     if not server_synced:
                         final_recheck = await is_header_100_percent_complete(header)
