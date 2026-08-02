@@ -1203,6 +1203,66 @@
                 "[D] Arrangement"
               ],
               "answer": "[A] Classification"
+            },
+            {
+              "question": "Which of the following should not be an approach for teaching measurement?",
+              "options": [
+                "[A] Directly introducing standard units of measurements by the teacher and their conversions",
+                "[B] Let children figure out their own units for measurement",
+                "[C] Children in activities and other experiences that involve measurement",
+                "[D] Provide opportunities to use language of comparison"
+              ],
+              "answer": "[B] Let children figure out their own units for measurement"
+            },
+            {
+              "question": "__________ numbers are used to describe the position of an object when they are arranged in a specific order.",
+              "options": [
+                "[A] Ordinal",
+                "[B] Aesthetic",
+                "[C] Cardinal",
+                "[D] Nominal"
+              ],
+              "answer": "[A] Ordinal"
+            },
+            {
+              "question": "Which of the following is the most appropriate strategy to teach shapes at a foundational stage?",
+              "options": [
+                "[A] Development of extensive vocabulary of shapes need to be the primary objective at foundational stage",
+                "[B] Children should be given ample opportunities to develop intuitive understanding of shapes",
+                "[C] Teacher should introduce by giving clear definition of simple shapes",
+                "[D] Shapes at foundational stage should be limited to the recognition of simple basic shapes"
+              ],
+              "answer": "[B] Children should be given ample opportunities to develop intuitive understanding of shapes"
+            },
+            {
+              "question": "During the learning of mathematics at early stages, a child is not expected to ….",
+              "options": [
+                "[A] Use the vocabulary for understanding of space and shapes",
+                "[B] Think mathematically and take decisions with reasoning",
+                "[C] Learn conventions needed for mathematical techniques",
+                "[D] Learn counting before number sense"
+              ],
+              "answer": "[D] Learn counting before number sense"
+            },
+            {
+              "question": "When is a child said to have not acquired understanding of shapes and space?",
+              "options": [
+                "[A] When the child uses own vocabulary to describe space and the shapes",
+                "[B] When the child explores and communicates association between an object and its shape",
+                "[C] When the child observes the objects in the environment and their geometrical attributes",
+                "[D] When the child crams the names of shapes like cube, cuboid, sphere, etc. without understanding"
+              ],
+              "answer": "[D] When the child crams the names of shapes like cube, cuboid, sphere, etc. without understanding"
+            },
+            {
+              "question": "How many times should we add 4 to get 16?",
+              "options": [
+                "[A] 16 times",
+                "[B] Four times",
+                "[C] 64 times",
+                "[D] 20 times"
+              ],
+              "answer": "[B] Four times"
             }
           ]
         },

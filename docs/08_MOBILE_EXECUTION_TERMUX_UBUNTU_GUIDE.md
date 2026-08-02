@@ -1,6 +1,6 @@
 # 📱 DIKSHA+ AUTOMATION SUITE — COMPLETE TERMUX & UBUNTU PROOT SETUP GUIDE
 
-This guide provides exhaustive, step-by-step instructions on **how to install Termux**, **how to setup Ubuntu PRoot**, **how to configure RealVNC Visible Mobile GUI**, and **how to clone public or private repositories**.
+This guide provides exhaustive, step-by-step instructions on **how to install Termux**, **how to setup Ubuntu PRoot**, **how to run WITH VNC (Visible Mobile GUI)**, **how to run WITHOUT VNC (Headless Background Mode)**, **how to update code via Git (`git pull`)**, and **how to clone public or private repositories**.
 
 ---
 
@@ -9,10 +9,12 @@ This guide provides exhaustive, step-by-step instructions on **how to install Te
 1. [📱 Step 0: Download & Install Termux App](#-step-0-download--install-termux-app)
 2. [⚡ Single-Command 1-Click All-in-One Setup (Quickest)](#-single-command-1-click-all-in-one-setup-quickest)
 3. [🛠️ Multi-Step Detailed Command Setup (Step-by-Step)](#%EF%B8%8F-multi-step-detailed-command-setup-step-by-step)
-4. [🔒 How to Clone Private Repository in Termux](#-how-to-clone-private-repository-in-termux)
-5. [📺 RealVNC Viewer App Connection Setup](#-realvnc-viewer-app-connection-setup)
-6. [🚀 Daily 3-Command Execution Workflow](#-daily-3-command-execution-workflow)
-7. [⚡ 1-Word Shortcut Reference Table](#-1-word-shortcut-reference-table)
+4. [📺 How to Run WITH VNC (RealVNC Visible Mobile GUI)](#-how-to-run-with-vnc-realvnc-visible-mobile-gui)
+5. [🙈 How to Run WITHOUT VNC (Headless Background Mode)](#-how-to-run-without-vnc-headless-background-mode)
+6. [🔄 How to Update Code from GitHub (`git pull`)](#-how-to-update-code-from-github-git-pull)
+7. [🔒 How to Clone Private Repository in Termux](#-how-to-clone-private-repository-in-termux)
+8. [📺 RealVNC Viewer App Connection Setup](#-realvnc-viewer-app-connection-setup)
+9. [⚡ 1-Word Shortcut Reference Table](#-1-word-shortcut-reference-table)
 
 ---
 
@@ -32,7 +34,7 @@ If you want to install everything automatically in one go, copy and paste this *
 
 ```bash
 # 1-Click Complete Termux & Ubuntu PRoot Setup Script
-pkg update -y && pkg upgrade -y && pkg install proot-distro git -y && proot-distro install ubuntu && proot-distro login ubuntu -- bash -c "apt update -y && apt upgrade -y && apt install -y python3 python3-pip git chromium-browser tigervnc-standalone-server tigervnc-common x11-utils && pip3 install pandas openpyxl pillow playwright && python3 -m playwright install-deps && mkdir -p ~/.config/tigervnc && echo 123456 | vncpasswd -f > ~/.config/tigervnc/passwd && chmod 600 ~/.config/tigervnc/passwd && git clone https://github.com/thechandrax/DikshaPlus-Automation-Suite.git ~/DikshaPlus-Automation-Suite && echo \"alias vnc='vncserver -kill :1 2>/dev/null; vncserver :1'\" >> ~/.bashrc && echo \"alias diksha='cd ~/DikshaPlus-Automation-Suite && export DISPLAY=:1 && python3 main.py'\" >> ~/.bashrc && echo \"alias exit='exit'\" >> ~/.bashrc && source ~/.bashrc && echo '✅ SETUP 100% COMPLETE! Log into Ubuntu using: proot-distro login ubuntu'"
+pkg update -y && pkg upgrade -y && pkg install proot-distro git -y && proot-distro install ubuntu && proot-distro login ubuntu -- bash -c "apt update -y && apt upgrade -y && apt install -y python3 python3-pip git chromium-browser tigervnc-standalone-server tigervnc-common x11-utils && pip3 install pandas openpyxl pillow playwright && python3 -m playwright install-deps && mkdir -p ~/.config/tigervnc && echo 123456 | vncpasswd -f > ~/.config/tigervnc/passwd && chmod 600 ~/.config/tigervnc/passwd && git clone https://github.com/thechandrax/DikshaPlus-Automation-Suite.git ~/DikshaPlus-Automation-Suite && echo \"alias vnc='vncserver -kill :1 2>/dev/null; vncserver :1'\" >> ~/.bashrc && echo \"alias diksha='cd ~/DikshaPlus-Automation-Suite && export DISPLAY=:1 && python3 main.py'\" >> ~/.bashrc && echo \"alias update='cd ~/DikshaPlus-Automation-Suite && git pull'\" >> ~/.bashrc && echo \"alias exit='exit'\" >> ~/.bashrc && source ~/.bashrc && echo '✅ SETUP 100% COMPLETE! Log into Ubuntu using: proot-distro login ubuntu'"
 ```
 
 ---
@@ -94,14 +96,73 @@ git clone https://YOUR_TOKEN@github.com/thechandrax/DikshaPlus-Automation-Suite.
 git config --global credential.helper store
 ```
 
-### 🔹 STEP 7: Create 1-Word Shortcuts (`vnc`, `diksha`, `exit`)
+### 🔹 STEP 7: Create 1-Word Shortcuts (`vnc`, `diksha`, `update`, `exit`)
 Inside Ubuntu, paste:
 ```bash
 echo "alias vnc='vncserver -kill :1 2>/dev/null; vncserver :1'" >> ~/.bashrc
 echo "alias diksha='cd ~/DikshaPlus-Automation-Suite && export DISPLAY=:1 && python3 main.py'" >> ~/.bashrc
+echo "alias update='cd ~/DikshaPlus-Automation-Suite && git pull'" >> ~/.bashrc
 echo "alias exit='exit'" >> ~/.bashrc
 source ~/.bashrc
 ```
+
+---
+
+## 📺 How to Run WITH VNC (RealVNC Visible Mobile GUI)
+
+Use this method when you want to **watch the browser live on your smartphone screen** using RealVNC Viewer!
+
+```bash
+# 1. Log into Ubuntu PRoot
+proot-distro login ubuntu
+
+# 2. Start VNC Server (1-word shortcut!)
+vnc
+
+# 3. Launch DIKSHA+ Engine with Visible GUI Browser (1-word shortcut!)
+diksha
+```
+
+* Open **RealVNC Viewer** app (`127.0.0.1:5901`, password `123456`) to watch the browser live!
+
+---
+
+## 🙈 How to Run WITHOUT VNC (Headless Background Mode)
+
+Use this method when you want to run the automation **100% silently in the background** without opening RealVNC Viewer:
+
+```bash
+# 1. Log into Ubuntu PRoot
+proot-distro login ubuntu
+
+# 2. Enter project folder & run in Headless mode
+cd ~/DikshaPlus-Automation-Suite
+export HEADLESS=True
+python3 main.py
+```
+
+* Chromium runs silently in background terminal without needing any VNC server!
+
+---
+
+## 🔄 How to Update Code from GitHub (`git pull`)
+
+When new features, bug fixes, or answer key updates are pushed to GitHub, update your Termux code in 1 step:
+
+### 🔹 Method A: Using 1-Word `update` Shortcut (Easiest)
+Inside Ubuntu, simply type:
+```bash
+update
+```
+
+### 🔹 Method B: Direct Git Command
+```bash
+cd ~/DikshaPlus-Automation-Suite && git pull
+```
+
+* **Verification**:
+  If code is already up to date, it outputs: `Already up to date.`
+  If new updates were downloaded, it prints the updated commit summary!
 
 ---
 
@@ -136,27 +197,11 @@ source ~/.bashrc
 
 ---
 
-## 🚀 Daily 3-Command Execution Workflow
-
-Every day when you open Termux on your smartphone:
-
-```bash
-# 1. Log into Ubuntu PRoot
-proot-distro login ubuntu
-
-# 2. Start VNC Server (1-word shortcut!)
-vnc
-
-# 3. Launch DIKSHA+ Engine (1-word shortcut!)
-diksha
-```
-
----
-
 ## ⚡ 1-Word Shortcut Reference Table
 
 | Shortcut Command | What It Does |
 | :--- | :--- |
 | **`vnc`** | Kills stale VNC sessions & launches fresh VNC server on port `5901` (`:1`) |
 | **`diksha`** | Enters project folder, sets `DISPLAY=:1`, & launches DIKSHA+ with visible GUI browser! |
+| **`update`** | Enters project folder & downloads latest code updates from GitHub (`git pull`)! |
 | **`exit`** | Exits Ubuntu PRoot (`root@localhost`) back to standard Termux (`~ $`) |
