@@ -2752,8 +2752,13 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                 for idx, b in enumerate(distinct_btns, 1):
                     try:
                         r_txt = await get_real_subsection_title(page, b)
-                        chk = "✓" if await is_item_100_percent_complete(b) else "⏳"
-                        logger.info(f"     [{idx}/{total_sec_items}] {chk} {r_txt}")
+                        b_txt = (await b.inner_text()).strip()
+                        is_done = (r_txt in completed_items) or (b_txt in completed_items) or await is_item_100_percent_complete(b)
+                        chk = "✓" if is_done else "⏳"
+                        pct = "100%" if is_done else "0%"
+                        act_lbl = b_txt if b_txt and b_txt.lower() in ("view", "start", "open", "continue", "retry") else "View"
+                        act_lbl = act_lbl.capitalize()
+                        logger.info(f"     [{idx}/{total_sec_items}] {chk} {r_txt} || {pct} || {act_lbl}")
                     except Exception:
                         pass
                 logger.info("  " + "-" * 55)
@@ -2860,10 +2865,14 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                     r_txt = await get_real_subsection_title(page, b)
                                     is_done = (r_txt in completed_items) or (b_txt in completed_items) or await is_item_100_percent_complete(b)
                                     chk = "✓" if is_done else "⏳"
-                                    logger.info(f"     [{idx}/{len(sync_btns)}] {chk} {r_txt}")
+                                    pct = "100%" if is_done else "0%"
+                                    act_lbl = b_txt if b_txt and b_txt.lower() in ("view", "start", "open", "continue", "retry") else "View"
+                                    act_lbl = act_lbl.capitalize()
+                                    logger.info(f"     [{idx}/{len(sync_btns)}] {chk} {r_txt} || {pct} || {act_lbl}")
                                 except Exception:
                                     pass
                             logger.info("  " + "-" * 55)
+
 
 
                         # Step 3: Find any incomplete subsection item and re-execute it right now!
