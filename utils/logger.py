@@ -83,11 +83,21 @@ class ColoredFormatter(logging.Formatter):
         elif "📚 MODULE" in colored_msg:
             colored_msg = f"{self.C_CYAN}{self.C_BOLD}{colored_msg}{self.C_RESET}"
 
-        if "CONFIRMED" in colored_msg or "100%" in colored_msg or "SUCCESS" in colored_msg:
+        if "100%" in colored_msg:
             colored_msg = colored_msg.replace("100%", f"{self.C_GREEN}{self.C_BOLD}100%{self.C_RESET}")
+        if "0%" in colored_msg:
+            colored_msg = colored_msg.replace("0%", f"\033[38;5;208m{self.C_BOLD}0%{self.C_RESET}")
+        if "✓" in colored_msg:
+            colored_msg = colored_msg.replace("✓", f"{self.C_GREEN}{self.C_BOLD}✓{self.C_RESET}")
+        if "⏳" in colored_msg:
+            colored_msg = colored_msg.replace("⏳", f"\033[38;5;220m{self.C_BOLD}⏳{self.C_RESET}")
+        if "||" in colored_msg:
+            colored_msg = colored_msg.replace("||", f"\033[38;5;242m||\033[0m")
+        if "CONFIRMED" in colored_msg:
             colored_msg = colored_msg.replace("CONFIRMED", f"{self.C_GREEN}{self.C_BOLD}CONFIRMED{self.C_RESET}")
 
         return f"{timestamp} {level_name} {name_str} {self.C_TEXT}{colored_msg}{self.C_RESET}"
+
 
 
 
