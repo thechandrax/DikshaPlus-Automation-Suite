@@ -17,6 +17,118 @@
           ]
         }
       ]
+    },
+    {
+      "module_no": 2,
+      "module_name": "Module 01: Significance of the Early Years",
+      "subsections": [
+        {
+          "subsection_no": 32,
+          "subsection_name": "Formative Assessment 01",
+          "questions": [
+            {
+              "question": "Which of the following age groups is not included in the foundational Stage of NEP 2020?",
+              "options": [
+                "[A] 3-6 years",
+                "[B] 8-11 years",
+                "[C] 6-8 years",
+                "[D] 2-3 years"
+              ],
+              "answer": "[B] 8-11 years"
+            },
+            {
+              "question": "In the first few years, millions of _________________ connections are formed which are critical for learning, behaviour, health and development.",
+              "options": [
+                "[A] Physical",
+                "[B] Behavioural",
+                "[C] Emotional",
+                "[D] Neural"
+              ],
+              "answer": "[D] Neural"
+            },
+            {
+              "question": "What stage of education is the Early Childhood Care and Education been considered?",
+              "options": [
+                "[A] Middle Stage",
+                "[B] Secondary Stage",
+                "[C] Foundational Stage",
+                "[D] Preparatory Stage"
+              ],
+              "answer": "[C] Foundational Stage"
+            },
+            {
+              "question": "What is the full form of ECCE?",
+              "options": [
+                "[A] Educating Caring Child Education",
+                "[B] Early Childhood Care & Education",
+                "[C] Educating Childhood Care Education",
+                "[D] Early Care Childhood Education Page 37 of 44"
+              ],
+              "answer": "[B] Early Childhood Care & Education"
+            },
+            {
+              "question": "The period from _______________ to _________________ is known as Early Childhood.",
+              "options": [
+                "[A] Birth to 6 years",
+                "[B] Birth to 8 years",
+                "[C] Birth to 5 years",
+                "[D] Birth to 7 years"
+              ],
+              "answer": "[B] Birth to 8 years"
+            },
+            {
+              "question": "For preschool education, Kindergarten/ Nursery/ Play schools/ Montessori are largely run by:",
+              "options": [
+                "[A] private organisations",
+                "[B] ministry of culture affairs",
+                "[C] NGOs",
+                "[D] government organisations"
+              ],
+              "answer": "[A] private organisations"
+            },
+            {
+              "question": "According to NEP 2020, how many years are covered under the foundational stage of education?",
+              "options": [
+                "[A] 2 years",
+                "[B] 5 years",
+                "[C] 1 year",
+                "[D] 3 years"
+              ],
+              "answer": "[B] 5 years"
+            },
+            {
+              "question": "What is the age group when cognitive functions are at the peak in children?",
+              "options": [
+                "[A] Before 5",
+                "[B] Before 6",
+                "[C] After 5",
+                "[D] After 6"
+              ],
+              "answer": "[D] After 6"
+            },
+            {
+              "question": "What is the correct name for the period when a child's brain is ready to absorb and learn quickly?",
+              "options": [
+                "[A] Old age",
+                "[B] Sensitive period",
+                "[C] Maturity",
+                "[D] Period of stress and strain"
+              ],
+              "answer": "[B] Sensitive period"
+            },
+            {
+              "question": "According to the neuroscience research, between which age group the early childhood has a tremendous brain development.",
+              "options": [
+                "[A] 3-5 years",
+                "[B] Birth-5 years",
+                "[C] 2-5 years",
+                "[D] 4-5 years"
+              ],
+              "answer": "[B] Birth-5 years"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

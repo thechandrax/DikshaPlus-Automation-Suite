@@ -33,47 +33,9 @@ import threading
 
 logger = get_logger("DikshaEngine")
 
-IS_PAUSED = False
-KEYBOARD_LISTENER_STARTED = False
-ACTIVE_COURSE_TITLE = ""
-
-
-def start_keyboard_pause_listener():
-    global KEYBOARD_LISTENER_STARTED
-    if KEYBOARD_LISTENER_STARTED:
-        return
-    KEYBOARD_LISTENER_STARTED = True
-
-    def listener():
-        global IS_PAUSED
-        while True:
-            try:
-                if sys.platform == "win32":
-                    import msvcrt
-                    if msvcrt.kbhit():
-                        ch = msvcrt.getch().decode('utf-8', errors='ignore').lower()
-                        if ch == 'p' or ch == ' ':
-                            IS_PAUSED = not IS_PAUSED
-                            if IS_PAUSED:
-                                logger.info("\n" + "=" * 65)
-                                logger.info("  ⏸️ [AUTOMATION PAUSED] Press 'P' or 'Spacebar' in terminal to RESUME...")
-                                logger.info("=" * 65 + "\n")
-                            else:
-                                logger.info("\n" + "=" * 65)
-                                logger.info("  ▶️ [AUTOMATION RESUMED] Continuing DIKSHA execution...")
-                                logger.info("=" * 65 + "\n")
-                time.sleep(0.1)
-            except Exception:
-                time.sleep(0.5)
-
-    t = threading.Thread(target=listener, daemon=True)
-    t.start()
-
 async def check_pause_status(page=None):
-    global IS_PAUSED
-    if IS_PAUSED:
-        while IS_PAUSED:
-            await asyncio.sleep(0.5)
+    pass
+
 
 
 
@@ -3045,12 +3007,11 @@ async def run_diksha_automation(target_course_url=None, username=None, password=
     """
     Main entry point for executing full DIKSHA automation pipeline.
     """
-    start_keyboard_pause_listener()
     answer_key = load_answer_key()
 
     logger.info("   DIKSHA AUTOMATION PIPELINE")
-    logger.info("  💡 [HOTKEY ENABLED] Press 'P' or 'Spacebar' in terminal to PAUSE / RESUME!")
     logger.info("=" * 35)
+
 
 
 
