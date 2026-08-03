@@ -83,10 +83,18 @@ class ColoredFormatter(logging.Formatter):
         elif "📚 MODULE" in colored_msg:
             colored_msg = f"{self.C_CYAN}{self.C_BOLD}{colored_msg}{self.C_RESET}"
 
-        if "100%" in colored_msg:
-            colored_msg = colored_msg.replace("100%", f"{self.C_GREEN}{self.C_BOLD}100%{self.C_RESET}")
-        if "0%" in colored_msg:
-            colored_msg = colored_msg.replace("0%", f"\033[38;5;208m{self.C_BOLD}0%{self.C_RESET}")
+        # Colorize percentages: 100% (Neon Green), 0% (Amber Red-Orange), 1-99% (Vibrant Electric Cyan)
+        def colorize_pct(m):
+            val = int(m.group(1))
+            if val == 100:
+                return f"{self.C_GREEN}{self.C_BOLD}100%{self.C_RESET}"
+            elif val == 0:
+                return f"\033[38;5;208m{self.C_BOLD}0%{self.C_RESET}"
+            else:
+                return f"\033[38;5;51m{self.C_BOLD}{val}%{self.C_RESET}"
+
+        colored_msg = re.sub(r"\b(\d{1,3})%\b", colorize_pct, colored_msg)
+
         if "✓" in colored_msg:
             colored_msg = colored_msg.replace("✓", f"{self.C_GREEN}{self.C_BOLD}✓{self.C_RESET}")
         if "⏳" in colored_msg:
@@ -97,6 +105,7 @@ class ColoredFormatter(logging.Formatter):
             colored_msg = colored_msg.replace("CONFIRMED", f"{self.C_GREEN}{self.C_BOLD}CONFIRMED{self.C_RESET}")
 
         return f"{timestamp} {level_name} {name_str} {self.C_TEXT}{colored_msg}{self.C_RESET}"
+
 
 
 

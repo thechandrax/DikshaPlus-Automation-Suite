@@ -2758,7 +2758,8 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                         pct = "100%" if is_done else "0%"
                         act_lbl = b_txt if b_txt and b_txt.lower() in ("view", "start", "open", "continue", "retry") else "View"
                         act_lbl = act_lbl.capitalize()
-                        logger.info(f"     [{idx}/{total_sec_items}] {chk} {r_txt} || {pct} || {act_lbl}")
+                        t_disp = r_txt[:49].strip() + "..." if len(r_txt) > 52 else r_txt
+                        logger.info(f"     [{idx}/{total_sec_items}] {chk} {t_disp} || {pct} || {act_lbl}")
                     except Exception:
                         pass
                 logger.info("  " + "-" * 55)
@@ -2868,10 +2869,12 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                     pct = "100%" if is_done else "0%"
                                     act_lbl = b_txt if b_txt and b_txt.lower() in ("view", "start", "open", "continue", "retry") else "View"
                                     act_lbl = act_lbl.capitalize()
-                                    logger.info(f"     [{idx}/{len(sync_btns)}] {chk} {r_txt} || {pct} || {act_lbl}")
+                                    t_disp = r_txt[:49].strip() + "..." if len(r_txt) > 52 else r_txt
+                                    logger.info(f"     [{idx}/{len(sync_btns)}] {chk} {t_disp} || {pct} || {act_lbl}")
                                 except Exception:
                                     pass
                             logger.info("  " + "-" * 55)
+
 
 
 
