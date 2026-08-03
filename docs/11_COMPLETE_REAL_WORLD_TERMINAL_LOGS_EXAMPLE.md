@@ -148,3 +148,72 @@ Here is the exact terminal log output when a module header badge is not 100% yet
 [02:35:22] INFO  [DikshaEngine]   --> Closing activity modal & cleanly collapsing completed module accordion panel...
 [02:35:23] INFO  [DikshaEngine]   --> [CONFIRMED 2/2] DIKSHA Server completion verified! Moving to next module...
 ```
+
+---
+
+## 📜 3. FULL MODULE RE-SCAN & SUBSECTION BREAKDOWN RE-PRINT ON USER RESUME LOG TRACE
+
+Here is the exact terminal log trace when the system pauses after 5 sync attempts and the user presses **[ENTER]** to resume (`▶ [USER RESUMED]`). The engine re-starts the module pass from scratch, re-expands the accordion, and **re-prints the full 26-item Subsection Breakdown checklist**:
+
+```text
+===========================================================================
+[20:01:08] WARNING [DikshaEngine]  ⏸️  [AUTOMATION PAUSED] 'Module 02: Shifting Towards Competency Based Education' is not 100% complete after 5 attempts.
+[20:01:08] WARNING [DikshaEngine]  🔒 BROWSER & SERVER SESSION REMAIN 100% ACTIVE (NOT CLOSED)!
+[20:01:08] WARNING [DikshaEngine]  👉 Press [ENTER] key in terminal console to RESUME automation & retry full module pass...
+===========================================================================
+
+Press [ENTER] to RESUME & RE-START module pass: 
+[20:19:24] INFO  [DikshaEngine]   ▶ [USER RESUMED] Re-starting full module execution & re-scanning all subsections...
+
+[20:19:24] INFO  [DikshaEngine]
+  🔄 [RE-STARTING FULL MODULE PASS #2] Re-scanning 'Module 02: Shifting Towards Competency Based Education' & re-evaluating all subsections...
+[20:19:24] INFO  [DikshaEngine]   --> [INCOMPLETE MODULE] Expanding accordion for 'Module 02: Shifting Towards Competency Based Education'...
+[20:19:27] INFO  [DikshaEngine]   📋 [SUBSECTION BREAKDOWN (26 ITEMS)]:
+[20:19:27] INFO  [DikshaEngine]      [1/26] ✓ Module Objectives
+[20:19:27] INFO  [DikshaEngine]      [2/26] ✓ View
+[20:19:27] INFO  [DikshaEngine]      [3/26] ✓ View
+[20:19:27] INFO  [DikshaEngine]      [4/26] ✓ Introduction to Competency Based Education and Learning Outcomes – Transcript
+[20:19:27] INFO  [DikshaEngine]      [5/26] ✓ View
+[20:19:27] INFO  [DikshaEngine]      [6/26] ✓ View
+[20:19:27] INFO  [DikshaEngine]      [7/26] ✓ View
+[20:19:27] INFO  [DikshaEngine]      [8/26] ✓ Concept of Competency Based Education and learning Outcome -Transcript
+[20:19:27] INFO  [DikshaEngine]      [9/26] ✓ View
+[20:19:27] INFO  [DikshaEngine]      [10/26] ✓ View
+[20:19:27] INFO  [DikshaEngine]      [11/26] ✓ View
+[20:19:27] INFO  [DikshaEngine]      [12/26] ✓ View
+[20:19:27] INFO  [DikshaEngine]      [13/26] ✓ View
+[20:19:27] INFO  [DikshaEngine]      [14/26] ✓ View
+[20:19:27] INFO  [DikshaEngine]      [15/26] ✓ View
+[20:19:27] INFO  [DikshaEngine]      [16/26] ✓ View
+[20:19:27] INFO  [DikshaEngine]      [17/26] ✓ View
+[20:19:27] INFO  [DikshaEngine]      [18/26] ✓ View
+[20:19:27] INFO  [DikshaEngine]      [19/26] ⏳ View
+[20:19:27] INFO  [DikshaEngine]      [20/26] ⏳ View
+[20:19:27] INFO  [DikshaEngine]      [21/26] ⏳ Codification of Learning Outcomes – Transcript
+[20:19:28] INFO  [DikshaEngine]      [22/26] ⏳ View
+[20:19:28] INFO  [DikshaEngine]      [23/26] ⏳ View
+[20:19:28] INFO  [DikshaEngine]      [24/26] ⏳ View
+[20:19:28] INFO  [DikshaEngine]      [25/26] ⏳ View
+[20:19:28] INFO  [DikshaEngine]      [26/26] ⏳ View
+[20:19:28] INFO  [DikshaEngine]   -------------------------------------------------------
+[20:19:28] INFO  [DikshaEngine]   --> [✓ ALREADY DONE] Subsection [1/26]: 'Module Objectives' is 100% complete. Skipping!
+...
+[20:19:29] INFO  [DikshaEngine]   --> [✓ ALREADY DONE] Subsection [18/26]: 'View' is 100% complete. Skipping!
+[20:19:29] INFO  [DikshaEngine]
+===================================
+[20:19:29] INFO  [DikshaEngine]  ▶ SUBSECTION [19/26]: 'Activity 05: Check Your Understanding' (Type: 'resource') [Pass #2]
+[20:19:29] INFO  [DikshaEngine] ===================================
+[20:19:31] INFO  [DikshaEngine] [PDF ACTIVITY] Opening PDF document resource...
+[20:19:37] INFO  [DikshaEngine]   --> Automated Page Flipping: simulating PageDown key presses...
+[20:19:49] INFO  [DikshaEngine]   --> End-of-Doc Scroll: scrolling PDF viewer container to exact bottom...
+[20:19:53] INFO  [DikshaEngine]   --> Clicking activity close button (x)...
+[20:19:56] INFO  [DikshaEngine]   --> Waiting for server 100% checkmark update...
+[20:19:56] INFO  [DikshaEngine]   --> Server 100% checkmark confirmed!
+[20:19:56] INFO  [DikshaEngine]   --> DIKSHA Server sync buffer: waiting 4 seconds for next item unlock...
+...
+[20:20:45] INFO  [DikshaEngine]   --> [DOUBLE CONFIRMATION] Verifying 100% completion for 'Module 02: Shifting Towards Competency Based Education'...
+[20:21:00] INFO  [DikshaEngine]   ⏳ [MODULE SYNC 1/5] Reloading page & checking module completion (Elapsed: 15s / 75s)...
+[20:21:05] INFO  [DikshaEngine]   ✅ [MODULE SYNC SUCCESS] DIKSHA server completion verified for 'Module 02: Shifting Towards Competency Based Education' on Attempt #1!
+[20:21:06] INFO  [DikshaEngine]   🎓 [MODULE COMPLETED] 'Module 02: Shifting Towards Competency Based Education' completed successfully! Advancing to next module...
+```
+
