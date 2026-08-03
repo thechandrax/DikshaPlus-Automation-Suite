@@ -104,15 +104,17 @@ git clone https://YOUR_TOKEN@github.com/thechandrax/DikshaPlus-Automation-Suite.
 git config --global credential.helper store
 ```
 
-### 🔹 STEP 8: Create 1-Word Shortcuts (`vnc`, `diksha`, `update`, `exit`)
+### 🔹 STEP 8: Create 1-Word Shortcuts (`vnc`, `diksha`, `headless`, `update`, `exit`)
 Inside Ubuntu, paste:
 ```bash
 echo "alias vnc='vncserver -kill :1 2>/dev/null; vncserver :1'" >> ~/.bashrc
 echo "alias diksha='cd ~/DikshaPlus-Automation-Suite && export DISPLAY=:1 && python3 main.py'" >> ~/.bashrc
+echo "alias headless='cd ~/DikshaPlus-Automation-Suite && export HEADLESS=True && python3 main.py'" >> ~/.bashrc
 echo "alias update='cd ~/DikshaPlus-Automation-Suite && git pull'" >> ~/.bashrc
 echo "alias exit='exit'" >> ~/.bashrc
 source ~/.bashrc
 ```
+
 
 ---
 
