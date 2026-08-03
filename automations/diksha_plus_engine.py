@@ -2626,7 +2626,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
         logger.info("=" * 35)
         
         for idx, (hdr, title) in enumerate(main_modules, 1):
-            logger.info(f"  [{idx}/{total_real_modules}] {title}")
+            logger.info(f"  [{idx:02d}/{total_real_modules:02d}] {title}")
 
         logger.info("=" * 35 + "\n")
 
@@ -2634,8 +2634,9 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
         for i, (header, header_title) in enumerate(main_modules, 1):
             await check_pause_status()
             logger.info("\n" + "=" * 35)
-            logger.info(f" 📚 MODULE [{i}/{total_real_modules}]: {header_title}")
+            logger.info(f" 📚 MODULE [{i:02d}/{total_real_modules:02d}]: {header_title}")
             logger.info("=" * 35)
+
 
             item_attempts = {}
             completed_items = set()
