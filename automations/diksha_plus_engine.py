@@ -2936,6 +2936,10 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                 is_item_done = (s_item_title in completed_items) or (not is_gen_b and s_btn_text in completed_items) or await is_item_100_percent_complete(s_btn)
 
                                 if not is_item_done:
+                                    if await is_item_locked_by_diksha(s_btn):
+                                        logger.warning(f"  --> 🔒 [LOCKED ITEM IN SYNC] Item [{s_idx}/{len(sync_btns)}]: '{s_item_title}' is locked by DIKSHA prerequisite rule. Skipping for now...")
+                                        continue
+
                                     logger.info(f"  🔄 [SYNC RE-EXECUTION Attempt #{sync_step}/10] Found incomplete item [{s_idx}/{len(sync_btns)}]: '{s_item_title}'. Executing item now...")
                                     s_act_type = await s_btn.get_attribute("act_type") or "resource"
                                     if s_act_type == "url":
@@ -2948,6 +2952,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                         await process_quiz_assessment(page, s_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=s_item_title, sub_no=s_idx, course_title=course_title)
                                     elif s_act_type == "feedback" or "feedback" in s_item_title.lower():
                                         await process_feedback_activity(page, s_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=s_item_title, sub_no=s_idx, course_title=course_title)
+
 
                                     if not is_gen_b:
                                         completed_items.add(s_btn_text)
