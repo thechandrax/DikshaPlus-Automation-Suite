@@ -1644,8 +1644,15 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             q_tag = f"QUESTION-{q_num + 1:02d}"
 
         try:
-            q_elem = target_frame.locator(".que-no, .qtext, div.qtext, .question-text, .que .content .qtext, fieldset legend, .qheader, .question-content, div.que div.content").first
-            if await q_elem.count() > 0 and await q_elem.is_visible():
+            q_elem = None
+            for frame_t in [target_frame, page] + page.frames:
+                cand_q = frame_t.locator(".que-no, .qtext, div.qtext, .question-text, .que .content .qtext, fieldset legend, .qheader, .question-content, div.que div.content").first
+                if await cand_q.count() > 0 and await cand_q.is_visible():
+                    q_elem = cand_q
+                    target_frame = frame_t
+                    break
+
+            if q_elem and await q_elem.count() > 0:
                 raw_q = (await q_elem.inner_text()).strip()
                 q_text_screen = re.sub(r'^(?:question\s*text|question\s*\d+[:.]?|\d+[:.]?|q\d+[:.]?)\s*', '', raw_q, flags=re.IGNORECASE)
                 q_text_screen = normalize_text(re.sub(r'\s*(?:select\s*one|question\s*\d+).*$', '', q_text_screen, flags=re.IGNORECASE | re.DOTALL).strip())
@@ -1655,8 +1662,9 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             row_count = await option_rows.count()
 
             if row_count == 0:
-                option_rows = target_frame.locator("div.r0, div.r1, div[data-region='answer-label'], .feed-ans-div .form-check")
+                option_rows = target_frame.locator("div.r0, div.r1, div[data-region='answer-label'], .feed-ans-div .form-check, .answer label, .options label")
                 row_count = await option_rows.count()
+
 
 
 
@@ -1905,22 +1913,28 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             except Exception as ex:
                 logger.warning(f"  --> Notice clicking Final Submit: {ex}")
         else:
-            logger.info("  --> Executing JS fallback for Final Submit...")
-            for frame_target in [target_frame, page] + page.frames:
-                try:
-                    clicked = await frame_target.evaluate("""() => {
-                        const btns = Array.from(document.querySelectorAll('button, input[type="submit"], a.btn'));
-                        const fBtn = btns.find(b => (b.innerText || b.value || '').toLowerCase().includes('submit'));
-                        if (fBtn) { fBtn.click(); return true; }
-                        return false;
-                    }""")
-                    if clicked:
-                        logger.info("  --> JS fallback executed Final Submit!")
-                        logger.info("  ⏳ [POST-SUBMIT BUFFER] Waiting 5 seconds for DIKSHA server score telemetry & checkmark processing...")
-                        await page.wait_for_timeout(5000)
-                        break
-                except Exception:
-                    pass
+            if "dashboard.php" not in page.url and "my-learning" not in page.url:
+                logger.info("  --> Executing JS fallback for Final Submit (quiz frames)...")
+                for frame_target in [target_frame] + page.frames:
+                    if frame_target != page:
+                        try:
+                            clicked = await frame_target.evaluate("""() => {
+                                const btns = Array.from(document.querySelectorAll('button, input[type="submit"], a.btn'));
+                                const fBtn = btns.find(b => {
+                                    const txt = (b.innerText || b.value || '').toLowerCase();
+                                    return txt.includes('submit all') || txt.includes('final submit') || (txt.includes('submit') && !txt.includes('dashboard'));
+                                });
+                                if (fBtn) { fBtn.click(); return true; }
+                                return false;
+                            }""")
+                            if clicked:
+                                logger.info("  --> JS fallback executed Final Submit inside quiz frame!")
+                                logger.info("  ⏳ [POST-SUBMIT BUFFER] Waiting 5 seconds for DIKSHA server score telemetry & checkmark processing...")
+                                await page.wait_for_timeout(5000)
+                                break
+                        except Exception:
+                            pass
+
 
 
 
