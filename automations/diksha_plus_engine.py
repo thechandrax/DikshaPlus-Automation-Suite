@@ -1465,7 +1465,23 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                 pass
         await page.wait_for_timeout(2000)
 
-    # 2. Locate and click 'Start Assessment' / 'Continue Assessment' / 'Answer the questions' button across page and all frames
+    # 1. Wait 5s for quiz instruction popup banner to appear on screen after clicking View
+    logger.info("  ⏳ [POPUP PRE-LOAD] Waiting 5 seconds for quiz instruction popup banner to render...")
+    await page.wait_for_timeout(5000)
+
+    # Dismiss any instruction / announcement popup modal if present
+    try:
+        for frame_target in [page] + page.frames:
+            popup_close = frame_target.locator(".modal.show button.close, .modal.in .close, #instructionModal .close, .popup-banner .close-btn, button:has-text('Close'), button:has-text('OK'), a.close").first
+            if await popup_close.count() > 0 and await popup_close.is_visible():
+                logger.info("  --> [DISMISS POPUP] Closing instruction popup modal...")
+                await popup_close.click(force=True)
+                await page.wait_for_timeout(2000)
+                break
+    except Exception as pop_ex:
+        logger.warning(f"  --> Instruction popup dismiss notice: {pop_ex}")
+
+    # 2. Locate and click 'Start Assessment' / 'Continue Assessment' / 'Answer the questions' button
     start_assessment_btn = None
     target_frame = page
 
@@ -1526,7 +1542,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             btn_txt = (await start_assessment_btn.inner_text()).strip() or (await start_assessment_btn.get_attribute("value") or "").strip()
             logger.info(f"  --> Clicking Assessment/Feedback launch button '{btn_txt}'...")
             await start_assessment_btn.click(force=True)
-            logger.info("  ⏳ [ASSESSMENT PRE-LOAD BUFFER] Waiting 5 seconds for quiz modal, iframe & banner popup to render properly...")
+            logger.info("  ⏳ [QUIZ IFRAME PRE-LOAD BUFFER] Waiting 5 seconds for question #1 to render...")
             await page.wait_for_timeout(5000)
         except Exception as ex:
             logger.warning(f"  --> Direct click notice on assessment button: {ex}")
@@ -1547,12 +1563,13 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                 }""")
                 if clicked:
                     logger.info("  --> JS fallback successfully clicked launch button!")
-                    logger.info("  ⏳ [ASSESSMENT PRE-LOAD BUFFER] Waiting 5 seconds for quiz modal, iframe & banner popup to render properly...")
+                    logger.info("  ⏳ [QUIZ IFRAME PRE-LOAD BUFFER] Waiting 5 seconds for question #1 to render...")
                     await page.wait_for_timeout(5000)
                     target_frame = frame_target
                     break
             except Exception:
                 pass
+
 
 
     # 3. Dynamic Question Answering Loop with Hierarchical Module/Subsection Scoping & Position Matching
