@@ -2895,9 +2895,16 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                             logger.info(f"  ▶ Retrying Subsection item (Type: '{r_act_type}') [Attempt {r_runs + 1}/4]...")
                             item_attempts[r_btn_text] = r_runs + 1
                             if r_act_type == "quiz":
-                                await process_quiz_assessment(page, r_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=r_btn_text, sub_no=r_idx)
+                                await process_quiz_assessment(page, r_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=r_btn_text, sub_no=r_idx, course_title=course_title)
                             elif r_act_type == "h5pactivity":
-                                await process_h5p_activity(page, r_btn, answer_key)
+                                await process_h5p_activity(page, r_btn, answer_key, course_title=course_title)
+                            elif r_act_type == "url":
+                                await process_video_activity(page, r_btn)
+                            elif r_act_type == "resource":
+                                await process_pdf_activity(page, r_btn)
+                            elif r_act_type == "feedback" or "feedback" in r_btn_text.lower():
+                                await process_feedback_activity(page, r_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=r_btn_text, sub_no=r_idx, course_title=course_title)
+
                                 # Module Sync & Re-Execution Gate with 5-Attempt (75s) Patient Window & User Pause / Resume Prompt
                 final_header_check = await is_header_100_percent_complete(header)
                 if not final_header_check and not all_items_completed_in_memory and not any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"]):
