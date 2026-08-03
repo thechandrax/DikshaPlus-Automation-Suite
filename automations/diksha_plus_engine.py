@@ -2359,10 +2359,26 @@ async def get_section_action_buttons(collapse_panel, header):
     return distinct_btns
 
 
+def sanitize_title_string(txt):
+    if not txt:
+        return ""
+    lines = [l.strip() for l in txt.splitlines() if l.strip()]
+    clean_lines = []
+    for l in lines:
+        l_lower = l.lower()
+        if l_lower not in ("view", "start", "open", "continue", "retry") and not l_lower.startswith("0%") and not l_lower.startswith("100%"):
+            clean_lines.append(l)
+    if clean_lines:
+        res = " ".join(clean_lines)
+        res = re.sub(r"\s*(?:0%|100%|\d{1,3}%|View|Start|Continue)\s*$", "", res, flags=re.IGNORECASE).strip()
+        return res
+    return ""
+
+
 async def get_real_subsection_title(page, btn):
     """
     Extracts full subsection title text from DIKSHA activity row or title link.
-    Guarantees 100% real title extraction for all items.
+    Guarantees 100% real title extraction for all items as clean single-line strings.
     """
     try:
         act_id = await btn.get_attribute("act_id") or await btn.get_attribute("data-id") or ""
@@ -2373,7 +2389,7 @@ async def get_real_subsection_title(page, btn):
                 el = t_elements.nth(idx)
                 txt = (await el.inner_text()).strip()
                 if txt and txt.lower() not in ("view", "start", "open", "continue", "retry"):
-                    clean_t = re.sub(r"\s*\d{1,3}%\s*$", "", txt).strip()
+                    clean_t = sanitize_title_string(txt)
                     if clean_t and len(clean_t) > 2:
                         return clean_t
 
@@ -2382,31 +2398,30 @@ async def get_real_subsection_title(page, btn):
             title_nodes = await row.locator("a.activity-list:not(.module-view-btn), .title, .activity-title, h4, h5, bdi, strong, .name, td, p, span, div.col-md-9, div.col-8, div.col-9, div.col-10").all()
             for t_el in title_nodes:
                 txt = (await t_el.inner_text()).strip()
-                clean_t = re.sub(r"\s*\d{1,3}%\s*$", "", txt).strip()
+                clean_t = sanitize_title_string(txt)
                 clean_lower = clean_t.lower()
                 if clean_t and clean_lower not in ("view", "start", "open", "continue", "retry") and len(clean_t) > 3:
                     if not clean_lower.startswith("view") and not clean_lower.startswith("0%") and not clean_lower.startswith("100%"):
                         return clean_t
 
             row_raw = (await row.inner_text()).strip()
-            lines = [l.strip() for l in row_raw.splitlines() if l.strip()]
-            for l in lines:
-                l_clean = re.sub(r"\s*\d{1,3}%\s*$", "", l).strip()
-                l_lower = l_clean.lower()
-                if l_clean and l_lower not in ("view", "start", "open", "continue", "retry") and not l_lower.startswith("view") and len(l_clean) > 3:
-                    return l_clean
+            clean_row = sanitize_title_string(row_raw)
+            if clean_row and len(clean_row) > 3:
+                return clean_row
     except Exception:
         pass
 
     try:
         raw_b = (await btn.inner_text()).strip()
-        if raw_b and raw_b.lower() not in ("view", "start", "open", "continue"):
-            return raw_b
+        clean_b = sanitize_title_string(raw_b)
+        if clean_b and clean_b.lower() not in ("view", "start", "open", "continue"):
+            return clean_b
     except Exception:
         pass
 
     act_t = await btn.get_attribute("act_type") or "Resource"
     return f"{act_t.capitalize()} Activity"
+
 
 
 
