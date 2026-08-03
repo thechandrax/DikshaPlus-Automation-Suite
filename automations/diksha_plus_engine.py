@@ -2927,10 +2927,11 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
                                 if not is_item_done:
                                     if await is_item_locked_by_diksha(s_btn):
-                                        logger.warning(f"  --> 🔒 [LOCKED ITEM IN SYNC] Item [{s_idx}/{len(sync_btns)}]: '{s_item_title}' is locked by DIKSHA prerequisite rule. Skipping for now...")
+                                        logger.warning(f"  --> 🔒 [LOCKED ITEM IN SYNC] Item [{s_idx:02d}/{len(sync_btns):02d}]: '{s_item_title}' is locked by DIKSHA prerequisite rule. Skipping for now...")
                                         continue
 
-                                    logger.info(f"  🔄 [SYNC RE-EXECUTION Attempt #{sync_step}/10] Found incomplete item [{s_idx}/{len(sync_btns)}]: '{s_item_title}'. Executing item now...")
+                                    logger.info(f"  🔄 [SYNC RE-EXECUTION Attempt #{sync_step}/10] Found incomplete item [{s_idx:02d}/{len(sync_btns):02d}]: '{s_item_title}'. Executing item now...")
+
                                     s_act_type = await s_btn.get_attribute("act_type") or "resource"
                                     if s_act_type == "url":
                                         await process_video_activity(page, s_btn)
