@@ -93,7 +93,7 @@ class ColoredFormatter(logging.Formatter):
             else:
                 return f"\033[38;5;51m{self.C_BOLD}{val}%{self.C_RESET}"
 
-        colored_msg = re.sub(r"\b(\d{1,3})%\b", colorize_pct, colored_msg)
+        colored_msg = re.sub(r"(\d{1,3})%", colorize_pct, colored_msg)
 
         if "✓" in colored_msg:
             colored_msg = colored_msg.replace("✓", f"{self.C_GREEN}{self.C_BOLD}✓{self.C_RESET}")
