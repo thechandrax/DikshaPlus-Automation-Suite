@@ -1526,7 +1526,8 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             btn_txt = (await start_assessment_btn.inner_text()).strip() or (await start_assessment_btn.get_attribute("value") or "").strip()
             logger.info(f"  --> Clicking Assessment/Feedback launch button '{btn_txt}'...")
             await start_assessment_btn.click(force=True)
-            await page.wait_for_timeout(4000)
+            logger.info("  ⏳ [ASSESSMENT PRE-LOAD BUFFER] Waiting 5 seconds for quiz modal, iframe & banner popup to render properly...")
+            await page.wait_for_timeout(5000)
         except Exception as ex:
             logger.warning(f"  --> Direct click notice on assessment button: {ex}")
 
@@ -1546,11 +1547,13 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                 }""")
                 if clicked:
                     logger.info("  --> JS fallback successfully clicked launch button!")
-                    await page.wait_for_timeout(4000)
+                    logger.info("  ⏳ [ASSESSMENT PRE-LOAD BUFFER] Waiting 5 seconds for quiz modal, iframe & banner popup to render properly...")
+                    await page.wait_for_timeout(5000)
                     target_frame = frame_target
                     break
             except Exception:
                 pass
+
 
     # 3. Dynamic Question Answering Loop with Hierarchical Module/Subsection Scoping & Position Matching
     answers_list = extract_all_qa_items(answer_key)
@@ -1880,7 +1883,8 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
             logger.info("  --> Executing Final Assessment Submit...")
             try:
                 await final_submit.click(force=True)
-                await page.wait_for_timeout(3000)
+                logger.info("  ⏳ [POST-SUBMIT BUFFER] Waiting 5 seconds for DIKSHA server score telemetry & checkmark processing...")
+                await page.wait_for_timeout(5000)
             except Exception as ex:
                 logger.warning(f"  --> Notice clicking Final Submit: {ex}")
         else:
@@ -1895,10 +1899,12 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
                     }""")
                     if clicked:
                         logger.info("  --> JS fallback executed Final Submit!")
-                        await page.wait_for_timeout(3000)
+                        logger.info("  ⏳ [POST-SUBMIT BUFFER] Waiting 5 seconds for DIKSHA server score telemetry & checkmark processing...")
+                        await page.wait_for_timeout(5000)
                         break
                 except Exception:
                     pass
+
 
 
     # 4. Post-Submission 'Continue' button click (Returns to course page to hydrate 100% checkmark)
