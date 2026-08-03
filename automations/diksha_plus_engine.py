@@ -2821,8 +2821,32 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     # 🔒 Check if item is locked by DIKSHA prerequisite rule (e.g. 'Not available unless...')
                     if await is_item_locked_by_diksha(btn):
                         disp_t = real_item_title[:42].strip() + "..." if len(real_item_title) > 45 else real_item_title
-                        logger.info(f"  --> 🔒 [LOCKED ITEM] SUBSECTION [{j:02d}/{total_sec_items:02d}]: '{disp_t}' is locked by DIKSHA prerequisite rule. [Skipping for now!]")
-                        continue
+                        logger.warning(f"  --> 🔒 [LOCKED ITEM DETECTED] SUBSECTION [{j:02d}/{total_sec_items:02d}]: '{disp_t}' is locked by DIKSHA prerequisite rule.")
+                        logger.info("  --> Re-triggering prior item & reloading page to hydrate DIKSHA server unlock...")
+                        
+                        # Re-execute prior prerequisite item if available
+                        if j >= 2:
+                            try:
+                                prev_btn = distinct_btns[j - 2]
+                                prev_title = await get_real_subsection_title(page, prev_btn)
+                                prev_act_type = await prev_btn.get_attribute("act_type") or "resource"
+                                logger.info(f"  --> Re-executing prior prerequisite item [{j-1:02d}/{total_sec_items:02d}]: '{prev_title}' to unlock current item...")
+                                if prev_act_type == "url":
+                                    await process_video_activity(page, prev_btn)
+                                elif prev_act_type == "resource":
+                                    await process_pdf_activity(page, prev_btn)
+                                elif prev_act_type == "h5pactivity":
+                                    await process_h5p_activity(page, prev_btn, answer_key, course_title=course_title)
+                            except Exception as ex:
+                                logger.warning(f"  --> Notice re-triggering prior item: {ex}")
+
+                        try:
+                            await page.reload()
+                            await page.wait_for_timeout(4000)
+                        except Exception:
+                            pass
+                        break  # Re-scan section items with freshly unlocked buttons!
+
 
 
 
