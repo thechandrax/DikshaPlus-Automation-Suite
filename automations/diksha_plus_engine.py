@@ -2715,16 +2715,95 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
                 server_synced = False
                 for sync_step in range(1, 6):
-                    logger.info(f"  ⏳ [MODULE SYNC {sync_step}/5] Reloading page & checking module completion (Elapsed: {sync_step * 15}s / 75s)...")
+                    logger.info(f"\n  ⏳ [MODULE SYNC {sync_step}/5] Reloading page & re-scanning subsections (Elapsed: {sync_step * 15}s / 75s)...")
                     await asyncio.sleep(15)
                     try:
                         await page.reload()
-                        await asyncio.sleep(3)
+                        await page.wait_for_timeout(3000)
+
+                        # Step 1: Re-expand accordion panel
+                        click_target = header.locator("a[data-toggle='collapse'], a[href*='collapse'], a[aria-controls*='collapse']").first
+                        if await click_target.count() == 0:
+                            click_target = header
 
                         if await click_target.count() > 0:
-                            await click_target.click(force=True)
+                            await safe_action_click(click_target)
                             await page.wait_for_timeout(2000)
 
+                        collapse_panel = None
+                        if collapse_id and await page.locator(f"#{collapse_id}").count() > 0:
+                            collapse_panel = page.locator(f"#{collapse_id}").first
+                        else:
+                            parent_div = header.locator("xpath=ancestor::*[contains(@class,'modules_full_accordian_div') or contains(@class,'panel') or contains(@class,'card')][1]").first
+                            if await parent_div.count() > 0:
+                                collapse_panel = parent_div.locator(".panel-collapse, .collapse, .card-body").first
+
+                        # Step 2: Re-scan and re-print SUBSECTION BREAKDOWN list on Attempt #sync_step
+                        sync_btns = await get_section_action_buttons(collapse_panel, header)
+                        if sync_btns:
+                            logger.info(f"  📋 [SUBSECTION BREAKDOWN ({len(sync_btns)} ITEMS) - Attempt #{sync_step}/5]:")
+                            for idx, b in enumerate(sync_btns, 1):
+                                try:
+                                    b_txt = (await b.inner_text()).strip()
+                                    r_txt = b_txt
+                                    if b_txt.lower() in ("view", "start", "open", "continue"):
+                                        row = b.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'card-body')][1]").first
+                                        if await row.count() > 0:
+                                            t_el = row.locator("h4, h5, .title, .activity-title, bdi, strong, .name").first
+                                            if await t_el.count() > 0:
+                                                extracted_t = (await t_el.inner_text()).strip()
+                                                if extracted_t and extracted_t.lower() not in ("view", "start"):
+                                                    r_txt = extracted_t
+                                    chk = "✓" if await is_item_100_percent_complete(b) else "⏳"
+                                    logger.info(f"     [{idx}/{len(sync_btns)}] {chk} {r_txt}")
+                                except Exception:
+                                    pass
+                            logger.info("  " + "-" * 55)
+
+                        # Step 3: Find any incomplete subsection item and re-execute it right now!
+                        if sync_btns:
+                            for s_idx, s_btn in enumerate(sync_btns, 1):
+                                try:
+                                    await s_btn.scroll_into_view_if_needed()
+                                    await page.wait_for_timeout(200)
+                                except Exception:
+                                    pass
+
+                                s_btn_text = (await s_btn.inner_text()).strip()
+                                s_item_title = s_btn_text
+                                if s_btn_text.lower() in ("view", "start", "open", "continue"):
+                                    try:
+                                        row = s_btn.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'card-body')][1]").first
+                                        if await row.count() > 0:
+                                            title_el = row.locator("h4, h5, .title, .activity-title, bdi, strong, .name").first
+                                            if await title_el.count() > 0:
+                                                extracted_t = (await title_el.inner_text()).strip()
+                                                if extracted_t and extracted_t.lower() not in ("view", "start"):
+                                                    s_item_title = extracted_t
+                                    except Exception:
+                                        pass
+
+                                is_gen_b = s_btn_text.lower() in ("view", "start", "open", "continue", "retry")
+                                if not await is_item_100_percent_complete(s_btn) and (s_item_title not in completed_items or is_gen_b):
+                                    logger.info(f"  🔄 [SYNC RE-EXECUTION Attempt #{sync_step}/5] Found incomplete item [{s_idx}/{len(sync_btns)}]: '{s_item_title}'. Executing item now...")
+                                    s_act_type = await s_btn.get_attribute("act_type") or "resource"
+                                    if s_act_type == "url":
+                                        await process_video_activity(page, s_btn)
+                                    elif s_act_type == "resource":
+                                        await process_pdf_activity(page, s_btn)
+                                    elif s_act_type == "h5pactivity":
+                                        await process_h5p_activity(page, s_btn, answer_key, course_title=course_title)
+                                    elif s_act_type == "quiz" or "assessment" in s_item_title.lower():
+                                        await process_quiz_assessment(page, s_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=s_item_title, sub_no=s_idx, course_title=course_title)
+                                    elif s_act_type == "feedback" or "feedback" in s_item_title.lower():
+                                        await process_feedback_activity(page, s_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=s_item_title, sub_no=s_idx, course_title=course_title)
+
+                                    if not is_gen_b:
+                                        completed_items.add(s_btn_text)
+                                    if s_item_title and s_item_title.lower() not in ("view", "start", "open", "continue"):
+                                        completed_items.add(s_item_title)
+
+                        # Step 4: Strict verification - check if Header is 100% OR all items checkmarked
                         sync_btns = await get_section_action_buttons(collapse_panel, header)
                         all_items_checkmarked = True
                         if sync_btns:
@@ -2736,11 +2815,12 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                             all_items_checkmarked = False
 
                         if await is_header_100_percent_complete(header) or all_items_checkmarked:
-                            logger.info(f"  ✅ [MODULE SYNC SUCCESS] DIKSHA server completion verified for '{header_title}' on Attempt #{sync_step}!")
+                            logger.info(f"  ✅ [MODULE SYNC SUCCESS] DIKSHA server completion verified for '{header_title}' on Attempt #{sync_step}/5!")
                             server_synced = True
                             break
                     except Exception as m_sync_ex:
                         logger.warning(f"  --> Module sync attempt #{sync_step} notice: {m_sync_ex}")
+
 
                 if server_synced or await is_header_100_percent_complete(header):
                     logger.info(f"  🎓 [MODULE COMPLETED] '{header_title}' completed successfully! Advancing to next module...\n")
