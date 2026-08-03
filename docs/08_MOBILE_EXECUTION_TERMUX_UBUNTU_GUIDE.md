@@ -1,6 +1,6 @@
 # 📱 DIKSHA+ AUTOMATION SUITE — COMPLETE TERMUX & UBUNTU PROOT SETUP GUIDE
 
-This guide provides exhaustive, step-by-step instructions on **how to install Termux**, **how to setup Ubuntu PRoot**, **how to run WITH VNC (Visible Mobile GUI)**, **how to run WITHOUT VNC (Headless Background Mode)**, **how to update code via Git (`git pull`)**, and **how to clone public or private repositories**.
+This guide provides exhaustive, step-by-step instructions on **how to install Termux**, **how to setup Ubuntu PRoot**, **how to run WITH VNC (Visible Mobile GUI)**, **how to run WITHOUT VNC (Headless Background Mode)**, **how to update code via Git (`git pull`)**, **how to fix Playwright installation errors**, **how to keep Termux awake (`termux-wake-lock`)**, and **how to configure system timezone (`dpkg-reconfigure tzdata`)**.
 
 ---
 
@@ -9,12 +9,15 @@ This guide provides exhaustive, step-by-step instructions on **how to install Te
 1. [📱 Step 0: Download & Install Termux App](#-step-0-download--install-termux-app)
 2. [⚡ Single-Command 1-Click All-in-One Setup (Quickest)](#-single-command-1-click-all-in-one-setup-quickest)
 3. [🛠️ Multi-Step Detailed Command Setup (Step-by-Step)](#%EF%B8%8F-multi-step-detailed-command-setup-step-by-step)
-4. [📺 How to Run WITH VNC (RealVNC Visible Mobile GUI)](#-how-to-run-with-vnc-realvnc-visible-mobile-gui)
-5. [🙈 How to Run WITHOUT VNC (Headless Background Mode)](#-how-to-run-without-vnc-headless-background-mode)
-6. [🔄 How to Update Code from GitHub (`git pull`)](#-how-to-update-code-from-github-git-pull)
-7. [🔒 How to Clone Private Repository in Termux](#-how-to-clone-private-repository-in-termux)
-8. [📺 RealVNC Viewer App Connection Setup](#-realvnc-viewer-app-connection-setup)
-9. [⚡ 1-Word Shortcut Reference Table](#-1-word-shortcut-reference-table)
+4. [⏰ How to Change System Timezone (`dpkg-reconfigure tzdata`)](#-how-to-change-system-timezone-dpkg-reconfigure-tzdata)
+5. [🔋 How to Keep Termux Awake (`termux-wake-lock`)](#-how-to-keep-termux-awake-termux-wake-lock)
+6. [🛠️ Playwright Installation Error Fix (`No module named playwright`)](#%EF%B8%8F-playwright-installation-error-fix-no-module-named-playwright)
+7. [📺 How to Run WITH VNC (RealVNC Visible Mobile GUI)](#-how-to-run-with-vnc-realvnc-visible-mobile-gui)
+8. [🙈 How to Run WITHOUT VNC (Headless Background Mode)](#-how-to-run-without-vnc-headless-background-mode)
+9. [🔄 How to Update Code to Latest Commit (`git pull`)](#-how-to-update-code-to-latest-commit-git-pull)
+10. [🔒 How to Clone Private Repository in Termux](#-how-to-clone-private-repository-in-termux)
+11. [📺 RealVNC Viewer App Connection Setup](#-realvnc-viewer-app-connection-setup)
+12. [⚡ 1-Word Shortcut Reference Table](#-1-word-shortcut-reference-table)
 
 ---
 
@@ -50,34 +53,39 @@ pkg update -y && pkg upgrade -y
 pkg install proot-distro git -y
 ```
 
-### 🔹 STEP 2: Install Ubuntu Linux Distribution
+### 🔹 STEP 2: Enable Wake Lock (Prevent Sleep)
+```bash
+termux-wake-lock
+```
+
+### 🔹 STEP 3: Install Ubuntu Linux Distribution
 ```bash
 proot-distro install ubuntu
 ```
 
-### 🔹 STEP 3: Log into Ubuntu PRoot
+### 🔹 STEP 4: Log into Ubuntu PRoot
 ```bash
 proot-distro login ubuntu
 ```
 *(Your terminal prompt will change to `root@localhost:~#`)*
 
-### 🔹 STEP 4: Install Linux GUI, Python 3, Chromium & TigerVNC inside Ubuntu
+### 🔹 STEP 5: Install Linux GUI, Python 3, Chromium & TigerVNC inside Ubuntu
 Inside Ubuntu, paste:
 ```bash
 apt update -y && apt upgrade -y
-apt install -y python3 python3-pip git chromium-browser tigervnc-standalone-server tigervnc-common x11-utils
+apt install -y python3 python3-pip git chromium-browser tigervnc-standalone-server tigervnc-common x11-utils tzdata
 pip3 install pandas openpyxl pillow playwright
 python3 -m playwright install-deps
 ```
 
-### 🔹 STEP 5: Set VNC Password (`123456`)
+### 🔹 STEP 6: Set VNC Password (`123456`)
 ```bash
 mkdir -p ~/.config/tigervnc
 echo "123456" | vncpasswd -f > ~/.config/tigervnc/passwd
 chmod 600 ~/.config/tigervnc/passwd
 ```
 
-### 🔹 STEP 6: Clone Repository
+### 🔹 STEP 7: Clone Repository
 
 #### Option A: Public Repository
 ```bash
@@ -96,7 +104,7 @@ git clone https://YOUR_TOKEN@github.com/thechandrax/DikshaPlus-Automation-Suite.
 git config --global credential.helper store
 ```
 
-### 🔹 STEP 7: Create 1-Word Shortcuts (`vnc`, `diksha`, `update`, `exit`)
+### 🔹 STEP 8: Create 1-Word Shortcuts (`vnc`, `diksha`, `update`, `exit`)
 Inside Ubuntu, paste:
 ```bash
 echo "alias vnc='vncserver -kill :1 2>/dev/null; vncserver :1'" >> ~/.bashrc
@@ -104,6 +112,53 @@ echo "alias diksha='cd ~/DikshaPlus-Automation-Suite && export DISPLAY=:1 && pyt
 echo "alias update='cd ~/DikshaPlus-Automation-Suite && git pull'" >> ~/.bashrc
 echo "alias exit='exit'" >> ~/.bashrc
 source ~/.bashrc
+```
+
+---
+
+## ⏰ How to Change System Timezone (`dpkg-reconfigure tzdata`)
+
+If you want to configure or fix your system timezone in Termux / Ubuntu PRoot:
+
+```bash
+dpkg-reconfigure tzdata
+```
+
+1. Select your geographic area (e.g. **Asia**).
+2. Select your city / timezone (e.g. **Kolkata** for IST +05:30).
+3. Press **Enter**. You can run this command as many times as you need whenever you want to change timezone!
+
+---
+
+## 🔋 How to Keep Termux Awake (`termux-wake-lock`)
+
+To prevent Android OS from putting Termux to sleep during long background automations:
+
+```bash
+termux-wake-lock
+```
+
+* This holds an active CPU wake-lock so your automation runs continuously without sleeping!
+
+---
+
+## 🛠️ Playwright Installation Error Fix (`No module named playwright`)
+
+### 🔍 Why This Happens:
+If you try to run `python3 -m playwright install-deps` before installing Playwright via pip, Python throws an error: `No module named playwright`.
+
+### 🛠️ How to Fix:
+You MUST install the Playwright Python package using `pip3` **first**:
+
+#### Step 1: Install Playwright Python Package
+```bash
+pip3 install playwright
+```
+*(Wait for pip installation to completely finish)*
+
+#### Step 2: Install Browser Dependencies
+```bash
+python3 -m playwright install-deps
 ```
 
 ---
@@ -141,13 +196,11 @@ export HEADLESS=True
 python3 main.py
 ```
 
-* Chromium runs silently in background terminal without needing any VNC server!
-
 ---
 
-## 🔄 How to Update Code from GitHub (`git pull`)
+## 🔄 How to Update Code to Latest Commit (`git pull`)
 
-When new features, bug fixes, or answer key updates are pushed to GitHub, update your Termux code in 1 step:
+When new features, bug fixes, or answer key updates are pushed to GitHub, update your Termux code to the latest commit in 1 step:
 
 ### 🔹 Method A: Using 1-Word `update` Shortcut (Easiest)
 Inside Ubuntu, simply type:
