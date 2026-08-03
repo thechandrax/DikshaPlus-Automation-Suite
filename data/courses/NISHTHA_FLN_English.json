@@ -1693,6 +1693,46 @@
                 "[D] Video Game"
               ],
               "answer": "[D] Video Game"
+            },
+            {
+              "question": "Toys and educational play materials must not be?",
+              "options": [
+                "[A] Aligned with learning outcomes",
+                "[B] Culturally irrelevant",
+                "[C] Linked to all children's interests",
+                "[D] Developmentally appropriate"
+              ],
+              "answer": "[B] Culturally irrelevant"
+            },
+            {
+              "question": "What approach should be practiced in a child friendly classroom across the foundational stage?",
+              "options": [
+                "[A] Play-way, toy based, child centered approach",
+                "[B] Textbook based approach",
+                "[C] Teacher talk approach",
+                "[D] Project based approach"
+              ],
+              "answer": "[A] Play-way, toy based, child centered approach"
+            },
+            {
+              "question": "Children in the classroom should be permitted to bring their:",
+              "options": [
+                "[A] Mobile",
+                "[B] Gadgets",
+                "[C] Computer",
+                "[D] Toys and Games"
+              ],
+              "answer": "[D] Toys and Games"
+            },
+            {
+              "question": "The D-I-Y area should be?",
+              "options": [
+                "[A] Low-cost Materials placed all around in the room.",
+                "[B] Well-stocked with materials, neat and organized",
+                "[C] Well-stocked with materials and messy",
+                "[D] Less materials, accessible only upon permission"
+              ],
+              "answer": "[B] Well-stocked with materials, neat and organized"
             }
           ]
         },

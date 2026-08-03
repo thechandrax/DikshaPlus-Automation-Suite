@@ -2806,7 +2806,8 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
                         if await click_target.count() > 0:
                             await safe_action_click(click_target)
-                            await page.wait_for_timeout(2000)
+                            logger.info("  --> Waiting 5 seconds for DIKSHA server checkmark AJAX hydration...")
+                            await page.wait_for_timeout(5000)
 
                         collapse_panel = None
                         if collapse_id and await page.locator(f"#{collapse_id}").count() > 0:
@@ -2822,8 +2823,10 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                             logger.info(f"  📋 [SUBSECTION BREAKDOWN ({len(sync_btns)} ITEMS) - Attempt #{sync_step}/5]:")
                             for idx, b in enumerate(sync_btns, 1):
                                 try:
+                                    b_txt = (await b.inner_text()).strip()
                                     r_txt = await get_real_subsection_title(page, b)
-                                    chk = "✓" if await is_item_100_percent_complete(b) else "⏳"
+                                    is_done = (r_txt in completed_items) or (b_txt in completed_items) or await is_item_100_percent_complete(b)
+                                    chk = "✓" if is_done else "⏳"
                                     logger.info(f"     [{idx}/{len(sync_btns)}] {chk} {r_txt}")
                                 except Exception:
                                     pass
@@ -2840,21 +2843,11 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                     pass
 
                                 s_btn_text = (await s_btn.inner_text()).strip()
-                                s_item_title = s_btn_text
-                                if s_btn_text.lower() in ("view", "start", "open", "continue"):
-                                    try:
-                                        row = s_btn.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'card-body')][1]").first
-                                        if await row.count() > 0:
-                                            title_el = row.locator("h4, h5, .title, .activity-title, bdi, strong, .name").first
-                                            if await title_el.count() > 0:
-                                                extracted_t = (await title_el.inner_text()).strip()
-                                                if extracted_t and extracted_t.lower() not in ("view", "start"):
-                                                    s_item_title = extracted_t
-                                    except Exception:
-                                        pass
-
+                                s_item_title = await get_real_subsection_title(page, s_btn)
                                 is_gen_b = s_btn_text.lower() in ("view", "start", "open", "continue", "retry")
-                                if not await is_item_100_percent_complete(s_btn) and (s_item_title not in completed_items or is_gen_b):
+                                is_item_done = (s_item_title in completed_items) or (not is_gen_b and s_btn_text in completed_items) or await is_item_100_percent_complete(s_btn)
+
+                                if not is_item_done:
                                     logger.info(f"  🔄 [SYNC RE-EXECUTION Attempt #{sync_step}/5] Found incomplete item [{s_idx}/{len(sync_btns)}]: '{s_item_title}'. Executing item now...")
                                     s_act_type = await s_btn.get_attribute("act_type") or "resource"
                                     if s_act_type == "url":
@@ -2872,6 +2865,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                         completed_items.add(s_btn_text)
                                     if s_item_title and s_item_title.lower() not in ("view", "start", "open", "continue"):
                                         completed_items.add(s_item_title)
+
 
                         # Step 4: Strict verification - check if Header is 100% OR all items checkmarked
                         sync_btns = await get_section_action_buttons(collapse_panel, header)
