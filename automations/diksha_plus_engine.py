@@ -943,58 +943,28 @@ def display_interactive_course_menu(courses):
 
 async def close_activity_modal(page):
     """
-    Closes activity modal using exact spec close buttons, icon buttons, 
-    and native DOM JavaScript dismissal handlers.
-    Guarantees 100% modal dismissal across all DIKSHA course resources.
+    Closes activity modal using the spec close button: <button class="close" data-dismiss="modal">
+    and ensures modal container backdrop is dismissed.
     """
-    logger.info("  --> Clicking activity close button (x)...")
-    
-    # 1. Search across main page & frames for close buttons
-    for frame_target in [page] + page.frames:
-        try:
-            close_btns = frame_target.locator(
-                "button.close[data-dismiss='modal'], button.close, [data-dismiss='modal'], "
-                ".modal-header .close, .close-btn, a.close-btn, .close-icon, i.fa-times, i.fa-close, "
-                "button:has-text('Close'), a:has-text('Close'), #closePdfBtn, .close-pdf"
-            )
-            count = await close_btns.count()
-            for idx in range(count):
-                b = close_btns.nth(idx)
-                try:
-                    await safe_action_click(b)
-                    await page.wait_for_timeout(1000)
-                    break
-                except Exception:
-                    pass
-        except Exception:
-            pass
+    close_btns = page.locator("button.close[data-dismiss='modal'], button.close, [data-dismiss='modal']")
+    if await close_btns.count() > 0:
+        for i in range(await close_btns.count()):
+            btn = close_btns.nth(i)
+            if await btn.is_visible():
+                logger.info("  --> Clicking activity close button (x)...")
+                await btn.click(force=True)
+                await page.wait_for_timeout(1500)
+                break
 
-    # 2. Native DOM JavaScript dismissal fallback (Bootstrap modal hide + display:none)
+    # Dismiss leftover modal backdrop / container if present
     try:
-        await page.evaluate("""
-            () => {
-                const closeBtns = document.querySelectorAll('.close, [data-dismiss="modal"], .close-btn, .close-icon, i.fa-times, i.fa-close');
-                closeBtns.forEach(btn => {
-                    try { btn.click(); } catch(e) {}
-                });
-
-                if (window.jQuery && window.jQuery.fn && window.jQuery.fn.modal) {
-                    try { window.jQuery('.modal').modal('hide'); } catch(e) {}
-                }
-
-                const modals = document.querySelectorAll('.modal, .modal-backdrop, #container-popup, .show');
-                modals.forEach(m => {
-                    if (m && (m.classList.contains('show') || m.style.display !== 'none')) {
-                        m.style.display = 'none';
-                        m.classList.remove('show');
-                    }
-                });
-                document.body.classList.remove('modal-open');
-            }
-        """)
+        popup = page.locator("#container-popup.show, .modal.show").first
+        if await popup.count() > 0 and await popup.is_visible():
+            handle = await popup.element_handle()
+            if handle:
+                await page.evaluate("el => el.style.display = 'none'", handle)
     except Exception:
         pass
-
     await page.wait_for_timeout(1500)
 
 
@@ -1016,20 +986,21 @@ async def wait_for_server_checkmark(page, timeout=15):
 
 async def safe_action_click(locator):
     """
-    Safely clicks an action button (View / Start / Continue) matching human manual clicking.
-    Combines scroll_into_view, standard human click, force click, and native JS element.click() fallback.
+    Safely clicks an action button (View / Start / Continue) even if hidden or in scroll view.
+    Combines scroll_into_view_if_needed, force=True click, and native JS element.click() fallback.
     """
     try:
         await locator.scroll_into_view_if_needed()
-        await locator.click(timeout=3000)
+        await locator.click(force=True, timeout=5000)
     except Exception:
         try:
-            await locator.click(force=True, timeout=3000)
+            await locator.evaluate("el => el.click()")
         except Exception:
             try:
-                await locator.evaluate("el => { if (el) { el.focus(); el.click(); } }")
+                await locator.click(force=True)
             except Exception as e:
-                logger.warning(f"  --> Action click notice: {e}")
+                logger.warning(f"  --> Safe action click notice: {e}")
+
 
 
 
