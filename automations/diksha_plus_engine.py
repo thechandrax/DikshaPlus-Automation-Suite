@@ -2764,11 +2764,18 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                         completed_items.add(real_item_title)
 
                     logger.info("  --> DIKSHA Server sync buffer: waiting 4 seconds for next item unlock...")
-                    await page.wait_for_timeout(4000)
+                    try:
+                        await page.wait_for_timeout(4000)
+                    except Exception:
+                        pass
 
                 # DOUBLE CONFIRMATION & STRICT 100% COMPLETION GATE GUARD
                 logger.info(f"  --> [DOUBLE CONFIRMATION] Verifying 100% completion for '{header_title}'...")
-                await page.wait_for_timeout(2000)
+                try:
+                    await page.wait_for_timeout(2000)
+                except Exception:
+                    pass
+
 
                 server_synced = False
                 for sync_step in range(1, 6):
