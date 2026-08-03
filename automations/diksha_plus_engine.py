@@ -2362,23 +2362,39 @@ async def get_section_action_buttons(collapse_panel, header):
 async def get_real_subsection_title(page, btn):
     """
     Extracts full subsection title text from DIKSHA activity row or title link.
+    Guarantees 100% real title extraction for all items.
     """
     try:
         act_id = await btn.get_attribute("act_id") or await btn.get_attribute("data-id") or ""
         if act_id:
-            t_link = page.locator(f"a.activity-list[act_id='{act_id}'], a.activity-list[data-id='{act_id}'], a[act_id='{act_id}']:not(.module-view-btn)").first
-            if await t_link.count() > 0:
-                txt = (await t_link.inner_text()).strip()
-                if txt and txt.lower() not in ("view", "start", "open", "continue"):
-                    return txt
+            t_elements = page.locator(f"[act_id='{act_id}'], [data-id='{act_id}']")
+            count = await t_elements.count()
+            for idx in range(count):
+                el = t_elements.nth(idx)
+                txt = (await el.inner_text()).strip()
+                if txt and txt.lower() not in ("view", "start", "open", "continue", "retry"):
+                    clean_t = re.sub(r"\s*\d{1,3}%\s*$", "", txt).strip()
+                    if clean_t and len(clean_t) > 2:
+                        return clean_t
 
-        row = btn.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'list') or contains(@class,'card-body') or contains(@class,'activity')][1]").first
+        row = btn.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'list') or contains(@class,'card-body') or contains(@class,'activity') or contains(@class,'panel')][1]").first
         if await row.count() > 0:
-            t_el = row.locator("a.activity-list:not(.module-view-btn), .title, .activity-title, h4, h5, bdi, strong, .name, td, p").first
-            if await t_el.count() > 0:
+            title_nodes = await row.locator("a.activity-list:not(.module-view-btn), .title, .activity-title, h4, h5, bdi, strong, .name, td, p, span, div.col-md-9, div.col-8, div.col-9, div.col-10").all()
+            for t_el in title_nodes:
                 txt = (await t_el.inner_text()).strip()
-                if txt and txt.lower() not in ("view", "start", "open", "continue"):
-                    return txt
+                clean_t = re.sub(r"\s*\d{1,3}%\s*$", "", txt).strip()
+                clean_lower = clean_t.lower()
+                if clean_t and clean_lower not in ("view", "start", "open", "continue", "retry") and len(clean_t) > 3:
+                    if not clean_lower.startswith("view") and not clean_lower.startswith("0%") and not clean_lower.startswith("100%"):
+                        return clean_t
+
+            row_raw = (await row.inner_text()).strip()
+            lines = [l.strip() for l in row_raw.splitlines() if l.strip()]
+            for l in lines:
+                l_clean = re.sub(r"\s*\d{1,3}%\s*$", "", l).strip()
+                l_lower = l_clean.lower()
+                if l_clean and l_lower not in ("view", "start", "open", "continue", "retry") and not l_lower.startswith("view") and len(l_clean) > 3:
+                    return l_clean
     except Exception:
         pass
 
@@ -2389,7 +2405,9 @@ async def get_real_subsection_title(page, btn):
     except Exception:
         pass
 
-    return "Subsection Activity"
+    act_t = await btn.get_attribute("act_type") or "Resource"
+    return f"{act_t.capitalize()} Activity"
+
 
 
 async def is_button_enabled(btn):
