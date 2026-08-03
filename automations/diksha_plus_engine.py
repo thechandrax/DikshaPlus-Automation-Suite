@@ -2905,15 +2905,27 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                         await page.reload()
                         await page.wait_for_timeout(3000)
 
-                        # Step 1: Re-expand accordion panel
+                        # Step 1: Re-expand accordion panel ONLY if collapsed
                         click_target = header.locator("a[data-toggle='collapse'], a[href*='collapse'], a[aria-controls*='collapse']").first
                         if await click_target.count() == 0:
                             click_target = header
 
-                        if await click_target.count() > 0:
+                        is_collapsed = True
+                        try:
+                            link_class = (await click_target.get_attribute("class") or "").split()
+                            aria_exp = (await click_target.get_attribute("aria-expanded") or "").lower()
+                            if "collapsed" in link_class or aria_exp == "false":
+                                is_collapsed = True
+                            elif aria_exp == "true":
+                                is_collapsed = False
+                        except Exception:
+                            is_collapsed = True
+
+                        if is_collapsed and await click_target.count() > 0:
+                            logger.info(f"  --> [EXPANDING ACCORDION] Expanding accordion panel for '{header_title}'...")
                             await safe_action_click(click_target)
-                            logger.info("  --> Waiting 5 seconds for DIKSHA server checkmark AJAX hydration...")
-                            await page.wait_for_timeout(5000)
+                            await page.wait_for_timeout(3000)
+
 
                         collapse_panel = None
                         if collapse_id and await page.locator(f"#{collapse_id}").count() > 0:
