@@ -1924,21 +1924,24 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
 
 
 
-    # 4. Post-Submission 'Continue' button click (Returns to course page to hydrate 100% checkmark)
+    # 4. Post-Submission 'Continue' / 'Finish' / 'Back to Course' button click
     for frame_target in [target_frame, page] + page.frames:
         try:
-            post_cont = frame_target.locator("a:has-text('Continue'), button:has-text('Continue'), input[value*='Continue']").first
+            post_cont = frame_target.locator("a:has-text('Continue'), button:has-text('Continue'), input[value*='Continue'], a:has-text('Finish'), button:has-text('Finish'), a:has-text('Back to Course'), button:has-text('Back to Course'), input[value*='Finish']").first
             if await post_cont.count() > 0 and await post_cont.is_visible():
-                logger.info("  --> Clicking post-submission 'Continue' button to trigger 100% checkmark sync...")
+                p_txt = (await post_cont.inner_text()).strip() or "Continue"
+                logger.info(f"  --> Clicking post-submission '{p_txt}' button to return to course page...")
                 await post_cont.click(force=True)
                 await page.wait_for_timeout(3000)
                 break
         except Exception:
             pass
 
-    # 5. Close Activity Modal & Confirm Checkmark
+    # 5. Close Activity Modal & Wait 5s for DIKSHA Server Checkmark Sync
     await close_activity_modal(page)
-    await wait_for_server_checkmark(page)
+    logger.info("  ⏳ [SERVER SYNC BUFFER] Waiting 5 seconds for DIKSHA server checkmark & next subsection unlock...")
+    await page.wait_for_timeout(5000)
+    await wait_for_server_checkmark(page, timeout=15)
 
 
 async def process_feedback_activity(page, view_button, answer_key=None, module_name="", module_no=None, sub_name="", sub_no=None, course_title=""):
