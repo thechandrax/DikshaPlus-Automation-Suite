@@ -2759,7 +2759,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                         act_lbl = b_txt if b_txt and b_txt.lower() in ("view", "start", "open", "continue", "retry") else "View"
                         act_lbl = act_lbl.capitalize()
                         t_disp = r_txt[:49].strip() + "..." if len(r_txt) > 52 else r_txt
-                        logger.info(f"     [{idx}/{total_sec_items}] {chk} {t_disp} || {pct} || {act_lbl}")
+                        logger.info(f"     [{idx:02d}/{total_sec_items:02d}] {chk} {t_disp} || {pct} || {act_lbl}")
                     except Exception:
                         pass
                 logger.info("  " + "-" * 55)
@@ -2779,7 +2779,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     already_done_in_mem = (real_item_title in completed_items) or (not is_generic_btn and btn_text in completed_items)
 
                     if already_done_in_mem or await is_item_100_percent_complete(btn):
-                        logger.info(f"  --> [✓ ALREADY DONE] Subsection [{j}/{total_sec_items}]: '{real_item_title}' is 100% complete. Skipping!")
+                        logger.info(f"  --> [✓ ALREADY DONE] Subsection [{j:02d}/{total_sec_items:02d}]: '{real_item_title}' is 100% complete. Skipping!")
                         if not is_generic_btn:
                             completed_items.add(btn_text)
                         if real_item_title and real_item_title.lower() not in ("view", "start", "open", "continue"):
@@ -2789,7 +2789,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     act_type = await btn.get_attribute("act_type") or "resource"
 
                     logger.info("\n" + "=" * 35)
-                    logger.info(f" ▶ SUBSECTION [{j}/{total_sec_items}]: '{real_item_title}' (Type: '{act_type}') [Pass #{module_retry_pass}]")
+                    logger.info(f" ▶ SUBSECTION [{j:02d}/{total_sec_items:02d}]: '{real_item_title}' (Type: '{act_type}') [Pass #{module_retry_pass}]")
                     logger.info("=" * 35)
 
                     try:
@@ -2870,9 +2870,11 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                     act_lbl = b_txt if b_txt and b_txt.lower() in ("view", "start", "open", "continue", "retry") else "View"
                                     act_lbl = act_lbl.capitalize()
                                     t_disp = r_txt[:49].strip() + "..." if len(r_txt) > 52 else r_txt
-                                    logger.info(f"     [{idx}/{len(sync_btns)}] {chk} {t_disp} || {pct} || {act_lbl}")
+                                    logger.info(f"     [{idx:02d}/{len(sync_btns):02d}] {chk} {t_disp} || {pct} || {act_lbl}")
                                 except Exception:
                                     pass
+                            logger.info("  " + "-" * 55)
+
                             logger.info("  " + "-" * 55)
 
 
