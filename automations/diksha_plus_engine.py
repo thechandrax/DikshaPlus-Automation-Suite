@@ -2664,11 +2664,12 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                 logger.info("=" * 67 + "\n")
                 return True
 
+            max_module_attempts = 3
             module_retry_pass = 0
             while True:
                 module_retry_pass += 1
                 if module_retry_pass > 1:
-                    logger.info(f"\n  🔄 [RE-STARTING FULL MODULE PASS #{module_retry_pass}] Re-scanning '{header_title}' & re-evaluating all subsections...")
+                    logger.info(f"\n  🔄 [RE-STARTING FULL MODULE PASS #{module_retry_pass}/{max_module_attempts}] Re-scanning '{header_title}' & re-evaluating all subsections...")
 
                 # Check if Module header is ALREADY 100% complete
                 if await is_header_100_percent_complete(header):
@@ -2792,8 +2793,9 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     act_type = await btn.get_attribute("act_type") or "resource"
 
                     logger.info("\n" + "=" * 35)
-                    logger.info(f" ▶ SUBSECTION [{j:02d}/{total_sec_items:02d}]: '{real_item_title}' (Type: '{act_type}') [Attempt #{module_retry_pass}]")
+                    logger.info(f" ▶ SUBSECTION [{j:02d}/{total_sec_items:02d}]: '{real_item_title}' (Type: '{act_type}') [Attempt #{module_retry_pass}/3]")
                     logger.info("=" * 35)
+
 
 
                     try:
