@@ -1,6 +1,6 @@
-# ⚙️ MODULE EXECUTION, RETRY PROTOCOL & 10-ATTEMPT SYNC WINDOW GUIDE
+# ⚙️ MODULE EXECUTION, RETRY PROTOCOL & 5-ATTEMPT USER RESUME WINDOW GUIDE
 
-This document provides a comprehensive technical reference for the **Module Execution Pipeline**, **Video Playback Automation Engine**, **Locked Item Recovery**, **Module-Level Reload ➔ Check ➔ Expand ➔ Re-Execute Incomplete Item Sync Protocol**, **Certificate `customcert` Auto-Completion Protocol**, **Interleaved Gemini/Groq AI Pool**, and **Circuit Breaker Safeguards** in **DIKSHA+ Automation Suite**.
+This document provides a comprehensive technical reference for the **Module Execution Pipeline**, **Video Playback Automation Engine**, **Locked Item Recovery**, **5-Attempt Module Sync Window**, **Infinite User Pause & Resume System**, **Certificate `customcert` Auto-Completion Protocol**, **10-Key Interleaved Gemini/Groq AI Pool**, and **Circuit Breaker Safeguards** in **DIKSHA+ Automation Suite**.
 
 ---
 
@@ -8,11 +8,11 @@ This document provides a comprehensive technical reference for the **Module Exec
 
 1. [Module Execution Pipeline](#1-module-execution-pipeline)
 2. [📹 Video Playback Automation Engine (16x / 10x Speed)](#2--video-playback-automation-engine-16x--10x-speed)
-3. [Locked Item Session Recovery](#3-locked-item-session-recovery)
-4. [🔄 Module-Level Reload ➔ Check ➔ Expand ➔ Re-Execute Incomplete Item Protocol](#4--module-level-reload--check--expand--re-execute-incomplete-item-protocol)
+3. [Locked Item Session Recovery & User Pause](#3-locked-item-session-recovery--user-pause)
+4. [🔄 5-Attempt Module Sync & Infinite User Pause/Resume Protocol](#4--5-attempt-module-sync--infinite-user-pauseresume-protocol)
 5. [Certificate `customcert` Auto-Completion Protocol](#5-certificate-customcert-auto-completion-protocol)
 6. [10-Key Interleaved Alternating AI Pool (5 Gemini + 5 Groq)](#6-10-key-interleaved-alternating-ai-pool-5-gemini--5-groq)
-7. [Circuit Breaker Guard (0% Dummy Option A Fallback)](#7-circuit-breaker-guard-0-dummy-option-a-fallback)
+7. [Zero-Crash Safeguard (Infinite User Control)](#7-zero-crash-safeguard-infinite-user-control)
 
 ---
 
@@ -24,8 +24,9 @@ DIKSHA+ executes course modules sequentially from Module #1 to Module #N with st
 [STEP 01] Navigate & Expand Module Accordion Header
   └── [STEP 02] Check if Module Header is 100% Completed (Skip if Done)
         └── [STEP 03] Execute Subsection Items (Videos, PDFs, H5P, Quizzes, Feedback)
-              └── [STEP 04] 🔄 Module-Level Reload ➔ Check ➔ Expand ➔ Re-Execute Incomplete Item Loop
-                    └── [STEP 05] Advance to Next Module
+              └── [STEP 04] 🔄 5-Attempt Module Sync Window
+                    └── [IF NOT 100%] ⏸️ AUTOMATION PAUSED (Wait for [ENTER] to Resume)
+                          └── [STEP 05] Advance to Next Module when 100%
 ```
 
 ---
@@ -41,20 +42,22 @@ When DIKSHA+ opens a video lesson (`act_type == "url"` or HTML5 `<video>` elemen
 
 ---
 
-## 3. Locked Item Session Recovery
+## 3. Locked Item Session Recovery & User Pause
 
-When DIKSHA server locks a subsection item because a prerequisite video or lesson is processing:
+When DIKSHA server locks a subsection item:
 1. **Detection**: `is_button_enabled(btn) == False`.
 2. **Session Refresh**: Waits 5s, executes `page.reload()`, re-opens accordion header, and re-checks unlock status.
+3. **User Pause & Resume**: If still locked after 4 attempts, DIKSHA+ keeps the browser session 100% ACTIVE and prompts:
+   `Press [ENTER] to RESUME & retry locked item:`
 
 ---
 
-## 4. 🔄 Module-Level Reload ➔ Check ➔ Expand ➔ Re-Execute Incomplete Item Protocol
+## 4. 🔄 5-Attempt Module Sync & Infinite User Pause/Resume Protocol
 
 When verifying module completion at the end of a module:
 
 ```text
-On Every Sync Reload Attempt (sync_step 1 to 10):
+On Every Sync Reload Attempt (sync_step 1 to 5):
 
   1. Reload Page (await page.reload())
               │
@@ -77,16 +80,25 @@ On Every Sync Reload Attempt (sync_step 1 to 10):
   [ YES ]                         [ NO ]
        │                             │
        ▼                             ▼
-✅ Log SUCCESS &              Repeat Sync Loop (Attempt 2 to 10)
-Advance to Next Module
+✅ Log SUCCESS &              Repeat Sync Loop (Attempts 1 to 5)
+Advance to Next Module               │
+                                     ▼
+                      If NOT 100% after 5 Attempts:
+                      ==============================================
+                      ⏸️ AUTOMATION PAUSED (NO CLOSING / NO EXIT!)
+                      👉 Press [ENTER] in console to RESUME
+                      ==============================================
+                                     │
+                                     ▼
+                      User presses Enter -> RE-EXECUTES MODULE!
+                      Repeats as many times as the user wants!
 ```
 
-### 🔑 Module Sync Loop Rules:
-1. **Step 1: Check Module Badge First**: If Module Header Badge is `100%`, DIKSHA+ logs `✅ [MODULE SYNC SUCCESS]` and immediately advances to the next module!
-2. **Step 2: Expand Accordion & Scan**: If NOT `100%`, DIKSHA+ expands the module accordion panel and re-scans all subsection items.
-3. **Step 3: Find & Re-Execute Incomplete Item**: Identifies the exact item that is still incomplete (`not is_item_100_percent_complete(s_btn)`), re-launches it with `safe_action_click`, and executes the activity!
-4. **Step 4: Re-Check Module Badge**: Immediately re-checks the Module Header Badge. Once 100%, advances cleanly!
-5. **Step 5: Repeat Cycle**: Repeats this reload ➔ check ➔ expand ➔ re-execute ➔ re-check cycle up to **10 attempts maximum** before triggering Circuit Breaker safeguards.
+### 🔑 Core Guarantees:
+1. **5 Attempts Maximum Per Pass**: The patient sync window runs for **5 attempts (75 seconds)**.
+2. **ZERO SERVER CLOSE**: Browser context and server session are **100% PRESERVED & KEPT ACTIVE**!
+3. **Infinite User Pause & Resume**: If after 5 attempts the badge is not 100%, the console pauses with a banner. Pressing Enter (or any key) immediately resumes execution from where it left off!
+4. **Repeat As Many Times As User Wants**: The user can press Enter to retry as many times as needed until 100% completion is achieved!
 
 ---
 
@@ -106,7 +118,6 @@ When the automation reaches the **`Certificate`** section (or detects a `customc
 
 ---
 
-## 7. Circuit Breaker Guard (0% Dummy Option A Fallback)
+## 7. Zero-Crash Safeguard (Infinite User Control)
 
-If after 10 attempts (reload, check, expand, re-execute incomplete item window) and stepped backoff retries a lesson or assessment remains incomplete:
-* Closes browser context cleanly (`page.context.close()`) to prevent infinite loops and protect your account accuracy.
+DIKSHA+ will **NEVER** close your browser or terminate your session due to server delays. You retain full interactive control to pause, inspect, and press Enter to resume automation at any time!

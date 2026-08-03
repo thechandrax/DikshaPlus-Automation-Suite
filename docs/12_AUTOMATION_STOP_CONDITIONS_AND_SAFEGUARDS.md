@@ -1,82 +1,67 @@
-# 🛑 DIKSHA+ AUTOMATION SUITE — AUTOMATIC STOP CONDITIONS & SAFEGUARDS
+# 🛑 DIKSHA+ AUTOMATION — STOP CONDITIONS, SAFEGUARDS & USER PAUSE GUIDE
 
-This document provides a technical breakdown of **where, when, and why DIKSHA+ Automation Suite stops automatically**, detailing all victory completion triggers, security gates, Circuit Breaker safeguards, standby modes, and manual hotkeys.
+This document provides a comprehensive overview of **when automation stops automatically**, **when automation pauses for user input**, and **all safety mechanisms** in **DIKSHA+ Automation Suite**.
 
 ---
 
-## 📑 Summary Table of All Stop Conditions
+## 📑 Table of Contents
 
-| Stop Condition | Triggers When... | Action Taken | Result / Log Output |
+1. [🏆 VICTORY STOP CONDITIONS (Normal Automatic Completion)](#1--victory-stop-conditions-normal-automatic-completion)
+2. [⏸️ USER PAUSE & RESUME CONDITIONS (No Server Close / No Exit)](#2-%EF%B8%8F-user-pause--resume-conditions-no-server-close--no-exit)
+3. [🛡️ SECURITY & ACCESS PIN STOP CONDITIONS](#3-%EF%B8%8F-security--access-pin-stop-conditions)
+4. [🤖 AI SOLVER & RATE-LIMIT BACKOFF SAFEGUARDS](#4--ai-solver--rate-limit-backoff-safeguards)
+5. [📊 SUMMARY MATRIX OF ALL STOP & PAUSE CONDITIONS](#5--summary-matrix-of-all-stop--pause-conditions)
+
+---
+
+## 1. 🏆 VICTORY STOP CONDITIONS (Normal Automatic Completion)
+
+The automation finishes cleanly and displays the **Grand Victory Summary** under the following conditions:
+
+* **Trigger 1: 100% Course Completion**: All modules (Module #1 through Module #N) are verified 100% complete with green checkmarks.
+* **Trigger 2: Certificate Target Reached**: Reaches `<a act_type="customcert">Download Certificate</a>` or `Certificate` accordion header.
+
+---
+
+## 2. ⏸️ USER PAUSE & RESUME CONDITIONS (No Server Close / No Exit)
+
+Rather than closing the browser or crashing the program, DIKSHA+ **PAUSES** and keeps your browser & server session **100% ACTIVE** under the following conditions:
+
+* **Trigger 1: 5 Sync Attempts Completed Without 100% Badge**:
+  If after 5 page reload & item re-execution attempts (75 seconds) the DIKSHA server badge has not updated to 100%, DIKSHA+ pauses and prints:
+  ```text
+  ===================================================================
+   ⏸️  [AUTOMATION PAUSED] 'Module Name' is not 100% complete after 5 attempts.
+   🔒 BROWSER & SERVER SESSION REMAIN 100% ACTIVE (NOT CLOSED)!
+   👉 Press [ENTER] key in console to RESUME automation & retry module...
+  ===================================================================
+  ```
+  Pressing **[ENTER]** (or any key) immediately resumes the automation and retries the module pass! This process can be repeated as many times as the user wants!
+
+* **Trigger 2: Item Locked After 4 Reload Attempts**:
+  If a subsection item remains locked by DIKSHA server after 4 reloads, DIKSHA+ pauses and prompts the user to press **[ENTER]** to retry unlocking!
+
+---
+
+## 3. 🛡️ SECURITY & ACCESS PIN STOP CONDITIONS
+
+* **Trigger 1: Incorrect Security PIN**: If an invalid Security PIN is entered at startup (Correct PIN: `541563`), access is denied and execution stops immediately.
+
+---
+
+## 4. 🤖 AI SOLVER & RATE-LIMIT BACKOFF SAFEGUARDS
+
+* **10-Key Interleaved Alternating AI Pool**: 5 Gemini keys + 5 Groq keys (1 attempt per key, 0.1s instant failover).
+* **Stepped Backoff Retries**: If all 10 keys are rate-limited, applies stepped backoffs (30s ➔ 45s ➔ 60s) before retrying.
+
+---
+
+## 5. 📊 SUMMARY MATRIX OF ALL STOP & PAUSE CONDITIONS
+
+| Trigger Condition | Action Taken by DIKSHA+ | Browser Status | User Action Required |
 | :--- | :--- | :--- | :--- |
-| **1. Certificate Auto-Completion** | `<a act_type="customcert">` / `'Download Certificate'` detected in module. | Skips clicking View button. | Prints Grand Victory Banner & completes course cleanly (`True`). |
-| **2. All Modules 100% Complete** | All module header badges reach 100% checkmarks (`✓`). | Completes all section processing. | Prints Grand Victory Banner & finishes execution cleanly. |
-| **3. Security PIN Access Denied** | 3 invalid Security PIN attempts entered (`541563`). | Terminates Python process cleanly. | `⛔ [Security] Access Denied! Maximum security attempts exceeded.` (`sys.exit(1)`) |
-| **4. AI Solver Circuit Breaker** | All 10 AI keys (5 Gemini + 5 Groq) & 30s/45s/60s backoffs fail. | Closes browser context cleanly (`page.context.close()`). | `⛔ [CIRCUIT BREAKER TRIGGERED] Stopping all automation processes!` |
-| **5. 10-Attempt Sync Circuit Breaker** | Module badge not 100% after 10 reloads & 150s (2.5m) sync window. | Closes browser context cleanly (`page.context.close()`). | `❌ [CRITICAL DIKSHA SERVER FAILURE] Module remains incomplete after 150s sync window.` |
-| **6. Railway Cloud Standby Mode** | `AUTO_START=False` set in environment variables. | Enters infinite 1-hour standby loop. | `⏸️ [RAILWAY STANDBY MODE] Container standing by on Railway Cloud.` |
-| **7. User Keyboard Interrupt** | User presses `Ctrl+C` or terminal hotkey. | Gracefully handles interrupt signal. | `Automation process interrupted by user.` |
-
----
-
-## 🏆 1. Course Completion & Victory Triggers
-
-### A. Certificate `customcert` Auto-Completion Protocol:
-When DIKSHA+ reaches the final course section and detects `<a act_type="customcert">Download Certificate</a>`:
-1. **No "View" Click**: Skips clicking the View button to prevent PDF popup downloads.
-2. **Grand Victory Summary**: Logs full user details and course status in terminal:
-   ```text
-   ===================================================================
-    🎉 🎓 AUTOMATION EXECUTION SUCCESSFUL & COURSE COMPLETED!
-   ===================================================================
-     ✔ User Profile : Sumanta Halder (7044015007)
-     ✔ Course Title : NISHTHA ECCE English
-     ✔ Certificate  : Download Certificate Available
-     ✔ Status       : 100% Complete — All Modules & Assessments Done!
-   ===================================================================
-   ```
-3. **Clean Finish**: Returns `True` and completes automation cleanly.
-
-### B. All Modules 100% Completed:
-When all course module accordion headers report 100% progress badges, DIKSHA+ logs the victory summary, keeps the browser open (or finishes headless container mode), and exits cleanly.
-
----
-
-## 🔒 2. Security PIN Clearance Gate
-
-Access to DIKSHA+ is protected by a 256-bit SHA-256 cryptographic Security PIN lock (**`541563`**):
-* If an incorrect PIN is entered 3 times consecutively, DIKSHA+ immediately logs:
-  `⛔ [Security] Access Denied! Maximum security attempts exceeded.`
-* Executes `sys.exit(1)` to lock unauthorized users out of the system.
-
----
-
-## ⛔ 3. Circuit Breaker Safeguards (0% Option A Fallback)
-
-To maintain 100% course accuracy and account integrity, dummy Option [A] fallback guessing has been **100% completely removed**.
-
-### A. AI Live Solver Exhaustion Circuit Breaker:
-* **Trigger**: If an assessment question cannot be solved after trying all **10 Interleaved AI Keys** (5 Gemini + 5 Groq) and **30s ➔ 45s ➔ 60s backoffs**:
-* **Action**:
-  1. Logs: `⛔ [CIRCUIT BREAKER TRIGGERED] Closing server context cleanly and stopping all automation processes!`
-  2. Executes `await page.context.close()`.
-  3. Raises `RuntimeError("AI_SOLVER_FAILED_SERVER_STUCK")` to safely stop execution without saving wrong answers.
-
-### B. 10-Attempt x 15s (150s) Server Hydration Sync Circuit Breaker:
-* **Trigger**: If DIKSHA server latency delays checkmark updates after 10 page reloads and 150 seconds (2.5 minutes total):
-* **Action**:
-  1. Logs: `❌ [CRITICAL DIKSHA SERVER FAILURE] Module remains incomplete after 10 attempts & 150s sync window.`
-  2. Executes `await page.context.close()`.
-  3. Stops automation cleanly to prevent infinite reload loops.
-
----
-
-## ⏸️ 4. Railway Standby & Hotkey Controls
-
-### A. Railway Cloud Standby Mode (`AUTO_START=False`):
-* If `AUTO_START=False` is set in environment variables on Railway Cloud, DIKSHA+ enters a 1-hour sleep loop to keep the container online in standby mode.
-
-### B. Live Terminal Pause Hotkey (**`P`** or **`Spacebar`**):
-* Pressing **`P`** or **`Spacebar`** in terminal pauses browser automation and pauses HTML5 video playback. Pressing **`P`** again resumes execution.
-
-### C. Manual Interrupt (`Ctrl+C`):
-* Pressing `Ctrl+C` in the terminal triggers Python `KeyboardInterrupt`, logging `Automation process interrupted by user` and releasing system resources.
+| **All Modules 100% Done** | 🏆 Grand Victory Summary Printed | Kept Open (`KEEP_BROWSER_OPEN=True`) | None (Completed) |
+| **Certificate Reached** | 🏆 Grand Victory Summary Printed | Kept Open | None (Completed) |
+| **5 Sync Attempts Passed** | ⏸️ **SYSTEM PAUSED** | **100% ACTIVE (NOT CLOSED)** | Press **[ENTER]** in console to RESUME |
+| **Item Locked > 4 Attempts** | ⏸️ **SYSTEM PAUSED** | **100% ACTIVE (NOT CLOSED)** | Press **[ENTER]** in console to RESUME |
+| **Invalid Security PIN** | ⛔ Access Denied | Closed Immediately | Re-run script & enter PIN `541563` |

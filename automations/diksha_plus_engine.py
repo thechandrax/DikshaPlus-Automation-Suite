@@ -2781,16 +2781,13 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                             pass
 
                         if not await is_button_enabled(btn):
-                            if runs_done >= 3:
-                                logger.error(f"\n❌ [CRITICAL DIKSHA SERVER FAILURE] Subsection item '{real_item_title}' remains locked after 4 attempts.")
-                                logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Stopping all automation processes and closing server context!\n")
-                                try:
-                                    await page.context.close()
-                                except Exception:
-                                    pass
-                                raise RuntimeError(f"DIKSHA_SERVER_LOCKED_STUCK: '{real_item_title}' locked after 4 attempts.")
-                            logger.info(f"  --> [SKIP LOCKED] Subsection [{j}/{total_sec_items}]: '{real_item_title}' remains locked. Will re-evaluate on next pass...")
+                            logger.warning(f"\n  ⏸️ [LOCKED ITEM PAUSE] Subsection item '{real_item_title}' remains locked after 4 attempts.")
+                            logger.warning("  🔒 Browser session remains 100% ACTIVE! Press [ENTER] to retry unlock...")
+                            loop = asyncio.get_event_loop()
+                            await loop.run_in_executor(None, input, "Press [ENTER] to RESUME & retry locked item: ")
+                            logger.info("  ▶ [USER RESUMED] Retrying locked item unlock...")
                             continue
+
 
 
                     act_type = await btn.get_attribute("act_type") or "resource"
@@ -2898,104 +2895,111 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                 await process_quiz_assessment(page, r_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=r_btn_text, sub_no=r_idx)
                             elif r_act_type == "h5pactivity":
                                 await process_h5p_activity(page, r_btn, answer_key)
-                            elif r_act_type == "url":
-                                await process_video_activity(page, r_btn)
-                            elif r_act_type == "resource":
-                                await process_pdf_activity(page, r_btn)
-
-                # Final Circuit Breaker Gate Check with 2-Minute Patient Server Hydration Window
+                                # Module Sync & Re-Execution Gate with 5-Attempt (75s) Patient Window & User Pause / Resume Prompt
                 final_header_check = await is_header_100_percent_complete(header)
                 if not final_header_check and not all_items_completed_in_memory and not any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"]):
                     logger.warning(f"\n  ⏳ [DIKSHA SERVER HYDRATION] '{header_title}' header badge is not 100% yet.")
-                    logger.info("  ⏳ Entering 10-Attempt (150s) Patient Server Sync Window before any Circuit Breaker trigger...")
+                    logger.info("  ⏳ Entering 5-Attempt (75s) Patient Server Sync & Re-Execution Window...")
                     
-                    server_synced = False
-                    for sync_step in range(1, 11):  # 10 steps x 15s = 150s (2.5 minutes)
-                        logger.info(f"  ⏳ [MODULE SYNC {sync_step}/10] Reloading page & checking module completion (Elapsed: {sync_step * 15}s / 150s)...")
-                        await asyncio.sleep(15)
-                        try:
-                            await page.reload()
-                            await asyncio.sleep(3)
-                            
-                            # Step 1: Check Module Header Badge first
-                            if await is_header_100_percent_complete(header):
-                                logger.info(f"  ✅ [MODULE SYNC SUCCESS] Module '{header_title}' badge reached 100% on Attempt #{sync_step}!")
-                                server_synced = True
-                                break
+                    module_retry_count = 0
+                    while True:
+                        module_retry_count += 1
+                        server_synced = False
+                        
+                        if module_retry_count > 1:
+                            logger.info(f"\n  🔄 [RE-EXECUTING MODULE PASS #{module_retry_count}] Re-scanning '{header_title}' for completion...")
 
-                            # Step 2: Expand Module Accordion panel
-                            if await click_target.count() > 0:
-                                await click_target.click(force=True)
-                                await page.wait_for_timeout(2000)
-                            
-                            # Step 3: Scan all subsection items inside this module
-                            sync_btns = await get_section_action_buttons(collapse_panel, header)
-                            found_incomplete = False
-
-                            if sync_btns:
-                                for s_idx, s_btn in enumerate(sync_btns, 1):
-                                    s_btn_text = (await s_btn.inner_text()).strip()
-                                    s_item_title = s_btn_text
-                                    
-                                    # Step 4: Find incomplete item and execute it
-                                    if not await is_item_100_percent_complete(s_btn) and (s_item_title not in completed_items):
-                                        found_incomplete = True
-                                        logger.info(f"  🔄 [MODULE SYNC RE-EXECUTION Attempt #{sync_step}] Found incomplete item [{s_idx}/{len(sync_btns)}]: '{s_item_title}'. Executing item now...")
-                                        
-                                        s_act_type = await s_btn.get_attribute("act_type") or "resource"
-                                        if s_act_type == "url":
-                                            await process_video_activity(page, s_btn)
-                                        elif s_act_type == "resource":
-                                            await process_pdf_activity(page, s_btn)
-                                        elif s_act_type == "h5pactivity":
-                                            await process_h5p_activity(page, s_btn, answer_key, course_title=course_title)
-                                        elif s_act_type == "quiz":
-                                            await process_quiz_assessment(page, s_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=s_item_title, sub_no=s_idx, course_title=course_title)
-                                        elif s_act_type == "feedback" or "feedback" in s_item_title.lower():
-                                            await process_feedback_activity(page, s_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=s_item_title, sub_no=s_idx, course_title=course_title)
-                                        
-                                        completed_items.add(s_btn_text)
-                                        completed_items.add(s_item_title)
-                                        
-                                        # Step 5: Re-check Module Header Badge after completing incomplete item
-                                        if await is_header_100_percent_complete(header):
-                                            logger.info(f"  ✅ [MODULE RE-EXECUTION SUCCESS] Module '{header_title}' 100% verified after completing '{s_item_title}'!")
-                                            server_synced = True
-                                            break
-
-                            # If all items were checkmarked or header reaches 100%
-                            if not found_incomplete or await is_header_100_percent_complete(header):
-                                logger.info(f"  ✅ [MODULE SYNC SUCCESS] DIKSHA server completion verified for '{header_title}' on Attempt #{sync_step}!")
-                                server_synced = True
-                                break
-
-                        except Exception as m_sync_ex:
-                            logger.warning(f"  --> Module sync attempt #{sync_step} notice: {m_sync_ex}")
-
-                    if server_synced:
-                        await close_activity_modal(page)
-                        try:
-                            if await click_target.count() > 0:
-                                await click_target.click(force=True)
-                                await page.wait_for_timeout(1000)
-                        except Exception:
-                            pass
-
-
-
-
-                    if not server_synced:
-                        final_recheck = await is_header_100_percent_complete(header)
-                        if not final_recheck and not all_items_completed_in_memory and not any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"]):
-                            logger.error(f"\n❌ [CRITICAL DIKSHA SERVER FAILURE] '{header_title}' remains incomplete after 4 attempts & 2-minute server sync window.")
-                            logger.error("⛔ [CIRCUIT BREAKER TRIGGERED] Stopping all automation processes and closing server context!\n")
+                        for sync_step in range(1, 6):  # 5 steps x 15s = 75s (1.25 minutes)
+                            logger.info(f"  ⏳ [MODULE SYNC {sync_step}/5] Reloading page & checking module completion (Elapsed: {sync_step * 15}s / 75s)...")
+                            await asyncio.sleep(15)
                             try:
-                                await page.context.close()
+                                await page.reload()
+                                await asyncio.sleep(3)
+                                
+                                # Step 1: Check Module Header Badge first
+                                if await is_header_100_percent_complete(header):
+                                    logger.info(f"  ✅ [MODULE SYNC SUCCESS] Module '{header_title}' badge reached 100% on Attempt #{sync_step}!")
+                                    server_synced = True
+                                    break
+
+                                # Step 2: Expand Module Accordion panel
+                                if await click_target.count() > 0:
+                                    await click_target.click(force=True)
+                                    await page.wait_for_timeout(2000)
+                                
+                                # Step 3: Scan all subsection items inside this module
+                                sync_btns = await get_section_action_buttons(collapse_panel, header)
+                                found_incomplete = False
+
+                                if sync_btns:
+                                    for s_idx, s_btn in enumerate(sync_btns, 1):
+                                        s_btn_text = (await s_btn.inner_text()).strip()
+                                        s_item_title = s_btn_text
+                                        
+                                        # Step 4: Find incomplete item and execute it
+                                        if not await is_item_100_percent_complete(s_btn) and (s_item_title not in completed_items):
+                                            found_incomplete = True
+                                            logger.info(f"  🔄 [MODULE SYNC RE-EXECUTION Attempt #{sync_step}] Found incomplete item [{s_idx}/{len(sync_btns)}]: '{s_item_title}'. Executing item now...")
+                                            
+                                            s_act_type = await s_btn.get_attribute("act_type") or "resource"
+                                            if s_act_type == "url":
+                                                await process_video_activity(page, s_btn)
+                                            elif s_act_type == "resource":
+                                                await process_pdf_activity(page, s_btn)
+                                            elif s_act_type == "h5pactivity":
+                                                await process_h5p_activity(page, s_btn, answer_key, course_title=course_title)
+                                            elif s_act_type == "quiz":
+                                                await process_quiz_assessment(page, s_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=s_item_title, sub_no=s_idx, course_title=course_title)
+                                            elif s_act_type == "feedback" or "feedback" in s_item_title.lower():
+                                                await process_feedback_activity(page, s_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=s_item_title, sub_no=s_idx, course_title=course_title)
+                                            
+                                            completed_items.add(s_btn_text)
+                                            completed_items.add(s_item_title)
+                                            
+                                            # Step 5: Re-check Module Header Badge after completing incomplete item
+                                            if await is_header_100_percent_complete(header):
+                                                logger.info(f"  ✅ [MODULE RE-EXECUTION SUCCESS] Module '{header_title}' 100% verified after completing '{s_item_title}'!")
+                                                server_synced = True
+                                                break
+
+                                # If all items were checkmarked or header reaches 100%
+                                if not found_incomplete or await is_header_100_percent_complete(header):
+                                    logger.info(f"  ✅ [MODULE SYNC SUCCESS] DIKSHA server completion verified for '{header_title}' on Attempt #{sync_step}!")
+                                    server_synced = True
+                                    break
+
+                            except Exception as m_sync_ex:
+                                logger.warning(f"  --> Module sync attempt #{sync_step} notice: {m_sync_ex}")
+
+                        if server_synced:
+                            await close_activity_modal(page)
+                            try:
+                                if await click_target.count() > 0:
+                                    await click_target.click(force=True)
+                                    await page.wait_for_timeout(1000)
                             except Exception:
                                 pass
-                            raise RuntimeError(f"DIKSHA_SERVER_STUCK: '{header_title}' failed to achieve 100% after 2-minute sync window.")
+                            break
+
+                        # Check if module header reached 100%
+                        final_recheck = await is_header_100_percent_complete(header)
+                        if final_recheck or any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"]) or all_items_completed_in_memory:
+                            server_synced = True
+                            break
+
+                        # ⏸️ PAUSE SYSTEM & PROMPT USER TO PRESS ENTER TO RESUME (NO CLOSING / NO EXIT!)
+                        logger.warning("\n" + "=" * 75)
+                        logger.warning(f" ⏸️  [AUTOMATION PAUSED] '{header_title}' is not 100% complete after 5 attempts.")
+                        logger.warning(" 🔒 BROWSER & SERVER SESSION REMAIN 100% ACTIVE (NOT CLOSED)!")
+                        logger.warning(" 👉 Press [ENTER] key in terminal console to RESUME automation & retry module...")
+                        logger.warning("=" * 75 + "\n")
+
+                        loop = asyncio.get_event_loop()
+                        await loop.run_in_executor(None, input, "Press [ENTER] to RESUME automation: ")
+                        logger.info("  ▶ [USER RESUMED] Resuming module execution pipeline from exact saved position...\n")
                 elif any(skip_kw in header_title.lower() for skip_kw in ["certificate", "download"]) or all_items_completed_in_memory:
                     logger.info(f"  🎓 [MODULE COMPLETED] '{header_title}' completed successfully! Advancing...")
+
 
 
 
