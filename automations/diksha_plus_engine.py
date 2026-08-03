@@ -2594,13 +2594,45 @@ async def is_header_100_percent_complete(header):
 
 
 
-async def process_course_modules(page, answer_key=None, course_title="Unknown Course", username=""):
+async def ensure_on_course_page(page, target_course_url=None):
+    """
+    Checks if page redirected to dashboard.php or my-learning.
+    If so, automatically re-navigates to the active course URL, clicks 'Lessons' tab, and resumes execution seamlessly!
+    """
+    try:
+        curr_url = page.url.lower()
+        if "dashboard.php" in curr_url or "my-learning" in curr_url:
+            logger.warning("\n" + "=" * 70)
+            logger.warning(" ⚠️  [AUTOMATIC DASHBOARD RECOVERY] Detected redirect to dashboard.php!")
+            if target_course_url:
+                logger.warning(f" 🚀 Re-navigating to active course URL: {target_course_url}")
+                await page.goto(target_course_url, wait_until="domcontentloaded")
+                await page.wait_for_timeout(3000)
+                lessons_tab = page.locator(config.SELECTORS["lessons_tab"]).first
+                if await lessons_tab.count() > 0 and await lessons_tab.is_visible():
+                    await lessons_tab.click(force=True)
+                    await page.wait_for_timeout(4000)
+                logger.warning(" ✅ Successfully recovered to course page! Resuming module pass...")
+            logger.warning("=" * 70 + "\n")
+            return True
+    except Exception as ex:
+        logger.warning(f"  --> Dashboard recovery check notice: {ex}")
+    return False
+
+
+async def process_course_modules(page, answer_key=None, course_title="Unknown Course", username="", target_course_url=None):
     """
     Clicks 'Lessons' tab (waits 6s for server hydration), lists all Main Modules,
     auto-expands 50%/0% incomplete modules, and executes items without checkmarks.
     """
     disp_user = config.USER_NAMES.get(username, username) if username else "Active User"
     user_str = f"{disp_user} ({username})" if username else disp_user
+    
+    if not target_course_url:
+        target_course_url = page.url
+
+    await ensure_on_course_page(page, target_course_url)
+
 
 
     if not course_title or course_title == "Unknown Course":
@@ -2923,6 +2955,8 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     try:
                         await page.reload()
                         await page.wait_for_timeout(3000)
+                        await ensure_on_course_page(page, target_course_url)
+
 
                         # Step 1: Re-expand accordion panel ONLY if collapsed
                         click_target = header.locator("a[data-toggle='collapse'], a[href*='collapse'], a[aria-controls*='collapse']").first
