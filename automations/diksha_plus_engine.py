@@ -69,11 +69,12 @@ def start_keyboard_pause_listener():
     t = threading.Thread(target=listener, daemon=True)
     t.start()
 
-async def check_pause_status():
+async def check_pause_status(page=None):
     global IS_PAUSED
     if IS_PAUSED:
         while IS_PAUSED:
             await asyncio.sleep(0.5)
+
 
 
 def get_course_filename(course_title):
