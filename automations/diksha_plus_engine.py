@@ -2792,8 +2792,8 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
 
                 server_synced = False
-                for sync_step in range(1, 6):
-                    logger.info(f"\n  ⏳ [MODULE SYNC {sync_step}/5] Reloading page & re-scanning subsections (Elapsed: {sync_step * 15}s / 75s)...")
+                for sync_step in range(1, 11):
+                    logger.info(f"\n  ⏳ [MODULE SYNC {sync_step}/10] Reloading page & re-scanning subsections (Elapsed: {sync_step * 15}s / 150s)...")
                     await asyncio.sleep(15)
                     try:
                         await page.reload()
@@ -2820,7 +2820,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                         # Step 2: Re-scan and re-print SUBSECTION BREAKDOWN list on Attempt #sync_step
                         sync_btns = await get_section_action_buttons(collapse_panel, header)
                         if sync_btns:
-                            logger.info(f"  📋 [SUBSECTION BREAKDOWN ({len(sync_btns)} ITEMS) - Attempt #{sync_step}/5]:")
+                            logger.info(f"  📋 [SUBSECTION BREAKDOWN ({len(sync_btns)} ITEMS) - Attempt #{sync_step}/10]:")
                             for idx, b in enumerate(sync_btns, 1):
                                 try:
                                     b_txt = (await b.inner_text()).strip()
@@ -2848,7 +2848,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                 is_item_done = (s_item_title in completed_items) or (not is_gen_b and s_btn_text in completed_items) or await is_item_100_percent_complete(s_btn)
 
                                 if not is_item_done:
-                                    logger.info(f"  🔄 [SYNC RE-EXECUTION Attempt #{sync_step}/5] Found incomplete item [{s_idx}/{len(sync_btns)}]: '{s_item_title}'. Executing item now...")
+                                    logger.info(f"  🔄 [SYNC RE-EXECUTION Attempt #{sync_step}/10] Found incomplete item [{s_idx}/{len(sync_btns)}]: '{s_item_title}'. Executing item now...")
                                     s_act_type = await s_btn.get_attribute("act_type") or "resource"
                                     if s_act_type == "url":
                                         await process_video_activity(page, s_btn)
@@ -2879,7 +2879,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                             all_items_checkmarked = False
 
                         if await is_header_100_percent_complete(header) or all_items_checkmarked:
-                            logger.info(f"  ✅ [MODULE SYNC SUCCESS] DIKSHA server completion verified for '{header_title}' on Attempt #{sync_step}/5!")
+                            logger.info(f"  ✅ [MODULE SYNC SUCCESS] DIKSHA server completion verified for '{header_title}' on Attempt #{sync_step}/10!")
                             server_synced = True
                             break
                     except Exception as m_sync_ex:
@@ -2892,10 +2892,11 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
                 # ⏸️ PAUSE SYSTEM & PROMPT USER TO PRESS ENTER TO RESUME (NO CLOSING / NO EXIT!)
                 logger.warning("\n" + "=" * 75)
-                logger.warning(f" ⏸️  [AUTOMATION PAUSED] '{header_title}' is not 100% complete after 5 attempts.")
+                logger.warning(f" ⏸️  [AUTOMATION PAUSED] '{header_title}' is not 100% complete after 10 attempts.")
                 logger.warning(" 🔒 BROWSER & SERVER SESSION REMAIN 100% ACTIVE (NOT CLOSED)!")
                 logger.warning(" 👉 Press [ENTER] key in terminal console to RESUME automation & retry full module pass...")
                 logger.warning("=" * 75 + "\n")
+
 
                 loop = asyncio.get_event_loop()
                 await loop.run_in_executor(None, input, "Press [ENTER] to RESUME & RE-START module pass: ")

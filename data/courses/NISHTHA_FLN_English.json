@@ -2103,6 +2103,328 @@
           ]
         }
       ]
+    },
+    {
+      "module_no": 14,
+      "module_name": "Summative Assessment",
+      "subsections": [
+        {
+          "subsection_no": 1,
+          "subsection_name": "View",
+          "questions": [
+            {
+              "question": "Identify from the following which is a traditional building toy?",
+              "options": [
+                "[A] Jigsaw Puzzles",
+                "[B] Stackers",
+                "[C] Jenga",
+                "[D] Legos"
+              ],
+              "answer": "[D] Legos"
+            },
+            {
+              "question": "Which of the following statements is not correct in the context of indigenous toys?",
+              "options": [
+                "[A] Indigenous toys have scope for exploration and are suitable for different age groups.",
+                "[B] Indigenous toys are relatively cheap.",
+                "[C] Indigenous toys are not easily available.",
+                "[D] Indigenous toys help children to learn about texture, colour, size and shape, etc."
+              ],
+              "answer": "[C] Indigenous toys are not easily available."
+            },
+            {
+              "question": "Foundational literacy and numeracy training should include",
+              "options": [
+                "[A] Preschool and grade 1 and 2 teachers",
+                "[B] Preschool and grade 1 teachers only",
+                "[C] Preschool and all primary teachers",
+                "[D] Only preschool teachers"
+              ],
+              "answer": "[A] Preschool and grade 1 and 2 teachers"
+            },
+            {
+              "question": "Children at the foundational years of literacy are",
+              "options": [
+                "[A] shy",
+                "[B] over enthusiastic",
+                "[C] keen to explore the world around them",
+                "[D] passive"
+              ],
+              "answer": "[C] keen to explore the world around them"
+            },
+            {
+              "question": "Non-responsive instructions focuses on",
+              "options": [
+                "[A] Completing the syllabus without ascertaining the learning of children",
+                "[B] Age of the child",
+                "[C] Class/grade of the child",
+                "[D] Learning levels of children"
+              ],
+              "answer": "[A] Completing the syllabus without ascertaining the learning of children"
+            },
+            {
+              "question": "What is important for families to know if they want to support their learning in FLN?",
+              "options": [
+                "[A] Homework given to children",
+                "[B] Learning outcomes for every stage",
+                "[C] Development of worksheets",
+                "[D] Textbook content"
+              ],
+              "answer": "[B] Learning outcomes for every stage"
+            },
+            {
+              "question": "Being reflective helps children",
+              "options": [
+                "[A] Become intelligent",
+                "[B] Use their prior experiences in dealing with new situations and experiences",
+                "[C] Show what they have learned",
+                "[D] Get the attention of their teacher"
+              ],
+              "answer": "[B] Use their prior experiences in dealing with new situations and experiences"
+            },
+            {
+              "question": "What kind of material is suggested in Vidya Pravesh and Balvatika?",
+              "options": [
+                "[A] Commercial material",
+                "[B] Wooden material",
+                "[C] Indigenous/locally, low-cost or no-cost material",
+                "[D] Children made material"
+              ],
+              "answer": "[C] Indigenous/locally, low-cost or no-cost material"
+            },
+            {
+              "question": "Balvatika is meant for the children of what stage of schooling?",
+              "options": [
+                "[A] Children in preschool III",
+                "[B] Children in preschool I",
+                "[C] Children entering Grade I",
+                "[D] Children in preschool II"
+              ],
+              "answer": "[D] Children in preschool I"
+            },
+            {
+              "question": "A combination of knowledge, skills and attitudes appropriate to the context is defined as",
+              "options": [
+                "[A] Skill",
+                "[B] Learning Outcomes",
+                "[C] Attitude",
+                "[D] Competency"
+              ],
+              "answer": "[D] Competency"
+            },
+            {
+              "question": "The main purpose of the activity/interest areas is to give children opportunity for",
+              "options": [
+                "[A] Free play",
+                "[B] Standing",
+                "[C] Rest",
+                "[D] Sitting"
+              ],
+              "answer": "[A] Free play"
+            },
+            {
+              "question": "Which of the following should be a guiding criteria for selecting the toy for children?",
+              "options": [
+                "[A] Toy is appropriate for child's age",
+                "[B] Toy material is edible",
+                "[C] Toy looks attractive",
+                "[D] Toy is expensive"
+              ],
+              "answer": "[A] Toy is appropriate for child's age"
+            },
+            {
+              "question": "NCERT will be providing …. to states and UTs in the fulfillment of FLN Mission objectives.",
+              "options": [
+                "[A] Budget",
+                "[B] Kit",
+                "[C] Academic support",
+                "[D] Manual"
+              ],
+              "answer": "[B] Kit"
+            },
+            {
+              "question": "Tux Math is",
+              "options": [
+                "[A] Animation",
+                "[B] Games",
+                "[C] Simulation",
+                "[D] Subject specific tool"
+              ],
+              "answer": "[B] Games"
+            },
+            {
+              "question": "Access to the natural world beyond the classroom and hands-on experience are the examples of boosting what kind of intelligence?",
+              "options": [
+                "[A] Creative Intelligence",
+                "[B] Analytical intelligence",
+                "[C] Practical Intelligence",
+                "[D] Sensory intelligence"
+              ],
+              "answer": "[C] Practical Intelligence"
+            },
+            {
+              "question": "How many developmental goals are covered in the development of Vidya Pravesh and Balvatika?",
+              "options": [
+                "[A] 1 developmental goal",
+                "[B] 4 developmental goals",
+                "[C] 3 developmental goals",
+                "[D] 2 developmental goals"
+              ],
+              "answer": "[B] 4 developmental goals"
+            },
+            {
+              "question": "Children in the classroom should be permitted to bring their:",
+              "options": [
+                "[A] Computer",
+                "[B] Gadgets",
+                "[C] Mobile",
+                "[D] Toys and Games"
+              ],
+              "answer": "[D] Toys and Games"
+            },
+            {
+              "question": "Language conveys meaningful messages if it is in",
+              "options": [
+                "[A] Clear",
+                "[B] Formal",
+                "[C] Mother tongue",
+                "[D] Context"
+              ],
+              "answer": "[D] Context"
+            },
+            {
+              "question": "The full form of ECCE is",
+              "options": [
+                "[A] Early child development and education",
+                "[B] Early care education for children",
+                "[C] Every child care and education",
+                "[D] Early Childhood Care and Education"
+              ],
+              "answer": "[D] Early Childhood Care and Education"
+            },
+            {
+              "question": "According to UDISE, how many languages are used as a medium of instruction in Indian schools?",
+              "options": [
+                "[A] 39",
+                "[B] 30",
+                "[C] 36",
+                "[D] 33"
+              ],
+              "answer": "[C] 36"
+            },
+            {
+              "question": "Toys and educational play materials must not be?",
+              "options": [
+                "[A] Culturally irrelevant",
+                "[B] Aligned with learning outcomes",
+                "[C] Linked to all children's interests",
+                "[D] Developmentally appropriate"
+              ],
+              "answer": "[A] Culturally irrelevant"
+            },
+            {
+              "question": "We encourage children at the foundational stage to learn FLN by",
+              "options": [
+                "[A] Children's literature",
+                "[B] Activity worksheets",
+                "[C] Play based, activity based, concrete experiences and through toys/games",
+                "[D] Toys and Games"
+              ],
+              "answer": "[C] Play based, activity based, concrete experiences and through toys/games"
+            },
+            {
+              "question": "A teacher needs to introduce phonics to the students at",
+              "options": [
+                "[A] their first language class",
+                "[B] the beginning of class",
+                "[C] after completing a month in their beginner grade",
+                "[D] the time when children are ready to learn the mechanical aspect of language"
+              ],
+              "answer": "[D] the time when children are ready to learn the mechanical aspect of language"
+            },
+            {
+              "question": "What is meant by 'interaction with adults'?",
+              "options": [
+                "[A] Adults talk to the children",
+                "[B] Parents and teachers get involved and support children's learning",
+                "[C] Children follow teachers and parents' instructions",
+                "[D] Children sit with the parents and teachers"
+              ],
+              "answer": "[B] Parents and teachers get involved and support children's learning"
+            },
+            {
+              "question": "Parents should be made aware of the learning outcomes identified for",
+              "options": [
+                "[A] Balvatika and Class I",
+                "[B] Class II and III",
+                "[C] Different class levels",
+                "[D] Balvatika"
+              ],
+              "answer": "[D] Balvatika and Class I"
+            },
+            {
+              "question": "Which of the following does not involve one-to-one correspondence?",
+              "options": [
+                "[A] Mapping",
+                "[B] Matching",
+                "[C] Grouping",
+                "[D] Pairing"
+              ],
+              "answer": "[C] Grouping"
+            },
+            {
+              "question": "ICT have the potential to offer synchronous as well as asynchronous learning opportunities is best fit into ____________",
+              "options": [
+                "[A] Facilitating Skill Formation",
+                "[B] Enhancing Quality of Teaching",
+                "[C] Sustaining Lifelong Learning",
+                "[D] Advancing Community Linkages"
+              ],
+              "answer": "[C] Sustaining Lifelong Learning"
+            },
+            {
+              "question": "The HPC card will be an important link between home and school and will be accompanied by regular parent-teacher meetings (PTMs) in order to",
+              "options": [
+                "[A] Actively involve parents/families in their children's holistic education and development.",
+                "[B] Actively involve parents and Sarpanch in the children's holistic education and development.",
+                "[C] Involve siblings of families in the children's holistic education and development.",
+                "[D] Connect with Sarpanch and community in the children's holistic education."
+              ],
+              "answer": "[A] Actively involve parents/families in their children's holistic education and development."
+            },
+            {
+              "question": "Which of the following is not a benefit of Multilingual Education?",
+              "options": [
+                "[A] Higher learning outcomes",
+                "[B] Developing self-confidence",
+                "[C] Better understanding of all subjects",
+                "[D] Learning how to read and write in English from grade 1"
+              ],
+              "answer": "[D] Learning how to read and write in English from grade 1"
+            },
+            {
+              "question": "In a language classroom, a teacher uses picture talk because",
+              "options": [
+                "[A] it's a good time pass activity to prevent children from making noise",
+                "[B] it's an important step in reading with meaning text",
+                "[C] it is a good fun activity for children to learn about pictures",
+                "[D] it helps in the identification of various objects"
+              ],
+              "answer": "[D] it helps in the identification of various objects"
+            },
+            {
+              "question": "Which of the following statement about vision is not true?",
+              "options": [
+                "[A] Vision must be value driven",
+                "[B] Vision statement must reflect a futuristic intent",
+                "[C] Vision must communicate a direction",
+                "[D] Vision does not have any specified time frame"
+              ],
+              "answer": "[A] Vision must be value driven"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
