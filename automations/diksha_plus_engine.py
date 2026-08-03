@@ -2501,6 +2501,29 @@ async def is_item_100_percent_complete(btn):
     return False
 
 
+async def is_item_locked_by_diksha(btn):
+    """
+    Checks if an item row on DIKSHA is currently locked/disabled due to sequential prerequisite rules.
+    (e.g., 'Not available unless the activity Assignment is completed.')
+    """
+    try:
+        if await btn.is_disabled():
+            return True
+        b_class = (await btn.get_attribute("class") or "").lower()
+        if "disabled" in b_class or "not-allowed" in b_class:
+            return True
+
+        row = btn.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'list') or contains(@class,'card-body') or contains(@class,'activity') or self::li or self::div][1]").first
+        if await row.count() > 0:
+            row_text = (await row.inner_text()).strip().lower()
+            if "not available unless" in row_text:
+                return True
+    except Exception:
+        pass
+    return False
+
+
+
 
 async def is_header_100_percent_complete(header):
     """
@@ -2794,6 +2817,13 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                         if real_item_title and real_item_title.lower() not in ("view", "start", "open", "continue"):
                             completed_items.add(real_item_title)
                         continue
+
+                    # 🔒 Check if item is locked by DIKSHA prerequisite rule (e.g. 'Not available unless...')
+                    if await is_item_locked_by_diksha(btn):
+                        disp_t = real_item_title[:42].strip() + "..." if len(real_item_title) > 45 else real_item_title
+                        logger.info(f"  --> 🔒 [LOCKED ITEM] SUBSECTION [{j:02d}/{total_sec_items:02d}]: '{disp_t}' is locked by DIKSHA prerequisite rule. [Skipping for now!]")
+                        continue
+
 
 
                     act_type = await btn.get_attribute("act_type") or "resource"
