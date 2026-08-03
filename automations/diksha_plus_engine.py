@@ -2308,31 +2308,37 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
 
 async def get_section_action_buttons(collapse_panel, header):
     """
-    Returns unique, deduplicated action buttons inside a module collapse panel.
-    Ensures exactly 1 button per activity row (e.g. 2 items = 2 distinct buttons).
+    Returns unique, deduplicated action buttons inside a module collapse panel or card.
+    Ensures action buttons are found even inside collapsed/hidden accordion panels.
     """
+    btns = None
     if collapse_panel and await collapse_panel.count() > 0:
-        btns = collapse_panel.locator(".btn.module-view-btn, a.activity-list, button:has-text('View'), a:has-text('View')")
-    else:
-        btns = header.locator("xpath=following-sibling::div[1]").locator(".btn.module-view-btn, a.activity-list")
+        btns = collapse_panel.locator(".btn.module-view-btn, a.activity-list, button:has-text('View'), a:has-text('View'), button:has-text('Start'), a:has-text('Start'), button:has-text('Continue'), a:has-text('Continue'), a.list-group-item, button.list-group-item, div.activity-item a, div.activity-item button")
     
+    if not btns or await btns.count() == 0:
+        parent_card = header.locator("xpath=ancestor::*[contains(@class,'card') or contains(@class,'panel') or contains(@class,'modules_full_accordian_div')][1]").first
+        if await parent_card.count() > 0:
+            btns = parent_card.locator(".btn.module-view-btn, a.activity-list, button:has-text('View'), a:has-text('View'), button:has-text('Start'), a:has-text('Start'), button:has-text('Continue'), a:has-text('Continue')")
+        else:
+            btns = header.locator("xpath=following-sibling::div[1]").locator(".btn.module-view-btn, a.activity-list, button, a")
+
     raw_count = await btns.count()
     distinct_btns = []
     seen_row_keys = set()
 
     for idx in range(raw_count):
         b = btns.nth(idx)
-        if await b.is_visible():
-            try:
-                row = b.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'list')][1]").first
-                row_key = (await row.inner_text()).strip() if await row.count() > 0 else (await b.inner_text()).strip()
-                clean_key = ' '.join(row_key.split())
-                if clean_key not in seen_row_keys:
-                    seen_row_keys.add(clean_key)
-                    distinct_btns.append(b)
-            except Exception:
+        try:
+            row = b.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'list') or contains(@class,'card-body')][1]").first
+            row_key = (await row.inner_text()).strip() if await row.count() > 0 else (await b.inner_text()).strip()
+            clean_key = ' '.join(row_key.split())
+            if clean_key and clean_key not in seen_row_keys:
+                seen_row_keys.add(clean_key)
                 distinct_btns.append(b)
+        except Exception:
+            distinct_btns.append(b)
     return distinct_btns
+
 
 async def is_button_enabled(btn):
 
@@ -2619,9 +2625,20 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                 distinct_btns = await get_section_action_buttons(collapse_panel, header)
                 total_sec_items = len(distinct_btns)
 
+                if total_sec_items == 0 and not await is_header_100_percent_complete(header):
+                    logger.info(f"  --> [RE-EXPANDING ACCORDION] Re-clicking header for '{header_title}' to render inner action buttons...")
+                    try:
+                        await safe_action_click(click_target)
+                        await page.wait_for_timeout(3000)
+                        distinct_btns = await get_section_action_buttons(collapse_panel, header)
+                        total_sec_items = len(distinct_btns)
+                    except Exception as ex:
+                        logger.warning(f"  --> Notice re-expanding accordion '{header_title}': {ex}")
+
                 if total_sec_items == 0:
                     logger.info("     [-] No action buttons inside this section. Moving to next...")
                     break
+
 
                 # 📋 PRINT FULL SUBSECTION BREAKDOWN CHECKLIST SUMMARY ON EVERY MODULE PASS!
                 logger.info(f"  📋 [SUBSECTION BREAKDOWN ({total_sec_items} ITEMS)]:")
