@@ -2309,39 +2309,57 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
 async def get_section_action_buttons(collapse_panel, header):
     """
     Returns unique, deduplicated action buttons inside a module collapse panel or card.
-    Ensures action buttons are found even inside collapsed/hidden accordion panels.
+    Deduplicates title links vs View buttons using act_id and data-id attributes.
+    Always prioritizes actual .module-view-btn elements over title links.
     """
     btns = None
     if collapse_panel and await collapse_panel.count() > 0:
-        btns = collapse_panel.locator(".btn.module-view-btn, a.activity-list, button:has-text('View'), a:has-text('View'), button:has-text('Start'), a:has-text('Start'), button:has-text('Continue'), a:has-text('Continue'), a.list-group-item, button.list-group-item, div.activity-item a, div.activity-item button")
+        btns = collapse_panel.locator("a.module-view-btn, button.module-view-btn, .btn.module-view-btn, a[act_type], a[act_id], a.activity-list, button:has-text('View'), a:has-text('View'), button:has-text('Start'), a:has-text('Start'), button:has-text('Continue'), a:has-text('Continue')")
     
     if not btns or await btns.count() == 0:
         parent_card = header.locator("xpath=ancestor::*[contains(@class,'card') or contains(@class,'panel') or contains(@class,'modules_full_accordian_div')][1]").first
         if await parent_card.count() > 0:
-            btns = parent_card.locator(".btn.module-view-btn, a.activity-list, button:has-text('View'), a:has-text('View'), button:has-text('Start'), a:has-text('Start'), button:has-text('Continue'), a:has-text('Continue')")
+            btns = parent_card.locator("a.module-view-btn, button.module-view-btn, .btn.module-view-btn, a[act_type], a[act_id], a.activity-list, button:has-text('View'), a:has-text('View')")
         else:
-            btns = header.locator("xpath=following-sibling::div[1]").locator(".btn.module-view-btn, a.activity-list, button, a")
+            btns = header.locator("xpath=following-sibling::div[1]").locator("a.module-view-btn, .btn, a[act_id], a")
 
     raw_count = await btns.count()
-    distinct_btns = []
-    seen_row_keys = set()
+    id_map = {}
+    fallback_btns = []
 
     for idx in range(raw_count):
         b = btns.nth(idx)
         try:
-            row = b.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'list') or contains(@class,'card-body')][1]").first
-            row_key = (await row.inner_text()).strip() if await row.count() > 0 else (await b.inner_text()).strip()
-            clean_key = ' '.join(row_key.split())
-            if clean_key and clean_key not in seen_row_keys:
-                seen_row_keys.add(clean_key)
-                distinct_btns.append(b)
+            act_id = await b.get_attribute("act_id") or await b.get_attribute("data-id") or ""
+            b_class = await b.get_attribute("class") or ""
+            is_real_view_btn = "module-view-btn" in b_class or "btn" in b_class or "view" in (await b.inner_text()).lower()
+
+            if act_id:
+                if act_id not in id_map:
+                    id_map[act_id] = b
+                elif is_real_view_btn:
+                    id_map[act_id] = b  # Upgrade to real View button if previous match was title link
+            else:
+                row = b.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'list') or contains(@class,'card-body')][1]").first
+                row_key = (await row.inner_text()).strip() if await row.count() > 0 else (await b.inner_text()).strip()
+                clean_key = ' '.join(row_key.split())
+                if clean_key:
+                    fallback_btns.append((clean_key, b))
         except Exception:
+            fallback_btns.append(("", b))
+
+    distinct_btns = list(id_map.values())
+    seen_keys = set()
+    for key, b in fallback_btns:
+        if not key or key not in seen_keys:
+            if key:
+                seen_keys.add(key)
             distinct_btns.append(b)
+
     return distinct_btns
 
 
 async def is_button_enabled(btn):
-
     """
     Determines if a View button is active/unlocked on DIKSHA.
     Returns False if button is disabled, greyed out, or locked ("not available unless...").
@@ -2363,17 +2381,18 @@ async def is_button_enabled(btn):
         pass
     return True
 
+
 async def is_item_100_percent_complete(btn):
     """
     Determines if a subsection item row on DIKSHA is 100% complete.
-    Item is complete ONLY IF it contains a visible checkmark, .completed class, or 100% badge.
+    Checks progress-value spans (0%, 65%, 100%), checkmark icons, and completed classes.
     """
     try:
         row = btn.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'list') or contains(@class,'card-body') or contains(@class,'activity')][1]").first
         if await row.count() > 0:
             row_text = (await row.inner_text()).strip().lower()
             
-            # If item row explicitly shows an incomplete percentage badge (0%, 50%, etc.)
+            # If item row explicitly shows an incomplete percentage badge (0%, 50%, 65%, etc.)
             pct_matches = re.findall(r"(\d{1,2})%", row_text)
             if pct_matches:
                 for val_str in pct_matches:
@@ -2382,6 +2401,15 @@ async def is_item_100_percent_complete(btn):
                         return False  # Incomplete item!
                     elif val == 100:
                         return True
+
+            # DIKSHA specific .progress-value check
+            p_val_el = row.locator(".progress-value, span:has-text('%')").first
+            if await p_val_el.count() > 0:
+                p_txt = (await p_val_el.inner_text()).strip().lower()
+                if "100%" in p_txt:
+                    return True
+                elif any(f"{p}%" in p_txt for p in range(0, 100)):
+                    return False
 
             # Comprehensive DIKSHA / Moodle checkmark & completion selectors
             check_selectors = [
@@ -2404,13 +2432,24 @@ async def is_item_100_percent_complete(btn):
 async def is_header_100_percent_complete(header):
     """
     Determines if a module header is 100% completed on DIKSHA.
-    Returns False if header contains ANY percentage badge from 0% to 99% (e.g. 0%, 13%, 26%, 50%, 97%, 99%).
-    Returns True ONLY IF 100% badge/checkmark is present AND no incomplete percentage is present.
+    Checks .progress-value (65% = False, 100% = True) and circle badges.
     """
     try:
         raw_text = (await header.inner_text()).strip().lower()
         
-        # Regex search for any percentage badge (0% to 99%)
+        # Check .progress-value element text explicitly
+        prog_el = header.locator(".progress-value, span:has-text('%')").first
+        if await prog_el.count() > 0:
+            prog_txt = (await prog_el.inner_text()).strip().lower()
+            m = re.search(r"(\d{1,3})%", prog_txt)
+            if m:
+                val = int(m.group(1))
+                if val < 100:
+                    return False  # 65%, 0%, etc -> Incomplete!
+                elif val == 100:
+                    return True
+
+        # General regex search for any percentage badge (0% to 99%)
         pct_matches = re.findall(r"(\d{1,2})%", raw_text)
         if pct_matches:
             for val_str in pct_matches:
@@ -2418,7 +2457,7 @@ async def is_header_100_percent_complete(header):
                 if val < 100:
                     return False  # Incomplete percentage detected!
 
-        # Check element class attributes for incomplete circle badges (e.g. p0, p13, p26, p50)
+        # Check element class attributes for incomplete circle badges (e.g. p0, p13, p26, p50, p65)
         classes = (await header.get_attribute("class") or "").split()
         for cl in classes:
             if cl.startswith("p") and cl[1:].isdigit():
@@ -2437,6 +2476,7 @@ async def is_header_100_percent_complete(header):
         pass
 
     return False
+
 
 
 async def process_course_modules(page, answer_key=None, course_title="Unknown Course", username=""):
