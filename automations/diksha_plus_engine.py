@@ -1017,7 +1017,7 @@ async def wait_for_server_checkmark(page, timeout=15):
 async def safe_action_click(locator):
     """
     Safely clicks an action button (View / Start / Continue) across all DIKSHA course modules.
-    Combines scroll, backdrop clearance, force click, dispatchEvent('click'), and native JS element.click() fallback.
+    Combines scroll, backdrop clearance, force click, dispatchEvent('click'), and parent row click triggers.
     """
     try:
         # Clear leftover modal backdrops before clicking new item
@@ -1038,10 +1038,38 @@ async def safe_action_click(locator):
         try:
             await locator.dispatchEvent("click")
         except Exception:
+            pass
+
+    # Verify if modal or viewer popup opened; if not, click parent activity link/row directly!
+    try:
+        await locator.page.wait_for_timeout(600)
+        has_popup = False
+        for f_check in [locator.page] + locator.page.frames:
             try:
-                await locator.evaluate("el => { if (el) { el.click(); if (el.parentElement) el.parentElement.click(); } }")
-            except Exception as e:
-                logger.warning(f"  --> Safe action click notice: {e}")
+                if await f_check.locator(".modal.show, #container-popup, iframe, embed, .pdf-viewer, video, canvas").count() > 0:
+                    has_popup = True
+                    break
+            except Exception:
+                pass
+
+        if not has_popup:
+            await locator.evaluate("""
+                el => {
+                    if (el) {
+                        try { el.click(); } catch(e) {}
+                        const pLink = el.closest('a, button, [onclick], .activity, .row, .item, li');
+                        if (pLink) {
+                            try { pLink.click(); } catch(e) {}
+                        }
+                        if (el.parentElement) {
+                            try { el.parentElement.click(); } catch(e) {}
+                        }
+                    }
+                }
+            """)
+    except Exception:
+        pass
+
 
 
 async def process_video_activity(page, view_button):
