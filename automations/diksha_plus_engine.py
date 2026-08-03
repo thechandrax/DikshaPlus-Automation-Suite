@@ -2780,12 +2780,14 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     already_done_in_mem = (real_item_title in completed_items) or (not is_generic_btn and btn_text in completed_items)
 
                     if already_done_in_mem or await is_item_100_percent_complete(btn):
-                        logger.info(f"  --> [✓ ALREADY DONE] Subsection [{j:02d}/{total_sec_items:02d}]: '{real_item_title}' is 100% complete. Skipping!")
+                        disp_t = real_item_title[:42].strip() + "..." if len(real_item_title) > 45 else real_item_title
+                        logger.info(f"  --> [✓ ALREADY DONE] SUBSECTION [{j:02d}/{total_sec_items:02d}]: '{disp_t}' is 100% complete. [Skipping!]")
                         if not is_generic_btn:
                             completed_items.add(btn_text)
                         if real_item_title and real_item_title.lower() not in ("view", "start", "open", "continue"):
                             completed_items.add(real_item_title)
                         continue
+
 
                     act_type = await btn.get_attribute("act_type") or "resource"
 

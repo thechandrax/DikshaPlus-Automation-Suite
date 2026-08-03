@@ -95,6 +95,11 @@ class ColoredFormatter(logging.Formatter):
 
         colored_msg = re.sub(r"(\d{1,3})%", colorize_pct, colored_msg)
 
+        if "[✓ ALREADY DONE]" in colored_msg:
+            colored_msg = colored_msg.replace("[✓ ALREADY DONE]", f"{self.C_GREEN}{self.C_BOLD}[✓ ALREADY DONE]{self.C_RESET}")
+        if "[Skipping!]" in colored_msg:
+            colored_msg = colored_msg.replace("[Skipping!]", f"\033[38;5;220m{self.C_BOLD}[Skipping!]{self.C_RESET}")
+
         if "✓" in colored_msg:
             colored_msg = colored_msg.replace("✓", f"{self.C_GREEN}{self.C_BOLD}✓{self.C_RESET}")
         if "⏳" in colored_msg:
@@ -105,6 +110,7 @@ class ColoredFormatter(logging.Formatter):
             colored_msg = colored_msg.replace("CONFIRMED", f"{self.C_GREEN}{self.C_BOLD}CONFIRMED{self.C_RESET}")
 
         return f"{timestamp} {level_name} {name_str} {self.C_TEXT}{colored_msg}{self.C_RESET}"
+
 
 
 
