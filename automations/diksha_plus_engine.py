@@ -2452,15 +2452,16 @@ async def is_button_enabled(btn):
 async def is_item_100_percent_complete(btn):
     """
     Determines if a subsection item row on DIKSHA is 100% complete.
-    Checks progress-value spans (0%, 65%, 100%), checkmark icons, and completed classes.
+    Checks progress-value spans (0%, 65%, 100%) and explicit checkmark icons.
+    Strictly avoids false positives from parent container CSS classes.
     """
     try:
         row = btn.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'list') or contains(@class,'card-body') or contains(@class,'activity')][1]").first
         if await row.count() > 0:
             row_text = (await row.inner_text()).strip().lower()
             
-            # If item row explicitly shows an incomplete percentage badge (0%, 50%, 65%, etc.)
-            pct_matches = re.findall(r"(\d{1,2})%", row_text)
+            # 1. Explicit incomplete percentage badge check (0%, 50%, 65%, etc.)
+            pct_matches = re.findall(r"(\d{1,3})%", row_text)
             if pct_matches:
                 for val_str in pct_matches:
                     val = int(val_str)
@@ -2469,7 +2470,7 @@ async def is_item_100_percent_complete(btn):
                     elif val == 100:
                         return True
 
-            # DIKSHA specific .progress-value check
+            # 2. DIKSHA specific .progress-value check
             p_val_el = row.locator(".progress-value, span:has-text('%')").first
             if await p_val_el.count() > 0:
                 p_txt = (await p_val_el.inner_text()).strip().lower()
@@ -2478,13 +2479,11 @@ async def is_item_100_percent_complete(btn):
                 elif any(f"{p}%" in p_txt for p in range(0, 100)):
                     return False
 
-            # Comprehensive DIKSHA / Moodle checkmark & completion selectors
+            # 3. Explicit checkmark icons on the item row itself
             check_selectors = [
-                "i.fa-check", ".fa-check", ".fa-check-circle", ".fa-check-square",
-                ".completed", "span.completed", "i.completed", "div.completed",
-                "[class*='completed']", ".c100.p100", "div[class*='p100']",
-                ".text-success", ".badge-success", "img[src*='check']",
-                "img[src*='complete']", "svg[class*='check']"
+                "i.fa-check", ".fa-check-circle", ".fa-check-square",
+                "i.completed-icon", "span.completed-icon",
+                ".badge-success", "img[src*='check']", "img[src*='complete']", "svg[class*='check']"
             ]
             for sel in check_selectors:
                 chk = row.locator(sel).first
@@ -2494,6 +2493,7 @@ async def is_item_100_percent_complete(btn):
         pass
 
     return False
+
 
 
 async def is_header_100_percent_complete(header):
