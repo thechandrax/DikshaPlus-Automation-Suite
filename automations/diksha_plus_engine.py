@@ -2359,7 +2359,41 @@ async def get_section_action_buttons(collapse_panel, header):
     return distinct_btns
 
 
+async def get_real_subsection_title(page, btn):
+    """
+    Extracts full subsection title text from DIKSHA activity row or title link.
+    """
+    try:
+        act_id = await btn.get_attribute("act_id") or await btn.get_attribute("data-id") or ""
+        if act_id:
+            t_link = page.locator(f"a.activity-list[act_id='{act_id}'], a.activity-list[data-id='{act_id}'], a[act_id='{act_id}']:not(.module-view-btn)").first
+            if await t_link.count() > 0:
+                txt = (await t_link.inner_text()).strip()
+                if txt and txt.lower() not in ("view", "start", "open", "continue"):
+                    return txt
+
+        row = btn.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'list') or contains(@class,'card-body') or contains(@class,'activity')][1]").first
+        if await row.count() > 0:
+            t_el = row.locator("a.activity-list:not(.module-view-btn), .title, .activity-title, h4, h5, bdi, strong, .name, td, p").first
+            if await t_el.count() > 0:
+                txt = (await t_el.inner_text()).strip()
+                if txt and txt.lower() not in ("view", "start", "open", "continue"):
+                    return txt
+    except Exception:
+        pass
+
+    try:
+        raw_b = (await btn.inner_text()).strip()
+        if raw_b and raw_b.lower() not in ("view", "start", "open", "continue"):
+            return raw_b
+    except Exception:
+        pass
+
+    return "Subsection Activity"
+
+
 async def is_button_enabled(btn):
+
     """
     Determines if a View button is active/unlocked on DIKSHA.
     Returns False if button is disabled, greyed out, or locked ("not available unless...").
@@ -2684,16 +2718,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                 logger.info(f"  📋 [SUBSECTION BREAKDOWN ({total_sec_items} ITEMS)]:")
                 for idx, b in enumerate(distinct_btns, 1):
                     try:
-                        b_txt = (await b.inner_text()).strip()
-                        r_txt = b_txt
-                        if b_txt.lower() in ("view", "start", "open", "continue"):
-                            row = b.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'card-body')][1]").first
-                            if await row.count() > 0:
-                                t_el = row.locator("h4, h5, .title, .activity-title, bdi, strong, .name").first
-                                if await t_el.count() > 0:
-                                    extracted_t = (await t_el.inner_text()).strip()
-                                    if extracted_t and extracted_t.lower() not in ("view", "start"):
-                                        r_txt = extracted_t
+                        r_txt = await get_real_subsection_title(page, b)
                         chk = "✓" if await is_item_100_percent_complete(b) else "⏳"
                         logger.info(f"     [{idx}/{total_sec_items}] {chk} {r_txt}")
                     except Exception:
@@ -2709,18 +2734,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                         pass
 
                     btn_text = (await btn.inner_text()).strip()
-                    real_item_title = btn_text
-                    if btn_text.lower() in ("view", "start", "open", "continue"):
-                        try:
-                            row = btn.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'card-body')][1]").first
-                            if await row.count() > 0:
-                                title_el = row.locator("h4, h5, .title, .activity-title, bdi, strong, .name").first
-                                if await title_el.count() > 0:
-                                    extracted_t = (await title_el.inner_text()).strip()
-                                    if extracted_t and extracted_t.lower() not in ("view", "start"):
-                                        real_item_title = extracted_t
-                        except Exception:
-                            pass
+                    real_item_title = await get_real_subsection_title(page, btn)
 
                     is_generic_btn = btn_text.lower() in ("view", "start", "open", "continue", "retry")
                     already_done_in_mem = (real_item_title in completed_items) or (not is_generic_btn and btn_text in completed_items)
@@ -2808,21 +2822,13 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                             logger.info(f"  📋 [SUBSECTION BREAKDOWN ({len(sync_btns)} ITEMS) - Attempt #{sync_step}/5]:")
                             for idx, b in enumerate(sync_btns, 1):
                                 try:
-                                    b_txt = (await b.inner_text()).strip()
-                                    r_txt = b_txt
-                                    if b_txt.lower() in ("view", "start", "open", "continue"):
-                                        row = b.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'card-body')][1]").first
-                                        if await row.count() > 0:
-                                            t_el = row.locator("h4, h5, .title, .activity-title, bdi, strong, .name").first
-                                            if await t_el.count() > 0:
-                                                extracted_t = (await t_el.inner_text()).strip()
-                                                if extracted_t and extracted_t.lower() not in ("view", "start"):
-                                                    r_txt = extracted_t
+                                    r_txt = await get_real_subsection_title(page, b)
                                     chk = "✓" if await is_item_100_percent_complete(b) else "⏳"
                                     logger.info(f"     [{idx}/{len(sync_btns)}] {chk} {r_txt}")
                                 except Exception:
                                     pass
                             logger.info("  " + "-" * 55)
+
 
                         # Step 3: Find any incomplete subsection item and re-execute it right now!
                         if sync_btns:
