@@ -1,28 +1,76 @@
-# 📜 DIKSHA+ AUTOMATION SUITE — CHANGELOG & VERSION HISTORY GUIDE
+# 📜 13 — OFFICIAL CHANGELOG & VERSION HISTORY
 
-This document mirrors the primary **[`CHANGELOG.md`](../CHANGELOG.md)** and provides a permanent technical audit trail of all updates, architecture enhancements, commit logs, and feature additions for **DIKSHA+ Automation Suite**.
+All notable changes, architectural updates, engine improvements, bug fixes, and feature additions for **DIKSHA+ Automation Suite** are documented in this file.
 
 ---
 
 ## 📑 Table of Contents
 
 1. [🚀 Summary of August 3, 2026 Release](#-summary-of-august-3-2026-release)
-2. [🕒 Timelines & Technical Feature Breakdown](#-timelines--technical-feature-breakdown)
+2. [🕒 Timelines & Detailed Technical Feature Breakdown](#-timelines--detailed-technical-feature-breakdown)
 3. [🌐 Commit Log History](#-commit-log-history)
 
 ---
 
 ## 🚀 Summary of August 3, 2026 Release
 
-* **3-Way Core Execution Architecture Standardization**: Standardized across Laptop Windows GUI, Railway Cloud Server, and Android Termux Ubuntu PRoot RealVNC Visible Mobile GUI.
-* **5-Attempt Hydration Sync & Infinite User Pause/Resume System**: Reduced sync attempts to 5 (75s). **Zero server close**; pauses and prompts the user to press **[ENTER]** in console to resume execution as many times as desired!
-* **Strict All-Items Checkmarked Verification Gate**: Fixed false-positive completion logic so incomplete modules (like 'Summative Assessment') are never skipped.
-* **`safe_action_click` Robust Click Helper**: Combines `scroll_into_view_if_needed()`, `click(force=True)`, and native JS `evaluate("el => el.click()")` fallback to eliminate `Element is not visible` Playwright errors.
-* **Targeted Single-Item Re-Execution**: Re-runs ONLY incomplete items during sync passes.
-* **Exhaustive Termux & Ubuntu PRoot Setup Guide**: Added 1-click single-command installer, Playwright error fix (`pip3 install playwright`), `termux-wake-lock`, `dpkg-reconfigure tzdata` timezone config, private repo PAT cloning, and 1-word shortcuts (`vnc`, `diksha`, `update`, `exit`).
-* **Multi-User 256-Bit Encryption**: Added user `Bappaditya Biswas` (`7384227228`, password `Bappaditya@21`) using 256-bit SHA-256 encryption (`ENC256:SXZ8MotQzFmQjZeQoA==`).
-* **10-Key Interleaved Alternating AI Pool**: 5 Gemini + 5 Groq keys (0.1s instant failover & 30s/45s/60s stepped backoffs).
-* **16x / 10x Dynamic Video Speed Acceleration**: 16x speed ($\ge$ 5m) & 10x speed ($<$ 5m).
+Today's release represents a massive overhaul of the **DIKSHA+ Automation Engine**, standardizing the codebase on the **3-Way Core Execution Architecture**, introducing **Targeted Single-Item Re-Execution**, adding the **5-Attempt Patient Sync Window with Infinite User Pause & Resume System**, resolving `Element is not visible` errors with **`safe_action_click`**, and delivering an exhaustive **Termux Ubuntu PRoot Guide**.
+
+---
+
+## 🕒 Timelines & Detailed Technical Feature Breakdown
+
+### 1. ⏸️ 5-Attempt Module Sync & Infinite User Pause/Resume System (`19:10:00 IST`)
+* **5-Attempt Hydration Limit**: Reduced the module hydration sync window from 10 attempts (150s) to **5 attempts (75s)**.
+* **🔒 Zero-Close Guarantee**: Removed all automatic browser closing (`page.context.close()`) and script termination (`RuntimeError`).
+* **Console Pause Prompt**: If a module badge is not 100% after 5 attempts, DIKSHA+ pauses execution cleanly and prompts:
+  `Press [ENTER] to RESUME automation:`
+* **Infinite Retry Control**: Pressing Enter re-scans the module, re-executes any incomplete items, and repeats as many times as the user wants!
+
+### 2. 🛡️ Strict All-Items Checkmarked Verification Gate (`19:18:00 IST`)
+* **Eliminated False-Positive Skipping**: Removed `if not found_incomplete` logic that was causing incomplete modules (like 'Summative Assessment') to be skipped.
+* **Strict Validation**: Requires either explicit module header 100% badge (`is_header_100_percent_complete`) OR verified green checkmarks (`✓`) on **EVERY SINGLE subsection item** before advancing!
+
+### 3. 🖱️ `safe_action_click` Robust Click Helper (`02:39:00 IST`)
+* **Fixed `Element is not visible` Error**: Resolved Playwright `Locator.click: Element is not visible` errors on long 26-item accordion modules.
+* **3-Layer Protection**:
+  1. `scroll_into_view_if_needed()` (Scrolls element into center of viewport).
+  2. `click(force=True)` (Bypasses Playwright visibility bounding box checks).
+  3. `evaluate("el => el.click()")` (Native JavaScript click fallback on DOM node).
+
+### 4. 🎯 Targeted Single-Item Re-Execution (`02:20:00 IST`)
+* **Isolated Re-Execution**: When a module pass identifies an incomplete item, DIKSHA+ targets and re-executes **ONLY that specific incomplete item** (re-running video, PDF, quiz, or feedback).
+* **Zero Duplicate Execution**: Prevents unnecessary re-execution of already completed checkmarked items.
+
+### 5. 📱 Exhaustive Termux & Ubuntu PRoot Setup Guide (`19:25:00 IST`)
+* **Updated [`docs/08_MOBILE_EXECUTION_TERMUX_UBUNTU_GUIDE.md`](08_MOBILE_EXECUTION_TERMUX_UBUNTU_GUIDE.md)**:
+  * **1-Click All-in-One Installer**: Single copy-paste command block for Termux.
+  * **Playwright Error Fix**: Explicit instructions to run `pip3 install playwright` before `python3 -m playwright install-deps`.
+  * **Termux Wake Lock**: Added `termux-wake-lock` to keep smartphone CPU awake during background runs.
+  * **Timezone Config**: Added `dpkg-reconfigure tzdata` for easy timezone changes.
+  * **Private Repo Cloning**: Guide for GitHub Personal Access Tokens (`ghp_...`) and `git config --global credential.helper store`.
+  * **1-Word Shortcuts**: `vnc`, `diksha`, `update`, `exit`.
+
+### 6. 👤 User Management & 256-Bit SHA-256 Encryption (`18:59:00 IST`)
+* **New User Added**: Registered `Bappaditya Biswas` (`7384227228`, password `Bappaditya@21`).
+* **Cryptographic Security**: Passwords stored as 256-bit SHA-256 encrypted tokens (`ENC256:SXZ8MotQzFmQjZeQoA==`) in `config.py`.
+
+### 7. 🤖 10-Key Interleaved Alternating AI Pool (5 Gemini + 5 Groq) (`01:45:00 IST`)
+* **Interleaved Sequence**: `Gemini #1` ➔ `Groq #1` ➔ `Gemini #2` ➔ `Groq #2` ➔ `Gemini #3` ➔ `Groq #3` ➔ `Gemini #4` ➔ `Groq #4` ➔ `Gemini #5` ➔ `Groq #5`.
+* **Instant Failover**: 1 attempt per key with 0.1s rate-limit failover.
+* **Stepped Backoffs**: **30s ➔ 45s ➔ 60s**.
+
+### 8. 📹 Dynamic 16x / 10x Video Speed Acceleration (`01:30:00 IST`)
+* **Long Videos ($\ge$ 5 min / 300s)**: Accelerated to **16.0x Speed**.
+* **Short Videos ($<$ 5 min / 300s)**: Accelerated to **10.0x Speed**.
+* **Buffers**: 15s warm-up buffer @ 1.0x and 45s final buffer @ 1.0x.
+
+### 9. 🏛️ 3-Way Core Architecture Standardization (`01:00:00 IST`)
+* **Standardized 3 Execution Modes**:
+  1. **Mode 1 (Laptop Desktop GUI)**: `python main.py` (`HEADLESS=False`).
+  2. **Mode 2 (Railway Cloud Server)**: Docker background container (`HEADLESS=True`).
+  3. **Mode 3 (Android Termux Ubuntu PRoot)**: RealVNC Visible GUI (`vnc` then `diksha`).
+* Cleaned up obsolete non-Ubuntu setup files (`termux_setup.sh`, `termux_install_prerequisites.sh`, `run_diksha.sh`).
 
 ---
 
@@ -30,6 +78,7 @@ This document mirrors the primary **[`CHANGELOG.md`](../CHANGELOG.md)** and prov
 
 | Commit Hash | Time (IST) | Description |
 | :--- | :--- | :--- |
+| **`4e24ffb`** | `19:29:59` | Docs: Add CHANGELOG.md, 13_CHANGELOG_AND_VERSION_HISTORY.md, and update docs/README.md master index |
 | **`76e7cfa`** | `19:25:50` | Docs: Add Playwright error fix, termux-wake-lock, dpkg-reconfigure tzdata timezone config, and git update details |
 | **`1842b0d`** | `19:19:16` | Fix: Remove false-positive `not found_incomplete` check in module sync; require explicit header 100% OR `all_items_checkmarked` |
 | **`be84c71`** | `19:11:04` | Engine & Docs: Update Module Sync to 5 attempts maximum with infinite User Pause & Resume system (Press ENTER to resume, zero server close) |
