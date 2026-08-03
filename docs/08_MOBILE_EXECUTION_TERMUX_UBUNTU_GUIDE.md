@@ -104,16 +104,16 @@ git clone https://YOUR_TOKEN@github.com/thechandrax/DikshaPlus-Automation-Suite.
 git config --global credential.helper store
 ```
 
-### 🔹 STEP 8: Create 1-Word Shortcuts (`vnc`, `diksha`, `headless`, `update`, `exit`)
+### 🔹 STEP 8: Create 1-Word Shortcuts (`vnc`, `diksha`, `headless`, `exit`)
 Inside Ubuntu, paste:
 ```bash
 echo "alias vnc='vncserver -kill :1 2>/dev/null; vncserver :1'" >> ~/.bashrc
 echo "alias diksha='cd ~/DikshaPlus-Automation-Suite && export DISPLAY=:1 && python3 main.py'" >> ~/.bashrc
 echo "alias headless='cd ~/DikshaPlus-Automation-Suite && export HEADLESS=True && python3 main.py'" >> ~/.bashrc
-echo "alias update='cd ~/DikshaPlus-Automation-Suite && git pull'" >> ~/.bashrc
 echo "alias exit='exit'" >> ~/.bashrc
 source ~/.bashrc
 ```
+
 
 
 ---
@@ -202,15 +202,8 @@ python3 main.py
 
 ## 🔄 How to Update Code to Latest Commit (`git pull`)
 
-When new features, bug fixes, or answer key updates are pushed to GitHub, update your Termux code to the latest commit in 1 step:
+When new features, bug fixes, or answer key updates are pushed to GitHub, update your Termux code to the latest commit by running:
 
-### 🔹 Method A: Using 1-Word `update` Shortcut (Easiest)
-Inside Ubuntu, simply type:
-```bash
-update
-```
-
-### 🔹 Method B: Direct Git Command
 ```bash
 cd ~/DikshaPlus-Automation-Suite && git pull
 ```
@@ -218,6 +211,7 @@ cd ~/DikshaPlus-Automation-Suite && git pull
 * **Verification**:
   If code is already up to date, it outputs: `Already up to date.`
   If new updates were downloaded, it prints the updated commit summary!
+
 
 ---
 
@@ -258,5 +252,6 @@ cd ~/DikshaPlus-Automation-Suite && git pull
 | :--- | :--- |
 | **`vnc`** | Kills stale VNC sessions & launches fresh VNC server on port `5901` (`:1`) |
 | **`diksha`** | Enters project folder, sets `DISPLAY=:1`, & launches DIKSHA+ with visible GUI browser! |
-| **`update`** | Enters project folder & downloads latest code updates from GitHub (`git pull`)! |
+| **`headless`** | Enters project folder, sets `HEADLESS=True`, & launches DIKSHA+ silently in background! |
 | **`exit`** | Exits Ubuntu PRoot (`root@localhost`) back to standard Termux (`~ $`) |
+

@@ -108,6 +108,36 @@
                 "[D] Indirect"
               ],
               "answer": "[C] Mission"
+            },
+            {
+              "question": "Schools will work for the attainment of …… in a mission mode according to FLN Mission guidelines.",
+              "options": [
+                "[A] Concepts",
+                "[B] Processes",
+                "[C] Foundational Literacy and Numeracy skills",
+                "[D] Skills"
+              ],
+              "answer": "[D] Foundational Literacy and Numeracy skills"
+            },
+            {
+              "question": "Capacity building and development of resources for FLN along with government is also the responsibility of",
+              "options": [
+                "[A] Child",
+                "[B] Parent",
+                "[C] NGOs",
+                "[D] Schools"
+              ],
+              "answer": "[C] NGOs"
+            },
+            {
+              "question": "A national mission on FLN will be set up by",
+              "options": [
+                "[A] KVS",
+                "[B] NCERT",
+                "[C] CBSE",
+                "[D] Ministry of Education"
+              ],
+              "answer": "[D] Ministry of Education"
             }
           ]
         },
