@@ -1016,59 +1016,21 @@ async def wait_for_server_checkmark(page, timeout=15):
 
 async def safe_action_click(locator):
     """
-    Safely clicks an action button (View / Start / Continue) across all DIKSHA course modules.
-    Combines scroll, backdrop clearance, force click, dispatchEvent('click'), and parent row click triggers.
+    Safely clicks an action button (View / Start / Continue) matching human manual clicking.
+    Combines scroll_into_view, standard human click, force click, and native JS element.click() fallback.
     """
     try:
-        # Clear leftover modal backdrops before clicking new item
-        try:
-            await locator.page.evaluate("""
-                () => {
-                    const backdrops = document.querySelectorAll('.modal-backdrop, div[class*="backdrop"]');
-                    backdrops.forEach(b => b.remove());
-                    document.body.classList.remove('modal-open');
-                }
-            """)
-        except Exception:
-            pass
-
         await locator.scroll_into_view_if_needed()
-        await locator.click(force=True, timeout=3000)
+        await locator.click(timeout=3000)
     except Exception:
         try:
-            await locator.dispatchEvent("click")
+            await locator.click(force=True, timeout=3000)
         except Exception:
-            pass
-
-    # Verify if modal or viewer popup opened; if not, click parent activity link/row directly!
-    try:
-        await locator.page.wait_for_timeout(600)
-        has_popup = False
-        for f_check in [locator.page] + locator.page.frames:
             try:
-                if await f_check.locator(".modal.show, #container-popup, iframe, embed, .pdf-viewer, video, canvas").count() > 0:
-                    has_popup = True
-                    break
-            except Exception:
-                pass
+                await locator.evaluate("el => { if (el) { el.focus(); el.click(); } }")
+            except Exception as e:
+                logger.warning(f"  --> Action click notice: {e}")
 
-        if not has_popup:
-            await locator.evaluate("""
-                el => {
-                    if (el) {
-                        try { el.click(); } catch(e) {}
-                        const pLink = el.closest('a, button, [onclick], .activity, .row, .item, li');
-                        if (pLink) {
-                            try { pLink.click(); } catch(e) {}
-                        }
-                        if (el.parentElement) {
-                            try { el.parentElement.click(); } catch(e) {}
-                        }
-                    }
-                }
-            """)
-    except Exception:
-        pass
 
 
 
