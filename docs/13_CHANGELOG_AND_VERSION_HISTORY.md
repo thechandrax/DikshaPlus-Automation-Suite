@@ -72,12 +72,35 @@ Today's release represents a massive overhaul of the **DIKSHA+ Automation Engine
   3. **Mode 3 (Android Termux Ubuntu PRoot)**: RealVNC Visible GUI (`vnc` then `diksha`).
 * Cleaned up obsolete non-Ubuntu setup files (`termux_setup.sh`, `termux_install_prerequisites.sh`, `run_diksha.sh`).
 
+### 10. 🔄 Full Module Re-Scan & Subsection Breakdown Re-Print on User Resume (`20:30:00 IST`)
+* **Full Re-Start on Resume**: When the user presses **[ENTER]** to resume (`▶ [USER RESUMED]`), the engine re-starts the module pass from scratch.
+* **Accordion Re-Expansion**: Automatically re-opens the module accordion panel.
+* **Checklist Re-Print**: Re-scans and **re-prints the complete 26-item Subsection Breakdown checklist**, showing updated checkmarks (`✓` for completed, `⏳` for pending).
+* **Sequential Execution**: Re-executes any remaining `⏳` subsections sequentially from 1 to 26!
+
+### 11. 📜 Sequential Subsection Auto-Scroll (`20:23:00 IST`)
+* **Fixed Off-Screen Item Skipping**: Removed `if not is_visible(): continue` rule that was skipping off-screen items 19–26 in 26-item accordion modules.
+* **Auto-Scroll to View**: Added `await btn.scroll_into_view_if_needed()` so every subsection (1 to N) is brought into view and executed sequentially before evaluating module completion.
+
+### 12. 🙈 Termux `headless` Shortcut & Direct Git Update Guide (`19:50:00 IST`)
+* **1-Word `headless` Shortcut**: Added `headless` alias (`cd ~/DikshaPlus-Automation-Suite && export HEADLESS=True && python3 main.py`) to Termux guide.
+* **Direct Git Pull Guide**: Simplified code update documentation to direct 1-line command (`cd ~/DikshaPlus-Automation-Suite && git pull`).
+
 ---
 
 ## 🌐 Commit Log History (August 3, 2026)
 
 | Commit Hash | Time (IST) | Description |
 | :--- | :--- | :--- |
+| **`adc820a`** | `20:33:47` | Docs: Add Section 3 User Resume Re-scan and Re-print Subsection Breakdown log trace to `11_COMPLETE_REAL_WORLD_TERMINAL_LOGS_EXAMPLE.md` |
+| **`244a4c8`** | `20:32:27` | Engine: Re-start full module execution pass, re-expand accordion, and re-print complete Subsection Breakdown list on every user Press ENTER resume |
+| **`73e2838`** | `20:26:56` | Engine: Add full activity dispatch (video, pdf, h5p, quiz, feedback) to section retry pass to guarantee 100% complete execution of all subsections before module sync gate |
+| **`780d279`** | `20:23:49` | Fix: Scroll hidden subsection buttons into view instead of skipping when `is_visible()` is False; ensures all 26 subsections are executed sequentially before checking module 100% |
+| **`e075aed`** | `20:16:29` | Fix: Use `safe_action_click` for accordion expand during module sync loop to resolve `Element is not visible` warning |
+| **`e35ae0a`** | `19:53:26` | Docs: Update `git pull` guide with Option A (outside folder) and Option B (inside folder `git pull`) in `08_MOBILE_EXECUTION_TERMUX_UBUNTU_GUIDE.md` |
+| **`9e0c6f4`** | `19:50:40` | Docs: Remove Method A `update` shortcut and simplify to direct `git pull` command in `08_MOBILE_EXECUTION_TERMUX_UBUNTU_GUIDE.md` |
+| **`3b1279f`** | `19:49:44` | Docs: Add 1-word `headless` shortcut alias to `08_MOBILE_EXECUTION_TERMUX_UBUNTU_GUIDE.md` |
+| **`53218ef`** | `19:33:53` | Docs: Consolidate official Changelog inside `docs/` as `13_CHANGELOG_AND_VERSION_HISTORY.md` with clean numbering |
 | **`4e24ffb`** | `19:29:59` | Docs: Add CHANGELOG.md, 13_CHANGELOG_AND_VERSION_HISTORY.md, and update docs/README.md master index |
 | **`76e7cfa`** | `19:25:50` | Docs: Add Playwright error fix, termux-wake-lock, dpkg-reconfigure tzdata timezone config, and git update details |
 | **`1842b0d`** | `19:19:16` | Fix: Remove false-positive `not found_incomplete` check in module sync; require explicit header 100% OR `all_items_checkmarked` |
@@ -88,3 +111,4 @@ Today's release represents a massive overhaul of the **DIKSHA+ Automation Engine
 | **`9d5308f`** | `02:39:25` | Fix: Add `safe_action_click` helper (`scroll_into_view` + `force=True` + JS click fallback) to resolve Playwright `Element is not visible` |
 | **`aa6791e`** | `02:36:44` | Docs: Complete Termux & Ubuntu PRoot setup guide with Single-Command 1-click installer, Multi-step breakdown, and Private Repo cloning |
 | **`b0f73c9`** | `02:20:31` | Engine & Docs: Refine Targeted Single-Item Re-Execution and Dual Confirmation |
+
