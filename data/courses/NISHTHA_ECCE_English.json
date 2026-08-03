@@ -1,4 +1,22 @@
 {
   "course_name": "NISHTHA ECCE English",
-  "modules": []
+  "modules": [
+    {
+      "module_no": 1,
+      "module_name": "H5P Interactive Quiz",
+      "subsections": [
+        {
+          "subsection_no": 1,
+          "subsection_name": "H5P Interactive Quiz",
+          "questions": [
+            {
+              "question": "Three year olds love to talk and listen but they also need activity and movement.",
+              "options": [],
+              "answer": "True"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
