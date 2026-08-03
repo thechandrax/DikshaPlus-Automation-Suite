@@ -1431,6 +1431,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
         logger.info("[FORMATIVE ASSESSMENT] Opening Assessment...")
 
     await safe_action_click(view_button)
+    logger.info("  --> [CLICKED VIEW BUTTON] Successfully clicked View button for assessment!")
     logger.info("  --> Waiting 5 seconds for DIKSHA assessment modal & banner popup to render...")
 
     await page.wait_for_timeout(5000)
