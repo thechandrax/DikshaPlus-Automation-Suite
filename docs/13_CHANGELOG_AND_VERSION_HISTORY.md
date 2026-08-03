@@ -101,8 +101,19 @@ Today's release represents a massive overhaul of the **DIKSHA+ Automation Engine
 ### 17. 🛡️ Incomplete Module Accordion Force-Expansion (`21:21:00 IST`)
 * **Fixed Module 12 65% Skipping**: Ensures incomplete modules (`< 100%`) force-expand their accordions and query hidden DOM sub-panels, preventing 0-button skips.
 
-### 18. 🔌 Entry Point Signature Restoration (`20:41:00 IST`)
-* **Fixed `target_course_url` Error**: Restored full parameter signature for `run_diksha_automation(target_course_url, username, password)`.
+### 19. 🔢 2-Digit Zero-Padding Format Across All Modules & Log Indexes (`23:47:00 IST`)
+* **Standardized 2-Digit Padding**: Module list indexes and subsection breakdown indexes now use 2-digit zero-padding (`[01/15]`, `[02/15]`, `[09/15]`, `[10/15]`, `[15/15]`).
+* **Clean Alignment**: Ensures all breakdown lines align perfectly in terminal output.
+
+### 20. 🎨 3-Tier Percentage Color System & Title Truncation (`23:32:00 IST`)
+* **3-Tier Percentage Colors**:
+  * **`100%`**: Vibrant Neon Green (`\033[38;5;82m`).
+  * **`1-99%`**: Electric Cyan (`\033[38;5;51m`).
+  * **`0%`**: Amber Red-Orange (`\033[38;5;208m`).
+* **Title Truncation (`...`)**: Titles longer than 52 characters are truncated with `...` to guarantee 100% single-row lines without wrapping.
+
+### 21. 🛡️ Strict Item Completion & Parent Class Filter (`23:22:00 IST`)
+* **Eliminated False-Positive Skips**: Removed generic `[class*='completed']` matcher to prevent parent container CSS classes from falsely skipping transcript items.
 
 ---
 
@@ -110,6 +121,14 @@ Today's release represents a massive overhaul of the **DIKSHA+ Automation Engine
 
 | Commit Hash | Time (IST) | Description |
 | :--- | :--- | :--- |
+| **`36c4dfa`** | `23:47:53` | Feature: Format course module list numbers with 2-digit zero-padding as [01/15], [02/15], [09/15], [10/15] as requested |
+| **`42c9622`** | `23:45:15` | Fix: Remove trailing word boundary in percentage regex to guarantee 100% (Neon Green), 1-99% (Electric Cyan), and 0% (Amber Orange) color rendering |
+| **`f1eea12`** | `23:33:07` | Feature: Add title truncation (...) for titles > 52 chars to enforce 100% single-row lines, and 3-tier percentage colors (100% Green, 1-99% Electric Cyan, 0% Amber Orange) |
+| **`cb23fd3`** | `23:29:59` | Feature: Add vibrant Amber Red-Orange ANSI color highlighting for 0% percentage badges and Golden Hour colors for ⏳ icons in utils/logger.py |
+| **`b09aeec`** | `23:35:16` | Feature: Format breakdown item numbers with 2-digit zero-padding as [01/32], [02/32], [09/32], [10/32] as requested |
+| **`1639d33`** | `23:22:32` | Fix: Remove generic parent container class matching in is_item_100_percent_complete to eliminate false-positive skipping of Transcript items |
+| **`bd5206d`** | `22:49:38` | Fix: Enhance get_real_subsection_title with 3-layer item row text extraction to ensure 100% of items display exact full title names |
+| **`4b26eb1`** | `22:04:52` | Docs: Update docs/13_CHANGELOG_AND_VERSION_HISTORY.md with latest August 3, 2026 commits up to 5fa9687 |
 | **`5fa9687`** | `22:02:30` | Feature: Increase patient server sync window from 5 attempts (75s) to 10 attempts (150s) to accommodate slow server progress updates without user interruption |
 | **`28e9568`** | `21:52:36` | Fix: Add 5-second AJAX checkmark hydration buffer and check `completed_items` memory set during sync steps to prevent completed items turning back to pending |
 | **`865041c`** | `21:45:00` | Feature: Extract and print exact full subsection title names (e.g. `Importance of Play and Toy Based Pedagogy (TBP)`) instead of generic `View` labels |
@@ -120,6 +139,7 @@ Today's release represents a massive overhaul of the **DIKSHA+ Automation Engine
 | **`80d2228`** | `20:38:00` | Docs: Update `docs/13_CHANGELOG_AND_VERSION_HISTORY.md` with latest features and full August 3, 2026 commit log |
 | **`adc820a`** | `20:33:47` | Docs: Add Section 3 User Resume Re-scan and Re-print Subsection Breakdown log trace to `11_COMPLETE_REAL_WORLD_TERMINAL_LOGS_EXAMPLE.md` |
 | **`244a4c8`** | `20:32:27` | Engine: Re-start full module execution pass, re-expand accordion, and re-print complete Subsection Breakdown list on every user Press ENTER resume |
+
 | **`73e2838`** | `20:26:56` | Engine: Add full activity dispatch (video, pdf, h5p, quiz, feedback) to section retry pass to guarantee 100% complete execution of all subsections before module sync gate |
 | **`780d279`** | `20:23:49` | Fix: Scroll hidden subsection buttons into view instead of skipping when `is_visible()` is False; ensures all 26 subsections are executed sequentially before checking module 100% |
 | **`e075aed`** | `20:16:29` | Fix: Use `safe_action_click` for accordion expand during module sync loop to resolve `Element is not visible` warning |
