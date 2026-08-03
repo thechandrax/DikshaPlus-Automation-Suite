@@ -202,15 +202,22 @@ python3 main.py
 
 ## 🔄 How to Update Code to Latest Commit (`git pull`)
 
-When new features, bug fixes, or answer key updates are pushed to GitHub, update your Termux code to the latest commit by running:
+When new features, bug fixes, or answer key updates are pushed to GitHub, update your Termux code to the latest commit:
 
+### 🔹 Option A: When you are OUTSIDE the project folder (Anywhere in Terminal)
 ```bash
 cd ~/DikshaPlus-Automation-Suite && git pull
 ```
 
+### 🔹 Option B: When you are ALREADY INSIDE the project folder (`~/DikshaPlus-Automation-Suite`)
+```bash
+git pull
+```
+
 * **Verification**:
-  If code is already up to date, it outputs: `Already up to date.`
-  If new updates were downloaded, it prints the updated commit summary!
+  - If code is already up to date, it outputs: `Already up to date.`
+  - If new updates were downloaded, it prints the updated commit summary (e.g. `1 file changed, 5 insertions(+)`).
+
 
 
 ---
