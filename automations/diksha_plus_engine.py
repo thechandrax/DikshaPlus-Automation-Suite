@@ -2924,8 +2924,9 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
                                 # Step 2: Expand Module Accordion panel
                                 if await click_target.count() > 0:
-                                    await click_target.click(force=True)
+                                    await safe_action_click(click_target)
                                     await page.wait_for_timeout(2000)
+
                                 
                                 # Step 3: Scan all subsection items inside this module
                                 sync_btns = await get_section_action_buttons(collapse_panel, header)
