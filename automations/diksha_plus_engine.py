@@ -2962,14 +2962,25 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                                 server_synced = True
                                                 break
 
-                                # If all items were checkmarked or header reaches 100%
-                                if not found_incomplete or await is_header_100_percent_complete(header):
+                                # Step 6: Strict verification - verify if EVERY single item has a green checkmark
+                                all_items_checkmarked = True
+                                if sync_btns:
+                                    for s_check_btn in sync_btns:
+                                        if not await is_item_100_percent_complete(s_check_btn):
+                                            all_items_checkmarked = False
+                                            break
+                                else:
+                                    all_items_checkmarked = False
+
+                                # Module is ONLY complete if Header is 100% OR ALL items are checkmarked!
+                                if await is_header_100_percent_complete(header) or all_items_checkmarked:
                                     logger.info(f"  ✅ [MODULE SYNC SUCCESS] DIKSHA server completion verified for '{header_title}' on Attempt #{sync_step}!")
                                     server_synced = True
                                     break
 
                             except Exception as m_sync_ex:
                                 logger.warning(f"  --> Module sync attempt #{sync_step} notice: {m_sync_ex}")
+
 
                         if server_synced:
                             await close_activity_modal(page)
