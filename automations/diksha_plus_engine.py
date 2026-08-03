@@ -33,8 +33,12 @@ import threading
 
 logger = get_logger("DikshaEngine")
 
+IS_PAUSED = False
+ACTIVE_COURSE_TITLE = ""
+
 async def check_pause_status(page=None):
     pass
+
 
 
 
@@ -1233,22 +1237,8 @@ async def process_video_activity(page, view_button):
             logger.warning(f"  --> Video reload recovery notice: {ex}")
 
 async def check_pause_status(page=None):
-    global IS_PAUSED
-    if IS_PAUSED:
-        if page:
-            try:
-                await page.evaluate("() => { const v = document.querySelector('video'); if (v) v.pause(); }")
-            except Exception:
-                pass
-        logger.info("\n" + "=" * 65 + "\n   ⏸️ [AUTOMATION PAUSED] Press 'P' or 'Spacebar' in terminal to RESUME...\n" + "=" * 65 + "\n")
-        while IS_PAUSED:
-            await asyncio.sleep(0.2)
-        logger.info("   ▶️ [AUTOMATION RESUMED] Continuing execution seamlessly...\n")
-        if page:
-            try:
-                await page.evaluate("() => { const v = document.querySelector('video'); if (v) v.play(); }")
-            except Exception:
-                pass
+    pass
+
 
 
 
