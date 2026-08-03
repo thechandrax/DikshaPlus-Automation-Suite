@@ -2792,8 +2792,9 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     act_type = await btn.get_attribute("act_type") or "resource"
 
                     logger.info("\n" + "=" * 35)
-                    logger.info(f" ▶ SUBSECTION [{j:02d}/{total_sec_items:02d}]: '{real_item_title}' (Type: '{act_type}') [Pass #{module_retry_pass}]")
+                    logger.info(f" ▶ SUBSECTION [{j:02d}/{total_sec_items:02d}]: '{real_item_title}' (Type: '{act_type}') [Attempt #{module_retry_pass}]")
                     logger.info("=" * 35)
+
 
                     try:
                         if act_type == "url":
