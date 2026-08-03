@@ -953,19 +953,31 @@ async def wait_for_server_checkmark(page, timeout=15):
 async def safe_action_click(locator):
     """
     Safely clicks an action button (View / Start / Continue) even if hidden or in scroll view.
-    Combines scroll_into_view_if_needed, force=True click, and native JS element.click() fallback.
+    Combines scroll_into_view_if_needed, force=True click, native JS parent <a> bubble dispatch, and fallback.
     """
     try:
         await locator.scroll_into_view_if_needed()
-        await locator.click(force=True, timeout=5000)
     except Exception:
-        try:
-            await locator.evaluate("el => el.click()")
-        except Exception:
-            try:
-                await locator.click(force=True)
-            except Exception as e:
-                logger.warning(f"  --> Safe action click notice: {e}")
+        pass
+
+    try:
+        await locator.click(force=True, timeout=3000)
+    except Exception:
+        pass
+
+    # Native JS Event Bubble Dispatcher (targets parent <a> or <button> if clicked on inner text node)
+    try:
+        await locator.evaluate("""el => {
+            const target = el.closest('a') || el.closest('button') || el;
+            if (target) {
+                target.click();
+                const ev = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
+                target.dispatchEvent(ev);
+            }
+        }""")
+    except Exception as e:
+        logger.warning(f"  --> Safe action click notice: {e}")
+
 
 
 
@@ -1433,8 +1445,22 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
     await safe_action_click(view_button)
     logger.info("  --> [CLICKED VIEW BUTTON] Successfully clicked View button for assessment!")
     logger.info("  --> Waiting 5 seconds for DIKSHA assessment modal & banner popup to render...")
+    await page.wait_for_timeout(3000)
 
-    await page.wait_for_timeout(5000)
+    # Double-trigger fallback: if modal did not open after 3s, click item title link by act_id
+    try:
+        modal_chk = page.locator(".modal.show, .modal.in, .quiz-popup-wrapper, #instructionModal, iframe, .pdf-viewer, #pdf-container").first
+        if await modal_chk.count() == 0 or not await modal_chk.is_visible():
+            act_id = await view_button.get_attribute("act_id") or await view_button.get_attribute("data-id") or ""
+            if act_id:
+                t_link = page.locator(f"a[act_id='{act_id}'], a[data-id='{act_id}'], a.activity-list[act_id='{act_id}']").first
+                if await t_link.count() > 0 and await t_link.is_visible():
+                    logger.info(f"  --> [DOUBLE-TRIGGER POPUP] Re-clicking title link for act_id='{act_id}' to force open popup modal...")
+                    await safe_action_click(t_link)
+                    await page.wait_for_timeout(3000)
+    except Exception as d_ex:
+        logger.warning(f"  --> Double-trigger popup fallback notice: {d_ex}")
+
 
     # 1. Close inner "Stay Calm" banner popup across main page and all frames
     closed_banner = False
