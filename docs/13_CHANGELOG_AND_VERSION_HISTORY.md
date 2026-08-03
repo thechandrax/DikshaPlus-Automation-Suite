@@ -152,9 +152,22 @@ Today's release represents a massive overhaul of the **DIKSHA+ Automation Engine
 | **`dcf7683`** | `00:21:06` | Feature: Update subsection header log label from [Pass #1] to [Attempt #1] as requested |
 | **`607bcbd`** | `00:00:38` | Feature: Format ALREADY DONE log lines on single row with title truncation (...), uppercase SUBSECTION, and bracketed [Skipping!] as requested |
 
+## 🌐 Commit Log History (August 4, 2026)
+
+| Commit Hash | Time (IST) | Description |
+| :--- | :--- | :--- |
+| **`659e5a7`** | `02:52:21` | Feature: Universal `open_activity_popup` for all View buttons (PDF, Video, H5P, Quiz, Feedback) with clean `[DOUBLE-TRIGGER POPUP]` log format |
+| **`029ea37`** | `02:43:46` | Feature: Add `ensure_on_course_page` Automatic Dashboard Recovery Guard to re-navigate to course URL if Chrome lands on `dashboard.php` |
+| **`92c8e44`** | `02:41:04` | Fix: Enhance `safe_action_click` with native JS bubble dispatch and add double-trigger title link fallback to guarantee assessment modal opens |
+| **`aa8eb47`** | `02:36:31` | Docs: Add explicit `CLICKED VIEW BUTTON` log line to `process_quiz_assessment` to confirm View button click |
+| **`101ca63`** | `02:34:41` | Fix: Restrict Final Submit JS fallback to quiz frames only to eliminate accidental redirects to `dashboard.php` |
+| **`1d2056d`** | `02:30:17` | Feature: Enhance post-submission flow with Continue/Finish click, 5s server checkmark sync buffer, and modal dismissal before opening next section/module |
+| **`1ae9181`** | `02:26:00` | Feature: Add 5-second popup pre-load buffer, instruction modal dismissal, and 5-second quiz iframe pre-load buffer to quiz assessment engine |
+
 ---
 
 ## 🌐 Commit Log History (August 3, 2026)
+
 
 
 | Commit Hash | Time (IST) | Description |
