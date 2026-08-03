@@ -979,6 +979,32 @@ async def safe_action_click(locator):
         logger.warning(f"  --> Safe action click notice: {e}")
 
 
+async def open_activity_popup(page, view_button):
+    """
+    Universally opens any activity modal popup (PDF, Video, H5P, Quiz, Feedback).
+    Uses safe_action_click, waits 3s, and applies double-trigger fallback if modal did not open.
+    Logs clean message without raw ID attribute:
+    '--> [DOUBLE-TRIGGER POPUP] Re-clicking title link to force open popup modal...'
+    """
+    await safe_action_click(view_button)
+    logger.info("  --> [CLICKED VIEW BUTTON] Successfully clicked View button for activity!")
+    await page.wait_for_timeout(3000)
+
+    try:
+        modal_chk = page.locator(".modal.show, .modal.in, .quiz-popup-wrapper, #instructionModal, iframe, .pdf-viewer, #pdf-container").first
+        if await modal_chk.count() == 0 or not await modal_chk.is_visible():
+            act_id = await view_button.get_attribute("act_id") or await view_button.get_attribute("data-id") or ""
+            if act_id:
+                t_link = page.locator(f"a[act_id='{act_id}'], a[data-id='{act_id}'], a.activity-list[act_id='{act_id}']").first
+                if await t_link.count() > 0 and await t_link.is_visible():
+                    logger.info("  --> [DOUBLE-TRIGGER POPUP] Re-clicking title link to force open popup modal...")
+                    await safe_action_click(t_link)
+                    await page.wait_for_timeout(3000)
+    except Exception as d_ex:
+        logger.warning(f"  --> Double-trigger popup notice: {d_ex}")
+
+
+
 
 
 
@@ -1009,8 +1035,9 @@ async def process_video_activity(page, view_button):
         row_saved_pct = 0
 
     logger.info("[VIDEO ACTIVITY] Opening video module...")
-    await safe_action_click(view_button)
-    await page.wait_for_timeout(3000)
+    await open_activity_popup(page, view_button)
+    await page.wait_for_timeout(2000)
+
 
 
     # 1. Nested iFrame Support: Locate <video> across main page & all frames
@@ -1263,8 +1290,9 @@ async def process_pdf_activity(page, view_button):
       3. End-of-Doc Scroll (auto-scrolls viewer container to exact bottom for checkmarks)
     """
     logger.info("[PDF ACTIVITY] Opening PDF document resource...")
-    await safe_action_click(view_button)
-    await page.wait_for_timeout(3000)
+    await open_activity_popup(page, view_button)
+    await page.wait_for_timeout(2000)
+
 
 
     # 1. Automated Page Flipping & Reading Time Simulation
@@ -1442,24 +1470,10 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
 
         logger.info("[FORMATIVE ASSESSMENT] Opening Assessment...")
 
-    await safe_action_click(view_button)
-    logger.info("  --> [CLICKED VIEW BUTTON] Successfully clicked View button for assessment!")
+    await open_activity_popup(page, view_button)
     logger.info("  --> Waiting 5 seconds for DIKSHA assessment modal & banner popup to render...")
-    await page.wait_for_timeout(3000)
+    await page.wait_for_timeout(2000)
 
-    # Double-trigger fallback: if modal did not open after 3s, click item title link by act_id
-    try:
-        modal_chk = page.locator(".modal.show, .modal.in, .quiz-popup-wrapper, #instructionModal, iframe, .pdf-viewer, #pdf-container").first
-        if await modal_chk.count() == 0 or not await modal_chk.is_visible():
-            act_id = await view_button.get_attribute("act_id") or await view_button.get_attribute("data-id") or ""
-            if act_id:
-                t_link = page.locator(f"a[act_id='{act_id}'], a[data-id='{act_id}'], a.activity-list[act_id='{act_id}']").first
-                if await t_link.count() > 0 and await t_link.is_visible():
-                    logger.info(f"  --> [DOUBLE-TRIGGER POPUP] Re-clicking title link for act_id='{act_id}' to force open popup modal...")
-                    await safe_action_click(t_link)
-                    await page.wait_for_timeout(3000)
-    except Exception as d_ex:
-        logger.warning(f"  --> Double-trigger popup fallback notice: {d_ex}")
 
 
     # 1. Close inner "Stay Calm" banner popup across main page and all frames

@@ -127,6 +127,112 @@
               "answer": "[B] Birth-5 years"
             }
           ]
+        },
+        {
+          "subsection_no": 28,
+          "subsection_name": "Formative Assessment 02",
+          "questions": [
+            {
+              "question": "Which among the following is not the domain of holistic development?",
+              "options": [
+                "[A] Apathetic",
+                "[B] Language",
+                "[C] Social-emotional",
+                "[D] Physical-motor"
+              ],
+              "answer": "[A] Apathetic"
+            },
+            {
+              "question": "Why are child initiated activities important?",
+              "options": [
+                "[A] To pursue activities of their choice",
+                "[B] To pursue Anganwadi worker's work",
+                "[C] To pursue neighbour's work",
+                "[D] To pursue activities of others"
+              ],
+              "answer": "[A] To pursue activities of their choice"
+            },
+            {
+              "question": "Which is the correct statement for a well-designed physical setting of the anganwadi?",
+              "options": [
+                "[A] The physical setting must be safe, secure, hygienic, comfortable, attractive and well-designed to help the anganwadi children to get engaged in the table and chair activities and learn happily.",
+                "[B] The physical setting must be safe, secure, hygienic, comfortable, attractive and well-designed to help the anganwadi children to get engaged in the project based activities and learn happily.",
+                "[C] The physical setting must be safe, secure, hygienic, comfortable, attractive and well-designed to help the anganwadi children to get engaged in play based activities and learn happily.",
+                "[D] The physical setting must be safe, secure, hygienic, comfortable, attractive and well-designed to help the anganwadi children to get engaged in the teacher-guided activities and learn nicely."
+              ],
+              "answer": "[C] The physical setting must be safe, secure, hygienic, comfortable, attractive and well-designed to help the anganwadi children to get engaged in play based activities and learn happily."
+            },
+            {
+              "question": "Why is it essential to make the anganwadi environment comfortable?",
+              "options": [
+                "[A] For having a sense of hostility",
+                "[B] For having a sense of adventure",
+                "[C] For having a sense of belongingness",
+                "[D] For having a sense of provocation"
+              ],
+              "answer": "[C] For having a sense of belongingness"
+            },
+            {
+              "question": "Which among the following comes under indoor environment?",
+              "options": [
+                "[A] Garden Area",
+                "[B] Interest Areas",
+                "[C] A space to sleep",
+                "[D] Sand pit"
+              ],
+              "answer": "[C] A space to sleep"
+            },
+            {
+              "question": "In which area do children learn scientific concepts and skills?",
+              "options": [
+                "[A] Art and Music Area",
+                "[B] Circle Time Area",
+                "[C] Discovery Area",
+                "[D] Dolls/ Dramatic Area"
+              ],
+              "answer": "[C] Discovery Area"
+            },
+            {
+              "question": "Which among the following is not an interest area in an anganwadi or a preschool?",
+              "options": [
+                "[A] Block Building Area",
+                "[B] Dolls Dramatic Area",
+                "[C] Circle Time Area",
+                "[D] Rooftop Area"
+              ],
+              "answer": "[D] Rooftop Area"
+            },
+            {
+              "question": "Which language is initially considered essential for the children to be proficient?",
+              "options": [
+                "[A] All the Languages",
+                "[B] Mother tongue",
+                "[C] English",
+                "[D] Regional Language"
+              ],
+              "answer": "[B] Mother tongue"
+            },
+            {
+              "question": "What is the other name for the reading area in an anganwadi?",
+              "options": [
+                "[A] Circle Time Area",
+                "[B] Music Area",
+                "[C] Language and Literacy Area",
+                "[D] Manipulative area"
+              ],
+              "answer": "[C] Language and Literacy Area"
+            },
+            {
+              "question": "What are the three main principles and practices that you could consider while planning for your children around three developmental goals?",
+              "options": [
+                "[A] Learning Experiences, Context and Processes",
+                "[B] Learning Experiences, Context and Productivity",
+                "[C] Learning Extensively, Context and Procedures",
+                "[D] Learning Experiences, Content and Processes"
+              ],
+              "answer": "[A] Learning Experiences, Context and Processes"
+            }
+          ]
         }
       ]
     }
