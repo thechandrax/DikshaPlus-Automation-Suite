@@ -28,6 +28,7 @@ USER_NAMES = {
     "7044015007": "Sumanta Halder",
     "8617383566": "Sujata Mondal",
     "7908555852": "Tasapur Rahaman",
+    "7384227228": "Bappaditya Biswas",
     "gexowo4534@candaba.com": "Gsgs Sdgr",
     "borkej@smanthaai.online": "Bgdh Hdfh",
 }
@@ -37,9 +38,11 @@ USER_CREDENTIALS_ENCRYPTED = {
     "7044015007": "ENC256:S0R5L4ta0UzY",
     "8617383566": "ENC256:S0R5KItAxBw=",
     "7908555852": "ENC256:S0R5KItAxBw=",
+    "7384227228": "ENC256:SXZ8MotQzFmQjZeQoA==",
     "gexowo4534@candaba.com": "ENC256:fld4G4dW0nfblr_x1FjG",
     "borkej@smanthaai.online": "ENC256:e1J6I4wX8GOpgqbQpiL9",
 }
+
 
 
 # Decrypt credentials dynamically in memory

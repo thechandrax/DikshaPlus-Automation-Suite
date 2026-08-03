@@ -1369,6 +1369,76 @@
                 "[D] Enabling learning-teaching processes"
               ],
               "answer": "[C] Leading experimentation in science laboratories"
+            },
+            {
+              "question": "Pedagogical leaders must ensure that in all school processes the ....",
+              "options": [
+                "[A] Principal is at the centre",
+                "[B] Child is at the centre",
+                "[C] School is at the centre",
+                "[D] Teacher is at the centre"
+              ],
+              "answer": "[B] Child is at the centre"
+            },
+            {
+              "question": "Teachers must introduce new information and relate it with what children ....",
+              "options": [
+                "[A] Already know",
+                "[B] Are not willing to know",
+                "[C] Are resistant to learn",
+                "[D] Do not know"
+              ],
+              "answer": "[A] Already know"
+            },
+            {
+              "question": "The involvement type of 'communicating' includes ....",
+              "options": [
+                "[A] Informing parents that their children are not able to perform",
+                "[B] Believing that parents cannot support children' learning",
+                "[C] Discussing children' portfolio with parents on a regular basis",
+                "[D] Not talking to parents"
+              ],
+              "answer": "[C] Discussing children' portfolio with parents on a regular basis"
+            },
+            {
+              "question": "A school leader must organise assessment of children of 3-9 years of age group for ....",
+              "options": [
+                "[A] Categorising them",
+                "[B] Assessing their strengths, needs and interests",
+                "[C] Grading them",
+                "[D] Detaining them according to rank"
+              ],
+              "answer": "[B] Assessing their strengths, needs and interests"
+            },
+            {
+              "question": "How can schools not involve varied families in child education?",
+              "options": [
+                "[A] By addressing families' requirements",
+                "[B] By just giving homework to students",
+                "[C] By trusting associations with families",
+                "[D] By sharing information and responsibility with families"
+              ],
+              "answer": "[B] By just giving homework to students"
+            },
+            {
+              "question": "Collaborative processes with stakeholders can encourage ....",
+              "options": [
+                "[A] Creativity among students",
+                "[B] Reading habits of children",
+                "[C] Punctuality among teachers",
+                "[D] Shared accountability for student learning outcomes"
+              ],
+              "answer": "[D] Shared accountability for student learning outcomes"
+            },
+            {
+              "question": "To maintain the morning arrival period to school, which strategy must be adopted by teacher of Class I?",
+              "options": [
+                "[A] Send late comers to school heads' office",
+                "[B] Establishing routine arrival tasks for children, such as group reading, so that they are encouraged to come on time",
+                "[C] System of earning or losing points on the basis of arrival time",
+                "[D] Do not say anything to children"
+              ],
+              "answer": "[B] Establishing routine arrival tasks for children, such as group reading, so that they are encouraged to come on time"
             }
           ]
         }
