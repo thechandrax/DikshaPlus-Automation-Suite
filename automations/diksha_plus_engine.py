@@ -2648,9 +2648,12 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
                 for j, btn in enumerate(distinct_btns, 1):
 
-                    await check_pause_status()
-                    if not await btn.is_visible():
-                        continue
+                    try:
+                        await btn.scroll_into_view_if_needed()
+                        await page.wait_for_timeout(200)
+                    except Exception:
+                        pass
+
 
 
                     btn_text = (await btn.inner_text()).strip()
