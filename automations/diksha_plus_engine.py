@@ -1016,20 +1016,33 @@ async def wait_for_server_checkmark(page, timeout=15):
 
 async def safe_action_click(locator):
     """
-    Safely clicks an action button (View / Start / Continue) even if hidden or in scroll view.
-    Combines scroll_into_view_if_needed, force=True click, and native JS element.click() fallback.
+    Safely clicks an action button (View / Start / Continue) across all DIKSHA course modules.
+    Combines scroll, backdrop clearance, force click, dispatchEvent('click'), and native JS element.click() fallback.
     """
     try:
+        # Clear leftover modal backdrops before clicking new item
+        try:
+            await locator.page.evaluate("""
+                () => {
+                    const backdrops = document.querySelectorAll('.modal-backdrop, div[class*="backdrop"]');
+                    backdrops.forEach(b => b.remove());
+                    document.body.classList.remove('modal-open');
+                }
+            """)
+        except Exception:
+            pass
+
         await locator.scroll_into_view_if_needed()
-        await locator.click(force=True, timeout=5000)
+        await locator.click(force=True, timeout=3000)
     except Exception:
         try:
-            await locator.evaluate("el => el.click()")
+            await locator.dispatchEvent("click")
         except Exception:
             try:
-                await locator.click(force=True)
+                await locator.evaluate("el => { if (el) { el.click(); if (el.parentElement) el.parentElement.click(); } }")
             except Exception as e:
                 logger.warning(f"  --> Safe action click notice: {e}")
+
 
 async def process_video_activity(page, view_button):
 
