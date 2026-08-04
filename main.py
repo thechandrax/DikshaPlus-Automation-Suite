@@ -1,9 +1,9 @@
 """
 Main CLI entry point for DIKSHA Browser Automation Engine.
 Includes:
-- Security PIN Verification (541563)
+- Security PIN Verification (6-digit PIN required at runtime)
 - Multi-User Credentials Registry & Selection Menu
-- High-Security Encrypted Password Support
+- Obfuscated Password Support
 """
 
 import sys
@@ -140,7 +140,7 @@ def main():
             if 1 <= u_idx <= len(u_keys):
                 args.user_key = u_keys[u_idx - 1]
 
-    # 1. Security PIN Verification (541563)
+    # 1. Security PIN Verification
     if not args.skip_pin and sys.stdin.isatty():
         if not verify_security_pin():
             sys.exit(1)

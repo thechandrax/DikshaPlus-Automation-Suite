@@ -7,8 +7,8 @@ WORKDIR /app
 # Copy dependency requirements
 COPY requirements.txt .
 
-# Install dependencies & ensure Playwright Chromium binary is ready
-RUN pip install --no-cache-dir -r requirements.txt && playwright install chromium
+# Install Python dependencies (Playwright Chromium is pre-installed in the base image)
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project source files
 COPY . .

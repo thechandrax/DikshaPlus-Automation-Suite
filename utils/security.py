@@ -1,7 +1,7 @@
 """
-DIKSHA+ Military-Grade 256-Bit SHA-256 Cryptographic Security System.
-- Cryptographic SHA-256 Hash Verification for PIN (PIN 541563 is NEVER stored in plain text!)
-- 256-Bit SHA-256 Key Derivation Password Encrypter & Decrypter
+DIKSHA+ Security System.
+- SHA-256 Hash Verification for 6-digit PIN (plaintext PIN is never stored)
+- XOR-obfuscated password storage with SHA-256 derived key
 - Live Asterisk (*) Masked Input for Windows CMD / Terminal
 """
 
@@ -12,8 +12,7 @@ import getpass
 import hashlib
 from pathlib import Path
 
-# 256-Bit SHA-256 Cryptographic Hash of Security PIN (Salted)
-# Plaintext PIN (541563) is NOT stored anywhere in this file or project!
+# SHA-256 hash of the Security PIN + salt (plaintext PIN is never stored or logged)
 PIN_SALT = "DIKSHA_SECURITY_SALT_2026_V1"
 SECURITY_PIN_SHA256 = "c72696e654fb1fdbd727a8b66e35bceb05a5a576e602252cbd927e4ff8116edf"
 
@@ -103,7 +102,7 @@ def get_masked_pin(prompt: str = "[Security] Enter 6-digit Security PIN to unloc
 
 
 def encrypt_password(plain_password: str) -> str:
-    """Encrypts a plaintext password into a 256-bit SHA-256 derived Base64 string."""
+    """XOR-obfuscates a plaintext password using a SHA-256 derived key for storage."""
     if not plain_password:
         return ""
     if plain_password.startswith("ENC256:"):
@@ -116,7 +115,7 @@ def encrypt_password(plain_password: str) -> str:
     return f"ENC256:{encoded}"
 
 def decrypt_password(encrypted_password: str) -> str:
-    """Decrypts a 256-bit encrypted password back to plaintext in memory."""
+    """Reverses XOR obfuscation to recover plaintext password in memory."""
     if not encrypted_password:
         return ""
     if not encrypted_password.startswith("ENC256:") and not encrypted_password.startswith("ENC:"):
@@ -134,13 +133,12 @@ def decrypt_password(encrypted_password: str) -> str:
 def verify_security_pin() -> bool:
     """
     Displays the DIKSHA+ Security Access Verification banner
-    and verifies 6-digit PIN against 256-bit SHA-256 hash.
+    and verifies 6-digit PIN against its SHA-256 hash.
     """
-    banner = "\033[38;5;51m\033[1m===================================================================\n 🔒 DIKSHA+ SECURITY ACCESS VERIFICATION (256-BIT SHA-256)\n===================================================================\033[0m"
+    banner = "\033[38;5;51m\033[1m===================================================================\n 🔒 DIKSHA+ SECURITY ACCESS VERIFICATION\n===================================================================\033[0m"
     print(banner)
 
     max_attempts = 3
-
 
     for attempt in range(1, max_attempts + 1):
         pin_input = get_masked_pin("\033[38;5;220m[Security] Enter 6-digit Security PIN to unlock: \033[0m")
@@ -149,7 +147,7 @@ def verify_security_pin() -> bool:
         computed_hash = hashlib.sha256((pin_input + PIN_SALT).encode('utf-8')).hexdigest()
 
         if computed_hash == SECURITY_PIN_SHA256:
-            print(" \033[38;5;82m\033[1m✔ [Security] 256-Bit Cryptographic PIN verified! Access granted.\033[0m\n")
+            print(" \033[38;5;82m\033[1m✔ [Security] PIN verified! Access granted.\033[0m\n")
             return True
         else:
             remaining = max_attempts - attempt
@@ -157,6 +155,5 @@ def verify_security_pin() -> bool:
                 print(f" \033[38;5;196m❌ [Security] Invalid Security PIN! ({remaining} attempt(s) remaining)\033[0m\n")
             else:
                 print(" \033[38;5;196m\033[1m⛔ [Security] Access Denied! Maximum security attempts exceeded.\033[0m\n")
-                return False
+    # Fallback — all attempts exhausted
     return False
-

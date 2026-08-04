@@ -13,6 +13,26 @@
               "question": "Three year olds love to talk and listen but they also need activity and movement.",
               "options": [],
               "answer": "True"
+            },
+            {
+              "question": "Attending PTMs quarterly.",
+              "options": [],
+              "answer": "Yes"
+            },
+            {
+              "question": "The need for paying attention towards the holistic development of children in the early years.",
+              "options": [],
+              "answer": "Educating"
+            },
+            {
+              "question": "Children get ready to learn after coming to a Preschool.",
+              "options": [],
+              "answer": "Children get ready to learn after coming to a Preschool."
+            },
+            {
+              "question": "Drag and drop the appropriate option",
+              "options": [],
+              "answer": "Select the correct factual answer."
             }
           ]
         }
@@ -231,6 +251,230 @@
                 "[D] Learning Experiences, Content and Processes"
               ],
               "answer": "[A] Learning Experiences, Context and Processes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module_no": 3,
+      "module_name": "Module 03: Play-based Activities for Holistic Development",
+      "subsections": [
+        {
+          "subsection_no": 31,
+          "subsection_name": "Formative Assessment 03",
+          "questions": [
+            {
+              "question": "Activities involving solving problems, relationship cards example, lock and key, thread and needle, etc., answering simple questions; for example, what will happen if you do not keep your hair clean?, etc. are required for development of goal ____________.",
+              "options": [
+                "[A] Children become Involved Learners and Connect with their Immediate Environment",
+                "[B] Children Maintain Good Health and Well-being",
+                "[C] Children become Effective Communicators",
+                "[D] All of these"
+              ],
+              "answer": "[A] Children become Involved Learners and Connect with their Immediate Environment"
+            },
+            {
+              "question": "Which activity do you think is good for helping children to become effective communicators?",
+              "options": [
+                "[A] Running",
+                "[B] Rhymes",
+                "[C] Free conversation",
+                "[D] Skipping"
+              ],
+              "answer": "[C] Free conversation"
+            },
+            {
+              "question": "Activities like identification of sound in the environment, discriminating sound in the environment, identification of beginning sounds, rhyming words, etc. support in development of ____________.",
+              "options": [
+                "[A] social awareness",
+                "[B] reading",
+                "[C] writing",
+                "[D] environmental awareness"
+              ],
+              "answer": "[B] reading"
+            },
+            {
+              "question": "Holistic Progress Card needs to be developed by ____________.",
+              "options": [
+                "[A] community members",
+                "[B] teachers",
+                "[C] students",
+                "[D] parents"
+              ],
+              "answer": "[B] teachers"
+            },
+            {
+              "question": "Holistic Progress Card makes the stakeholders aware of a child's strength, areas of interest or also about ____________",
+              "options": [
+                "[A] knowledge",
+                "[B] skill",
+                "[C] the scope for further improvement",
+                "[D] motivation"
+              ],
+              "answer": "[C] the scope for further improvement"
+            },
+            {
+              "question": "Which activity preschool children do on their own?",
+              "options": [
+                "[A] Making of collage",
+                "[B] sketching",
+                "[C] cooking",
+                "[D] tailoring"
+              ],
+              "answer": "[B] sketching"
+            },
+            {
+              "question": "Foundational Literacy and Numeracy refers to building adequate ____________ during the foundational stage of school education.",
+              "options": [
+                "[A] Physical development",
+                "[B] Literacy and numeracy skills",
+                "[C] Good health",
+                "[D] Motor Development"
+              ],
+              "answer": "[B] Literacy and numeracy skills"
+            },
+            {
+              "question": "Use of play and activity based pedagogy helps children ____________.",
+              "options": [
+                "[A] rote learning",
+                "[B] memorize",
+                "[C] remember",
+                "[D] learn and grow"
+              ],
+              "answer": "[D] learn and grow"
+            },
+            {
+              "question": "Gross motor skills help in developing control over the movement of the ____________ of the body, such as thighs, legs, arms, etc. for sports, dancing, gymnastics, dramatics, etc.",
+              "options": [
+                "[A] minor muscles",
+                "[B] fine muscles",
+                "[C] large muscles",
+                "[D] small muscles"
+              ],
+              "answer": "[C] large muscles"
+            },
+            {
+              "question": "Children have ____________ i.e. the ability to concentrate on or attend to an activity for a short time period.",
+              "options": [
+                "[A] Large attention span",
+                "[B] Attention span",
+                "[C] Huge attention span",
+                "[D] Short attention span"
+              ],
+              "answer": "[D] Short attention span"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module_no": 4,
+      "module_name": "Module 04: Partnerships with Parents and Communities",
+      "subsections": [
+        {
+          "subsection_no": 29,
+          "subsection_name": "Formative Assessment 04",
+          "questions": [
+            {
+              "question": "What is the primary reason to advocate for collaboration between AWs/ schools and families",
+              "options": [
+                "[A] To facilitate children's learning at school and at home",
+                "[B] To keep a watch on teachers' attendance",
+                "[C] To ensure that AWWs/ teachers are properly doing their job",
+                "[D] To check corruption in the schools"
+              ],
+              "answer": "[A] To facilitate children's learning at school and at home"
+            },
+            {
+              "question": "Parents can create a print rich environment by labelling different parts of the home like",
+              "options": [
+                "[A] Room, kitchen, window, school bag, table etc",
+                "[B] Room, kitchen, toilet, utensils, tiffin box etc",
+                "[C] Room, kitchen, door, school bag, tiffin box etc",
+                "[D] Play area, kitchen, bedroom, toilet, store, etc"
+              ],
+              "answer": "[A] Room, kitchen, window, school bag, table etc"
+            },
+            {
+              "question": "What should be the suitable way to develop a stronger bond between schools and families?",
+              "options": [
+                "[A] There is a continuous communication between both on all the aspects of children's learning and development",
+                "[B] The school gives awards to participating parents",
+                "[C] Parents make good dishes and share with the teachers",
+                "[D] Teachers send only good reports of children to their parents"
+              ],
+              "answer": "[A] There is a continuous communication between both on all the aspects of children's learning and development"
+            },
+            {
+              "question": "Parents can sing along with their children and encourage them to identify the",
+              "options": [
+                "[A] Number of paragraphs in a poem",
+                "[B] Rhyming words in a poem/ song",
+                "[C] Printed words",
+                "[D] Number of pages"
+              ],
+              "answer": "[B] Rhyming words in a poem/ song"
+            },
+            {
+              "question": "The different methods to organise ECCE advocacy programmes for the community could be",
+              "options": [
+                "[A] Local dance, folk songs, street plays, puppet shows",
+                "[B] Get togethers",
+                "[C] Movie shows",
+                "[D] Dance shows/ Performances"
+              ],
+              "answer": "[A] Local dance, folk songs, street plays, puppet shows"
+            },
+            {
+              "question": "What is the major reason for low participation of Parents in Anganwadis/ Preschools ?",
+              "options": [
+                "[A] Parents face time constraint",
+                "[B] Parents are not willing",
+                "[C] Parents and teachers are not properly oriented on the development of meaningful partnerships",
+                "[D] Teachers don't want any suggestions from parents"
+              ],
+              "answer": "[C] Parents and teachers are not properly oriented on the development of meaningful partnerships"
+            },
+            {
+              "question": "An anganwadi worker/ a teacher is following a good communication practice if she",
+              "options": [
+                "[A] Acknowledges a note from the parents and adds her/ his own comments to facilitate further communication",
+                "[B] Talks to and communicates with a selected a group of parents only",
+                "[C] Acknowledges a note from the parents but does not respond",
+                "[D] Acknowledges a note from the parents and does not facilitate further communication"
+              ],
+              "answer": "[A] Acknowledges a note from the parents and adds her/ his own comments to facilitate further communication"
+            },
+            {
+              "question": "The pace of learning in young children can be enhanced by",
+              "options": [
+                "[A] Increasing school hours",
+                "[B] Involving and educating parents in the activities of the Anganwadis",
+                "[C] Giving homework to the children",
+                "[D] Appointing more teachers"
+              ],
+              "answer": "[B] Involving and educating parents in the activities of the Anganwadis"
+            },
+            {
+              "question": "Parents can do the following activity to enhance children's interest in stories?",
+              "options": [
+                "[A] Select stories",
+                "[B] Interact with them",
+                "[C] Read aloud",
+                "[D] Sing songs"
+              ],
+              "answer": "[C] Read aloud"
+            },
+            {
+              "question": "Providing developmentally appropriate toys/ games to the children at a young age gives them chances to practice new skills in",
+              "options": [
+                "[A] Music and movement",
+                "[B] Movement, creativity, thinking and communication",
+                "[C] Sports and fitness",
+                "[D] Math and literacy only"
+              ],
+              "answer": "[B] Movement, creativity, thinking and communication"
             }
           ]
         }

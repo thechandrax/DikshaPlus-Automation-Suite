@@ -23,7 +23,7 @@ BASE_LEARNING_URL = "https://learning.diksha.gov.in"
 
 from utils.security import decrypt_password
 
-# Multi-User Credentials Registry (256-Bit Cryptographic SHA-256 Encrypted Passwords)
+# Multi-User Credentials Registry (XOR-obfuscated passwords with SHA-256 derived key)
 USER_NAMES = {
     "7044015007": "Sumanta Halder",
     "8617383566": "Sujata Mondal",
@@ -105,7 +105,7 @@ AUTOMATIC_FINAL_SUBMIT = True    # Set to True to automatically click final quiz
 
 KEEP_BROWSER_OPEN = True         # Set to True to keep browser open after completion so it doesn't close!
 
-# Gemini AI Multi-API Key Pool (256-Bit Cryptographically Encrypted - 5 Active Keys)
+# Gemini AI Multi-API Key Pool (XOR-obfuscated - 5 Active Keys)
 GEMINI_API_KEYS_ENCRYPTED = [
     "ENC256:SkYiA4gM92PfpZXnowXWVpwvAN7i2AXeejQir_fjROpzXEAtsEfrHNGUuJLAOcFqinNNofg=",
     "ENC256:SkYiA4gM92PfoK_Np0H4VrYeDei93B2meggq_PP8XoNTZV8hk3D_V4iHosfCA-hezAlaoOg=",
@@ -127,7 +127,7 @@ def _load_gemini_keys():
     if env_gemini and env_gemini not in keys:
         keys.append(env_gemini)
     
-    # Priority 2: 256-Bit Encrypted Key Pool
+    # Priority 2: XOR-obfuscated key pool
     for enc_k in GEMINI_API_KEYS_ENCRYPTED:
         try:
             dec_k = decrypt_password(enc_k)

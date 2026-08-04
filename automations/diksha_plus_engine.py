@@ -9,6 +9,7 @@ Full implementation of specifications from DIKSHA.docx:
 """
 
 import sys
+import os
 import json
 import asyncio
 import re
@@ -36,8 +37,19 @@ logger = get_logger("DikshaEngine")
 IS_PAUSED = False
 ACTIVE_COURSE_TITLE = ""
 
-async def check_pause_status(page=None):
+class _CourseRestartSignal(Exception):
+    """
+    Internal control-flow signal raised when a subsection fails all 3 attempts.
+    Caught by run_diksha_automation to navigate back to the course URL and restart
+    the entire course scan from scratch (up to 5 times total).
+    """
     pass
+
+async def check_pause_status(page=None):
+    """Checks IS_PAUSED flag. If paused, waits in 5s intervals until resumed."""
+    global IS_PAUSED
+    while IS_PAUSED:
+        await asyncio.sleep(5)
 
 
 
@@ -91,6 +103,7 @@ def load_answer_key(course_title=None):
                     return json.load(f)
             except Exception as e:
                 logger.warning(f"Could not parse {course_file.name}: {e}")
+                return None
         else:
             # Create a clean template JSON file for this course with official "modules" hierarchy
             template = {
@@ -104,9 +117,7 @@ def load_answer_key(course_title=None):
             except Exception as ex:
                 logger.warning(f"Notice creating template file: {ex}")
 
-
-
-
+    return None  # No answer key found or created for this course title
 def normalize_text(text):
     """
     Normalizes Unicode apostrophes (\u2019, '), quotes (\u201c, \u201d, "), dashes, and spaces to standard ASCII.
@@ -362,12 +373,11 @@ def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name,
 
 
 
-def solve_question_with_ai(question_text, option_texts=None):
+async def solve_question_with_ai(question_text, option_texts=None):
     """
-    Uses Gemini AI API Multi-Key Pool FIRST (2 Attempts).
-    If Gemini keys fail, uses Grok xAI API (2 Attempts) SECOND.
-    If both fail, applies Stepped Backoff Protocol (30s -> 45s -> 60s).
-    Returns None if all attempts fail, triggering strict Circuit Breaker Stop (never uses dummy Option A).
+    Async AI solver: Gemini Multi-Key Pool → Groq LPU Fallback → Stepped Backoff.
+    Uses asyncio.sleep (non-blocking) to avoid freezing the Playwright event loop.
+    Returns None if all attempts fail — never guesses or uses a dummy answer.
     """
     if not getattr(config, "AI_LIVE_SOLVER_ENABLED", True):
         return None
@@ -396,7 +406,7 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
             groq_keys = [single_groq]
 
     def _try_gemini_key(key_idx, api_key):
-        models_to_try = ["gemini-2.0-flash", "gemini-flash-latest"]
+        models_to_try = ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash-latest"]
         for model_name in models_to_try:
             try:
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
@@ -422,7 +432,7 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
         return None
 
     def _try_groq_key(g_idx, groq_key):
-        for model_name in ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "llama-3.3-70b-versatile", "llama-3.1-8b-instant"]:
+        for model_name in ["llama-3.3-70b-versatile", "llama-3.1-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"]:
             try:
                 url = "https://api.groq.com/openai/v1/chat/completions"
                 payload = json.dumps({
@@ -462,11 +472,11 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
     for provider, k_idx, k_val in interleaved_sequence:
 
         if provider == "gemini":
-            sol = _try_gemini_key(k_idx, k_val)
+            sol = await asyncio.to_thread(_try_gemini_key, k_idx, k_val)
             if sol:
                 return sol
         elif provider == "groq":
-            sol = _try_groq_key(k_idx, k_val)
+            sol = await asyncio.to_thread(_try_groq_key, k_idx, k_val)
             if sol:
                 return sol
 
@@ -475,15 +485,15 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
     backoff_delays = [30, 45, 60]
     for b_idx, delay_sec in enumerate(backoff_delays, 1):
         logger.warning(f"\n  ⏳ [AI RATE LIMIT BACKOFF {b_idx}/3] Waiting {delay_sec} seconds for API quota reset before Retry #{b_idx}...")
-        time.sleep(delay_sec)
+        await asyncio.sleep(delay_sec)
         for provider, k_idx, k_val in interleaved_sequence:
             if provider == "gemini":
-                sol = _try_gemini_key(k_idx, k_val)
+                sol = await asyncio.to_thread(_try_gemini_key, k_idx, k_val)
                 if sol:
                     logger.info(f"  🧠 [AI BACKOFF SUCCESS] Solved on Backoff #{b_idx} ({delay_sec}s) via Gemini Key #{k_idx} -> '{sol}'")
                     return sol
             elif provider == "groq":
-                sol = _try_groq_key(k_idx, k_val)
+                sol = await asyncio.to_thread(_try_groq_key, k_idx, k_val)
                 if sol:
                     logger.info(f"  ⚡ [AI BACKOFF SUCCESS] Solved on Backoff #{b_idx} ({delay_sec}s) via Groq Key #{k_idx} -> '{sol}'")
                     return sol
@@ -521,12 +531,13 @@ async def login_diksha(page, username=None, password=None):
         await page.goto(config.AUTH_LOGIN_URL, wait_until="domcontentloaded", timeout=60000)
         await page.wait_for_timeout(3000)
     except Exception as e:
-        logger.warning(f"  --> Initial page load notice: {e}. Retrying navigation...")
+        logger.warning(f"  --> Initial page load notice: {e}. Retrying navigation in 3s...")
+        await asyncio.sleep(3)
         try:
-            await page.goto(config.AUTH_LOGIN_URL, wait_until="domcontentloaded", timeout=60000)
+            await page.goto(config.AUTH_LOGIN_URL, wait_until="domcontentloaded", timeout=90000)
             await page.wait_for_timeout(3000)
-        except Exception:
-            pass
+        except Exception as e2:
+            logger.error(f"  --> Navigation retry also failed: {e2}. Proceeding with caution.")
 
     # Handle landing page "LOGIN with DIKSHA" button if present
     landing_btn = page.locator("a:has-text('LOGIN with DIKSHA'), button:has-text('LOGIN with DIKSHA'), a[href*='lms=diksha2'], a:has-text('Login')").first
@@ -759,19 +770,6 @@ def get_real_terminal_columns(text):
     return cols
 
 
-def get_real_terminal_columns(text):
-    """
-    Calculates true terminal display columns by ignoring non-spacing combining diacritic marks
-    (like Bengali/Devanagari vowel signs), which attach to base consonants as a single visual glyph.
-    """
-    cols = 0
-    for ch in text:
-        cat = unicodedata.category(ch)
-        if cat in ('Mn', 'Me', 'Cf'):
-            continue
-        cols += 1
-    return cols
-
 
 def pad_title_fixed(text, target_width=45):
     """
@@ -852,8 +850,6 @@ def display_interactive_course_menu(courses):
 
     print("\033[38;5;240m-------------------------------------------------------------------\033[0m")
 
-    import os
-    env_course = os.getenv("SELECTED_COURSE", "").strip()
 
     if not sys.stdin.isatty():
         env_course = os.getenv("SELECTED_COURSE", "").strip()
@@ -935,20 +931,37 @@ async def close_activity_modal(page):
 
 
 
-async def wait_for_server_checkmark(page, timeout=15):
+async def wait_for_server_checkmark(page, timeout=15, item_btn=None):
     """
     Waits for server 100% checkmark pie icon: <i class="fas fa-check"></i>
+    If item_btn is provided, also verifies the specific item row is 100% before
+    logging confirmed — avoids false positives from other completed items on page.
     """
     logger.info("  --> Waiting for server 100% checkmark update...")
-    start = asyncio.get_event_loop().time()
-    while (asyncio.get_event_loop().time() - start) < timeout:
+    start = asyncio.get_running_loop().time()
+    false_positive_logged = False  # Ensures the false-positive warning logs only once
+    while (asyncio.get_running_loop().time() - start) < timeout:
         check_icon = page.locator(config.SELECTORS["progress_check_icon"]).first
         if await check_icon.count() > 0 and await check_icon.is_visible():
-            logger.info("  --> Server 100% checkmark confirmed!")
-            return True
+            # Page-level icon found — now verify it belongs to THIS specific item
+            if item_btn is not None:
+                item_confirmed = await is_item_100_percent_complete(item_btn)
+                if item_confirmed:
+                    logger.info("  --> Server 100% checkmark confirmed! (item-specific verified)")
+                    return True
+                else:
+                    # False positive — checkmark is from a different completed item on the page
+                    # Log only once, then poll silently until timeout
+                    if not false_positive_logged:
+                        logger.warning("  --> [FALSE POSITIVE] Page checkmark belongs to another item. Polling until this item reaches 100%...")
+                        false_positive_logged = True
+            else:
+                logger.info("  --> Server 100% checkmark confirmed!")
+                return True
         await page.wait_for_timeout(2000)
     logger.info("  --> Checkmark sync window completed.")
     return False
+
 
 async def safe_action_click(locator):
     """
@@ -987,12 +1000,15 @@ async def open_activity_popup(page, view_button):
     '--> [DOUBLE-TRIGGER POPUP] Re-clicking title link to force open popup modal...'
     """
     await safe_action_click(view_button)
-    logger.info("  --> [CLICKED VIEW BUTTON] Successfully clicked View button for activity!")
+    logger.info("  --> [CLICKED VIEW BUTTON] View button click sent — waiting 3s for modal to open...")
     await page.wait_for_timeout(3000)
 
     try:
         modal_chk = page.locator(".modal.show, .modal.in, .quiz-popup-wrapper, #instructionModal, iframe, .pdf-viewer, #pdf-container").first
-        if await modal_chk.count() == 0 or not await modal_chk.is_visible():
+        if await modal_chk.count() > 0 and await modal_chk.is_visible():
+            logger.info("  --> [MODAL OPENED] Activity modal opened successfully on first click!")
+        else:
+            logger.warning("  --> [MODAL NOT DETECTED] Modal did not open after first click. Attempting double-trigger fallback...")
             act_id = await view_button.get_attribute("act_id") or await view_button.get_attribute("data-id") or ""
             if act_id:
                 t_link = page.locator(f"a[act_id='{act_id}'], a[data-id='{act_id}'], a.activity-list[act_id='{act_id}']").first
@@ -1000,6 +1016,10 @@ async def open_activity_popup(page, view_button):
                     logger.info("  --> [DOUBLE-TRIGGER POPUP] Re-clicking title link to force open popup modal...")
                     await safe_action_click(t_link)
                     await page.wait_for_timeout(3000)
+                else:
+                    logger.warning("  --> [DOUBLE-TRIGGER] No title link found by act_id. Proceeding anyway.")
+            else:
+                logger.warning("  --> [DOUBLE-TRIGGER] No act_id attribute found on view button. Proceeding anyway.")
     except Exception as d_ex:
         logger.warning(f"  --> Double-trigger popup notice: {d_ex}")
 
@@ -1016,7 +1036,7 @@ async def process_video_activity(page, view_button):
     Implements technical specification for Video Acceleration & Telemetry:
       1. Nested iFrame & Shadow DOM Support (scans all frames for <video>)
       2. 15s Warm-up Buffer @ 1.0x speed (telemetry session init)
-      3. Dynamic Acceleration: 16x speed (duration >= 5m) or 10x speed (duration < 5m)
+      3. Dynamic Acceleration: 16x speed (duration >= 5m) or 6x speed (duration < 5m)
       4. Stall & Pause Recovery (auto-rewind 5% & resume play if stuck)
       5. 45s Final Buffer @ 1.0x speed (natural ended event & 100% progress telemetry)
       6. Video 10s-15s Checkmark Verification & 1-Time Reload/Replay Recovery Engine
@@ -1027,7 +1047,6 @@ async def process_video_activity(page, view_button):
         parent_row = view_button.locator("xpath=./ancestor::*[contains(@class, 'activity') or contains(@class, 'row') or contains(@class, 'item') or self::li or self::div][1]")
         if await parent_row.count() > 0:
             row_text = await parent_row.inner_text()
-            import re
             m = re.search(r'(\d{1,2})%', row_text)
             if m:
                 row_saved_pct = int(m.group(1))
@@ -1037,8 +1056,6 @@ async def process_video_activity(page, view_button):
     logger.info("[VIDEO ACTIVITY] Opening video module...")
     await open_activity_popup(page, view_button)
     await page.wait_for_timeout(2000)
-
-
 
     # 1. Nested iFrame Support: Locate <video> across main page & all frames
     target_frame = page
@@ -1128,13 +1145,13 @@ async def process_video_activity(page, view_button):
         await target_frame.evaluate("() => { const v = document.querySelector('video'); if (v) { v.playbackRate = 1.0; if (v.paused) v.play(); } }")
         await asyncio.sleep(min(15, max(1, int(duration * 0.2))))
 
-        # 3. Dynamic Playback Acceleration: 16x (>= 5 min) or 10x (< 5 min)
+        # 3. Dynamic Playback Acceleration: 16x (>= 5 min) or 6x (< 5 min)
         if duration >= 300:
             speed = 16.0
             logger.info("  --> Dynamic Acceleration: Applying 16x Speed (Long Video >= 5 min)...")
         else:
-            speed = 10.0
-            logger.info("  --> Dynamic Acceleration: Applying 10x Speed (Short Video < 5 min)...")
+            speed = 6.0
+            logger.info("  --> Dynamic Acceleration: Applying 6x Speed (Short Video < 5 min)...")
 
         # Fast forward loop with Stall & Pause Recovery
         target_final_buffer_time = max(0, duration - 45)
@@ -1242,22 +1259,34 @@ async def process_video_activity(page, view_button):
                 pass
             await asyncio.sleep(1.5)
 
+    # 5s settling buffer — allows DIKSHA server to register the natural 'ended' event before modal closes
+    logger.info("  --> Waiting 5s settling buffer before closing — allowing server to register 100% telemetry...")
+    await asyncio.sleep(5)
+
     # Close video modal
     await close_activity_modal(page)
 
-    
-    # 6. Video 10s-15s Checkmark Verification & 1-Time Reload/Replay Recovery Engine
-    logger.info("  --> [VIDEO CHECKMARK] Waiting 10s to 15s specifically for video 100% checkmark...")
-    checkmark_ok = await wait_for_server_checkmark(page, timeout=15)
+    # 6. Video 10s Checkmark Verification & 1-Time Reload/Replay Recovery Engine
+    logger.info("  --> [VIDEO CHECKMARK] Waiting exactly 10s for video 100% checkmark...")
+    checkmark_ok = await wait_for_server_checkmark(page, timeout=10, item_btn=view_button)
 
     if not checkmark_ok:
-        logger.warning("  --> [VIDEO RECOVERY] 100% checkmark not confirmed (partial progress like 45%/97% detected). Reloading video 1 time to complete 100%...")
+        logger.warning("  --> [VIDEO RECOVERY] 100% checkmark not confirmed. Reopening video to replay final 10s...")
         try:
+            # Re-open the video modal via the original view button
             await view_button.click(force=True)
             await page.wait_for_timeout(3000)
-            
-            # Replay final 10 seconds at 1.0x speed and dispatch ended event
-            await target_frame.evaluate("""
+
+            # Re-resolve a fresh frame reference — target_frame may be stale after modal close
+            live_frame = page
+            for frame in page.frames:
+                f_v = frame.locator("video").first
+                if await f_v.count() > 0:
+                    live_frame = frame
+                    break
+
+            # Replay final 10 seconds at 1.0x speed and dispatch ended event on the live frame
+            await live_frame.evaluate("""
                 async () => {
                     const v = document.querySelector('video');
                     if (v) {
@@ -1274,11 +1303,6 @@ async def process_video_activity(page, view_button):
             await wait_for_server_checkmark(page, timeout=15)
         except Exception as ex:
             logger.warning(f"  --> Video reload recovery notice: {ex}")
-
-async def check_pause_status(page=None):
-    pass
-
-
 
 
 async def process_pdf_activity(page, view_button):
@@ -1398,7 +1422,7 @@ async def process_h5p_activity(page, view_button, answer_key, course_title=None)
 
         # 2. AI Live Solver Fallback
         if not matched_answer_text and q_text_screen:
-            ai_solved = solve_question_with_ai(q_text_screen, screen_opts)
+            ai_solved = await solve_question_with_ai(q_text_screen, screen_opts)
             if ai_solved:
                 matched_answer_text = ai_solved
                 logger.info(f"  🧠 [H5P AI LIVE SOLVER Q-{question_step + 1}] Solved: '{matched_answer_text}'")
@@ -1627,8 +1651,8 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
     scoped_items = []
     if answers_list:
         for item in answers_list:
-            item_mod_no = item.get("module_no") or top_mod_no
-            item_sub_name = (item.get("subsection_name") or top_sub_name or "").strip().lower()
+            item_mod_no = item.get("module_no") or module_no
+            item_sub_name = (item.get("subsection_name") or sub_name or "").strip().lower()
             
             mod_match = not (item_mod_no and module_no and int(item_mod_no) != int(module_no))
             sub_match = not (item_sub_name and effective_sub_name and item_sub_name not in effective_sub_name.lower() and effective_sub_name.lower() not in item_sub_name)
@@ -1777,7 +1801,7 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
         # Step 2: AI Live Solver Fallback (If Question is NEW & Not in JSON Cache)
         if not matched_answer_text and q_text_screen:
             try:
-                ai_solved = solve_question_with_ai(q_text_screen, screen_opts)
+                ai_solved = await solve_question_with_ai(q_text_screen, screen_opts)
                 if ai_solved:
                     matched_answer_text = ai_solved
                     gate1_ok = True
@@ -2137,7 +2161,7 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                 # 2. If NOT found in JSON, call AI Live Solver!
                 if not matched_target_text and clean_q_dom and len(clean_q_dom) > 10:
                     try:
-                        ai_ans, _ = await solve_question_with_ai(clean_q_dom, ["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"])
+                        ai_ans = await solve_question_with_ai(clean_q_dom, ["Strongly Agree", "Agree", "Neutral", "Disagree", "Strongly Disagree"])
                         if ai_ans:
                             matched_target_text = ai_ans
                             logger.info(f"  🤖 [AI LIVE SOLVER MATCH {q_tag}]: AI selected answer: '{matched_target_text}'")
@@ -2231,7 +2255,7 @@ async def process_feedback_activity(page, view_button, answer_key=None, module_n
                         # 3. If NOT found in JSON, call AI Live Solver for Textarea Question!
                         if not matched_ta_ans and clean_ta_q and len(clean_ta_q) > 10:
                             try:
-                                ai_ans, _ = await solve_question_with_ai(clean_ta_q, [])
+                                ai_ans = await solve_question_with_ai(clean_ta_q, [])
                                 if ai_ans:
                                     matched_ta_ans = ai_ans
                                     logger.info(f"  🤖 [AI TEXTAREA SOLVER {ta_tag}]: AI generated response: '{matched_ta_ans[:50]}...'")
@@ -2515,7 +2539,8 @@ async def is_item_100_percent_complete(btn):
                 p_txt = (await p_val_el.inner_text()).strip().lower()
                 if "100%" in p_txt:
                     return True
-                elif any(f"{p}%" in p_txt for p in range(0, 100)):
+                # Use word-boundary match to avoid '10%' matching inside '100%'
+                elif re.search(r'\b([0-9]|[1-9][0-9])%', p_txt):
                     return False
 
             # 3. Explicit checkmark icons on the item row itself
@@ -2643,6 +2668,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
     user_str = f"{disp_user} ({username})" if username else disp_user
     
     if not target_course_url:
+        # Fallback: snapshot current URL — caller should always pass the explicit course URL
         target_course_url = page.url
 
     await ensure_on_course_page(page, target_course_url)
@@ -2665,8 +2691,8 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
         if await lessons_tab.count() > 0 and await lessons_tab.is_visible():
             logger.info("  --> Clicking 'Lessons' tab button...")
             await lessons_tab.click(force=True)
-            logger.info("  --> Waiting 6 seconds for DIKSHA server to hydrate modules and auto-expand active incomplete section...")
-            await page.wait_for_timeout(6000)
+            logger.info("  --> Waiting 5 seconds for DIKSHA server to hydrate modules and auto-expand active incomplete section...")
+            await page.wait_for_timeout(5000)
     except Exception as e:
         logger.warning(f"  --> Lessons tab click notice: {e}")
 
@@ -2767,7 +2793,8 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
                 # Check if Module header is ALREADY 100% complete
                 if await is_header_100_percent_complete(header):
-                    logger.info(f"  --> [SKIP MODULE] '{header_title}' is ALREADY 100% COMPLETED. Skipping!")
+                    logger.info(f"  --> [✓ SKIP MODULE] '{header_title}' is ALREADY 100% COMPLETED. [Skipping!]")
+
                     break
 
                 # Locate the exact clickable <a> toggle element or header
@@ -2860,6 +2887,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                         pass
                 logger.info("  " + "-" * 55)
 
+                lock_triggered = False  # Flag: set True when a locked item triggers prerequisite re-execution
                 for j, btn in enumerate(distinct_btns, 1):
                     await check_pause_status()
                     try:
@@ -2907,52 +2935,88 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
                         try:
                             await page.reload()
-                            await page.wait_for_timeout(4000)
+                            await page.wait_for_timeout(5000)
+                            await ensure_on_course_page(page, target_course_url)
                         except Exception:
                             pass
-                        break  # Re-scan section items with freshly unlocked buttons!
+                        lock_triggered = True
+                        break  # Exit for loop — outer while will re-scan freshly reloaded page
 
 
 
 
                     act_type = await btn.get_attribute("act_type") or "resource"
 
-                    logger.info("\n" + "=" * 35)
-                    logger.info(f" ▶ SUBSECTION [{j:02d}/{total_sec_items:02d}]: '{real_item_title}' (Type: '{act_type}') [Attempt {module_retry_pass}/3]")
-                    logger.info("=" * 35)
+                    # ── Per-Subsection 3-Attempt Retry Loop ──────────────────────────────────
+                    item_success = False
+                    for item_attempt in range(1, 4):
+                        logger.info("\n" + "=" * 35)
+                        logger.info(f" ▶ SUBSECTION [{j:02d}/{total_sec_items:02d}]: '{real_item_title}' (Type: '{act_type}') [Attempt {item_attempt}/3]")
+                        logger.info("=" * 35)
 
+                        try:
+                            if act_type == "url":
+                                await process_video_activity(page, btn)
+                            elif act_type == "resource":
+                                await process_pdf_activity(page, btn)
+                            elif act_type == "h5pactivity":
+                                await process_h5p_activity(page, btn, answer_key, course_title=course_title)
+                            elif act_type == "feedback" or "feedback" in real_item_title.lower():
+                                await process_feedback_activity(page, btn, answer_key, module_name=header_title, module_no=i, sub_name=real_item_title, sub_no=j, course_title=course_title)
+                            elif act_type == "quiz" or "assessment" in real_item_title.lower():
+                                await process_quiz_assessment(page, btn, answer_key, module_name=header_title, module_no=i, sub_name=real_item_title, sub_no=j, course_title=course_title)
+                            else:
+                                await btn.click(force=True)
+                                await page.wait_for_timeout(3000)
+                                await close_activity_modal(page)
+                                await wait_for_server_checkmark(page, item_btn=btn)
 
+                            # Verify actual success via 100% checkmark — only mark done if truly complete
+                            if await is_item_100_percent_complete(btn):
+                                logger.info(f"  ✅ [ATTEMPT {item_attempt}/3 SUCCESS] '{real_item_title}' verified 100% complete!")
+                                item_success = True
+                                break
+                            else:
+                                if item_attempt < 3:
+                                    logger.warning(f"  ⚠️ [ATTEMPT {item_attempt}/3 INCOMPLETE] '{real_item_title}' not yet 100% on server. Retrying in 5s...")
+                                    await asyncio.sleep(5)
+                                else:
+                                    logger.warning(f"  ⚠️ [ALL 3 ATTEMPTS EXHAUSTED] '{real_item_title}' failed all 3 attempts. Restarting course from beginning...")
+                                    raise _CourseRestartSignal(real_item_title)
 
+                        except _CourseRestartSignal:
+                            raise  # Let it bubble up to process_course_modules restart handler
+                        except Exception as item_ex:
+                            logger.error(f"     [-] Attempt {item_attempt}/3 execution notice: {item_ex}")
+                            if item_attempt < 3:
+                                logger.info(f"  --> Retrying in 5s... (Attempt {item_attempt + 1}/3)")
+                                await asyncio.sleep(5)
+                            else:
+                                logger.warning(f"  ⚠️ [CRASH ALL 3 ATTEMPTS] '{real_item_title}' crashed all 3 times. Restarting course from beginning...")
+                                raise _CourseRestartSignal(real_item_title)
 
-                    try:
-                        if act_type == "url":
-                            await process_video_activity(page, btn)
-                        elif act_type == "resource":
-                            await process_pdf_activity(page, btn)
-                        elif act_type == "h5pactivity":
-                            await process_h5p_activity(page, btn, answer_key, course_title=course_title)
-                        elif act_type == "feedback" or "feedback" in real_item_title.lower():
-                            await process_feedback_activity(page, btn, answer_key, module_name=header_title, module_no=i, sub_name=real_item_title, sub_no=j, course_title=course_title)
-                        elif act_type == "quiz" or "assessment" in real_item_title.lower():
-                            await process_quiz_assessment(page, btn, answer_key, module_name=header_title, module_no=i, sub_name=real_item_title, sub_no=j, course_title=course_title)
-                        else:
-                            await btn.click(force=True)
-                            await page.wait_for_timeout(3000)
-                            await close_activity_modal(page)
-                            await wait_for_server_checkmark(page)
-                    except Exception as item_ex:
-                        logger.error(f"     [-] Subsection execution notice: {item_ex}")
-
-                    if not is_generic_btn:
-                        completed_items.add(btn_text)
-                    if real_item_title and real_item_title.lower() not in ("view", "start", "open", "continue"):
-                        completed_items.add(real_item_title)
+                    # Only add to completed_items if genuinely verified successful
+                    if item_success:
+                        if not is_generic_btn:
+                            completed_items.add(btn_text)
+                        if real_item_title and real_item_title.lower() not in ("view", "start", "open", "continue"):
+                            completed_items.add(real_item_title)
 
                     logger.info("  --> DIKSHA Server sync buffer: waiting 4 seconds for next item unlock...")
                     try:
                         await page.wait_for_timeout(4000)
                     except Exception:
                         pass
+
+
+                # If a lock was triggered, restart the while loop to re-scan items on the freshly reloaded page
+                # The reloaded page should now show item 13 as unlocked and ready to execute
+                if lock_triggered:
+                    if module_retry_pass > max_module_attempts + 3:
+                        logger.warning(f"  ⚠️ [LOCK RETRY LIMIT] Exceeded max lock retries for '{header_title}'. Proceeding to sync check.")
+                    else:
+                        logger.info(f"  🔓 [LOCK RETRY] Prerequisite executed. Re-scanning '{header_title}' buttons to execute newly unlocked item...")
+                        continue  # Restart outer while loop — re-scans all buttons on fresh page
 
                 # DOUBLE CONFIRMATION & STRICT 100% COMPLETION GATE GUARD
                 logger.info(f"  --> [DOUBLE CONFIRMATION] Verifying 100% completion for '{header_title}'...")
@@ -2964,8 +3028,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
                 server_synced = False
                 for sync_step in range(1, 11):
-                    logger.info(f"\n  ⏳ [MODULE SYNC {sync_step}/10] Reloading page & re-scanning subsections (Elapsed: {sync_step * 15}s / 150s)...")
-                    await asyncio.sleep(15)
+                    logger.info(f"\n  ⏳ [MODULE SYNC {sync_step}/10] Reloading page & re-scanning subsections...")
                     try:
                         await page.reload()
                         await page.wait_for_timeout(3000)
@@ -3021,8 +3084,6 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                     pass
                             logger.info("  " + "-" * 55)
 
-                            logger.info("  " + "-" * 55)
-
 
 
 
@@ -3041,9 +3102,12 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                 is_item_done = (s_item_title in completed_items) or (not is_gen_b and s_btn_text in completed_items) or await is_item_100_percent_complete(s_btn)
 
                                 if not is_item_done:
+                                    # NOTE: A locked item here is theoretically IMPOSSIBLE with the new system.
+                                    # The main loop resolves all locks via lock_triggered+continue BEFORE reaching sync.
+                                    # If this fires it indicates a DIKSHA server-side race condition — log it as ERROR.
                                     if await is_item_locked_by_diksha(s_btn):
-                                        logger.warning(f"  --> 🔒 [LOCKED ITEM IN SYNC] Item [{s_idx:02d}/{len(sync_btns):02d}]: '{s_item_title}' is locked by DIKSHA prerequisite rule. Skipping for now...")
-                                        continue
+                                        logger.error(f"  ❌ [UNEXPECTED LOCK IN SYNC] Item [{s_idx:02d}/{len(sync_btns):02d}]: '{s_item_title}' is locked during sync — this should not happen. Triggering course restart...")
+                                        raise _CourseRestartSignal(s_item_title)
 
                                     logger.info(f"  🔄 [SYNC RE-EXECUTION Attempt #{sync_step}/10] Found incomplete item [{s_idx:02d}/{len(sync_btns):02d}]: '{s_item_title}'. Executing item now...")
 
@@ -3054,10 +3118,10 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                         await process_pdf_activity(page, s_btn)
                                     elif s_act_type == "h5pactivity":
                                         await process_h5p_activity(page, s_btn, answer_key, course_title=course_title)
-                                    elif s_act_type == "quiz" or "assessment" in s_item_title.lower():
-                                        await process_quiz_assessment(page, s_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=s_item_title, sub_no=s_idx, course_title=course_title)
                                     elif s_act_type == "feedback" or "feedback" in s_item_title.lower():
-                                        await process_feedback_activity(page, s_btn, answer_key, module_name=header_title, module_no=i+1, sub_name=s_item_title, sub_no=s_idx, course_title=course_title)
+                                        await process_feedback_activity(page, s_btn, answer_key, module_name=header_title, module_no=i, sub_name=s_item_title, sub_no=s_idx, course_title=course_title)
+                                    elif s_act_type == "quiz" or "assessment" in s_item_title.lower():
+                                        await process_quiz_assessment(page, s_btn, answer_key, module_name=header_title, module_no=i, sub_name=s_item_title, sub_no=s_idx, course_title=course_title)
 
 
                                     if not is_gen_b:
@@ -3081,8 +3145,14 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                             logger.info(f"  ✅ [MODULE SYNC SUCCESS] DIKSHA server completion verified for '{header_title}' on Attempt #{sync_step}/10!")
                             server_synced = True
                             break
+                        # Not done yet — wait 15s for DIKSHA server to register progress before next attempt
+                        logger.info(f"  ⏳ [SYNC WAIT] Attempt {sync_step}/10 incomplete. Waiting 15s for server sync...")
+                        await asyncio.sleep(15)
+                    except _CourseRestartSignal:
+                        raise  # Never swallow the course restart signal
                     except Exception as m_sync_ex:
                         logger.warning(f"  --> Module sync attempt #{sync_step} notice: {m_sync_ex}")
+                        await asyncio.sleep(15)
 
 
                 if server_synced or await is_header_100_percent_complete(header):
@@ -3097,7 +3167,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                 logger.warning("=" * 75 + "\n")
 
 
-                loop = asyncio.get_event_loop()
+                loop = asyncio.get_running_loop()
                 await loop.run_in_executor(None, input, "Press [ENTER] to RESUME & RE-START module pass: ")
                 logger.info("  ▶ [USER RESUMED] Re-starting full module execution & re-scanning all subsections...\n")
 
@@ -3118,7 +3188,6 @@ async def run_diksha_automation(target_course_url=None, username=None, password=
     """
     Main entry point for executing full DIKSHA automation pipeline.
     """
-    answer_key = load_answer_key()
 
     logger.info("   DIKSHA AUTOMATION PIPELINE")
     logger.info("=" * 35)
@@ -3163,7 +3232,22 @@ async def run_diksha_automation(target_course_url=None, username=None, password=
                 pass
             
             c_key = load_answer_key(t_title)
-            await process_course_modules(page, c_key, course_title=t_title, username=username)
+            for _cr in range(1, 7):  # Up to 5 full course restarts if an item fails all 3 attempts
+                try:
+                    await process_course_modules(page, c_key, course_title=t_title, username=username, target_course_url=target_course_url)
+                    break  # Completed normally
+                except _CourseRestartSignal as sig:
+                    if _cr < 6:
+                        logger.warning(f"\n{'=' * 67}")
+                        logger.warning(f" 🔄 [COURSE RESTART {_cr}/5] Item '{sig}' failed all attempts. Restarting course from beginning...")
+                        logger.warning(f"{'=' * 67}")
+                        try:
+                            await page.goto(target_course_url, wait_until="domcontentloaded", timeout=60000)
+                            await page.wait_for_timeout(5000)
+                        except Exception:
+                            pass
+                    else:
+                        logger.error(f"  ❌ [COURSE RESTART LIMIT] Course restarted 5 times. Item '{sig}' still failing. Moving on.")
         else:
             await navigate_to_my_learning(page)
             enrolled_courses = await fetch_enrolled_courses(page)
@@ -3189,7 +3273,22 @@ async def run_diksha_automation(target_course_url=None, username=None, password=
                     course_answer_key = load_answer_key(c['title'])
                     
                     # Run activity modules for this course
-                    await process_course_modules(page, course_answer_key, course_title=c['title'], username=username)
+                    for _cr in range(1, 7):  # Up to 5 full course restarts if an item fails all 3 attempts
+                        try:
+                            await process_course_modules(page, course_answer_key, course_title=c['title'], username=username, target_course_url=c['url'])
+                            break  # Completed normally
+                        except _CourseRestartSignal as sig:
+                            if _cr < 6:
+                                logger.warning(f"\n{'=' * 67}")
+                                logger.warning(f" 🔄 [COURSE RESTART {_cr}/5] Item '{sig}' failed all attempts. Restarting course from beginning...")
+                                logger.warning(f"{'=' * 67}")
+                                try:
+                                    await page.goto(c['url'], wait_until="domcontentloaded", timeout=60000)
+                                    await page.wait_for_timeout(5000)
+                                except Exception:
+                                    pass
+                            else:
+                                logger.error(f"  ❌ [COURSE RESTART LIMIT] Course restarted 5 times. Item '{sig}' still failing. Moving on.")
 
 
 
