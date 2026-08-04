@@ -1,0 +1,80 @@
+{
+  "course_name": "Catch the Rain",
+  "modules": [
+    {
+      "module_no": 3,
+      "module_name": "Module 02: Jal Shakti Abhiyan: Catch The Rain",
+      "subsections": [
+        {
+          "subsection_no": 3,
+          "subsection_name": "Formative Assessment 01",
+          "questions": [
+            {
+              "question": "SDGs stand for Sustainable Development Goals",
+              "options": [
+                "[A] True",
+                "[B] False"
+              ],
+              "answer": "[A] True"
+            },
+            {
+              "question": "Rain centres are being opened in each district",
+              "options": [
+                "[A] True",
+                "[B] False"
+              ],
+              "answer": "[A] True"
+            },
+            {
+              "question": "Campaign activities involves action by policy makers",
+              "options": [
+                "[A] True",
+                "[B] False"
+              ],
+              "answer": "[A] True"
+            },
+            {
+              "question": "22 April is observed as World Water Day",
+              "options": [
+                "[A] True",
+                "[B] False"
+              ],
+              "answer": "[A] True"
+            },
+            {
+              "question": "Repair of traditional water harvesting is part of campaign activities",
+              "options": [
+                "[A] True",
+                "[B] False"
+              ],
+              "answer": "[A] True"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module_no": 4,
+      "module_name": "Module 03: Water Management: Conservation and Rainwater Harvesting",
+      "subsections": [
+        {
+          "subsection_no": 5,
+          "subsection_name": "Formative Assessment 02",
+          "questions": [
+            {
+              "question": "Match the following words to the right answers. Harvesting Answer 1",
+              "options": [
+                "[A] Answer 1 Question 1",
+                "[B] Answer 2 Question 1",
+                "[C] Answer 3 Question 1",
+                "[D] Answer 4 Question 1",
+                "[E] Answer 5 Question 1"
+              ],
+              "answer": "[A] Answer 1 Question 1"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

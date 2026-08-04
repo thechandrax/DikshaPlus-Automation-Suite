@@ -303,6 +303,82 @@
               "answer": "[C] Observable and measurable"
             }
           ]
+        },
+        {
+          "subsection_no": 24,
+          "subsection_name": "Formative Assessment 03",
+          "questions": [
+            {
+              "question": "A child's previous learning experiences are derived from",
+              "options": [
+                "[A] Everyday experiences they encounter",
+                "[B] Inheritance",
+                "[C] Parents attitude",
+                "[D] Family tradition"
+              ],
+              "answer": "[A] Everyday experiences they encounter"
+            },
+            {
+              "question": "What kinds of material are required for the discovery area?",
+              "options": [
+                "[A] Magnifying glasses and magnets",
+                "[B] Doll and comb",
+                "[C] Play dough/clay and tambourines",
+                "[D] Interlocking blocks and scarf"
+              ],
+              "answer": "[A] Magnifying glasses and magnets"
+            },
+            {
+              "question": "What should be done when space is less to arrange all activity/interest areas in the classroom at a time?",
+              "options": [
+                "[A] Accommodate all of them somehow",
+                "[B] Arrange at least four",
+                "[C] Rotate/change every 15 days",
+                "[D] Arrange at least four at a time and rotate/change every 15 days"
+              ],
+              "answer": "[D] Arrange at least four at a time and rotate/change every 15 days"
+            },
+            {
+              "question": "How many types of interaction are there in a classroom?",
+              "options": [
+                "[A] One",
+                "[B] Two",
+                "[C] Four",
+                "[D] Three"
+              ],
+              "answer": "[D] Three"
+            },
+            {
+              "question": "What is meant by 'creative intelligence'?",
+              "options": [
+                "[A] Addressing issues and concerns in consensus with others",
+                "[B] Addressing ideas and problems",
+                "[C] Addressing ideas and problems in often unexpected ways",
+                "[D] Addressing ideas and problems in novel and often unexpected ways"
+              ],
+              "answer": "[D] Addressing ideas and problems in novel and often unexpected ways"
+            },
+            {
+              "question": "Children who ask many questions can be",
+              "options": [
+                "[A] Boring",
+                "[B] Inquisitive",
+                "[C] Irritating",
+                "[D] Happy"
+              ],
+              "answer": "[B] Inquisitive"
+            },
+            {
+              "question": "What should a teacher do before the start of the learning experiences?",
+              "options": [
+                "[A] Take attendance",
+                "[B] Discover children's learning needs",
+                "[C] Ask children to be punctual to school",
+                "[D] Be quite"
+              ],
+              "answer": "[B] Discover children's learning needs"
+            }
+          ]
         }
       ]
     },
@@ -519,6 +595,76 @@
                 "[D] Resource centres working in conjunction with special educators for home schooling"
               ],
               "answer": "[D] Resource centres working in conjunction with special educators for home schooling"
+            },
+            {
+              "question": "Which of the following activities can parents do to enhance children's story awareness?",
+              "options": [
+                "[A] Interacting with them",
+                "[B] Read aloud",
+                "[C] Selecting stories",
+                "[D] Singing songs"
+              ],
+              "answer": "[B] Read aloud"
+            },
+            {
+              "question": "Parents' involvement is critical at the foundational stage and it comprises of children in the age group of",
+              "options": [
+                "[A] 3 to 6 years",
+                "[B] 3 to 8 years",
+                "[C] 4 to 8 years",
+                "[D] 5 to 9 years"
+              ],
+              "answer": "[B] 3 to 8 years"
+            },
+            {
+              "question": "Foundational language and literacy skills relate to",
+              "options": [
+                "[A] Children's skills related to language, expression, communication, etc",
+                "[B] Arithmetic score of children",
+                "[C] Children's ability to respond quickly",
+                "[D] Children's interest in drawing"
+              ],
+              "answer": "[A] Children's skills related to language, expression, communication, etc"
+            },
+            {
+              "question": "Why is support from parents required at the foundational stage for enhancing FLN skills?",
+              "options": [
+                "[A] Children are young and they obey their parents",
+                "[B] Teachers get confidence if children are studying at home",
+                "[C] Parents feel satisfied to teach their children",
+                "[D] Support from home is crucial as children spend out of school time at home"
+              ],
+              "answer": "[D] Support from home is crucial as children spend out of school time at home"
+            },
+            {
+              "question": "Which of the following is not an activity to promote Foundational Numeracy by the parents at home?",
+              "options": [
+                "[A] Counting spoons and bowls",
+                "[B] Tracing along the letter",
+                "[C] Writing numbers using the number stencil",
+                "[D] Observing numerals in a newspaper"
+              ],
+              "answer": "[B] Tracing along the letter"
+            },
+            {
+              "question": "Asking parents/community to collect and bring in 'trashables' and recycled materials will help to",
+              "options": [
+                "[A] Enhance children's growth in FLN activities",
+                "[B] Support the children's learning",
+                "[C] Understand the importance of waste materials",
+                "[D] Create relevant, safe, creative toys/games for FLN activities"
+              ],
+              "answer": "[D] Create relevant, safe, creative toys/games for FLN activities"
+            },
+            {
+              "question": "Communities and parents should be made aware of the learning levels of children to",
+              "options": [
+                "[A] Critically analyse the work of teachers",
+                "[B] Act as volunteer to support school",
+                "[C] Achieve better learning outcomes",
+                "[D] Become partners with schools"
+              ],
+              "answer": "[C] Achieve better learning outcomes"
             }
           ]
         }
