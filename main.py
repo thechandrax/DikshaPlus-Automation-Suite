@@ -165,24 +165,48 @@ def main():
         # Display Interactive Registered User Selection Menu
         users_to_process = display_interactive_user_menu()
 
-    # 3. Execute Automation Pipeline for selected user(s)
-    try:
-        for idx, (u, p) in enumerate(users_to_process, 1):
-            disp = config.USER_NAMES.get(u, u)
-            logger.info("\n" + "=" * 43)
-            logger.info(f"   PROCESSING USER {idx}/{len(users_to_process)}: {disp} ({u})")
-            logger.info("=" * 43)
+    # 3. Execute Automation Pipeline for selected user(s) with Auto-Reconnect Recovery
+    for idx, (u, p) in enumerate(users_to_process, 1):
+        disp = config.USER_NAMES.get(u, u)
+        logger.info("\n" + "=" * 65)
+        logger.info(f"   PROCESSING USER {idx}/{len(users_to_process)}: {disp} ({u})")
+        logger.info("=" * 65)
 
-            asyncio.run(run_diksha_automation(
-                target_course_url=args.target_course_url,
-                username=u,
-                password=p
-            ))
+        max_session_attempts = 3
+        for s_attempt in range(1, max_session_attempts + 1):
+            try:
+                asyncio.run(run_diksha_automation(
+                    target_course_url=args.target_course_url,
+                    username=u,
+                    password=p
+                ))
+                break  # Successful completion!
+            except KeyboardInterrupt:
+                logger.info("Automation process interrupted by user.")
+                sys.exit(0)
+            except Exception as e:
+                err_msg = str(e)
+                if "connection closed" in err_msg.lower() or "target closed" in err_msg.lower() or "browser has been closed" in err_msg.lower():
+                    logger.warning(f"\n⚠️  [BROWSER DISCONNECT DETECTED] Session connection dropped (Attempt {s_attempt}/{max_session_attempts}).")
+                    if s_attempt < max_session_attempts:
+                        logger.warning("🚀 Cleaning browser session locks & auto-restarting fresh Chrome session in 3 seconds...")
+                        import os, glob
+                        try:
+                            user_dir = getattr(config, "USER_DATA_DIR", "")
+                            if user_dir and os.path.exists(user_dir):
+                                for lf in glob.glob(os.path.join(user_dir, "*Singleton*")):
+                                    try: os.remove(lf)
+                                    except Exception: pass
+                        except Exception:
+                            pass
+                        import time
+                        time.sleep(3)
+                    else:
+                        logger.error(f"Automation execution failure after {max_session_attempts} attempts: {e}", exc_info=True)
+                else:
+                    logger.error(f"Automation execution failure: {e}", exc_info=True)
+                    break
 
-    except KeyboardInterrupt:
-        logger.info("Automation process interrupted by user.")
-    except Exception as e:
-        logger.error(f"Automation execution failure: {e}", exc_info=True)
 
 if __name__ == "__main__":
     main()

@@ -847,6 +847,56 @@
                 "[D] When most of the instructions given by the teacher"
               ],
               "answer": "[B] When most minimal support is given by the teacher"
+            },
+            {
+              "question": "Picture reading involves",
+              "options": [
+                "[A] Oral skills",
+                "[B] Decoding",
+                "[C] Thinking and decoding",
+                "[D] Oral skills and thinking abilities"
+              ],
+              "answer": "[C] Thinking and decoding"
+            },
+            {
+              "question": "A teacher must provide ample opportunity to children for _________ in the language classroom.",
+              "options": [
+                "[A] Write",
+                "[B] Read aloud",
+                "[C] Play",
+                "[D] Self-expression"
+              ],
+              "answer": "[D] Self-expression"
+            },
+            {
+              "question": "For better learning opportunities a teacher must provide",
+              "options": [
+                "[A] Read aloud sessions",
+                "[B] More books",
+                "[C] Freedom to children for exploration",
+                "[D] Continuous evaluation"
+              ],
+              "answer": "[C] Freedom to children for exploration"
+            },
+            {
+              "question": "The interesting phenomena is that languages are learnt in the ________ way.",
+              "options": [
+                "[A] Productive",
+                "[B] Boring",
+                "[C] Critical",
+                "[D] Same"
+              ],
+              "answer": "[D] Same"
+            },
+            {
+              "question": "The print-rich environment is essential for children as it enables",
+              "options": [
+                "[A] discussions in the classroom",
+                "[B] classroom to become attractive and colourful",
+                "[C] self-motivation to read with comprehension",
+                "[D] peer assessment"
+              ],
+              "answer": "[C] self-motivation to read with comprehension"
             }
           ]
         },
@@ -1135,6 +1185,66 @@
                 "[D] Students learn the best in a language that they are the most familiar with."
               ],
               "answer": "[B] Inclusion of variety of languages in the classroom negatively impacts students' learning."
+            },
+            {
+              "question": "Which language is effective for the creation of knowledge?",
+              "options": [
+                "[A] Official Language",
+                "[B] Standard Language",
+                "[C] Familiar Language",
+                "[D] National Language"
+              ],
+              "answer": "[C] Familiar Language"
+            },
+            {
+              "question": "For the success of the Foundational Literacy and Numeracy (FLN) mission, it is necessary to-",
+              "options": [
+                "[A] Conduct examinations every week",
+                "[B] Making use of languages that are familiar to children",
+                "[C] Emphasizing on general knowledge",
+                "[D] Introduce English from grade 1"
+              ],
+              "answer": "[B] Making use of languages that are familiar to children"
+            },
+            {
+              "question": "What is the objective of introducing the story of the 'Warli painter' in this course?",
+              "options": [
+                "[A] To tell about Warli communities.",
+                "[B] To showcase one's proficiency in the Hindi language.",
+                "[C] To talk about the art gallery of the painter.",
+                "[D] To point out one's ability to speak in more than one language, as per need."
+              ],
+              "answer": "[D] To point out one's ability to speak in more than one language, as per need."
+            },
+            {
+              "question": "Which of the following is not a key feature of Multilingual Education?",
+              "options": [
+                "[A] Use mixed languages",
+                "[B] Ample use of children's languages in the classroom",
+                "[C] Dominance of one language over others in the classroom",
+                "[D] Equal respect to all languages"
+              ],
+              "answer": "[C] Dominance of one language over others in the classroom"
+            },
+            {
+              "question": "Choose the incorrect sentence:",
+              "options": [
+                "[A] Children's home languages must be used to scaffold the learning of school's unfamiliar language in the foundational years of schooling.",
+                "[B] When children learn thinking skills in one language, they can transfer those skills easily to other languages as well.",
+                "[C] A solid foundation in the first language helps a child to learn other languages.",
+                "[D] Children struggle to learn other languages if they learn through mother tongue."
+              ],
+              "answer": "[D] Children struggle to learn other languages if they learn through mother tongue."
+            },
+            {
+              "question": "The language that is used formally in textbooks, teaching learning materials, and teaching practice is called ---.",
+              "options": [
+                "[A] Medium of instruction",
+                "[B] Home language",
+                "[C] Mother tongue",
+                "[D] Teacher's language"
+              ],
+              "answer": "[A] Medium of instruction"
             }
           ]
         }
@@ -1307,6 +1417,56 @@
                 "[D] The creative and psycho-social aspect."
               ],
               "answer": "[D] The creative and psycho-social aspect."
+            },
+            {
+              "question": "On-going assessment information is essential for",
+              "options": [
+                "[A] Designing activity areas for FLN programme",
+                "[B] Planning the field visits for children",
+                "[C] Planning and implementing developmentally appropriate FLN programme",
+                "[D] Collecting resources for FLN programmes"
+              ],
+              "answer": "[C] Planning and implementing developmentally appropriate FLN programme"
+            },
+            {
+              "question": "The ultimate goal behind integrating toy-based pedagogy in teaching-learning processes of foundational literacy and numeracy is to",
+              "options": [
+                "[A] Help children think critically, creatively, communicate, enjoy the high graded books, express freely, and solve problems.",
+                "[B] Help children think critically, creatively, communicate, enjoy the developmentally appropriate books, express critically, and solve problems.",
+                "[C] Help children think critically, creatively, communicate, enjoy the developmentally inappropriate books, express freely, and solve problems.",
+                "[D] Help children think critically, creatively, communicate, enjoy the developmentally appropriate books, express freely, and solve problems."
+              ],
+              "answer": "[D] Help children think critically, creatively, communicate, enjoy the developmentally appropriate books, express freely, and solve problems."
+            },
+            {
+              "question": "Toys and educational play materials must be developmentally appropriate, culturally relevant, and",
+              "options": [
+                "[A] Linked to all children's interests and aligned with their previous knowledge.",
+                "[B] Linked to all children's interests and aligned with their home environment.",
+                "[C] Linked to all children's age level and aligned with the learning outcomes.",
+                "[D] Linked to all children's interests and aligned with the learning outcomes."
+              ],
+              "answer": "[D] Linked to all children's interests and aligned with the learning outcomes."
+            },
+            {
+              "question": "Toy telephones and talking books are tech aided toys that largely boost",
+              "options": [
+                "[A] Emotional development",
+                "[B] Numeracy skills",
+                "[C] Language and communication skills",
+                "[D] Writing skills"
+              ],
+              "answer": "[C] Language and communication skills"
+            },
+            {
+              "question": "Which is NOT a part of the portfolio?",
+              "options": [
+                "[A] Drawing",
+                "[B] Answering in the class",
+                "[C] Photographs",
+                "[D] Worksheets"
+              ],
+              "answer": "[B] Answering in the class"
             }
           ]
         }
@@ -2607,6 +2767,58 @@
                 "[D] Vision does not have any specified time frame"
               ],
               "answer": "[A] Vision must be value driven"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module_no": 5,
+      "module_name": "Module 05: Understanding \"Vidya Pravesh\" and \"Balvatika\"",
+      "subsections": [
+        {
+          "subsection_no": 33,
+          "subsection_name": "Formative Assessment 05",
+          "questions": [
+            {
+              "question": "What is the age for preschool III?",
+              "options": [
+                "[A] 5+",
+                "[B] 3+",
+                "[C] 4+",
+                "[D] 6+"
+              ],
+              "answer": "[A] 5+"
+            },
+            {
+              "question": "Which components represent language and literacy in its complete form?",
+              "options": [
+                "[A] Oral, writing, and story",
+                "[B] Reading, story, and writing",
+                "[C] Oral, reading, and writing",
+                "[D] Oral, reading, and story"
+              ],
+              "answer": "[C] Oral, reading, and writing"
+            },
+            {
+              "question": "At which stage of life is the brain development rapid?",
+              "options": [
+                "[A] Adulthood",
+                "[B] Early childhood stage",
+                "[C] Adolescence stage",
+                "[D] Late childhood stage"
+              ],
+              "answer": "[B] Early childhood stage"
+            },
+            {
+              "question": "What is meant by DIY?",
+              "options": [
+                "[A] Do It Yourself",
+                "[B] Design and Illustration by Yourself",
+                "[C] Dance, Illustrate and be Youthful",
+                "[D] Do It Yesterday"
+              ],
+              "answer": "[A] Do It Yourself"
             }
           ]
         }

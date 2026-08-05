@@ -1,0 +1,126 @@
+{
+  "course_name": "Action Research",
+  "modules": [
+    {
+      "module_no": 1,
+      "module_name": "H5P Interactive Quiz",
+      "subsections": [
+        {
+          "subsection_no": 1,
+          "subsection_name": "H5P Interactive Quiz",
+          "questions": [
+            {
+              "question": "Fill appropriate words in the blanks",
+              "options": [],
+              "answer": "Improve practices"
+            },
+            {
+              "question": "Action Research is not a justification of one's teaching practices.",
+              "options": [],
+              "answer": "True"
+            },
+            {
+              "question": "Drag the words into the correct boxes",
+              "options": [],
+              "answer": "Select the correct factual answer."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module_no": 2,
+      "module_name": "Module 01: Research: Concept, Types Steps",
+      "subsections": [
+        {
+          "subsection_no": 10,
+          "subsection_name": "Formative Assessment 01",
+          "questions": [
+            {
+              "question": "Which of the following is not a step in the Action Research Process?",
+              "options": [
+                "[A] Drawing Generalization",
+                "[B] Problem Identification",
+                "[C] Recording of action taken",
+                "[D] Formulation of action hypothesis"
+              ],
+              "answer": "[A] Drawing Generalization"
+            },
+            {
+              "question": "Which of the following is not related to the criticism of Action Research?",
+              "options": [
+                "[A] It cannot be generalized",
+                "[B] There is lack of time",
+                "[C] There is lack of knowledge of the Methodology of Action Research",
+                "[D] Findings will have implications on classroom practices"
+              ],
+              "answer": "[D] Findings will have implications on classroom practices"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module_no": 3,
+      "module_name": "Module 02: Steps of Action Research",
+      "subsections": [
+        {
+          "subsection_no": 7,
+          "subsection_name": "Formative Assessment 02",
+          "questions": [
+            {
+              "question": "'Action' in Action Research implies -",
+              "options": [
+                "[A] Satisfaction",
+                "[B] Manipulation",
+                "[C] Progress",
+                "[D] Change"
+              ],
+              "answer": "[D] Change"
+            },
+            {
+              "question": "Educational Action Research is - i) a research for the teachers ii) a research by the teachers iii) a research of the teachers",
+              "options": [
+                "[A] Only (i) is true",
+                "[B] (i), (ii) and (iii) are true",
+                "[C] Only (i) and (ii) are true",
+                "[D] Only (ii) is true"
+              ],
+              "answer": "[C] Only (i) and (ii) are true"
+            },
+            {
+              "question": "Main objective of Action Research is",
+              "options": [
+                "[A] Encouragement",
+                "[B] Detection of errors",
+                "[C] Improvement",
+                "[D] Engagement"
+              ],
+              "answer": "[C] Improvement"
+            },
+            {
+              "question": "Which of the following is not a characteristic of Action Research?",
+              "options": [
+                "[A] Focuses on improving classroom practices",
+                "[B] Finding solutions to practical problems faced by the teacher in the classroom",
+                "[C] Helps in personal behaviour modification",
+                "[D] Finding a scientific solution to the problem"
+              ],
+              "answer": "[D] Finding a scientific solution to the problem"
+            },
+            {
+              "question": "Which of the following is not a problem of Action Research?",
+              "options": [
+                "[A] Teachers do not opt for a research project and apply for research grant. What can I do?",
+                "[B] Students absorb information given by me, like a sponge. They never inquire about anything. What is lacking in my way of teaching?",
+                "[C] Students don't take interest in extra-curricular reading. What are their difficulties?",
+                "[D] In what way I can make teachers more accountable to their duties?"
+              ],
+              "answer": "[A] Teachers do not opt for a research project and apply for research grant. What can I do?"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
