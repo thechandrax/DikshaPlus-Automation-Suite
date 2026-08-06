@@ -2204,6 +2204,76 @@ async def process_certificate_feedback(page, view_button=None, answer_key=None, 
         except Exception:
             pass
 
+    # 2. If modal is NOT open, click view_button or search for 'Give Feedback' button on page
+    if not modal_container:
+        fb_btn = view_button
+        if not fb_btn or await fb_btn.count() == 0 or not await fb_btn.is_visible():
+            for frame_t in [page] + page.frames:
+                try:
+                    cand_btn = frame_t.locator("button:has-text('Give Feedback'), a:has-text('Give Feedback'), button:has-text('Feedback'), a:has-text('Feedback'), a.activity-feedback, a.module-view-btn").first
+                    if await cand_btn.count() > 0 and await cand_btn.is_visible():
+                        fb_btn = cand_btn
+                        break
+                except Exception:
+                    pass
+
+        if fb_btn and await fb_btn.count() > 0:
+            try:
+                view_id = await fb_btn.get_attribute("data-id") or await fb_btn.get_attribute("act_id") or ""
+                logger.info("  --> [FEEDBACK BUTTON CLICK] Clicking 'Give Feedback' button...")
+                await safe_action_click(fb_btn)
+
+                # JS Event Dispatcher Backup Click
+                for frame_target in [page] + page.frames:
+                    try:
+                        await frame_target.evaluate("""(vid) => {
+                            const btn = document.querySelector(`a[data-id="${vid}"]`) || document.querySelector('a.activity-feedback') || Array.from(document.querySelectorAll('a, button')).find(b => (b.innerText||'').toLowerCase().includes('feedback'));
+                            if (btn) {
+                                btn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+                                btn.click();
+                                return true;
+                            }
+                            return false;
+                        }""", view_id)
+                    except Exception:
+                        pass
+
+                logger.info("  --> Clicked Feedback View button. Waiting 3s for Feedback Form popup modal to render...")
+                await page.wait_for_timeout(3000)
+            except Exception as ex:
+                logger.warning(f"  --> Direct click notice on Feedback View button: {ex}")
+
+        # Re-check for visible modal container after click
+        for frame_target in [page] + page.frames:
+            try:
+                modal_cand = frame_target.locator(".modal-dialog, .modal-content, .modal-body, div[class*='modal']:has-text('Feedback'), div[class*='modal']:has-text('Share your Feedback'), div[class*='modal']:has-text('Submit Feedback')").first
+                if await modal_cand.count() > 0 and await modal_cand.is_visible():
+                    modal_container = modal_cand
+                    target_frame = frame_target
+                    logger.info("  --> Feedback popup modal is NOW OPEN and VISIBLE on screen!")
+                    break
+            except Exception:
+                pass
+
+    target_scope = modal_container if modal_container else target_frame
+
+    # 3. Handle Emoji Star Rating Cards inside 'Share your Feedback' Modal
+    try:
+        exc_card = target_scope.locator("div:has-text('Excellent'), label:has-text('Excellent'), span:has-text('Excellent'), img[alt*='Excellent'], .rating-card:has-text('Excellent'), .star-rating:last-child").first
+        if await exc_card.count() > 0 and await exc_card.is_visible():
+            logger.info("  ⭐ [EMOJI RATING]: Selected 'Excellent' (5 Stars) rating response!")
+            await exc_card.click(force=True)
+            await page.wait_for_timeout(400)
+        else:
+            good_card = target_scope.locator("div:has-text('Good'), label:has-text('Good'), span:has-text('Good')").first
+            if await good_card.count() > 0 and await good_card.is_visible():
+                logger.info("  ⭐ [EMOJI RATING]: Selected 'Good' rating response!")
+                await good_card.click(force=True)
+                await page.wait_for_timeout(400)
+    except Exception as r_ex:
+        logger.warning(f"  --> Emoji rating card selection notice: {r_ex}")
+
+
     # 3. Process Feedback Questions using JSON Answer Key + AI Fallback Engine
     answers_list = extract_all_qa_items(answer_key)
     target_scope = modal_container if modal_container else target_frame
