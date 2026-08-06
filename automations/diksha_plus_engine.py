@@ -1177,9 +1177,14 @@ async def open_activity_popup(page, view_button):
             pass
         return False
 
+    # 5-second pre-click hydration buffer for DOM elements to load properly before click
+    logger.info("  ⏳ [PRE-CLICK BUFFER] Waiting 5 seconds for page & DOM elements to load properly before click...")
+    await page.wait_for_timeout(5000)
+
     # -------------------------------------------------------------
     # STEP 1: Primary Click #1 -> Item Title Link (openResourceModal JS)
     # -------------------------------------------------------------
+
     title_link_clicked = False
     if act_id:
         try:

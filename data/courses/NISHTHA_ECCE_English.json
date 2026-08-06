@@ -1273,6 +1273,166 @@
                 "[D] Loco-motor problems"
               ],
               "answer": "[C] Hearing Impairment"
+            },
+            {
+              "question": "The goal of ICDS is:",
+              "options": [
+                "[A] To address the developmental needs of all children till 6 years",
+                "[B] To address the needs of socio-economically disadvantaged groups only",
+                "[C] To address the needs of pregnant woman",
+                "[D] To address the needs of mother and child both"
+              ],
+              "answer": "[D] To address the needs of mother and child both"
+            },
+            {
+              "question": "The medium of instructions during the foundational stage, as far as possible should be ______",
+              "options": [
+                "[A] the home language",
+                "[B] the mother tongue",
+                "[C] the english language",
+                "[D] the regional language"
+              ],
+              "answer": "[B] the mother tongue"
+            },
+            {
+              "question": "Identifying the disability early and providing effective and timely support to children is known as:",
+              "options": [
+                "[A] Early presentation",
+                "[B] Early intervention",
+                "[C] Compromise",
+                "[D] Medication"
+              ],
+              "answer": "[B] Early intervention"
+            },
+            {
+              "question": "Gross motor skills help in developing control over the movement of the ____________ of the body, such as thighs, legs, arms, etc. for sports, dancing, gymnastics, dramatics, etc.",
+              "options": [
+                "[A] minor muscles",
+                "[B] small muscles",
+                "[C] fine muscles",
+                "[D] large muscles"
+              ],
+              "answer": "[D] large muscles"
+            },
+            {
+              "question": "Dolls and Dramatic Area facilitate children in:",
+              "options": [
+                "[A] Strengthening their reading skills",
+                "[B] Strengthening their muscles",
+                "[C] Strengthening their toys",
+                "[D] Strengthening their memory"
+              ],
+              "answer": "[A] Strengthening their reading skills"
+            },
+            {
+              "question": "What is the age group when cognitive functions are at the peak in children?",
+              "options": [
+                "[A] After 5",
+                "[B] Before 6",
+                "[C] Before 5",
+                "[D] After 6"
+              ],
+              "answer": "[D] After 6"
+            },
+            {
+              "question": "Which among the following is not considered part of human brain development?",
+              "options": [
+                "[A] Sensory Pathways",
+                "[B] Language",
+                "[C] Roadways",
+                "[D] Cognitive Functioning"
+              ],
+              "answer": "[C] Roadways"
+            },
+            {
+              "question": "What are the centres under ICDS popularly known as?",
+              "options": [
+                "[A] Anganwadi",
+                "[B] Rahatwadi",
+                "[C] Balwadi",
+                "[D] Pre-Primary School"
+              ],
+              "answer": "[A] Anganwadi"
+            },
+            {
+              "question": "The period from _______________ to _________________ is known as Early Childhood.",
+              "options": [
+                "[A] Birth to 7 years",
+                "[B] Birth to 6 years",
+                "[C] Birth to 8 years",
+                "[D] Birth to 5 years"
+              ],
+              "answer": "[C] Birth to 8 years"
+            },
+            {
+              "question": "The main reason for divide between parents' expectations and their actual support for the education of children is ________",
+              "options": [
+                "[A] Children are confused between home and school",
+                "[B] Teachers don't want any suggestions from parents",
+                "[C] Parents and teachers are not properly oriented on the development of meaningful partnerships",
+                "[D] Parents are not willing"
+              ],
+              "answer": "[C] Parents and teachers are not properly oriented on the development of meaningful partnerships"
+            },
+            {
+              "question": "The anganwadi worker/ preschool teacher must ensure that the outdoor space for the children must be:",
+              "options": [
+                "[A] Challenging",
+                "[B] Adventurous",
+                "[C] Stimulating",
+                "[D] Daring"
+              ],
+              "answer": "[C] Stimulating"
+            },
+            {
+              "question": "Child's development of senses, birth weight, health and nutritional status, gross and fine motor skills and disabilities is covered under ________",
+              "options": [
+                "[A] cognitive domain",
+                "[B] physical development",
+                "[C] socio emotional development",
+                "[D] language and literacy development"
+              ],
+              "answer": "[B] physical development"
+            },
+            {
+              "question": "Deaf-blindness means:",
+              "options": [
+                "[A] A child who has low vision",
+                "[B] A child who cannot hear and see",
+                "[C] A child who cannot hear",
+                "[D] A child who cannot hear and speak"
+              ],
+              "answer": "[C] A child who cannot hear and see"
+            },
+            {
+              "question": "What is the maximum time that should be given to the children daily for free and guided outdoor play activities?",
+              "options": [
+                "[A] 60 minutes",
+                "[B] 20 minutes",
+                "[C] 10 minutes",
+                "[D] 30 minutes"
+              ],
+              "answer": "[A] 60 minutes"
+            },
+            {
+              "question": "During a PTM, when the AWW talks about a child holding the book upside down, she/ he is talking to parents about a child's progress in",
+              "options": [
+                "[A] Book handling and foundational numeracy",
+                "[B] Book handling and critical thinking skills",
+                "[C] Book handling and foundational literacy",
+                "[D] Book handling and creative skills"
+              ],
+              "answer": "[C] Book handling and foundational literacy"
+            },
+            {
+              "question": "To help children construct their own knowledge provide them with ____________.",
+              "options": [
+                "[A] gifts",
+                "[B] sweets",
+                "[C] unhealthy environment",
+                "[D] toys and materials"
+              ],
+              "answer": "[D] toys and materials"
             }
           ]
         }
