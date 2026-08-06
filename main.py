@@ -30,8 +30,9 @@ def display_interactive_user_menu():
     Displays interactive registered user selection menu matching design mockup with rich colors.
     """
     print("\n\033[38;5;51m" + "=" * 67 + "\033[0m")
-    print("             \033[1m🚀 \033[1;38;5;51mLAUNCHING\033[0m \033[1;38;5;220mDIKSHA+\033[0m \033[1;38;5;82mAUTOMATION\033[0m \033[1;38;5;207mSUITE\033[0m")
+    print("             \033[1m⚡ \033[1;38;5;220mUSER ACCOUNT SELECTION\033[0m")
     print("\033[38;5;51m" + "=" * 67 + "\033[0m")
+
 
 
     print("\033[38;5;220m\033[1m[Login] Registered accounts:\033[0m")
@@ -182,10 +183,17 @@ def main():
             if 1 <= u_idx <= len(u_keys):
                 args.user_key = u_keys[u_idx - 1]
 
+    # 0. Print Opening Multi-Color Launching Banner
+    if sys.stdin.isatty():
+        print("\n\033[38;5;51m" + "=" * 67 + "\033[0m")
+        print("             \033[1m🚀 \033[1;38;5;51mLAUNCHING\033[0m \033[1;38;5;220mDIKSHA+\033[0m \033[1;38;5;82mAUTOMATION\033[0m \033[1;38;5;207mSUITE\033[0m")
+        print("\033[38;5;51m" + "=" * 67 + "\033[0m\n")
+
     # 1. Security PIN Verification
     if not args.skip_pin and sys.stdin.isatty():
         if not verify_security_pin():
             sys.exit(1)
+
 
 
 
