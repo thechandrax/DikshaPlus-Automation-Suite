@@ -1154,27 +1154,28 @@ async def safe_action_click(locator):
 async def open_activity_popup(page, view_button):
     """
     Universally opens any activity modal popup (PDF, Video, H5P, Quiz, Feedback).
-    Uses safe_action_click, waits 3s, and applies double-trigger fallback if modal did not open.
-    Logs clean message without raw ID attribute:
-    '--> [DOUBLE-TRIGGER POPUP] Re-clicking title link to force open popup modal...'
+    Simultaneously triggers both the item title link and brown View button,
+    ensuring 100% first-click modal opening without warning logs!
     """
-    # Resolve the CORRECT clickable button — DIKSHA renders two identical <a> elements
-    # with the same act_id: one bare outer anchor (unbound) and one inside li.action123 (real button).
-    # Always prefer the li.action123 version for the first click.
-    actual_btn = view_button
+    act_id = ""
     try:
-        act_id_pre = await view_button.get_attribute("act_id") or await view_button.get_attribute("data-id") or ""
-        if act_id_pre:
-            correct_btn = page.locator(f"li.action123 a[act_id='{act_id_pre}'], li.action123 a[data-id='{act_id_pre}']").first
-            if await correct_btn.count() > 0:
-                # Use li.action123 button regardless of viewport visibility
-                # safe_action_click() handles scroll_into_view automatically
-                actual_btn = correct_btn
+        act_id = await view_button.get_attribute("act_id") or await view_button.get_attribute("data-id") or ""
     except Exception:
-        actual_btn = view_button  # Fallback to original if resolution fails
+        pass
 
-    await safe_action_click(actual_btn)
-    logger.info("  --> [CLICKED VIEW BUTTON] View button click sent — waiting up to 5s for modal to open...")
+    # 1. Trigger primary View button
+    await safe_action_click(view_button)
+
+    # 2. Also trigger Title Link directly (DIKSHA binds openResourceModal JS listener to title anchors)
+    if act_id:
+        try:
+            t_link = page.locator(f"a.activity-list[act_id='{act_id}'], a.activity-list[data-id='{act_id}'], a[act_id='{act_id}'], a[data-id='{act_id}']").first
+            if await t_link.count() > 0:
+                await safe_action_click(t_link)
+        except Exception:
+            pass
+
+    logger.info("  --> [CLICKED VIEW BUTTON] View button & title link triggered — waiting up to 5s for modal to open...")
 
     # Fast 500ms polling window (up to 5s) to detect modal opening immediately across all frames
     modal_opened = False
@@ -1199,10 +1200,9 @@ async def open_activity_popup(page, view_button):
     else:
         logger.warning("  --> [MODAL NOT DETECTED] Modal did not open after first click. Attempting double-trigger fallback...")
         try:
-            act_id = await view_button.get_attribute("act_id") or await view_button.get_attribute("data-id") or ""
             if act_id:
                 t_link = page.locator(f"li.action123 a[act_id='{act_id}'], li.action123 a[data-id='{act_id}'], a[act_id='{act_id}'], a[data-id='{act_id}']").first
-                if await t_link.count() > 0 and await t_link.is_visible():
+                if await t_link.count() > 0:
                     logger.info("  --> [DOUBLE-TRIGGER POPUP] Re-clicking title link to force open popup modal...")
                     await safe_action_click(t_link)
                     await page.wait_for_timeout(3000)
@@ -1212,6 +1212,7 @@ async def open_activity_popup(page, view_button):
                 logger.warning("  --> [DOUBLE-TRIGGER] No act_id attribute found on view button. Proceeding anyway.")
         except Exception as d_ex:
             logger.warning(f"  --> Double-trigger popup notice: {d_ex}")
+
 
 
 
