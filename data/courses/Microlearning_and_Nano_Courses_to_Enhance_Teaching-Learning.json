@@ -1,0 +1,307 @@
+{
+  "course_name": "Microlearning and Nano Courses to Enhance Teaching-Learning",
+  "modules": [
+    {
+      "module_no": 7,
+      "module_name": "Assessment",
+      "subsections": [
+        {
+          "subsection_no": 1,
+          "subsection_name": "Assessment",
+          "questions": [
+            {
+              "question": "What is the primary advantage of using bite-sized learning modules in digital education?",
+              "options": [
+                "[A] They replace the need for instructor interaction",
+                "[B] They increase content volume without extra planning",
+                "[C] They reduce the learner's cognitive load by focusing on a single outcome",
+                "[D] They eliminate the need for assessments"
+              ],
+              "answer": "[C] They reduce the learner's cognitive load by focusing on a single outcome"
+            },
+            {
+              "question": "What is the primary goal of a Learning Dialogue (LeD)?",
+              "options": [
+                "[A] Deliver long lectures",
+                "[B] Promote interaction and concept attainment",
+                "[C] Summarize research papers",
+                "[D] Provide additional reading material"
+              ],
+              "answer": "[B] Promote interaction and concept attainment"
+            },
+            {
+              "question": "Which of the following is a key challenge in micro and nano online courses?",
+              "options": [
+                "[A] Lack of course content",
+                "[B] Too many live sessions",
+                "[C] Frequent instructor interruptions",
+                "[D] Passive consumption of video lectures"
+              ],
+              "answer": "[D] Passive consumption of video lectures"
+            },
+            {
+              "question": "According to the presentation, which policy supports the adoption of microlearning in India?",
+              "options": [
+                "[A] RTI Act",
+                "[B] RTE Act",
+                "[C] Sarva Shiksha Abhiyan",
+                "[D] National Education Policy 2020"
+              ],
+              "answer": "[D] National Education Policy 2020"
+            },
+            {
+              "question": "When was the term \"microlearning\" first published?",
+              "options": [
+                "[A] 2016",
+                "[B] 2002",
+                "[C] 1963",
+                "[D] 1990"
+              ],
+              "answer": "[D] 1990"
+            },
+            {
+              "question": "What is the purpose of spaced repetition in microlearning?",
+              "options": [
+                "[A] To confuse learners",
+                "[B] To teach multiple topics simultaneously",
+                "[C] To reduce digital use",
+                "[D] To help retain knowledge over time"
+              ],
+              "answer": "[D] To help retain knowledge over time"
+            },
+            {
+              "question": "Which instructional design principle is most aligned with bite-sized learning?",
+              "options": [
+                "[A] Rote learning",
+                "[B] Chunking",
+                "[C] Bloom's spiral",
+                "[D] Spiral curriculum"
+              ],
+              "answer": "[B] Chunking"
+            },
+            {
+              "question": "What type of learners benefit most from microlearning's short and focused structure?",
+              "options": [
+                "[A] Only adult learners",
+                "[B] Only high-achieving students",
+                "[C] Students with short attention spans",
+                "[D] Learners with longer attention spans"
+              ],
+              "answer": "[C] Students with short attention spans"
+            },
+            {
+              "question": "What is the typical duration of a microlearning module?",
+              "options": [
+                "[A] Less than 1 second",
+                "[B] 30-60 minutes",
+                "[C] A few minutes",
+                "[D] A few hours"
+              ],
+              "answer": "[C] A few minutes"
+            },
+            {
+              "question": "Nano learning modules usually last for:",
+              "options": [
+                "[A] 10-15 minutes",
+                "[B] Less than 2 minutes",
+                "[C] 20-30 minutes",
+                "[D] 3-5 minutes"
+              ],
+              "answer": "[B] Less than 2 minutes"
+            },
+            {
+              "question": "Which of the following ensures engagement in a bite-sized digital module?",
+              "options": [
+                "[A] Integrating interactive elements like polls or drag-and-drop",
+                "[B] Including long explanatory paragraphs",
+                "[C] Minimizing visuals to keep content short",
+                "[D] Adding multiple topics into one module"
+              ],
+              "answer": "[A] Integrating interactive elements like polls or drag-and-drop"
+            },
+            {
+              "question": "Which of the following is NOT a form of interactive e-resource?",
+              "options": [
+                "[A] Interactive quiz",
+                "[B] Interactive e-book",
+                "[C] Printed worksheet",
+                "[D] Interactive poll"
+              ],
+              "answer": "[C] Printed worksheet"
+            },
+            {
+              "question": "Curation of e-resources includes:",
+              "options": [
+                "[A] Deleting unnecessary files",
+                "[B] Bookmarking and social bookmarking",
+                "[C] Using print-only materials",
+                "[D] Installing multimedia software"
+              ],
+              "answer": "[B] Bookmarking and social bookmarking"
+            },
+            {
+              "question": "Which of the following is a benefit of chat-based microlearning assistants?",
+              "options": [
+                "[A] Provide personalized, bite-sized learning",
+                "[B] Require long hours of training",
+                "[C] Only work offline",
+                "[D] Only suitable for large classrooms"
+              ],
+              "answer": "[A] Provide personalized, bite-sized learning"
+            },
+            {
+              "question": "Which tool is considered an example of nano learning?",
+              "options": [
+                "[A] A detailed project report",
+                "[B] A classroom debate",
+                "[C] A chapter-end exercise",
+                "[D] A YouTube tutorial under 2 minutes"
+              ],
+              "answer": "[D] A YouTube tutorial under 2 minutes"
+            },
+            {
+              "question": "Which phase of ADDIE model is especially important when designing bite-sized modules?",
+              "options": [
+                "[A] Design",
+                "[B] Implementation",
+                "[C] Evaluation",
+                "[D] Administration"
+              ],
+              "answer": "[A] Design"
+            },
+            {
+              "question": "Which of the following is NOT a recommended feature of an engaging educational video?",
+              "options": [
+                "[A] Short duration",
+                "[B] Use of visuals",
+                "[C] Monologue delivery",
+                "[D] Focussed concept"
+              ],
+              "answer": "[C] Monologue delivery"
+            },
+            {
+              "question": "Engagement in micro and nano courses requires:",
+              "options": [
+                "[A] Additional reading assignments only",
+                "[B] Thoughtful instructional design and learner activity",
+                "[C] More lengthy assessments",
+                "[D] Better internet speed"
+              ],
+              "answer": "[B] Thoughtful instructional design and learner activity"
+            },
+            {
+              "question": "What has caused human attention span to shrink over time?",
+              "options": [
+                "[A] Physical activity",
+                "[B] Increased reading",
+                "[C] Hyperconnected lifestyles",
+                "[D] Offline habits"
+              ],
+              "answer": "[C] Hyperconnected lifestyles"
+            },
+            {
+              "question": "Which of the following best represents the cognitive theory supporting bite-sized learning?",
+              "options": [
+                "[A] Constructivism",
+                "[B] Cognitive Load Theory",
+                "[C] Dual Coding Theory",
+                "[D] Social Learning Theory"
+              ],
+              "answer": "[B] Cognitive Load Theory"
+            },
+            {
+              "question": "Which instructional strategy emphasizes immediate and frequent practice with feedback?",
+              "options": [
+                "[A] Live webinar",
+                "[B] Peer teaching",
+                "[C] Learning by Doing (LbD)",
+                "[D] Video-based learning"
+              ],
+              "answer": "[C] Learning by Doing (LbD)"
+            },
+            {
+              "question": "Which of these is not a disruptive technology mentioned in education?",
+              "options": [
+                "[A] MOOCs",
+                "[B] Virtual Reality",
+                "[C] AI Tutors",
+                "[D] Blackboards"
+              ],
+              "answer": "[D] Blackboards"
+            },
+            {
+              "question": "What does \"nanolearning\" focus on?",
+              "options": [
+                "[A] Single fact or skill in under 2 minutes",
+                "[B] Full-length courses",
+                "[C] Group discussions",
+                "[D] Weekly tests"
+              ],
+              "answer": "[A] Single fact or skill in under 2 minutes"
+            },
+            {
+              "question": "Infographics are useful because they:",
+              "options": [
+                "[A] Are only decorative visuals",
+                "[B] Are always animated",
+                "[C] Eliminate the need for teachers",
+                "[D] Present information quickly and clearly"
+              ],
+              "answer": "[D] Present information quickly and clearly"
+            },
+            {
+              "question": "What is one major benefit of interactive videos?",
+              "options": [
+                "[A] They reduce video length",
+                "[B] They eliminate all user control",
+                "[C] They play without internet",
+                "[D] They allow the addition of questions and pop-ups"
+              ],
+              "answer": "[D] They allow the addition of questions and pop-ups"
+            },
+            {
+              "question": "In designing bite-sized learning for skill development, which approach is most effective?",
+              "options": [
+                "[A] Sequencing scaffolded practice with immediate feedback",
+                "[B] Skipping reflection activities to save time",
+                "[C] Assigning long case studies to complete offline",
+                "[D] Delivering video-only tutorials"
+              ],
+              "answer": "[A] Sequencing scaffolded practice with immediate feedback"
+            },
+            {
+              "question": "Which of the following is a key characteristic of nano learning?",
+              "options": [
+                "[A] Is conducted as group projects",
+                "[B] Covers multiple objectives",
+                "[C] Focuses on one specific concept",
+                "[D] Requires printed books"
+              ],
+              "answer": "[C] Focuses on one specific concept"
+            },
+            {
+              "question": "What is one primary reason for using e-resources in an online course?",
+              "options": [
+                "[A] To engage learners and reduce cognitive load",
+                "[B] To eliminate teacher interaction",
+                "[C] To reduce internet dependency",
+                "[D] To increase the homework load"
+              ],
+              "answer": "[A] To engage learners and reduce cognitive load"
+            },
+            {
+              "question": "Which of the following promotes learner-learner interaction in online courses?",
+              "options": [
+                "[A] Discussion Forums",
+                "[B] Glossary of terms",
+                "[C] Lecture slides",
+                "[D] MCQ Tests"
+              ],
+              "answer": "[A] Discussion Forums"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

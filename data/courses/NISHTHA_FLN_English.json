@@ -1309,6 +1309,16 @@
                 "[D] Teacher's language"
               ],
               "answer": "[A] Medium of instruction"
+            },
+            {
+              "question": "Which one of the following is the best statement to summarize the learning of this course",
+              "options": [
+                "[A] In areas where children's language cannot be used as medium of instruction right away, it should be used strategically and extensively in the oral domain.",
+                "[B] As far as possible, one should avoid using children's languages in the class.",
+                "[C] Children should be assessed only in English",
+                "[D] Medium of instruction in schools from grade 1 to grade 10 must be children's mother tongue, at all costs."
+              ],
+              "answer": "[A] In areas where children's language cannot be used as medium of instruction right away, it should be used strategically and extensively in the oral domain."
             }
           ]
         }
@@ -1511,6 +1521,36 @@
                 "[D] Worksheets"
               ],
               "answer": "[B] Answering in the class"
+            },
+            {
+              "question": "A child is touching and counting each object given in a row, the teacher is observing the child's progress in",
+              "options": [
+                "[A] Social-emotional development",
+                "[B] Foundational numeracy",
+                "[C] Fine motor skills",
+                "[D] Foundational literacy"
+              ],
+              "answer": "[B] Foundational numeracy"
+            },
+            {
+              "question": "Active engagement of children in activities is key to achieve",
+              "options": [
+                "[A] 360 degrees.",
+                "[B] 260 degrees.",
+                "[C] 560 degrees.",
+                "[D] 460 degrees."
+              ],
+              "answer": "[A] 360 degrees."
+            },
+            {
+              "question": "Assessment for Foundation Literacy and Numeracy helps to ensure:",
+              "options": [
+                "[A] Creative skill of children",
+                "[B] Weak areas in FLN",
+                "[C] Early identification of learning disabilities and potential abilities",
+                "[D] Problem areas in FLN"
+              ],
+              "answer": "[B] Weak areas in FLN"
             }
           ]
         }

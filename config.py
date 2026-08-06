@@ -72,7 +72,8 @@ elif os.environ.get("DISPLAY"):
 elif IS_DOCKER or IS_TERMUX or IS_NO_DISPLAY_LINUX:
     HEADLESS = True    # Automatically use Headless mode on Railway Cloud / Termux without DISPLAY!
 else:
-    HEADLESS = False   # ALWAYS HEADLESS=False for local GUI desktop run on Laptop (Windows)!
+    HEADLESS = True   # Default Headless mode enabled for background execution on Laptop!
+
 
 
 
