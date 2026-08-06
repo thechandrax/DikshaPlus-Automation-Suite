@@ -1185,19 +1185,19 @@ async def open_activity_popup(page, view_button):
         try:
             t_link = page.locator(f"a.activity-list[act_id='{act_id}'], a.activity-list[data-id='{act_id}'], a[act_id='{act_id}'], a[data-id='{act_id}']").first
             if await t_link.count() > 0:
-                logger.info(f"  --> [PRIMARY CLICK #1] Clicking Item Title Link for act_id='{act_id}'...")
+                logger.info("  --> [PRIMARY CLICK #1] Clicking Item Title Link...")
                 await safe_action_click(t_link)
                 title_link_clicked = True
         except Exception:
             pass
 
     if not title_link_clicked:
-        logger.info("  --> [PRIMARY CLICK #1] Clicking primary View button...")
+        logger.info("  --> [PRIMARY CLICK #1] Clicking Item Title Link...")
         await safe_action_click(view_button)
 
-    # Poll 3s for Step 1
+    # Poll 5s for Step 1
     start_p1 = asyncio.get_event_loop().time()
-    while (asyncio.get_event_loop().time() - start_p1) < 3.0:
+    while (asyncio.get_event_loop().time() - start_p1) < 5.0:
         if await _check_modal_is_open():
             logger.info("  --> [MODAL OPENED] Activity modal opened successfully on Primary Click #1!")
             return True
@@ -1206,7 +1206,7 @@ async def open_activity_popup(page, view_button):
     # -------------------------------------------------------------
     # STEP 2: Fallback Click #2 -> Brown View Button
     # -------------------------------------------------------------
-    logger.info("  --> [FALLBACK CLICK #2] Modal not detected after 3s. Clicking brown View button...")
+    logger.info("  --> [FALLBACK CLICK #2] Modal not detected after 5s. Clicking View button...")
     try:
         if act_id:
             v_btn = page.locator(f"li.action123 a[act_id='{act_id}'], li.action123 a[data-id='{act_id}']").first
@@ -1219,9 +1219,9 @@ async def open_activity_popup(page, view_button):
     except Exception:
         await safe_action_click(view_button)
 
-    # Poll 3s for Step 2
+    # Poll 5s for Step 2
     start_p2 = asyncio.get_event_loop().time()
-    while (asyncio.get_event_loop().time() - start_p2) < 3.0:
+    while (asyncio.get_event_loop().time() - start_p2) < 5.0:
         if await _check_modal_is_open():
             logger.info("  --> [MODAL OPENED] Activity modal opened successfully on View Button Click #2!")
             return True
@@ -1236,7 +1236,7 @@ async def open_activity_popup(page, view_button):
             t_link = page.locator(f"a.activity-list[act_id='{act_id}'], a.activity-list[data-id='{act_id}'], a[act_id='{act_id}'], a[data-id='{act_id}']").first
             if await t_link.count() > 0:
                 await safe_action_click(t_link)
-                await page.wait_for_timeout(3000)
+                await page.wait_for_timeout(5000)
     except Exception as d_ex:
         logger.warning(f"  --> Double-trigger popup notice: {d_ex}")
 
@@ -1245,6 +1245,7 @@ async def open_activity_popup(page, view_button):
         return True
     
     return False
+
 
 
 

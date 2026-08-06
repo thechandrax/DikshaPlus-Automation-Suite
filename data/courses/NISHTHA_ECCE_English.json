@@ -551,6 +551,66 @@
                 "[D] Child has gained developmental milestones early compared to others of the same age"
               ],
               "answer": "[B] Child has not gained the developmental skills compared to others of the same age"
+            },
+            {
+              "question": "Children have communication issues when they have:",
+              "options": [
+                "[A] Thalassemia",
+                "[B] Hearing Impairment",
+                "[C] Loco-motor problems",
+                "[D] Blindness"
+              ],
+              "answer": "[B] Hearing Impairment"
+            },
+            {
+              "question": "The following is not a prime stakeholder in ECCE:",
+              "options": [
+                "[A] Parents",
+                "[B] Anganwadi workers",
+                "[C] Lawyers",
+                "[D] Teachers"
+              ],
+              "answer": "[C] Lawyers"
+            },
+            {
+              "question": "ECCE is essential for:",
+              "options": [
+                "[A] Children in rural areas",
+                "[B] Children in urban areas",
+                "[C] Children with disabilities",
+                "[D] All children"
+              ],
+              "answer": "[D] All children"
+            },
+            {
+              "question": "Identifying the disability early and providing effective and timely support to children is known as:",
+              "options": [
+                "[A] Early presentation",
+                "[B] Compromise",
+                "[C] Medication",
+                "[D] Early intervention"
+              ],
+              "answer": "[D] Early intervention"
+            },
+            {
+              "question": "Development in children is said to be:",
+              "options": [
+                "[A] Unpredictable",
+                "[B] Same for all children",
+                "[C] Predictable",
+                "[D] Based on economic factors"
+              ],
+              "answer": "[C] Predictable"
+            },
+            {
+              "question": "The following skill is related to socio-emotional domain:",
+              "options": [
+                "[A] Jumping",
+                "[B] Threading beads",
+                "[C] Remembering",
+                "[D] Expressing feelings"
+              ],
+              "answer": "[D] Expressing feelings"
             }
           ]
         }
@@ -1043,6 +1103,176 @@
                 "[D] language and literacy"
               ],
               "answer": "[A] approaches to learning"
+            },
+            {
+              "question": "Which among the following are the most important components of preschool?",
+              "options": [
+                "[A] Play and learning environment",
+                "[B] Music and dancing environment",
+                "[C] Play and dancing environment",
+                "[D] Dance and learning environment"
+              ],
+              "answer": "[A] Play and learning environment"
+            },
+            {
+              "question": "_______ is not a component of socio-emotional development.",
+              "options": [
+                "[A] Turn taking and cooperation",
+                "[B] Self-regulation and attention",
+                "[C] Balanced diet",
+                "[D] Impulse control"
+              ],
+              "answer": "[C] Balanced diet"
+            },
+            {
+              "question": "Which activity do you think is good for helping children to become effective communicators?",
+              "options": [
+                "[A] Running",
+                "[B] Skipping",
+                "[C] Free conversation",
+                "[D] Rhymes"
+              ],
+              "answer": "[C] Free conversation"
+            },
+            {
+              "question": "The full form of ECCE is:",
+              "options": [
+                "[A] Early Childhood Care Education",
+                "[B] Early Childhood Care and Education",
+                "[C] Emotional Care for Children and Education",
+                "[D] Early Care for Childhood and Education"
+              ],
+              "answer": "[B] Early Childhood Care and Education"
+            },
+            {
+              "question": "An early sign of Specific Learning Disability is:",
+              "options": [
+                "[A] Delayed language and speech",
+                "[B] Short height",
+                "[C] Delayed walking",
+                "[D] Difficulty in vision"
+              ],
+              "answer": "[A] Delayed language and speech"
+            },
+            {
+              "question": "Which part of the human body is considered to be the command centre?",
+              "options": [
+                "[A] Heart",
+                "[B] Brain",
+                "[C] Stomach",
+                "[D] Kidney"
+              ],
+              "answer": "[B] Brain"
+            },
+            {
+              "question": "Parents and community members should be involved in the preschool programme through",
+              "options": [
+                "[A] Parent Teacher Meetings (PTMs)",
+                "[B] Writing letters and emails only",
+                "[C] Workshops by professionals",
+                "[D] Regular communication, workshops, PTMs and Parents' Conferences"
+              ],
+              "answer": "[D] Regular communication, workshops, PTMs and Parents' Conferences"
+            },
+            {
+              "question": "Which of the following is correct for motivating children towards Foundational Literacy at home?",
+              "options": [
+                "[A] Collage making",
+                "[B] Counting and placing spoons",
+                "[C] Group gossiping",
+                "[D] Shared reading"
+              ],
+              "answer": "[D] Shared reading"
+            },
+            {
+              "question": "Identify activities in which you can involve children in role-play or dramatization better.",
+              "options": [
+                "[A] Story telling",
+                "[B] Rhymes",
+                "[C] Swing",
+                "[D] Cycling"
+              ],
+              "answer": "[A] Story telling"
+            },
+            {
+              "question": "According to NEP 2020, how many years are covered under the foundational stage of education?",
+              "options": [
+                "[A] 2 years",
+                "[B] 3 years",
+                "[C] 5 years",
+                "[D] 1 year"
+              ],
+              "answer": "[C] 5 years"
+            },
+            {
+              "question": "A defining characteristic of a 'ready' school is not _______",
+              "options": [
+                "[A] having beautiful campuses",
+                "[B] providing a continuity in learning experiences",
+                "[C] ensuring a smooth transition between ECCE programmes and primary schools",
+                "[D] providing a supportive, enriched and developmentally appropriate learning environment"
+              ],
+              "answer": "[A] having beautiful campuses"
+            },
+            {
+              "question": "The different methods to organise ECCE advocacy programmes for the community could be",
+              "options": [
+                "[A] Dance shows/ Performances",
+                "[B] Get togethers",
+                "[C] Local dance, folk songs, street plays, puppet shows",
+                "[D] Movie shows"
+              ],
+              "answer": "[C] Local dance, folk songs, street plays, puppet shows"
+            },
+            {
+              "question": "As per NEP 2020, the age group covered under the Foundational stage is:",
+              "options": [
+                "[A] 0 to 2 years",
+                "[B] 12 to 18 years",
+                "[C] 3 to 8 years",
+                "[D] 9 to 11 years"
+              ],
+              "answer": "[C] 3 to 8 years"
+            },
+            {
+              "question": "The indoor space can be divided into activity areas with an appropriate arrangement of _________.",
+              "options": [
+                "[A] Play equipments",
+                "[B] Digging and planting equipments",
+                "[C] Gardening area",
+                "[D] Open Shelves and child-friendly furniture"
+              ],
+              "answer": "[D] Open Shelves and child-friendly furniture"
+            },
+            {
+              "question": "Benefit of early identification is:",
+              "options": [
+                "[A] It lays a strong foundation for learning and improves all domains of development",
+                "[B] It increases workload of preschool/anganwadi teachers",
+                "[C] It creates joyful environment for children with disability",
+                "[D] It creates extra burden for parents"
+              ],
+              "answer": "[A] It lays a strong foundation for learning and improves all domains of development"
+            },
+            {
+              "question": "Concepts like big, small, same as (size), long, short, same as (length), heavy, light, same as (weight), tall, short etc. are called ____________.",
+              "options": [
+                "[A] Pre-number concepts",
+                "[B] Physical concepts",
+                "[C] Social concepts",
+                "[D] Environmental concepts"
+              ],
+              "answer": "[A] Pre-number concepts"
+            },
+            {
+              "question": "Children have communication issues when they have:",
+              "options": [
+                "[A] Blindness",
+                "[B] Thalassemia",
+                "[C] Hearing Impairment",
+                "[D] Loco-motor problems"
+              ],
+              "answer": "[C] Hearing Impairment"
             }
           ]
         }

@@ -911,6 +911,56 @@
                 "[D] peer assessment"
               ],
               "answer": "[C] self-motivation to read with comprehension"
+            },
+            {
+              "question": "In a language classroom, open-ended instructions play an imperative role as",
+              "options": [
+                "[A] it gives autonomy to children to speak",
+                "[B] it allows children to expand their knowledge and experience",
+                "[C] it gives authority to the teacher to speak",
+                "[D] it helps a teacher to assess children"
+              ],
+              "answer": "[B] it allows children to expand their knowledge and experience"
+            },
+            {
+              "question": "What is the interregnum period in language learning?",
+              "options": [
+                "[A] Development of a self-contained system of expressions",
+                "[B] Process of learning a second language",
+                "[C] Development of thoughts",
+                "[D] Beginning of the process of writing"
+              ],
+              "answer": "[A] Development of a self-contained system of expressions"
+            },
+            {
+              "question": "The reading material displayed in the classroom should be",
+              "options": [
+                "[A] at a height where children cannot touch them to keep them safe and intact",
+                "[B] bought from the market",
+                "[C] as many as possible",
+                "[D] at a height where children can touch and read them easily"
+              ],
+              "answer": "[D] at a height where children can touch and read them easily"
+            },
+            {
+              "question": "The process of writing happens parallel to reading because",
+              "options": [
+                "[A] It cannot happen in isolation",
+                "[B] Both are inter-connected",
+                "[C] It is boring",
+                "[D] Both are separate"
+              ],
+              "answer": "[B] Both are inter-connected"
+            },
+            {
+              "question": "What is shared reading?",
+              "options": [
+                "[A] Fast reading",
+                "[B] When most help is given by the teacher",
+                "[C] Slow reading",
+                "[D] When no help is given by the teacher"
+              ],
+              "answer": "[B] When most help is given by the teacher"
             }
           ]
         },
