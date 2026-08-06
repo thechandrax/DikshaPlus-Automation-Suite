@@ -1148,18 +1148,33 @@ async def open_activity_popup(page, view_button):
         actual_btn = view_button  # Fallback to original if resolution fails
 
     await safe_action_click(actual_btn)
-    logger.info("  --> [CLICKED VIEW BUTTON] View button click sent — waiting 5s for modal to open...")
-    await page.wait_for_timeout(5000)
+    logger.info("  --> [CLICKED VIEW BUTTON] View button click sent — waiting up to 5s for modal to open...")
 
-    try:
-        modal_chk = page.locator(".modal.show, .modal.in, .quiz-popup-wrapper, #instructionModal, iframe, .pdf-viewer, #pdf-container").first
-        if await modal_chk.count() > 0 and await modal_chk.is_visible():
-            logger.info("  --> [MODAL OPENED] Activity modal opened successfully on first click!")
-        else:
-            logger.warning("  --> [MODAL NOT DETECTED] Modal did not open after first click. Attempting double-trigger fallback...")
+    # Fast 500ms polling window (up to 5s) to detect modal opening immediately across all frames
+    modal_opened = False
+    modal_selectors = ".modal.show, .modal.in, .quiz-popup-wrapper, #instructionModal, iframe, .pdf-viewer, #pdf-container, .sunbird-pdf-player, iframe[src*='pdf'], iframe[src*='resource'], #resource_iframe, .pdf-modal, #resource-modal, #pdf_viewer, embed[type*='pdf'], object[type*='pdf']"
+    
+    start_poll = asyncio.get_event_loop().time()
+    while (asyncio.get_event_loop().time() - start_poll) < 5.0:
+        try:
+            for frame_t in [page] + page.frames:
+                m_chk = frame_t.locator(modal_selectors).first
+                if await m_chk.count() > 0 and await m_chk.is_visible():
+                    modal_opened = True
+                    break
+            if modal_opened:
+                break
+        except Exception:
+            pass
+        await page.wait_for_timeout(500)
+
+    if modal_opened:
+        logger.info("  --> [MODAL OPENED] Activity modal opened successfully on first click!")
+    else:
+        logger.warning("  --> [MODAL NOT DETECTED] Modal did not open after first click. Attempting double-trigger fallback...")
+        try:
             act_id = await view_button.get_attribute("act_id") or await view_button.get_attribute("data-id") or ""
             if act_id:
-                # Prefer li.action123 version in double-trigger too
                 t_link = page.locator(f"li.action123 a[act_id='{act_id}'], li.action123 a[data-id='{act_id}'], a[act_id='{act_id}'], a[data-id='{act_id}']").first
                 if await t_link.count() > 0 and await t_link.is_visible():
                     logger.info("  --> [DOUBLE-TRIGGER POPUP] Re-clicking title link to force open popup modal...")
@@ -1169,8 +1184,9 @@ async def open_activity_popup(page, view_button):
                     logger.warning("  --> [DOUBLE-TRIGGER] No title link found by act_id. Proceeding anyway.")
             else:
                 logger.warning("  --> [DOUBLE-TRIGGER] No act_id attribute found on view button. Proceeding anyway.")
-    except Exception as d_ex:
-        logger.warning(f"  --> Double-trigger popup notice: {d_ex}")
+        except Exception as d_ex:
+            logger.warning(f"  --> Double-trigger popup notice: {d_ex}")
+
 
 
 
