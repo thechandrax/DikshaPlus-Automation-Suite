@@ -1,0 +1,117 @@
+{
+  "course_name": "FOUNDATION OF AI",
+  "modules": [
+    {
+      "module_no": 8,
+      "module_name": "Final assessment",
+      "subsections": [
+        {
+          "subsection_no": 1,
+          "subsection_name": "Final assessment",
+          "questions": [
+            {
+              "question": "What does AI stand for?",
+              "options": [
+                "[A] Automated Intelligence",
+                "[B] Artificial Intelligence",
+                "[C] Advanced Information",
+                "[D] Applied Integration"
+              ],
+              "answer": "[B] Artificial Intelligence"
+            },
+            {
+              "question": "AI systems primarily learn from:",
+              "options": [
+                "[A] Pre-written code only",
+                "[B] User commands",
+                "[C] Data and experience",
+                "[D] Internet connections"
+              ],
+              "answer": "[C] Data and experience"
+            },
+            {
+              "question": "Which statement best describes AI?",
+              "options": [
+                "[A] AI is exactly the same as normal computer programming",
+                "[B] AI enables machines to perform tasks requiring human-like intelligence",
+                "[C] AI only works with mathematical calculations",
+                "[D] AI cannot learn or improve over time"
+              ],
+              "answer": "[B] AI enables machines to perform tasks requiring human-like intelligence"
+            },
+            {
+              "question": "AI can help schools by:",
+              "options": [
+                "[A] Replacing all teachers",
+                "[B] Personalizing learning experiences and managing administrative tasks",
+                "[C] Building new classrooms",
+                "[D] Eliminating homework"
+              ],
+              "answer": "[B] Personalizing learning experiences and managing administrative tasks"
+            },
+            {
+              "question": "Voice assistants like Siri or Alexa are best classified as:",
+              "options": [
+                "[A] Enterprise AI",
+                "[B] Consumer AI",
+                "[C] General AI",
+                "[D] Super AI"
+              ],
+              "answer": "[B] Consumer AI"
+            },
+            {
+              "question": "Which of the following is NOT presented as a core objective/ability associated with AI in the video?",
+              "options": [
+                "[A] Learning from data and experience",
+                "[B] Reasoning to make decisions",
+                "[C] Understanding language and perception",
+                "[D] Guaranteeing human-like emotions in all systems"
+              ],
+              "answer": "[D] Guaranteeing human-like emotions in all systems"
+            },
+            {
+              "question": "Which of the following best highlights the difference between AI and traditional programming?",
+              "options": [
+                "[A] Traditional programming always uses cloud computing, AI doesn't",
+                "[B] Traditional programming is based on fixed rules, while AI adapts and learns from data",
+                "[C] AI doesn't require data, unlike traditional programming",
+                "[D] Both work exactly the same way but use different names"
+              ],
+              "answer": "[B] Traditional programming is based on fixed rules, while AI adapts and learns from data"
+            },
+            {
+              "question": "What is the primary goal of consumer Gen AI applications?",
+              "options": [
+                "[A] Optimize backend data pipelines",
+                "[B] Provide a complex API for developers",
+                "[C] Deliver a user-friendly interface for easy consumption",
+                "[D] Ensure enterprise-grade data governance"
+              ],
+              "answer": "[C] Deliver a user-friendly interface for easy consumption"
+            },
+            {
+              "question": "Which AI application mentioned in the video helps people with physical disabilities?",
+              "options": [
+                "[A] Facial recognition systems",
+                "[B] Robotic exoskeletons for disabled children",
+                "[C] AI-powered manufacturing robots",
+                "[D] Ocean exploration robots"
+              ],
+              "answer": "[B] Robotic exoskeletons for disabled children"
+            },
+            {
+              "question": "A school district pilots an AI tutor that adapts lessons to each learner. What is the primary benefit and the primary risk to watch?",
+              "options": [
+                "[A] Benefit: one-size-fits-all pacing; Risk: model transparency",
+                "[B] Benefit: personalized learning; Risk: student data privacy and security",
+                "[C] Benefit: guaranteed fairness; Risk: higher teacher workload",
+                "[D] Benefit: eliminates homework; Risk: slow grading"
+              ],
+              "answer": "[B] Benefit: personalized learning; Risk: student data privacy and security"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

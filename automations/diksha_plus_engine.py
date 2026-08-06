@@ -2299,21 +2299,22 @@ async def process_certificate_feedback(page, view_button=None, answer_key=None, 
 
     target_scope = modal_container if modal_container else target_frame
 
-    # 3. Handle Emoji Star Rating Cards inside 'Share your Feedback' Modal
+    # 3. Handle Emoji / Star Rating Cards inside 'Share your Feedback' Modal (Supports both 3-Star & 5-Star systems)
     try:
-        exc_card = target_scope.locator("div:has-text('Excellent'), label:has-text('Excellent'), span:has-text('Excellent'), img[alt*='Excellent'], .rating-card:has-text('Excellent'), .star-rating:last-child").first
+        exc_card = target_scope.locator("div.emoji-item[data-rating='5'], div.star-rating[data-rating='5'], div.emoji-item[data-rating='3'], div.star-rating[data-rating='3'], div:has-text('Excellent'), label:has-text('Excellent'), span:has-text('Excellent'), img[alt*='Excellent'], .rating-card:has-text('Excellent'), .star-rating:last-child").first
         if await exc_card.count() > 0 and await exc_card.is_visible():
-            logger.info("  ⭐ [EMOJI RATING]: Selected 'Excellent' (5 Stars) rating response!")
+            logger.info("  ⭐ [EMOJI / STAR RATING]: Selected highest rating response ('Excellent' / 5 Stars / 3 Stars)!")
             await exc_card.click(force=True)
             await page.wait_for_timeout(400)
         else:
             good_card = target_scope.locator("div:has-text('Good'), label:has-text('Good'), span:has-text('Good')").first
             if await good_card.count() > 0 and await good_card.is_visible():
-                logger.info("  ⭐ [EMOJI RATING]: Selected 'Good' rating response!")
+                logger.info("  ⭐ [EMOJI / STAR RATING]: Selected 'Good' rating response!")
                 await good_card.click(force=True)
                 await page.wait_for_timeout(400)
     except Exception as r_ex:
-        logger.warning(f"  --> Emoji rating card selection notice: {r_ex}")
+        logger.warning(f"  --> Emoji/Star rating card selection notice: {r_ex}")
+
 
 
     # 3. Process Feedback Questions using JSON Answer Key + AI Fallback Engine
