@@ -447,13 +447,15 @@ Return ONLY the exact text of the correct option choice from the list above. Do 
 
             except urllib.error.HTTPError as http_err:
                 if http_err.code in (429, 503):
-                    logger.warning(f"  ⏳ [GEMINI RATE LIMIT] Key #{key_idx} rate limited. Trying next key in sequence...")
+                    logger.warning(f"  ⏳ [GEMINI RATE LIMIT] Key #{key_idx} rate limited ({model_name}). Switching to Groq LPU...")
+                    break  # Break model loop for this key and move immediately to Groq LPU fallback!
                 elif http_err.code in (401, 403):
                     logger.error(f"  ❌ [GEMINI API ERROR {http_err.code}] Key #{key_idx} invalid.")
                     break
             except Exception as ex:
                 logger.warning(f"  ⚠️ [GEMINI SOLVER NOTICE] Key #{key_idx}: {ex}")
         return None
+
 
     def _try_groq_key(g_idx, groq_key):
         for model_name in ["llama-3.3-70b-versatile", "llama-3.1-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"]:
