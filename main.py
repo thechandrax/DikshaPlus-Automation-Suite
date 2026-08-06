@@ -98,11 +98,38 @@ def display_interactive_user_menu():
         return [(user_keys[0], config.USER_CREDENTIALS[user_keys[0]])]
 
 
+def select_browser_mode():
+    """
+    Displays interactive CLI menu to select browser display mode:
+    [1] Headless Mode (Silent Background Execution — Invisible Browser)
+    [2] Visible GUI Mode (Show Chrome Browser Window on Screen)
+    """
+    if not sys.stdin.isatty():
+        return
+
+    print("\n" + "=" * 67)
+    print(" 🖥️ CHOOSE BROWSER DISPLAY MODE")
+    print("=" * 67)
+    print("  [1] Headless Mode (Silent Background Execution — Invisible Browser)")
+    print("  [2] Visible GUI Mode (Show Chrome Browser Window on Screen)")
+    print("-" * 67)
+
+    try:
+        mode_choice = input("\033[38;5;51m👉 Select browser mode (1 or 2) [Default: 1]: \033[0m").strip()
+        if mode_choice == "2":
+            config.HEADLESS = False
+            logger.info("  ✔ Mode selected: [2] Visible GUI Mode (Chrome browser window will open on screen).")
+        else:
+            config.HEADLESS = True
+            logger.info("  ✔ Mode selected: [1] Headless Mode (Chrome running silently in background).")
+    except Exception:
+        config.HEADLESS = True
+        logger.info("  ✔ Mode selected: [1] Headless Mode (Default).")
+    print("=" * 67 + "\n")
 
 
 def main():
     parser = argparse.ArgumentParser(description="DIKSHA LMS Multi-User Automation Engine")
-
 
     parser.add_argument("--url", dest="target_course_url", default=None, help="Direct Course URL")
     parser.add_argument("--username", dest="username", default=None, help="Specific Username / Mobile / Email")
@@ -164,6 +191,11 @@ def main():
     else:
         # Display Interactive Registered User Selection Menu
         users_to_process = display_interactive_user_menu()
+
+    # 2.5 Prompt for Browser Display Mode Selection (Headless vs Visible GUI)
+    if not args.headless and sys.stdin.isatty():
+        select_browser_mode()
+
 
     # 3. Execute Automation Pipeline for selected user(s) with Auto-Reconnect Recovery
     for idx, (u, p) in enumerate(users_to_process, 1):
