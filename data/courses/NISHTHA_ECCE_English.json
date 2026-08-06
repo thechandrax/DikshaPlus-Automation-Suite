@@ -2,112 +2,22 @@
   "course_name": "NISHTHA ECCE English",
   "modules": [
     {
-      "module_no": 5,
-      "module_name": "Module 05: School Readiness",
+      "module_no": 1,
+      "module_name": "H5P Interactive Quiz",
       "subsections": [
         {
-          "subsection_no": 28,
-          "subsection_name": "Formative Assessment 05",
+          "subsection_no": 1,
+          "subsection_name": "H5P Interactive Quiz",
           "questions": [
             {
-              "question": "The following is not a key skill for language learning ________",
-              "options": [
-                "[A] Alphabet knowledge",
-                "[B] Oral language skills",
-                "[C] Data handling",
-                "[D] Phonological awareness"
-              ],
-              "answer": "[C] Data handling"
+              "question": "During pregnancy the mother should follow her cravings for sweet and sour food and not bother much about her nutrition.",
+              "options": [],
+              "answer": "False"
             },
             {
-              "question": "Schools become ready for children when they _____",
-              "options": [
-                "[A] address the learning needs of children from diverse backgrounds",
-                "[B] employed appropriate instructional approaches",
-                "[C] give homework and assignments to children",
-                "[D] have developmentally appropriate academic demands"
-              ],
-              "answer": "[A] address the learning needs of children from diverse backgrounds"
-            },
-            {
-              "question": "The most important thing that needs to change to improve the low learning levels of children is ________",
-              "options": [
-                "[A] physical infrastructure",
-                "[B] curricular approaches and classroom practices",
-                "[C] revision of textbooks",
-                "[D] teacher preparation programmes"
-              ],
-              "answer": "[B] curricular approaches and classroom practices"
-            },
-            {
-              "question": "The concept of school readiness expects children to be able to _____",
-              "options": [
-                "[A] count",
-                "[B] do homework",
-                "[C] read and write",
-                "[D] be active, communicative and creative"
-              ],
-              "answer": "[D] be active, communicative and creative"
-            },
-            {
-              "question": "The domain which focuses on the skills and behaviours that children use to engage in learning is known as ________",
-              "options": [
-                "[A] language and literacy",
-                "[B] approaches to learning",
-                "[C] cognitive",
-                "[D] socio-emotional"
-              ],
-              "answer": "[B] approaches to learning"
-            },
-            {
-              "question": "Cognitive Self-regulation skills are also known as ______",
-              "options": [
-                "[A] executive function skills",
-                "[B] analytical skills",
-                "[C] problem-solving skills",
-                "[D] creative thinking skills"
-              ],
-              "answer": "[A] executive function skills"
-            },
-            {
-              "question": "Over 90% of a child's cumulative brain development occurs prior to the age of",
-              "options": [
-                "[A] 7",
-                "[B] 5",
-                "[C] 8",
-                "[D] 6"
-              ],
-              "answer": "[B] 5"
-            },
-            {
-              "question": "Children who show poor readiness are likely to have __________",
-              "options": [
-                "[A] high school achievement",
-                "[B] low school achievement",
-                "[C] successful career",
-                "[D] high retention rates"
-              ],
-              "answer": "[B] low school achievement"
-            },
-            {
-              "question": "Problem-solving skills, attention, memory and rational thoughts are components of __",
-              "options": [
-                "[A] Language development domain",
-                "[B] Socio-emotional development domain",
-                "[C] Cognitive development domain",
-                "[D] Creative development domain"
-              ],
-              "answer": "[C] Cognitive development domain"
-            },
-            {
-              "question": "The stimulating learning environment at home can be created by providing ______",
-              "options": [
-                "[A] a television at home",
-                "[B] magazines, story books, toys, manipulatives and rich interaction",
-                "[C] lots of expensive games and gadgets",
-                "[D] observing children in the playground"
-              ],
-              "answer": "[B] magazines, story books, toys, manipulatives and rich interaction"
+              "question": "Play-based Activities do not promote Holistic Development.",
+              "options": [],
+              "answer": "False"
             }
           ]
         }
@@ -226,22 +136,224 @@
       ]
     },
     {
-      "module_no": 1,
-      "module_name": "H5P Interactive Quiz",
+      "module_no": 3,
+      "module_name": "Module 03: Play-based Activities for Holistic Development",
       "subsections": [
         {
-          "subsection_no": 1,
-          "subsection_name": "H5P Interactive Quiz",
+          "subsection_no": 31,
+          "subsection_name": "Formative Assessment 03",
           "questions": [
             {
-              "question": "During pregnancy the mother should follow her cravings for sweet and sour food and not bother much about her nutrition.",
-              "options": [],
-              "answer": "False"
+              "question": "Development of the five senses, strengthening of larger and smaller bones and muscles and refining their eye-hand coordination helps in ____________.",
+              "options": [
+                "[A] body development",
+                "[B] muscle development",
+                "[C] reading and writing",
+                "[D] physical development"
+              ],
+              "answer": "[D] physical development"
             },
             {
-              "question": "Play-based Activities do not promote Holistic Development.",
-              "options": [],
-              "answer": "False"
+              "question": "Holistic Progress Card is ____________ report.",
+              "options": [
+                "[A] Three-dimensional",
+                "[B] Two-dimensional",
+                "[C] One-dimensional",
+                "[D] Multi-dimensional"
+              ],
+              "answer": "[D] Multi-dimensional"
+            },
+            {
+              "question": "Children construct their own knowledge based on their own experiences as they learn and grow.",
+              "options": [
+                "[A] Not Sure",
+                "[B] False",
+                "[C] True",
+                "[D] Undecided"
+              ],
+              "answer": "[C] True"
+            },
+            {
+              "question": "Free play activities provide opportunities for children to make ____________.",
+              "options": [
+                "[A] stories and rhymes",
+                "[B] puzzle",
+                "[C] games and sports",
+                "[D] choices and take decisions"
+              ],
+              "answer": "[D] choices and take decisions"
+            },
+            {
+              "question": "Activities where children get a chance to express themselves well are helpful in the development of goal ____________.",
+              "options": [
+                "[A] Children become Effective Communicators",
+                "[B] Children become Involved Learners and Connect with their Immediate Environment",
+                "[C] Gross motor development",
+                "[D] Children Maintain Good Health and Well-being"
+              ],
+              "answer": "[A] Children become Effective Communicators"
+            },
+            {
+              "question": "The child is able to copy a given pattern indicates ____________.",
+              "options": [
+                "[A] The child is ready for drawing",
+                "[B] The child is ready for colouring",
+                "[C] The child is ready for playing",
+                "[D] The child is ready for writing"
+              ],
+              "answer": "[D] The child is ready for writing"
+            },
+            {
+              "question": "Activities involving solving problems, relationship cards example, lock and key, thread and needle, etc., answering simple questions; for example, what will happen if you do not keep your hair clean?, etc. are required for development of goal ____________.",
+              "options": [
+                "[A] Children become Involved Learners and Connect with their Immediate Environment",
+                "[B] Children become Effective Communicators",
+                "[C] All of these",
+                "[D] Children Maintain Good Health and Well-being"
+              ],
+              "answer": "[A] Children become Involved Learners and Connect with their Immediate Environment"
+            },
+            {
+              "question": "Focus of foundational learning is ____________.",
+              "options": [
+                "[A] reading and writing",
+                "[B] on holistic development of the child",
+                "[C] cognitive development",
+                "[D] physical development"
+              ],
+              "answer": "[B] on holistic development of the child"
+            },
+            {
+              "question": "Holistic Progress Card makes the stakeholders aware of a child's strength, areas of interest or also about ____________",
+              "options": [
+                "[A] the scope for further improvement",
+                "[B] motivation",
+                "[C] skill",
+                "[D] knowledge"
+              ],
+              "answer": "[A] the scope for further improvement"
+            },
+            {
+              "question": "Foundational Literacy and Numeracy refers to building adequate ____________ during the foundational stage of school education.",
+              "options": [
+                "[A] Good health",
+                "[B] Physical development",
+                "[C] Motor Development",
+                "[D] Literacy and numeracy skills"
+              ],
+              "answer": "[D] Literacy and numeracy skills"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module_no": 5,
+      "module_name": "Module 05: School Readiness",
+      "subsections": [
+        {
+          "subsection_no": 28,
+          "subsection_name": "Formative Assessment 05",
+          "questions": [
+            {
+              "question": "The following is not a key skill for language learning ________",
+              "options": [
+                "[A] Alphabet knowledge",
+                "[B] Oral language skills",
+                "[C] Data handling",
+                "[D] Phonological awareness"
+              ],
+              "answer": "[C] Data handling"
+            },
+            {
+              "question": "Schools become ready for children when they _____",
+              "options": [
+                "[A] address the learning needs of children from diverse backgrounds",
+                "[B] employed appropriate instructional approaches",
+                "[C] give homework and assignments to children",
+                "[D] have developmentally appropriate academic demands"
+              ],
+              "answer": "[A] address the learning needs of children from diverse backgrounds"
+            },
+            {
+              "question": "The most important thing that needs to change to improve the low learning levels of children is ________",
+              "options": [
+                "[A] physical infrastructure",
+                "[B] curricular approaches and classroom practices",
+                "[C] revision of textbooks",
+                "[D] teacher preparation programmes"
+              ],
+              "answer": "[B] curricular approaches and classroom practices"
+            },
+            {
+              "question": "The concept of school readiness expects children to be able to _____",
+              "options": [
+                "[A] count",
+                "[B] do homework",
+                "[C] read and write",
+                "[D] be active, communicative and creative"
+              ],
+              "answer": "[D] be active, communicative and creative"
+            },
+            {
+              "question": "The domain which focuses on the skills and behaviours that children use to engage in learning is known as ________",
+              "options": [
+                "[A] language and literacy",
+                "[B] approaches to learning",
+                "[C] cognitive",
+                "[D] socio-emotional"
+              ],
+              "answer": "[B] approaches to learning"
+            },
+            {
+              "question": "Cognitive Self-regulation skills are also known as ______",
+              "options": [
+                "[A] executive function skills",
+                "[B] analytical skills",
+                "[C] problem-solving skills",
+                "[D] creative thinking skills"
+              ],
+              "answer": "[A] executive function skills"
+            },
+            {
+              "question": "Over 90% of a child's cumulative brain development occurs prior to the age of",
+              "options": [
+                "[A] 7",
+                "[B] 5",
+                "[C] 8",
+                "[D] 6"
+              ],
+              "answer": "[B] 5"
+            },
+            {
+              "question": "Children who show poor readiness are likely to have __________",
+              "options": [
+                "[A] high school achievement",
+                "[B] low school achievement",
+                "[C] successful career",
+                "[D] high retention rates"
+              ],
+              "answer": "[B] low school achievement"
+            },
+            {
+              "question": "Problem-solving skills, attention, memory and rational thoughts are components of __",
+              "options": [
+                "[A] Language development domain",
+                "[B] Socio-emotional development domain",
+                "[C] Cognitive development domain",
+                "[D] Creative development domain"
+              ],
+              "answer": "[C] Cognitive development domain"
+            },
+            {
+              "question": "The stimulating learning environment at home can be created by providing ______",
+              "options": [
+                "[A] a television at home",
+                "[B] magazines, story books, toys, manipulatives and rich interaction",
+                "[C] lots of expensive games and gadgets",
+                "[D] observing children in the playground"
+              ],
+              "answer": "[B] magazines, story books, toys, manipulatives and rich interaction"
             }
           ]
         }
@@ -846,118 +958,6 @@
                 "[D] language and literacy"
               ],
               "answer": "[A] approaches to learning"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "module_no": 3,
-      "module_name": "Module 03: Play-based Activities for Holistic Development",
-      "subsections": [
-        {
-          "subsection_no": 31,
-          "subsection_name": "Formative Assessment 03",
-          "questions": [
-            {
-              "question": "Development of the five senses, strengthening of larger and smaller bones and muscles and refining their eye-hand coordination helps in ____________.",
-              "options": [
-                "[A] body development",
-                "[B] muscle development",
-                "[C] reading and writing",
-                "[D] physical development"
-              ],
-              "answer": "[D] physical development"
-            },
-            {
-              "question": "Holistic Progress Card is ____________ report.",
-              "options": [
-                "[A] Three-dimensional",
-                "[B] Two-dimensional",
-                "[C] One-dimensional",
-                "[D] Multi-dimensional"
-              ],
-              "answer": "[D] Multi-dimensional"
-            },
-            {
-              "question": "Children construct their own knowledge based on their own experiences as they learn and grow.",
-              "options": [
-                "[A] Not Sure",
-                "[B] False",
-                "[C] True",
-                "[D] Undecided"
-              ],
-              "answer": "[C] True"
-            },
-            {
-              "question": "Free play activities provide opportunities for children to make ____________.",
-              "options": [
-                "[A] stories and rhymes",
-                "[B] puzzle",
-                "[C] games and sports",
-                "[D] choices and take decisions"
-              ],
-              "answer": "[D] choices and take decisions"
-            },
-            {
-              "question": "Activities where children get a chance to express themselves well are helpful in the development of goal ____________.",
-              "options": [
-                "[A] Children become Effective Communicators",
-                "[B] Children become Involved Learners and Connect with their Immediate Environment",
-                "[C] Gross motor development",
-                "[D] Children Maintain Good Health and Well-being"
-              ],
-              "answer": "[A] Children become Effective Communicators"
-            },
-            {
-              "question": "The child is able to copy a given pattern indicates ____________.",
-              "options": [
-                "[A] The child is ready for drawing",
-                "[B] The child is ready for colouring",
-                "[C] The child is ready for playing",
-                "[D] The child is ready for writing"
-              ],
-              "answer": "[D] The child is ready for writing"
-            },
-            {
-              "question": "Activities involving solving problems, relationship cards example, lock and key, thread and needle, etc., answering simple questions; for example, what will happen if you do not keep your hair clean?, etc. are required for development of goal ____________.",
-              "options": [
-                "[A] Children become Involved Learners and Connect with their Immediate Environment",
-                "[B] Children become Effective Communicators",
-                "[C] All of these",
-                "[D] Children Maintain Good Health and Well-being"
-              ],
-              "answer": "[A] Children become Involved Learners and Connect with their Immediate Environment"
-            },
-            {
-              "question": "Focus of foundational learning is ____________.",
-              "options": [
-                "[A] reading and writing",
-                "[B] on holistic development of the child",
-                "[C] cognitive development",
-                "[D] physical development"
-              ],
-              "answer": "[B] on holistic development of the child"
-            },
-            {
-              "question": "Holistic Progress Card makes the stakeholders aware of a child's strength, areas of interest or also about ____________",
-              "options": [
-                "[A] the scope for further improvement",
-                "[B] motivation",
-                "[C] skill",
-                "[D] knowledge"
-              ],
-              "answer": "[A] the scope for further improvement"
-            },
-            {
-              "question": "Foundational Literacy and Numeracy refers to building adequate ____________ during the foundational stage of school education.",
-              "options": [
-                "[A] Good health",
-                "[B] Physical development",
-                "[C] Motor Development",
-                "[D] Literacy and numeracy skills"
-              ],
-              "answer": "[D] Literacy and numeracy skills"
             }
           ]
         }
