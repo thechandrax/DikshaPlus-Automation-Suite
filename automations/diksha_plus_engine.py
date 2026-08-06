@@ -2299,21 +2299,32 @@ async def process_certificate_feedback(page, view_button=None, answer_key=None, 
 
     target_scope = modal_container if modal_container else target_frame
 
-    # 3. Handle Emoji / Star Rating Cards inside 'Share your Feedback' Modal (Supports both 3-Star & 5-Star systems)
+    # 3. Select 5-Star 'Excellent' Rating Card in 'Share your Feedback' Modal
     try:
-        exc_card = target_scope.locator("div.emoji-item[data-rating='5'], div.star-rating[data-rating='5'], div.emoji-item[data-rating='3'], div.star-rating[data-rating='3'], div:has-text('Excellent'), label:has-text('Excellent'), span:has-text('Excellent'), img[alt*='Excellent'], .rating-card:has-text('Excellent'), .star-rating:last-child").first
+        exc_card = target_scope.locator(
+            "div:has-text('Excellent'), label:has-text('Excellent'), span:has-text('Excellent'), "
+            "div[class*='rating']:has-text('Excellent'), .emoji-item[data-rating='5'], .star-rating[data-rating='5']"
+        ).first
+        
         if await exc_card.count() > 0 and await exc_card.is_visible():
-            logger.info("  ⭐ [EMOJI / STAR RATING]: Selected highest rating response ('Excellent' / 5 Stars / 3 Stars)!")
             await exc_card.click(force=True)
-            await page.wait_for_timeout(400)
+            logger.info("  ⭐ [5-STAR EMOJI RATING]: Selected 'Excellent' (5 Stars / 😃) rating response!")
+            await page.wait_for_timeout(500)
         else:
-            good_card = target_scope.locator("div:has-text('Good'), label:has-text('Good'), span:has-text('Good')").first
-            if await good_card.count() > 0 and await good_card.is_visible():
-                logger.info("  ⭐ [EMOJI / STAR RATING]: Selected 'Good' rating response!")
-                await good_card.click(force=True)
-                await page.wait_for_timeout(400)
+            # Fallback: Click 5th rating card (highest rating)
+            rating_cards = target_scope.locator("div[class*='rating'], div[class*='card'], div[class*='emoji']")
+            card_cnt = await rating_cards.count()
+            if card_cnt >= 5:
+                await rating_cards.nth(4).click(force=True)
+                logger.info("  ⭐ [5-STAR EMOJI RATING]: Selected 5th rating card ('Excellent' / 5 Stars / 😃)!")
+                await page.wait_for_timeout(500)
+            elif card_cnt > 0:
+                await rating_cards.last.click(force=True)
+                logger.info(f"  ⭐ [5-STAR EMOJI RATING]: Selected highest rating card (#{card_cnt})!")
+                await page.wait_for_timeout(500)
     except Exception as r_ex:
-        logger.warning(f"  --> Emoji/Star rating card selection notice: {r_ex}")
+        logger.warning(f"  --> 5-Star Emoji rating card selection notice: {r_ex}")
+
 
 
 
