@@ -2173,57 +2173,33 @@ async def process_quiz_assessment(page, view_button, answer_key, module_name=Non
     await wait_for_server_checkmark(page, timeout=15)
 
 
-async def process_feedback_activity(page, view_button, answer_key=None, module_name="", module_no=None, sub_name="", sub_no=None, course_title=""):
+
+async def process_certificate_feedback(page, view_button=None, answer_key=None, module_name=None, module_no=None, sub_name=None, sub_no=None, course_title=None):
     """
-    Dedicated DIKSHA Popup Feedback Form Engine.
-    Matches exact DIKSHA Feedback Form popup modal:
-    1. Clicks brown 'View' button to open Feedback Form popup modal.
-    2. Selects 'Strongly Agree' / Option 1 for all radio questions inside the modal.
-    3. Clicks the brown 'Submit Feedback' button at the bottom of the modal.
-    4. Confirms 100% checkmark update!
+    STEP-07 (Feedback Form Activity):
+    Dual-Scan Auto-Popup Engine:
+      1. First checks if 'Share your Feedback' modal is ALREADY OPEN on screen (auto-popped by DIKSHA server).
+      2. If NOT open, clicks brown 'Give Feedback' / 'View' button or searches page for feedback triggers.
+      3. Selects 'Excellent' (5 Stars) / 'Strongly Agree' for all emoji/rating questions inside modal.
+      4. Fills Textarea / Comment responses via JSON / AI.
+      5. Clicks the brown 'Submit Feedback' button at the bottom of the modal.
+      6. Confirms 100% checkmark update!
     """
     ctx_str = f"Module #{module_no or 8} ('{module_name or 'Feedback Form'}') || Subsection #{sub_no or 1} ('{sub_name or 'Feedback Form'}')"
     logger.info(f"\n" + "=" * 50)
-    logger.info(f" 📝 [FEEDBACK FORM MODAL] Opening Feedback Form for {ctx_str}...")
+    logger.info(f" 📝 [FEEDBACK FORM MODAL] Processing Feedback Form for {ctx_str}...")
     logger.info("=" * 50)
 
-    # 1. Click the brown 'View' button to open the Feedback Form popup modal
-    try:
-        view_id = await view_button.get_attribute("data-id") or ""
-        await safe_action_click(view_button)
-
-
-        # JS Event Dispatcher Backup Click to ensure DIKSHA AJAX handler triggers
-        for frame_target in [page] + page.frames:
-            try:
-                await frame_target.evaluate("""(vid) => {
-                    const btn = document.querySelector(`a[data-id="${vid}"]`) || document.querySelector('a.activity-feedback');
-                    if (btn) {
-                        btn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
-                        btn.click();
-                        return true;
-                    }
-                    return false;
-                }""", view_id)
-            except Exception:
-                pass
-
-        logger.info("  --> Clicked Feedback View button. Waiting 3s for Feedback Form popup modal to render...")
-
-        await page.wait_for_timeout(3000)
-    except Exception as ex:
-        logger.warning(f"  --> Direct click notice on Feedback View button: {ex}")
-
-    # 2. Wait up to 10s for the Feedback popup modal container to become VISIBLE on screen
+    # 1. First, check if Feedback Modal is ALREADY OPEN & VISIBLE on screen (DIKSHA Auto-Popup)
     modal_container = None
     target_frame = page
     for frame_target in [page] + page.frames:
         try:
-            modal_cand = frame_target.locator(".modal-dialog, .modal-content, .modal-body, div[class*='modal']:has-text('Feedback'), div[class*='modal']:has-text('Submit')").first
+            modal_cand = frame_target.locator(".modal-dialog, .modal-content, .modal-body, div[class*='modal']:has-text('Feedback'), div[class*='modal']:has-text('Share your Feedback'), div[class*='modal']:has-text('Submit Feedback')").first
             if await modal_cand.count() > 0 and await modal_cand.is_visible():
                 modal_container = modal_cand
                 target_frame = frame_target
-                logger.info("  --> Feedback popup modal is OPEN and VISIBLE on screen!")
+                logger.info("  🎯 [AUTO-POPUP DETECTED] 'Share your Feedback' modal is ALREADY OPEN and VISIBLE on screen!")
                 break
         except Exception:
             pass
