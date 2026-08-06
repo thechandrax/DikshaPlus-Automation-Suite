@@ -1,4 +1,167 @@
 {
   "course_name": "Environmental Hazards of Electronic waste (E-waste)",
-  "modules": []
+  "modules": [
+    {
+      "module_no": 3,
+      "module_name": "Assessment",
+      "subsections": [
+        {
+          "subsection_no": 1,
+          "subsection_name": "Assessment",
+          "questions": [
+            {
+              "question": "The number of Sustainable Development Goals (SDGs) are",
+              "options": [
+                "[A] 15",
+                "[B] 14",
+                "[C] 19",
+                "[D] 17"
+              ],
+              "answer": "[D] 17"
+            },
+            {
+              "question": "Seventy percent of E-waste generated in India comes from ,",
+              "options": [
+                "[A] Telecommunication equipment",
+                "[B] Electrical equipment",
+                "[C] Medical equipment",
+                "[D] Computer equipment"
+              ],
+              "answer": "[D] Computer equipment"
+            },
+            {
+              "question": "Improper disposal of E-waste harms",
+              "options": [
+                "[A] Air",
+                "[B] Water",
+                "[C] Soil",
+                "[D] All of these"
+              ],
+              "answer": "[D] All of these"
+            },
+            {
+              "question": "Reasons for overconsumption of resources are",
+              "options": [
+                "[A] Lifestyle changes",
+                "[B] Rise in income levels",
+                "[C] Increased rate of obsolescence of electrical and electronics goods",
+                "[D] All of these"
+              ],
+              "answer": "[D] All of these"
+            },
+            {
+              "question": "The different household wastes which are collected during household activities like cooking, cleaning, etc) are known as",
+              "options": [
+                "[A] Commercial waste",
+                "[B] Agricultural waste",
+                "[C] Domestic waste",
+                "[D] Industrial waste"
+              ],
+              "answer": "[C] Domestic waste"
+            },
+            {
+              "question": "Valuable commodity found in wires is",
+              "options": [
+                "[A] Nickel",
+                "[B] Acid",
+                "[C] Beryllium",
+                "[D] Copper"
+              ],
+              "answer": "[D] Copper"
+            },
+            {
+              "question": "The Goal of Responsible consumption and production, is goal number",
+              "options": [
+                "[A] 12",
+                "[B] 9",
+                "[C] 16",
+                "[D] 6"
+              ],
+              "answer": "[A] 12"
+            },
+            {
+              "question": "Hazardous element found in medical equipment like thermometer is,",
+              "options": [
+                "[A] Lead",
+                "[B] Barium",
+                "[C] Mercury",
+                "[D] Arsenic"
+              ],
+              "answer": "[C] Mercury"
+            },
+            {
+              "question": "E - Waste stands for Excess waste Electronic waste Exclusive waste Environmental waste",
+              "options": [
+                "[A] Exclusive waste",
+                "[B] Excess waste",
+                "[C] Environmental waste",
+                "[D] Electronic waste"
+              ],
+              "answer": "[D] Electronic waste"
+            },
+            {
+              "question": "The most harmful metal released during the informal management of E-waste is",
+              "options": [
+                "[A] Aluminium",
+                "[B] Copper",
+                "[C] Lead",
+                "[D] Iron"
+              ],
+              "answer": "[C] Lead"
+            },
+            {
+              "question": "The total E-waste generated across the world is",
+              "options": [
+                "[A] 32 million tonne",
+                "[B] 40 million tonne",
+                "[C] 25 million tonne",
+                "[D] 10 million tonne"
+              ],
+              "answer": "[B] 50 million tonnes is not an option, the closest is 40 million tonne"
+            },
+            {
+              "question": "The environmentally sound method used for E-waste disposal is",
+              "options": [
+                "[A] Burning",
+                "[B] Recycle",
+                "[C] Reuse",
+                "[D] Landfills"
+              ],
+              "answer": "[B] Recycle"
+            },
+            {
+              "question": "The famous Indian company/ manufacturer in the field of electronic and electrical devices",
+              "options": [
+                "[A] Sony",
+                "[B] Apple",
+                "[C] Videocon",
+                "[D] Samsung"
+              ],
+              "answer": "[C] Videocon"
+            },
+            {
+              "question": "In 2016, which continent produced the maximum E- waste",
+              "options": [
+                "[A] North America",
+                "[B] Africa",
+                "[C] Asia",
+                "[D] Europe"
+              ],
+              "answer": "[C] Asia"
+            },
+            {
+              "question": "The E-waste Management and Handling Rules, 2012 were amended in the year",
+              "options": [
+                "[A] 2014",
+                "[B] 2013",
+                "[C] 2015",
+                "[D] 2016"
+              ],
+              "answer": "[D] 2016"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

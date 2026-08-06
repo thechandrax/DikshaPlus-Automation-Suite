@@ -359,6 +359,96 @@
                 "[D] observing children in the playground"
               ],
               "answer": "[B] magazines, story books, toys, manipulatives and rich interaction"
+            },
+            {
+              "question": "Social and emotional development helps children in ______",
+              "options": [
+                "[A] adapting to new situations",
+                "[B] phonological awareness",
+                "[C] language development",
+                "[D] numeracy development"
+              ],
+              "answer": "[A] adapting to new situations"
+            },
+            {
+              "question": "________ is not a component of language development.",
+              "options": [
+                "[A] Vocabulary",
+                "[B] Representational thought",
+                "[C] Emergent reading and writing",
+                "[D] Phonological awareness"
+              ],
+              "answer": "[B] Representational thought"
+            },
+            {
+              "question": "______ is not a key constituent of school readiness.",
+              "options": [
+                "[A] Readiness in school",
+                "[B] Readiness in communities",
+                "[C] Readiness in children",
+                "[D] Readiness in families"
+              ],
+              "answer": "[A] Readiness in school"
+            },
+            {
+              "question": "________ is the foundation for reading and writing skills.",
+              "options": [
+                "[A] Concept about print",
+                "[B] Phonological awareness",
+                "[C] Alphabet knowledge",
+                "[D] Oral language development"
+              ],
+              "answer": "[D] Oral language development"
+            },
+            {
+              "question": "A factor which is not associated with children's school readiness is _______",
+              "options": [
+                "[A] number of siblings",
+                "[B] household income",
+                "[C] parent's educational level",
+                "[D] maternal nutrition"
+              ],
+              "answer": "[A] number of siblings"
+            },
+            {
+              "question": "_______ is not a component of socio-emotional development.",
+              "options": [
+                "[A] Self-regulation and attention",
+                "[B] Turn taking and cooperation",
+                "[C] Impulse control",
+                "[D] Balanced diet"
+              ],
+              "answer": "[D] Balanced diet"
+            },
+            {
+              "question": "Child's development of senses, birth weight, health and nutritional status, gross and fine motor skills and disabilities is covered under ________",
+              "options": [
+                "[A] cognitive domain",
+                "[B] socio emotional development",
+                "[C] language and literacy development",
+                "[D] physical development"
+              ],
+              "answer": "[D] physical development"
+            },
+            {
+              "question": "Children get ready to learn __________",
+              "options": [
+                "[A] At 3 years",
+                "[B] At birth",
+                "[C] At 6 years",
+                "[D] At age 8"
+              ],
+              "answer": "[B] At birth"
+            },
+            {
+              "question": "Early childhood is a critical period of development for learning social and emotional skills, also known as _______",
+              "options": [
+                "[A] mental health",
+                "[B] inter-personal skills",
+                "[C] physical health",
+                "[D] social health"
+              ],
+              "answer": "[D] social health"
             }
           ]
         }

@@ -1506,9 +1506,23 @@ async def process_pdf_activity(page, view_button):
       2. Reading Time Simulation (maintains page reading intervals)
       3. End-of-Doc Scroll (auto-scrolls viewer container to exact bottom for checkmarks)
     """
-    logger.info("[PDF ACTIVITY] Opening PDF document resource...")
     await open_activity_popup(page, view_button)
     await page.wait_for_timeout(2000)
+
+    # Disarm & neutralize external YouTube / Weblinks inside PDF viewer modal
+    try:
+        for frame_t in [page] + page.frames:
+            await frame_t.evaluate("""() => {
+                const extLinks = document.querySelectorAll("a[href*='youtube'], a[href*='youtu.be']");
+                extLinks.forEach(a => {
+                    a.removeAttribute('href');
+                    a.removeAttribute('target');
+                    a.onclick = (e) => { e.preventDefault(); e.stopPropagation(); return false; };
+                });
+            }""")
+    except Exception:
+        pass
+
 
 
 
@@ -2896,11 +2910,31 @@ async def is_header_100_percent_complete(header):
 
 async def ensure_on_course_page(page, target_course_url=None):
     """
-    Checks if page redirected to dashboard.php or my-learning.
-    If so, automatically re-navigates to the active course URL, clicks 'Lessons' tab, and resumes execution seamlessly!
+    Automatic Recovery Guard: Checks if browser navigated to dashboard.php, my-learning, or YouTube!
+    If YouTube or dashboard is detected, automatically re-navigates back to active course URL!
     """
     try:
         curr_url = page.url.lower()
+
+        # Guard 1: Detect accidental YouTube navigation and instantly return to DIKSHA
+        if "youtube.com" in curr_url or "youtu.be" in curr_url:
+            logger.warning("\n" + "=" * 70)
+            logger.warning(" 🛡️  [YOUTUBE RECOVERY GUARD] Detected external navigation to YouTube!")
+            if target_course_url:
+                logger.warning(f" 🚀 Re-navigating back to active DIKSHA course URL: {target_course_url}")
+                await page.goto(target_course_url, wait_until="domcontentloaded")
+                await page.wait_for_timeout(3000)
+                lessons_tab = page.locator(config.SELECTORS["lessons_tab"]).first
+                if await lessons_tab.count() > 0 and await lessons_tab.is_visible():
+                    await lessons_tab.click(force=True)
+                    await page.wait_for_timeout(4000)
+                logger.warning(" ✅ Successfully recovered to course page from YouTube! Resuming execution...")
+            else:
+                await page.go_back(wait_until="domcontentloaded")
+                await page.wait_for_timeout(3000)
+            logger.warning("=" * 70 + "\n")
+            return True
+
         if "dashboard.php" in curr_url or "my-learning" in curr_url:
             logger.warning("\n" + "=" * 70)
             logger.warning(" ⚠️  [AUTOMATIC DASHBOARD RECOVERY] Detected redirect to dashboard.php!")
@@ -2916,7 +2950,7 @@ async def ensure_on_course_page(page, target_course_url=None):
             logger.warning("=" * 70 + "\n")
             return True
     except Exception as ex:
-        logger.warning(f"  --> Dashboard recovery check notice: {ex}")
+        logger.warning(f"  --> Dashboard/YouTube recovery check notice: {ex}")
     return False
 
 
