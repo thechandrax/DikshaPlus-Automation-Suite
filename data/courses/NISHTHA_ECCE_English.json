@@ -2,490 +2,6 @@
   "course_name": "NISHTHA ECCE English",
   "modules": [
     {
-      "module_no": 1,
-      "module_name": "H5P Interactive Quiz",
-      "subsections": [
-        {
-          "subsection_no": 1,
-          "subsection_name": "H5P Interactive Quiz",
-          "questions": [
-            {
-              "question": "Three year olds love to talk and listen but they also need activity and movement.",
-              "options": [],
-              "answer": "True"
-            },
-            {
-              "question": "Attending PTMs quarterly.",
-              "options": [],
-              "answer": "Yes"
-            },
-            {
-              "question": "The need for paying attention towards the holistic development of children in the early years.",
-              "options": [],
-              "answer": "Educating"
-            },
-            {
-              "question": "Children get ready to learn after coming to a Preschool.",
-              "options": [],
-              "answer": "Children get ready to learn after coming to a Preschool."
-            },
-            {
-              "question": "Drag and drop the appropriate option",
-              "options": [],
-              "answer": "Select the correct factual answer."
-            },
-            {
-              "question": "During pregnancy the mother should follow her cravings for sweet and sour food and not bother much about her nutrition.",
-              "options": [],
-              "answer": "False"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "module_no": 2,
-      "module_name": "Module 01: Significance of the Early Years",
-      "subsections": [
-        {
-          "subsection_no": 32,
-          "subsection_name": "Formative Assessment 01",
-          "questions": [
-            {
-              "question": "Which of the following age groups is not included in the foundational Stage of NEP 2020?",
-              "options": [
-                "[A] 3-6 years",
-                "[B] 8-11 years",
-                "[C] 6-8 years",
-                "[D] 2-3 years"
-              ],
-              "answer": "[B] 8-11 years"
-            },
-            {
-              "question": "In the first few years, millions of _________________ connections are formed which are critical for learning, behaviour, health and development.",
-              "options": [
-                "[A] Physical",
-                "[B] Behavioural",
-                "[C] Emotional",
-                "[D] Neural"
-              ],
-              "answer": "[D] Neural"
-            },
-            {
-              "question": "What stage of education is the Early Childhood Care and Education been considered?",
-              "options": [
-                "[A] Middle Stage",
-                "[B] Secondary Stage",
-                "[C] Foundational Stage",
-                "[D] Preparatory Stage"
-              ],
-              "answer": "[C] Foundational Stage"
-            },
-            {
-              "question": "What is the full form of ECCE?",
-              "options": [
-                "[A] Educating Caring Child Education",
-                "[B] Early Childhood Care & Education",
-                "[C] Educating Childhood Care Education",
-                "[D] Early Care Childhood Education Page 37 of 44"
-              ],
-              "answer": "[B] Early Childhood Care & Education"
-            },
-            {
-              "question": "The period from _______________ to _________________ is known as Early Childhood.",
-              "options": [
-                "[A] Birth to 6 years",
-                "[B] Birth to 8 years",
-                "[C] Birth to 5 years",
-                "[D] Birth to 7 years"
-              ],
-              "answer": "[B] Birth to 8 years"
-            },
-            {
-              "question": "For preschool education, Kindergarten/ Nursery/ Play schools/ Montessori are largely run by:",
-              "options": [
-                "[A] private organisations",
-                "[B] ministry of culture affairs",
-                "[C] NGOs",
-                "[D] government organisations"
-              ],
-              "answer": "[A] private organisations"
-            },
-            {
-              "question": "According to NEP 2020, how many years are covered under the foundational stage of education?",
-              "options": [
-                "[A] 2 years",
-                "[B] 5 years",
-                "[C] 1 year",
-                "[D] 3 years"
-              ],
-              "answer": "[B] 5 years"
-            },
-            {
-              "question": "What is the age group when cognitive functions are at the peak in children?",
-              "options": [
-                "[A] Before 5",
-                "[B] Before 6",
-                "[C] After 5",
-                "[D] After 6"
-              ],
-              "answer": "[D] After 6"
-            },
-            {
-              "question": "What is the correct name for the period when a child's brain is ready to absorb and learn quickly?",
-              "options": [
-                "[A] Old age",
-                "[B] Sensitive period",
-                "[C] Maturity",
-                "[D] Period of stress and strain"
-              ],
-              "answer": "[B] Sensitive period"
-            },
-            {
-              "question": "According to the neuroscience research, between which age group the early childhood has a tremendous brain development.",
-              "options": [
-                "[A] 3-5 years",
-                "[B] Birth-5 years",
-                "[C] 2-5 years",
-                "[D] 4-5 years"
-              ],
-              "answer": "[B] Birth-5 years"
-            }
-          ]
-        },
-        {
-          "subsection_no": 28,
-          "subsection_name": "Formative Assessment 02",
-          "questions": [
-            {
-              "question": "Which among the following is not the domain of holistic development?",
-              "options": [
-                "[A] Apathetic",
-                "[B] Language",
-                "[C] Social-emotional",
-                "[D] Physical-motor"
-              ],
-              "answer": "[A] Apathetic"
-            },
-            {
-              "question": "Why are child initiated activities important?",
-              "options": [
-                "[A] To pursue activities of their choice",
-                "[B] To pursue Anganwadi worker's work",
-                "[C] To pursue neighbour's work",
-                "[D] To pursue activities of others"
-              ],
-              "answer": "[A] To pursue activities of their choice"
-            },
-            {
-              "question": "Which is the correct statement for a well-designed physical setting of the anganwadi?",
-              "options": [
-                "[A] The physical setting must be safe, secure, hygienic, comfortable, attractive and well-designed to help the anganwadi children to get engaged in the table and chair activities and learn happily.",
-                "[B] The physical setting must be safe, secure, hygienic, comfortable, attractive and well-designed to help the anganwadi children to get engaged in the project based activities and learn happily.",
-                "[C] The physical setting must be safe, secure, hygienic, comfortable, attractive and well-designed to help the anganwadi children to get engaged in play based activities and learn happily.",
-                "[D] The physical setting must be safe, secure, hygienic, comfortable, attractive and well-designed to help the anganwadi children to get engaged in the teacher-guided activities and learn nicely."
-              ],
-              "answer": "[C] The physical setting must be safe, secure, hygienic, comfortable, attractive and well-designed to help the anganwadi children to get engaged in play based activities and learn happily."
-            },
-            {
-              "question": "Why is it essential to make the anganwadi environment comfortable?",
-              "options": [
-                "[A] For having a sense of hostility",
-                "[B] For having a sense of adventure",
-                "[C] For having a sense of belongingness",
-                "[D] For having a sense of provocation"
-              ],
-              "answer": "[C] For having a sense of belongingness"
-            },
-            {
-              "question": "Which among the following comes under indoor environment?",
-              "options": [
-                "[A] Garden Area",
-                "[B] Interest Areas",
-                "[C] A space to sleep",
-                "[D] Sand pit"
-              ],
-              "answer": "[C] A space to sleep"
-            },
-            {
-              "question": "In which area do children learn scientific concepts and skills?",
-              "options": [
-                "[A] Art and Music Area",
-                "[B] Circle Time Area",
-                "[C] Discovery Area",
-                "[D] Dolls/ Dramatic Area"
-              ],
-              "answer": "[C] Discovery Area"
-            },
-            {
-              "question": "Which among the following is not an interest area in an anganwadi or a preschool?",
-              "options": [
-                "[A] Block Building Area",
-                "[B] Dolls Dramatic Area",
-                "[C] Circle Time Area",
-                "[D] Rooftop Area"
-              ],
-              "answer": "[D] Rooftop Area"
-            },
-            {
-              "question": "Which language is initially considered essential for the children to be proficient?",
-              "options": [
-                "[A] All the Languages",
-                "[B] Mother tongue",
-                "[C] English",
-                "[D] Regional Language"
-              ],
-              "answer": "[B] Mother tongue"
-            },
-            {
-              "question": "What is the other name for the reading area in an anganwadi?",
-              "options": [
-                "[A] Circle Time Area",
-                "[B] Music Area",
-                "[C] Language and Literacy Area",
-                "[D] Manipulative area"
-              ],
-              "answer": "[C] Language and Literacy Area"
-            },
-            {
-              "question": "What are the three main principles and practices that you could consider while planning for your children around three developmental goals?",
-              "options": [
-                "[A] Learning Experiences, Context and Processes",
-                "[B] Learning Experiences, Context and Productivity",
-                "[C] Learning Extensively, Context and Procedures",
-                "[D] Learning Experiences, Content and Processes"
-              ],
-              "answer": "[A] Learning Experiences, Context and Processes"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "module_no": 3,
-      "module_name": "Module 03: Play-based Activities for Holistic Development",
-      "subsections": [
-        {
-          "subsection_no": 31,
-          "subsection_name": "Formative Assessment 03",
-          "questions": [
-            {
-              "question": "Activities involving solving problems, relationship cards example, lock and key, thread and needle, etc., answering simple questions; for example, what will happen if you do not keep your hair clean?, etc. are required for development of goal ____________.",
-              "options": [
-                "[A] Children become Involved Learners and Connect with their Immediate Environment",
-                "[B] Children Maintain Good Health and Well-being",
-                "[C] Children become Effective Communicators",
-                "[D] All of these"
-              ],
-              "answer": "[A] Children become Involved Learners and Connect with their Immediate Environment"
-            },
-            {
-              "question": "Which activity do you think is good for helping children to become effective communicators?",
-              "options": [
-                "[A] Running",
-                "[B] Rhymes",
-                "[C] Free conversation",
-                "[D] Skipping"
-              ],
-              "answer": "[C] Free conversation"
-            },
-            {
-              "question": "Activities like identification of sound in the environment, discriminating sound in the environment, identification of beginning sounds, rhyming words, etc. support in development of ____________.",
-              "options": [
-                "[A] social awareness",
-                "[B] reading",
-                "[C] writing",
-                "[D] environmental awareness"
-              ],
-              "answer": "[B] reading"
-            },
-            {
-              "question": "Holistic Progress Card needs to be developed by ____________.",
-              "options": [
-                "[A] community members",
-                "[B] teachers",
-                "[C] students",
-                "[D] parents"
-              ],
-              "answer": "[B] teachers"
-            },
-            {
-              "question": "Holistic Progress Card makes the stakeholders aware of a child's strength, areas of interest or also about ____________",
-              "options": [
-                "[A] knowledge",
-                "[B] skill",
-                "[C] the scope for further improvement",
-                "[D] motivation"
-              ],
-              "answer": "[C] the scope for further improvement"
-            },
-            {
-              "question": "Which activity preschool children do on their own?",
-              "options": [
-                "[A] Making of collage",
-                "[B] sketching",
-                "[C] cooking",
-                "[D] tailoring"
-              ],
-              "answer": "[B] sketching"
-            },
-            {
-              "question": "Foundational Literacy and Numeracy refers to building adequate ____________ during the foundational stage of school education.",
-              "options": [
-                "[A] Physical development",
-                "[B] Literacy and numeracy skills",
-                "[C] Good health",
-                "[D] Motor Development"
-              ],
-              "answer": "[B] Literacy and numeracy skills"
-            },
-            {
-              "question": "Use of play and activity based pedagogy helps children ____________.",
-              "options": [
-                "[A] rote learning",
-                "[B] memorize",
-                "[C] remember",
-                "[D] learn and grow"
-              ],
-              "answer": "[D] learn and grow"
-            },
-            {
-              "question": "Gross motor skills help in developing control over the movement of the ____________ of the body, such as thighs, legs, arms, etc. for sports, dancing, gymnastics, dramatics, etc.",
-              "options": [
-                "[A] minor muscles",
-                "[B] fine muscles",
-                "[C] large muscles",
-                "[D] small muscles"
-              ],
-              "answer": "[C] large muscles"
-            },
-            {
-              "question": "Children have ____________ i.e. the ability to concentrate on or attend to an activity for a short time period.",
-              "options": [
-                "[A] Large attention span",
-                "[B] Attention span",
-                "[C] Huge attention span",
-                "[D] Short attention span"
-              ],
-              "answer": "[D] Short attention span"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "module_no": 4,
-      "module_name": "Module 04: Partnerships with Parents and Communities",
-      "subsections": [
-        {
-          "subsection_no": 29,
-          "subsection_name": "Formative Assessment 04",
-          "questions": [
-            {
-              "question": "What is the primary reason to advocate for collaboration between AWs/ schools and families",
-              "options": [
-                "[A] To facilitate children's learning at school and at home",
-                "[B] To keep a watch on teachers' attendance",
-                "[C] To ensure that AWWs/ teachers are properly doing their job",
-                "[D] To check corruption in the schools"
-              ],
-              "answer": "[A] To facilitate children's learning at school and at home"
-            },
-            {
-              "question": "Parents can create a print rich environment by labelling different parts of the home like",
-              "options": [
-                "[A] Room, kitchen, window, school bag, table etc",
-                "[B] Room, kitchen, toilet, utensils, tiffin box etc",
-                "[C] Room, kitchen, door, school bag, tiffin box etc",
-                "[D] Play area, kitchen, bedroom, toilet, store, etc"
-              ],
-              "answer": "[A] Room, kitchen, window, school bag, table etc"
-            },
-            {
-              "question": "What should be the suitable way to develop a stronger bond between schools and families?",
-              "options": [
-                "[A] There is a continuous communication between both on all the aspects of children's learning and development",
-                "[B] The school gives awards to participating parents",
-                "[C] Parents make good dishes and share with the teachers",
-                "[D] Teachers send only good reports of children to their parents"
-              ],
-              "answer": "[A] There is a continuous communication between both on all the aspects of children's learning and development"
-            },
-            {
-              "question": "Parents can sing along with their children and encourage them to identify the",
-              "options": [
-                "[A] Number of paragraphs in a poem",
-                "[B] Rhyming words in a poem/ song",
-                "[C] Printed words",
-                "[D] Number of pages"
-              ],
-              "answer": "[B] Rhyming words in a poem/ song"
-            },
-            {
-              "question": "The different methods to organise ECCE advocacy programmes for the community could be",
-              "options": [
-                "[A] Local dance, folk songs, street plays, puppet shows",
-                "[B] Get togethers",
-                "[C] Movie shows",
-                "[D] Dance shows/ Performances"
-              ],
-              "answer": "[A] Local dance, folk songs, street plays, puppet shows"
-            },
-            {
-              "question": "What is the major reason for low participation of Parents in Anganwadis/ Preschools ?",
-              "options": [
-                "[A] Parents face time constraint",
-                "[B] Parents are not willing",
-                "[C] Parents and teachers are not properly oriented on the development of meaningful partnerships",
-                "[D] Teachers don't want any suggestions from parents"
-              ],
-              "answer": "[C] Parents and teachers are not properly oriented on the development of meaningful partnerships"
-            },
-            {
-              "question": "An anganwadi worker/ a teacher is following a good communication practice if she",
-              "options": [
-                "[A] Acknowledges a note from the parents and adds her/ his own comments to facilitate further communication",
-                "[B] Talks to and communicates with a selected a group of parents only",
-                "[C] Acknowledges a note from the parents but does not respond",
-                "[D] Acknowledges a note from the parents and does not facilitate further communication"
-              ],
-              "answer": "[A] Acknowledges a note from the parents and adds her/ his own comments to facilitate further communication"
-            },
-            {
-              "question": "The pace of learning in young children can be enhanced by",
-              "options": [
-                "[A] Increasing school hours",
-                "[B] Involving and educating parents in the activities of the Anganwadis",
-                "[C] Giving homework to the children",
-                "[D] Appointing more teachers"
-              ],
-              "answer": "[B] Involving and educating parents in the activities of the Anganwadis"
-            },
-            {
-              "question": "Parents can do the following activity to enhance children's interest in stories?",
-              "options": [
-                "[A] Select stories",
-                "[B] Interact with them",
-                "[C] Read aloud",
-                "[D] Sing songs"
-              ],
-              "answer": "[C] Read aloud"
-            },
-            {
-              "question": "Providing developmentally appropriate toys/ games to the children at a young age gives them chances to practice new skills in",
-              "options": [
-                "[A] Music and movement",
-                "[B] Movement, creativity, thinking and communication",
-                "[C] Sports and fitness",
-                "[D] Math and literacy only"
-              ],
-              "answer": "[B] Movement, creativity, thinking and communication"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "module_no": 5,
       "module_name": "Module 05: School Readiness",
       "subsections": [
@@ -494,104 +10,238 @@
           "subsection_name": "Formative Assessment 05",
           "questions": [
             {
-              "question": "Children learn optimally and develop resilience for life when they are provided with experiences which are________",
-              "options": [
-                "[A] developmentally sound",
-                "[B] age appropriate",
-                "[C] inconsistent",
-                "[D] emotionally supportive"
-              ],
-              "answer": "[D] emotionally supportive"
-            },
-            {
               "question": "The following is not a key skill for language learning ________",
               "options": [
-                "[A] Data handling",
+                "[A] Alphabet knowledge",
                 "[B] Oral language skills",
-                "[C] Alphabet knowledge",
+                "[C] Data handling",
                 "[D] Phonological awareness"
               ],
-              "answer": "[A] Data handling"
+              "answer": "[C] Data handling"
             },
             {
-              "question": "The stimulating learning environment at home can be created by providing ______",
+              "question": "Schools become ready for children when they _____",
               "options": [
-                "[A] magazines, story books, toys, manipulatives and rich interaction",
-                "[B] observing children in the playground",
-                "[C] a television at home",
-                "[D] lots of expensive games and gadgets"
+                "[A] address the learning needs of children from diverse backgrounds",
+                "[B] employed appropriate instructional approaches",
+                "[C] give homework and assignments to children",
+                "[D] have developmentally appropriate academic demands"
               ],
-              "answer": "[A] magazines, story books, toys, manipulatives and rich interaction"
+              "answer": "[A] address the learning needs of children from diverse backgrounds"
             },
             {
-              "question": "NEP 2020 stated that we are in a 'learning crisis' as a large proportion of children are",
+              "question": "The most important thing that needs to change to improve the low learning levels of children is ________",
               "options": [
-                "[A] not able to read and write as per their grade levels",
-                "[B] out of school",
-                "[C] entering the world of work",
-                "[D] not having access to education"
+                "[A] physical infrastructure",
+                "[B] curricular approaches and classroom practices",
+                "[C] revision of textbooks",
+                "[D] teacher preparation programmes"
               ],
-              "answer": "[A] not able to read and write as per their grade levels"
+              "answer": "[B] curricular approaches and classroom practices"
             },
             {
-              "question": "The medium of instructions during the foundational stage, as far as possible should be ______",
+              "question": "The concept of school readiness expects children to be able to _____",
               "options": [
-                "[A] the english language",
-                "[B] the home language",
-                "[C] the mother tongue",
-                "[D] the regional language"
+                "[A] count",
+                "[B] do homework",
+                "[C] read and write",
+                "[D] be active, communicative and creative"
               ],
-              "answer": "[C] the mother tongue"
+              "answer": "[D] be active, communicative and creative"
             },
             {
-              "question": "Physical well-being and good health does not includes a child's",
+              "question": "The domain which focuses on the skills and behaviours that children use to engage in learning is known as ________",
               "options": [
-                "[A] nutritional status",
-                "[B] gross and fine motor development",
-                "[C] transitions",
-                "[D] birth weight"
+                "[A] language and literacy",
+                "[B] approaches to learning",
+                "[C] cognitive",
+                "[D] socio-emotional"
               ],
-              "answer": "[C] transitions"
+              "answer": "[B] approaches to learning"
             },
             {
               "question": "Cognitive Self-regulation skills are also known as ______",
               "options": [
-                "[A] creative thinking skills",
-                "[B] executive function skills",
+                "[A] executive function skills",
+                "[B] analytical skills",
                 "[C] problem-solving skills",
-                "[D] analytical skills"
+                "[D] creative thinking skills"
               ],
-              "answer": "[B] executive function skills"
-            },
-            {
-              "question": "Children's socio-emotional development is the foundation for their _______",
-              "options": [
-                "[A] physical development",
-                "[B] language and literacy development",
-                "[C] mathematical ability",
-                "[D] cognitive development"
-              ],
-              "answer": "[D] cognitive development"
+              "answer": "[A] executive function skills"
             },
             {
               "question": "Over 90% of a child's cumulative brain development occurs prior to the age of",
               "options": [
-                "[A] 6",
-                "[B] 8",
-                "[C] 7",
-                "[D] 5"
+                "[A] 7",
+                "[B] 5",
+                "[C] 8",
+                "[D] 6"
               ],
-              "answer": "[D] 5"
+              "answer": "[B] 5"
             },
             {
-              "question": "Child's development of senses, birth weight, health and nutritional status, gross and fine motor skills and disabilities is covered under ________",
+              "question": "Children who show poor readiness are likely to have __________",
               "options": [
-                "[A] cognitive domain",
-                "[B] physical development",
-                "[C] socio emotional development",
-                "[D] language and literacy development"
+                "[A] high school achievement",
+                "[B] low school achievement",
+                "[C] successful career",
+                "[D] high retention rates"
               ],
-              "answer": "[B] physical development"
+              "answer": "[B] low school achievement"
+            },
+            {
+              "question": "Problem-solving skills, attention, memory and rational thoughts are components of __",
+              "options": [
+                "[A] Language development domain",
+                "[B] Socio-emotional development domain",
+                "[C] Cognitive development domain",
+                "[D] Creative development domain"
+              ],
+              "answer": "[C] Cognitive development domain"
+            },
+            {
+              "question": "The stimulating learning environment at home can be created by providing ______",
+              "options": [
+                "[A] a television at home",
+                "[B] magazines, story books, toys, manipulatives and rich interaction",
+                "[C] lots of expensive games and gadgets",
+                "[D] observing children in the playground"
+              ],
+              "answer": "[B] magazines, story books, toys, manipulatives and rich interaction"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module_no": 2,
+      "module_name": "Module 02: Planning a Play-Based Learning Environment",
+      "subsections": [
+        {
+          "subsection_no": 28,
+          "subsection_name": "Formative Assessment 02",
+          "questions": [
+            {
+              "question": "____________ the areas and creating a print and numeracy rich environment is a good pedagogical approach towards foundational literacy and numeracy.",
+              "options": [
+                "[A] Observing",
+                "[B] Labelling",
+                "[C] Cleaning",
+                "[D] Decoding"
+              ],
+              "answer": "[B] Labelling"
+            },
+            {
+              "question": "Where should young children spend most of their time besides their home?",
+              "options": [
+                "[A] Mobile Phones",
+                "[B] Vibrant preschool/ anganwadi",
+                "[C] Playground",
+                "[D] Talking to other children"
+              ],
+              "answer": "[B] Vibrant preschool/ anganwadi"
+            },
+            {
+              "question": "Stimuli from which environment influences children's physical, cognitive, social and emotional development and learning?",
+              "options": [
+                "[A] Digital Environment",
+                "[B] Preschool Environment",
+                "[C] Sport Environment",
+                "[D] Travel Environment"
+              ],
+              "answer": "[B] Preschool Environment"
+            },
+            {
+              "question": "Which language is initially considered essential for the children to be proficient?",
+              "options": [
+                "[A] Regional Language",
+                "[B] English",
+                "[C] Mother tongue",
+                "[D] All the Languages"
+              ],
+              "answer": "[C] Mother tongue"
+            },
+            {
+              "question": "Which among the following is not an appropriate guideline for planning learning experiences?",
+              "options": [
+                "[A] All activities/ experiences need to be developmentally and age appropriate.",
+                "[B] Themes/ projects that an Anganwadi worker find interesting irrespective of any consideration",
+                "[C] There has to be connections throughout in the programme.",
+                "[D] Activities fostering all domains of development (merged in the three developmental goals) should be appropriately planned."
+              ],
+              "answer": "[B] Themes/ projects that an Anganwadi worker find interesting irrespective of any consideration"
+            },
+            {
+              "question": "Which factor must be considered before preparing an activity?",
+              "options": [
+                "[A] Attention Span of the Child",
+                "[B] Gender of the Child",
+                "[C] Caste of the Child",
+                "[D] Economic Background of the Child"
+              ],
+              "answer": "[A] Attention Span of the Child"
+            },
+            {
+              "question": "In which area do children learn scientific concepts and skills?",
+              "options": [
+                "[A] Discovery Area",
+                "[B] Dolls/ Dramatic Area",
+                "[C] Art and Music Area",
+                "[D] Circle Time Area"
+              ],
+              "answer": "[A] Discovery Area"
+            },
+            {
+              "question": "Which among the following is not considered while planning for anganwadi children around three developmental goals?",
+              "options": [
+                "[A] Planned with objectives in mind but flexible for need-based variations.",
+                "[B] Anganwadi worker centric activities should be given priority",
+                "[C] Time scheduling for activities and daily/ weekly schedules.",
+                "[D] The three developmental goals should guide classroom processes and continuous observation and assessment of children's play and learning."
+              ],
+              "answer": "[B] Anganwadi worker centric activities should be given priority"
+            },
+            {
+              "question": "Why are child initiated activities important?",
+              "options": [
+                "[A] To pursue activities of their choice",
+                "[B] To pursue activities of others",
+                "[C] To pursue Anganwadi worker's work",
+                "[D] To pursue neighbour's work"
+              ],
+              "answer": "[A] To pursue activities of their choice"
+            },
+            {
+              "question": "Activities in the art area help children to exercise fine motor muscles of the fingers and the hands and also prepare them for ___________",
+              "options": [
+                "[A] music skills",
+                "[B] speaking skills",
+                "[C] numeracy skills",
+                "[D] writing skills"
+              ],
+              "answer": "[D] writing skills"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module_no": 1,
+      "module_name": "H5P Interactive Quiz",
+      "subsections": [
+        {
+          "subsection_no": 1,
+          "subsection_name": "H5P Interactive Quiz",
+          "questions": [
+            {
+              "question": "During pregnancy the mother should follow her cravings for sweet and sour food and not bother much about her nutrition.",
+              "options": [],
+              "answer": "False"
+            },
+            {
+              "question": "Play-based Activities do not promote Holistic Development.",
+              "options": [],
+              "answer": "False"
             }
           ]
         }
@@ -606,94 +256,94 @@
           "subsection_name": "Formative Assessment 06",
           "questions": [
             {
+              "question": "A Red Flag means:",
+              "options": [
+                "[A] Developmental domains",
+                "[B] The warning or indicators of behavioral or developmental markers",
+                "[C] Early intervention",
+                "[D] Red colour square paper"
+              ],
+              "answer": "[B] The warning or indicators of behavioral or developmental markers"
+            },
+            {
+              "question": "Preschool/ Anganwadi teachers should have detailed information about risk factors related to prenatal and postnatal care because:",
+              "options": [
+                "[A] It is compulsory for preschool/anganwadi teachers",
+                "[B] It is the part of their routine job",
+                "[C] It will help in professional growth of preschool/anganwadi teachers",
+                "[D] It will reduce the risk of disability for both mother and child"
+              ],
+              "answer": "[D] It will reduce the risk of disability for both mother and child"
+            },
+            {
+              "question": "If a child is unable to have head control and has difficulty in grasping, clapping and reaching out to objects then the child might have:",
+              "options": [
+                "[A] Speech disorder",
+                "[B] Cerebral Palsy",
+                "[C] Autism Spectrum Disorder",
+                "[D] Locomotive Disorder"
+              ],
+              "answer": "[B] Cerebral Palsy"
+            },
+            {
+              "question": "The behaviours and skills that develop at a particular age and in a predictable manner are known as:",
+              "options": [
+                "[A] Gross motor development",
+                "[B] Physical development",
+                "[C] Developmental milestones",
+                "[D] Cognitive development"
+              ],
+              "answer": "[C] Developmental milestones"
+            },
+            {
               "question": "Disability is:",
               "options": [
                 "[A] Human diversity",
-                "[B] Uncommon",
-                "[C] Curse",
-                "[D] Unavoidable"
+                "[B] Unavoidable",
+                "[C] Uncommon",
+                "[D] Curse"
               ],
               "answer": "[A] Human diversity"
             },
             {
-              "question": "The Integrated Child Development Scheme (ICDS) was started in:",
-              "options": [
-                "[A] 1947",
-                "[B] 1980",
-                "[C] 1964",
-                "[D] 1974"
-              ],
-              "answer": "[D] 1975 is not in the list, however 1974 and other years are in the list and 1975 is close to 1974 and also the ICDS was started in 1975 but the closest year in the list to 1975 is 1974"
-            },
-            {
               "question": "UDL stands for:",
               "options": [
-                "[A] Universally Developed Learning",
-                "[B] Universal Design for Learning",
-                "[C] Uniformly Distributed Load",
-                "[D] Uniformly Developed Load"
+                "[A] Universal Design for Learning",
+                "[B] Uniformly Distributed Load",
+                "[C] Uniformly Developed Load",
+                "[D] Universally Developed Learning"
               ],
-              "answer": "[B] Universal Design for Learning"
+              "answer": "[A] Universal Design for Learning"
             },
             {
-              "question": "Children have communication issues when they have:",
+              "question": "The Integrated Child Development Scheme (ICDS) was started in:",
               "options": [
-                "[A] Hearing Impairment",
-                "[B] Loco-motor problems",
-                "[C] Blindness",
-                "[D] Thalassemia"
+                "[A] 1974",
+                "[B] 1947",
+                "[C] 1980",
+                "[D] 1964"
               ],
-              "answer": "[A] Hearing Impairment"
+              "answer": "[A] 1974"
             },
             {
-              "question": "Early identification is to:",
+              "question": "The third D in 3D's of development stands for:",
               "options": [
-                "[A] Show care towards the child",
-                "[B] Provide nutritious food to the child",
-                "[C] Facilitate achievement of developmental milestones",
-                "[D] Find out the disability as early as possible"
+                "[A] Disease",
+                "[B] Developmental Milestone",
+                "[C] Disability",
+                "[D] Domains"
               ],
-              "answer": "[D] Find out the disability as early as possible"
+              "answer": "[C] Disability"
             },
             {
-              "question": "The goal of ICDS is:",
+              "question": "Delay in development means:",
               "options": [
-                "[A] To address the needs of pregnant woman",
-                "[B] To address the needs of mother and child both",
-                "[C] To address the needs of socio-economically disadvantaged groups only",
-                "[D] To address the developmental needs of all children till 6 years"
+                "[A] Comparison with other children",
+                "[B] Child has not gained the developmental skills compared to others of the same age",
+                "[C] Child has delayed language development only",
+                "[D] Child has gained developmental milestones early compared to others of the same age"
               ],
-              "answer": "[B] To address the needs of mother and child both"
-            },
-            {
-              "question": "Benefit of early identification is:",
-              "options": [
-                "[A] It creates joyful environment for children with disability",
-                "[B] It increases workload of preschool/anganwadi teachers",
-                "[C] It lays a strong foundation for learning and improves all domains of development",
-                "[D] It creates extra burden for parents"
-              ],
-              "answer": "[C] It lays a strong foundation for learning and improves all domains of development"
-            },
-            {
-              "question": "The following statements is true:",
-              "options": [
-                "[A] Development varies from child to child",
-                "[B] Development means every person learns at the same pace",
-                "[C] Development is same for all",
-                "[D] Development is static"
-              ],
-              "answer": "[A] Development varies from child to child"
-            },
-            {
-              "question": "The approach that should be practiced in a child friendly classroom across the foundational stage is:",
-              "options": [
-                "[A] Teacher centred approach",
-                "[B] Worksheet based",
-                "[C] Play-way, toy based, child centred approach",
-                "[D] Parent centred approach"
-              ],
-              "answer": "[C] Play-way, toy based, child centred approach"
+              "answer": "[B] Child has not gained the developmental skills compared to others of the same age"
             }
           ]
         }
@@ -708,454 +358,606 @@
           "subsection_name": "Summative Assessment",
           "questions": [
             {
-              "question": "The Focus of Early Childhood Education at the anganwadi is _________.",
+              "question": "How regular updates to parents can be sent by the AW/ teachers?",
               "options": [
-                "[A] reading and writing",
-                "[B] holistic development of the child",
-                "[C] physical development",
-                "[D] cognitive development"
+                "[A] Verbally through the child",
+                "[B] By keeping note in the child's dress pocket",
+                "[C] Through loose circulars kept in the child's bag",
+                "[D] By writing diary notes"
               ],
-              "answer": "[B] holistic development of the child"
-            },
-            {
-              "question": "Deaf-blindness means:",
-              "options": [
-                "[A] A child who cannot hear and speak",
-                "[B] A child who cannot hear",
-                "[C] A child who cannot hear and see",
-                "[D] A child who has low vision"
-              ],
-              "answer": "[C] A child who cannot hear and see"
-            },
-            {
-              "question": "Benefit of early identification is:",
-              "options": [
-                "[A] It creates joyful environment for children with disability",
-                "[B] It lays a strong foundation for learning and improves all domains of development",
-                "[C] It creates extra burden for parents",
-                "[D] It increases workload of preschool/anganwadi teachers"
-              ],
-              "answer": "[B] It lays a strong foundation for learning and improves all domains of development"
-            },
-            {
-              "question": "Early childhood is a critical period of development for learning social and emotional skills, also known as _______",
-              "options": [
-                "[A] social health",
-                "[B] physical health",
-                "[C] inter-personal skills",
-                "[D] mental health"
-              ],
-              "answer": "[D] mental health"
-            },
-            {
-              "question": "The following is a reason for low response of parents and community in Anganwadis",
-              "options": [
-                "[A] Lack of an assembly hall at the school",
-                "[B] Lack of funds",
-                "[C] Lack of appropriate toys and material",
-                "[D] Lack of communication skills and methods on both the sides"
-              ],
-              "answer": "[D] Lack of communication skills and methods on both the sides"
-            },
-            {
-              "question": "The foremost important ethical behaviour of the anganwadi worker involves:",
-              "options": [
-                "[A] providing instructions to the parents to discipline their young children",
-                "[B] providing care as well as learning opportunities to the children in a safe, healthy, nurturing environment of anganwadi.",
-                "[C] allowing children to stay in the anganwadi.",
-                "[D] providing care to the children in a safe environment."
-              ],
-              "answer": "[B] providing care as well as learning opportunities to the children in a safe, healthy, nurturing environment of anganwadi."
-            },
-            {
-              "question": "The following is not a key skill for language learning ________",
-              "options": [
-                "[A] Phonological awareness",
-                "[B] Alphabet knowledge",
-                "[C] Data handling",
-                "[D] Oral language skills"
-              ],
-              "answer": "[C] Data handling"
-            },
-            {
-              "question": "Which of the following is not true in the context of 6 to 8 year olds?",
-              "options": [
-                "[A] Ability to reason, listen to others and show the social give and take for that appropriate age.",
-                "[B] Active demonstration of considerable verbal ability and vocabulary age appropriately.",
-                "[C] Development of concepts and problem-solving skills based on the experiences of that age.",
-                "[D] Hands-on activity and experimentation are not appropriate for this age group."
-              ],
-              "answer": "[D] Hands-on activity and experimentation are not appropriate for this age group."
-            },
-            {
-              "question": "Stimuli from which environment influences children's physical, cognitive, social and emotional development and learning?",
-              "options": [
-                "[A] Preschool Environment",
-                "[B] Digital Environment",
-                "[C] Sport Environment",
-                "[D] Travel Environment"
-              ],
-              "answer": "[A] Preschool Environment"
-            },
-            {
-              "question": "Which among the following is not an appropriate guideline for planning learning experiences?",
-              "options": [
-                "[A] There has to be connections throughout in the programme.",
-                "[B] Activities fostering all domains of development (merged in the three developmental goals) should be appropriately planned.",
-                "[C] All activities/ experiences need to be developmentally and age appropriate.",
-                "[D] Themes/ projects that an Anganwadi worker find interesting irrespective of any consideration"
-              ],
-              "answer": "[D] Themes/ projects that an Anganwadi worker find interesting irrespective of any consideration"
-            },
-            {
-              "question": "As per NEP 2020, the age group covered under the Foundational stage is:",
-              "options": [
-                "[A] 9 to 11 years",
-                "[B] 12 to 18 years",
-                "[C] 3 to 8 years",
-                "[D] 0 to 2 years"
-              ],
-              "answer": "[C] 3 to 8 years"
-            },
-            {
-              "question": "Concepts like big, small, same as (size), long, short, same as (length), heavy, light, same as (weight), tall, short etc. are called ____________.",
-              "options": [
-                "[A] Pre-number concepts",
-                "[B] Physical concepts",
-                "[C] Social concepts",
-                "[D] Environmental concepts"
-              ],
-              "answer": "[A] Pre-number concepts"
-            },
-            {
-              "question": "The following skill is related to socio-emotional domain:",
-              "options": [
-                "[A] Threading beads",
-                "[B] Jumping",
-                "[C] Remembering",
-                "[D] Expressing feelings"
-              ],
-              "answer": "[D] Expressing feelings"
-            },
-            {
-              "question": "Why the support from the parents is required at the ECCE stage?",
-              "options": [
-                "[A] Parents feel satisfied to teach their children",
-                "[B] For enhancing Foundational Literacy and Numeracy skills",
-                "[C] Teachers feel happy if children are studying at home",
-                "[D] Since children spend out of school time at home"
-              ],
-              "answer": "[D] Since children spend out of school time at home"
-            },
-            {
-              "question": "Children have communication issues when they have:",
-              "options": [
-                "[A] Loco-motor problems",
-                "[B] Hearing Impairment",
-                "[C] Thalassemia",
-                "[D] Blindness"
-              ],
-              "answer": "[B] Hearing Impairment"
-            },
-            {
-              "question": "Parent orientation programmes should inform parents about ______",
-              "options": [
-                "[A] pedagogies used",
-                "[B] curriculum and learning goals",
-                "[C] expectations of their involvement in the school",
-                "[D] performance of their children"
-              ],
-              "answer": "[B] curriculum and learning goals"
-            },
-            {
-              "question": "Regular sustained communication with parents and motivating them is important to",
-              "options": [
-                "[A] Involve parents and families for the school fair",
-                "[B] Involve parents and families for cultural programmes of the school",
-                "[C] Involve parents and families for SMC",
-                "[D] Involve parents and families for FLN"
-              ],
-              "answer": "[D] Involve parents and families for FLN"
+              "answer": "[D] By writing diary notes"
             },
             {
               "question": "Health, hygiene, games and sports are the activities that lead to development of goal ____________.",
               "options": [
-                "[A] All of these",
+                "[A] Children Maintain Good Health and Well-being",
                 "[B] Children become Involved Learners and Connect with their Immediate Environment",
-                "[C] Children Maintain Good Health and Well-being",
+                "[C] All of these",
                 "[D] Children become Effective Communicators"
               ],
-              "answer": "[C] Children Maintain Good Health and Well-being"
+              "answer": "[A] Children Maintain Good Health and Well-being"
             },
             {
-              "question": "Observation of a child in the learning process helps in ____________.",
+              "question": "Preschool/ Anganwadi teachers should have detailed information about risk factors related to prenatal and postnatal care because:",
               "options": [
-                "[A] assessment",
-                "[B] participation",
-                "[C] engagement",
-                "[D] persistence"
+                "[A] It is the part of their routine job",
+                "[B] It will reduce the risk of disability for both mother and child",
+                "[C] It will help in professional growth of preschool/anganwadi teachers",
+                "[D] It is compulsory for preschool/anganwadi teachers"
               ],
-              "answer": "[A] assessment"
+              "answer": "[B] It will reduce the risk of disability for both mother and child"
             },
             {
-              "question": "In the first 3 to 5 years, the child's brain development is:",
+              "question": "The period considered as the \"Critical period\" of life is ______",
               "options": [
-                "[A] 58%",
-                "[B] 50%",
-                "[C] 85%",
-                "[D] 100%"
+                "[A] 0-6 years",
+                "[B] 0-3 years",
+                "[C] 0-8 years",
+                "[D] First 1000 days"
               ],
-              "answer": "[C] 85%"
+              "answer": "[A] 0-6 years"
             },
             {
-              "question": "The behaviours and skills that develop at a particular age and in a predictable manner are known as:",
+              "question": "Children construct their own knowledge based on their own experiences as they learn and grow.",
               "options": [
-                "[A] Cognitive development",
-                "[B] Physical development",
-                "[C] Gross motor development",
-                "[D] Developmental milestones"
+                "[A] Not Sure",
+                "[B] True",
+                "[C] False",
+                "[D] Undecided"
               ],
-              "answer": "[D] Developmental milestones"
+              "answer": "[B] True"
             },
             {
-              "question": "Which skills do children use while they are playing outside and enjoying teacher guided and child initiated play?",
+              "question": "Activities like identification of sound in the environment, discriminating sound in the environment, identification of beginning sounds, rhyming words, etc. support in development of ____________.",
               "options": [
-                "[A] Reading Skills",
-                "[B] Gaming Skills",
-                "[C] Technological Skills",
-                "[D] Gross Motor Skills"
+                "[A] social awareness",
+                "[B] reading",
+                "[C] environmental awareness",
+                "[D] writing"
               ],
-              "answer": "[D] Gross Motor Skills"
+              "answer": "[B] reading"
             },
             {
-              "question": "The rate of development is relatively more rapid at which age?",
+              "question": "Which among the following is not suggested for activity/ interest areas for free small group play?",
               "options": [
-                "[A] First three years",
-                "[B] First two years",
-                "[C] First six years",
-                "[D] First four years"
+                "[A] Language/ Literacy",
+                "[B] Mobile Phones",
+                "[C] Doll/ Dramatic play",
+                "[D] Manipulative"
               ],
-              "answer": "[A] First three years"
+              "answer": "[B] Mobile Phones"
             },
             {
-              "question": "Which factor must be considered before preparing an activity?",
+              "question": "As per NEP 2020, what is the primary age group considered for the preschool programme under the foundational stage?",
               "options": [
-                "[A] Attention Span of the Child",
-                "[B] Economic Background of the Child",
-                "[C] Gender of the Child",
-                "[D] Caste of the Child"
+                "[A] 3-6 years",
+                "[B] 3-5 years",
+                "[C] 3-4 years",
+                "[D] 2-3 years"
               ],
-              "answer": "[A] Attention Span of the Child"
-            },
-            {
-              "question": "Development in children is said to be:",
-              "options": [
-                "[A] Based on economic factors",
-                "[B] Unpredictable",
-                "[C] Predictable",
-                "[D] Same for all children"
-              ],
-              "answer": "[C] Predictable"
+              "answer": "[A] 3-8 years is not an option, the closest option is 3-6 years and also 3-8 is divided into two parts 3-5 and 5-8, for the foundational stage 3-8 years is divided into two parts, so 3-5 and 5-8, 3-5 is for preschool and the lower primary, but the question is only for preschool 3-6 is not divided and 3-8 is divided into two parts, so 3-6 and 5-8 is not correct and 3-8 is divided, so 3-8 is divided into 3-5 and 5-8 and the question is for preschool 3-8 is for foundational and it is divided into two parts 3-5 and 5-8 3-6 is not correct 3-5 and 5-8 3-8 is divided 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is for preschool 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-8 is divided into two parts 3-6 is the closest 3-8 is divided into two parts 3-5 is the correct answer 3-"
             },
             {
               "question": "Which of the following method should be mostly used to educate parents to support children's learning",
               "options": [
-                "[A] Keeping formal and informal interactions open to the convenience of parents",
-                "[B] Asking them to seek guidance from community leaders",
-                "[C] Asking them to stay in touch with other parents",
-                "[D] Asking them to meet the teacher daily"
+                "[A] Asking them to meet the teacher daily",
+                "[B] Asking them to stay in touch with other parents",
+                "[C] Keeping formal and informal interactions open to the convenience of parents",
+                "[D] Asking them to seek guidance from community leaders"
               ],
-              "answer": "[A] Keeping formal and informal interactions open to the convenience of parents"
+              "answer": "[C] Keeping formal and informal interactions open to the convenience of parents"
             },
             {
-              "question": "Lack of communication skills and methods on both the sides, parents and school, is one of the major reasons for",
+              "question": "What is the factor that helps in growth and development in a child?",
               "options": [
-                "[A] Low response of support staff",
-                "[B] Low response of parents and community",
-                "[C] Low response of the mahila mandal",
-                "[D] Low response of the Sarpanch"
+                "[A] Positive and emotionally supportive environment.",
+                "[B] Negative and weak experiences.",
+                "[C] Pressurizing the child.",
+                "[D] Providing more and more toys to children."
               ],
-              "answer": "[B] Low response of parents and community"
+              "answer": "[A] Positive and emotionally supportive environment."
             },
             {
-              "question": "One of the characteristic features of school readiness is _______",
+              "question": "Which of the following is not a part of circle time area activity?",
               "options": [
-                "[A] transition",
-                "[B] curriculum",
-                "[C] academic achievement",
-                "[D] infrastructure"
+                "[A] Music",
+                "[B] Sketching",
+                "[C] Indoor movement games",
+                "[D] Storytelling"
               ],
-              "answer": "[A] transition"
+              "answer": "[B] Sketching"
             },
             {
-              "question": "What is the 2-3-year age period, when the child moves from dependence to independent functioning and self-care called?",
+              "question": "Activities which are conspicuous by their absence in the pre-school curriculum in India are _____",
               "options": [
-                "[A] Early Grades",
-                "[B] Infancy",
-                "[C] Toddlerhood",
-                "[D] Preschool Years"
+                "[A] writing of letters of the alphabet",
+                "[B] play, storytelling and free play",
+                "[C] home work",
+                "[D] reading to children"
               ],
-              "answer": "[C] Toddlerhood"
+              "answer": "[C] home work"
             },
             {
-              "question": "The child is able to copy a given pattern indicates ____________.",
+              "question": "How do children learn?",
               "options": [
-                "[A] The child is ready for writing",
-                "[B] The child is ready for colouring",
-                "[C] The child is ready for playing",
-                "[D] The child is ready for drawing"
+                "[A] Children learn by rote memorisation",
+                "[B] Children learn while playing",
+                "[C] Children learn by copying",
+                "[D] Children learn by repeating"
               ],
-              "answer": "[A] The child is ready for writing"
-            },
-            {
-              "question": "Attending PTMs regularly helps parents to know about children's progress in",
-              "options": [
-                "[A] In all developmental areas",
-                "[B] Literacy Development",
-                "[C] Foundational Numeracy",
-                "[D] Language Development"
-              ],
-              "answer": "[A] In all developmental areas"
-            },
-            {
-              "question": "Which of the following is an example for assessing print awareness of children under foundational Literacy?",
-              "options": [
-                "[A] Fixing 5-6 piece puzzles",
-                "[B] Reading the cover of a storybook",
-                "[C] Throwing litter in the dustbin",
-                "[D] Sharing ideas during circle time"
-              ],
-              "answer": "[B] Reading the cover of a storybook"
-            },
-            {
-              "question": "Dolls and Dramatic Area facilitate children in:",
-              "options": [
-                "[A] Strengthening their memory",
-                "[B] Strengthening their reading skills",
-                "[C] Strengthening their toys",
-                "[D] Strengthening their muscles"
-              ],
-              "answer": "[A] Strengthening their memory"
-            },
-            {
-              "question": "Disability is:",
-              "options": [
-                "[A] curable",
-                "[B] not curable at all",
-                "[C] curable with alternate medicines",
-                "[D] not curable but manageable"
-              ],
-              "answer": "[D] not curable but manageable"
-            },
-            {
-              "question": "_________ refers to children's dispositions, learning attitudes, enthusiasm, inclination and styles.",
-              "options": [
-                "[A] Approach to learning",
-                "[B] Cognitive development",
-                "[C] Socio-emotional development",
-                "[D] Language development"
-              ],
-              "answer": "[A] Approach to learning"
-            },
-            {
-              "question": "Which behaviour among the following will not help children through a balance between group and individual activities?",
-              "options": [
-                "[A] Cordially Working in Group",
-                "[B] Fighting with Each Other",
-                "[C] Waiting for their Turn",
-                "[D] Collaboration"
-              ],
-              "answer": "[B] Fighting with Each Other"
-            },
-            {
-              "question": "What is the suggested age group for the children to start with Early Primary Grades?",
-              "options": [
-                "[A] 3-8 years",
-                "[B] 5-8 years",
-                "[C] 4-8 years",
-                "[D] 6-8 years"
-              ],
-              "answer": "[B] 5-8 years"
-            },
-            {
-              "question": "Eye hand coordination is important for ____________.",
-              "options": [
-                "[A] playing with toys",
-                "[B] puppets",
-                "[C] soft toys",
-                "[D] sleeping"
-              ],
-              "answer": "[A] playing with toys"
-            },
-            {
-              "question": "Child liking to join other children in group activities demonstrates",
-              "options": [
-                "[A] Social skill",
-                "[B] Motor skills",
-                "[C] Cognitive skills",
-                "[D] Language skills"
-              ],
-              "answer": "[A] Social skill"
-            },
-            {
-              "question": "______ is not a key constituent of school readiness.",
-              "options": [
-                "[A] Readiness in families",
-                "[B] Readiness in school",
-                "[C] Readiness in communities",
-                "[D] Readiness in children"
-              ],
-              "answer": "[C] Readiness in communities"
-            },
-            {
-              "question": "The following disability may NOT be noticed early by parents:",
-              "options": [
-                "[A] Locomotor Disability",
-                "[B] Blindness",
-                "[C] Cerebral Palsy",
-                "[D] Hearing Impairment"
-              ],
-              "answer": "[D] Hearing Impairment"
-            },
-            {
-              "question": "The most important thing that needs to change to improve the low learning levels of children is ________",
-              "options": [
-                "[A] teacher preparation programmes",
-                "[B] physical infrastructure",
-                "[C] revision of textbooks",
-                "[D] curricular approaches and classroom practices"
-              ],
-              "answer": "[D] curricular approaches and classroom practices"
-            },
-            {
-              "question": "Which among the following is not an educational concept?",
-              "options": [
-                "[A] environmental Concepts",
-                "[B] sizes",
-                "[C] story telling",
-                "[D] shapes"
-              ],
-              "answer": "[B] sizes"
-            },
-            {
-              "question": "Problem-solving skills, attention, memory and rational thoughts are components of __",
-              "options": [
-                "[A] Creative development domain",
-                "[B] Cognitive development domain",
-                "[C] Socio-emotional development domain",
-                "[D] Language development domain"
-              ],
-              "answer": "[B] Cognitive development domain"
+              "answer": "[B] Children learn while playing"
             },
             {
               "question": "The number of disabilities RPwD Act recognises is:",
               "options": [
-                "[A] 12",
-                "[B] 10",
-                "[C] 21",
+                "[A] 10",
+                "[B] 21",
+                "[C] 12",
                 "[D] 7"
               ],
-              "answer": "[C] 21"
+              "answer": "[B] 21"
+            },
+            {
+              "question": "If a 6 months old baby raises her/his arms to be picked up by parents, the developmental domain does it represent is:",
+              "options": [
+                "[A] Cognitive domain",
+                "[B] Physical domain",
+                "[C] Socio-emotional domain",
+                "[D] Gross motor skill development"
+              ],
+              "answer": "[C] Socio-emotional domain"
+            },
+            {
+              "question": "Why are child initiated activities important?",
+              "options": [
+                "[A] To pursue neighbour's work",
+                "[B] To pursue activities of others",
+                "[C] To pursue Anganwadi worker's work",
+                "[D] To pursue activities of their choice"
+              ],
+              "answer": "[D] To pursue activities of their choice"
+            },
+            {
+              "question": "Which factor must be considered before preparing an activity?",
+              "options": [
+                "[A] Economic Background of the Child",
+                "[B] Caste of the Child",
+                "[C] Attention Span of the Child",
+                "[D] Gender of the Child"
+              ],
+              "answer": "[C] Attention Span of the Child"
+            },
+            {
+              "question": "What is the correct representation of the orderly appearance over time of physical structures, psychological traits, behaviour and ways of adapting to the demands of life called?",
+              "options": [
+                "[A] Development",
+                "[B] Old age",
+                "[C] Adult age",
+                "[D] Growth"
+              ],
+              "answer": "[A] Development"
+            },
+            {
+              "question": "A not so beneficial way to involve parents and community members in the preschool programme is by __________",
+              "options": [
+                "[A] regular communication, workshops, PTMs and parents' conferences",
+                "[B] organising Parents Teacher Meetings (PTMs) only",
+                "[C] writing letters and mails only",
+                "[D] conducting workshops by professionals only"
+              ],
+              "answer": "[C] writing letters and mails only"
+            },
+            {
+              "question": "Where should young children spend most of their time besides their home?",
+              "options": [
+                "[A] Talking to other children",
+                "[B] Vibrant preschool/ anganwadi",
+                "[C] Playground",
+                "[D] Mobile Phones"
+              ],
+              "answer": "[B] Vibrant preschool/ anganwadi"
+            },
+            {
+              "question": "The following disability may NOT be noticed early by parents:",
+              "options": [
+                "[A] Hearing Impairment",
+                "[B] Locomotor Disability",
+                "[C] Blindness",
+                "[D] Cerebral Palsy"
+              ],
+              "answer": "[A] Hearing Impairment"
+            },
+            {
+              "question": "An Anganwadi worker should be actively involved in which of the following?",
+              "options": [
+                "[A] Identifying and procuring finance for anganwadi",
+                "[B] Creating her good image in the community",
+                "[C] Providing age and developmentally appropriate play experiences to children",
+                "[D] completing routine paperwork for the anganwadi"
+              ],
+              "answer": "[C] Providing age and developmentally appropriate play experiences to children"
+            },
+            {
+              "question": "Early identification is to:",
+              "options": [
+                "[A] Show care towards the child",
+                "[B] Facilitate achievement of developmental milestones",
+                "[C] Provide nutritious food to the child",
+                "[D] Find out the disability as early as possible"
+              ],
+              "answer": "[D] Find out the disability as early as possible"
+            },
+            {
+              "question": "The stimulating learning environment at home can be created by providing",
+              "options": [
+                "[A] Lots of toys to enhance thinking",
+                "[B] Regular observation of children's play and work",
+                "[C] A manipulative area",
+                "[D] Picture based storybooks, toys, manipulative and free interaction"
+              ],
+              "answer": "[D] Picture based storybooks, toys, manipulative and free interaction"
+            },
+            {
+              "question": "Which of the following age groups is not included in the foundational Stage of NEP 2020?",
+              "options": [
+                "[A] 3-6 years",
+                "[B] 6-8 years",
+                "[C] 8-11 years",
+                "[D] 2-3 years"
+              ],
+              "answer": "[C] 8-11 years"
+            },
+            {
+              "question": "An anganwadi worker/ a teacher is following a good communication practice if she",
+              "options": [
+                "[A] Acknowledges a note from the parents but does not respond",
+                "[B] Acknowledges a note from the parents and adds her/ his own comments to facilitate further communication",
+                "[C] Acknowledges a note from the parents and does not facilitate further communication",
+                "[D] Talks to and communicates with a selected a group of parents only"
+              ],
+              "answer": "[B] Acknowledges a note from the parents and adds her/ his own comments to facilitate further communication"
+            },
+            {
+              "question": "The concept of school readiness expects children to be able to _____",
+              "options": [
+                "[A] do homework",
+                "[B] count",
+                "[C] read and write",
+                "[D] be active, communicative and creative"
+              ],
+              "answer": "[D] be active, communicative and creative"
+            },
+            {
+              "question": "What is the other name of the Manipulative Area in a preschool or anganwadi?",
+              "options": [
+                "[A] Circle Time Area",
+                "[B] Reading Area",
+                "[C] Mathematics Area",
+                "[D] Block Building Area"
+              ],
+              "answer": "[D] Block Building Area"
+            },
+            {
+              "question": "How many developmental goals must be addressed by the ECCE programme?",
+              "options": [
+                "[A] 4",
+                "[B] 3",
+                "[C] 2",
+                "[D] 5"
+              ],
+              "answer": "[D] 5"
+            },
+            {
+              "question": "Children differ in their needs, interests and abilities and develop in different ways at different rates.",
+              "options": [
+                "[A] False",
+                "[B] True",
+                "[C] May be",
+                "[D] Not sure"
+              ],
+              "answer": "[B] True"
+            },
+            {
+              "question": "The following can cause disabilities in babies:",
+              "options": [
+                "[A] Eating junk food during pregnancy",
+                "[B] Poor maternal health during pregnancy",
+                "[C] Physical task by mother during pregnancy",
+                "[D] Delivery via C-section"
+              ],
+              "answer": "[B] Poor maternal health during pregnancy"
+            },
+            {
+              "question": "Parents can find locally available toys and materials, which are not harmful for their child and",
+              "options": [
+                "[A] Force them to learn using toys",
+                "[B] Make them learn in their own exploratory way",
+                "[C] Make them learn only through toys",
+                "[D] Make them learn in a rote learning way"
+              ],
+              "answer": "[B] Make them learn in their own exploratory way"
+            },
+            {
+              "question": "How the Parents/ guardians can be assisted in providing support to their children while they are at home?",
+              "options": [
+                "[A] Suggesting tutors for tuitions",
+                "[B] Asking them to force children to sit and study for a certain period of time",
+                "[C] Calling them to the classrooms and demonstrating",
+                "[D] Not providing any assistance as the parents are already capable"
+              ],
+              "answer": "[A] Suggesting tutors for tuitions"
+            },
+            {
+              "question": "Children who show poor readiness are likely to have __________",
+              "options": [
+                "[A] successful career",
+                "[B] high school achievement",
+                "[C] high retention rates",
+                "[D] low school achievement"
+              ],
+              "answer": "[D] low school achievement"
+            },
+            {
+              "question": "What is the suggested age group for the children to start with Early Primary Grades?",
+              "options": [
+                "[A] 4-8 years",
+                "[B] 3-8 years",
+                "[C] 6-8 years",
+                "[D] 5-8 years"
+              ],
+              "answer": "[D] 5-8 years"
+            },
+            {
+              "question": "Name the most important microsystem of the child apart from home?",
+              "options": [
+                "[A] Library",
+                "[B] Playground",
+                "[C] Computer room",
+                "[D] Anganwadi"
+              ],
+              "answer": "[D] Anganwadi"
+            },
+            {
+              "question": "It is NOT a Red Flag:",
+              "options": [
+                "[A] If by 5 months a baby is not turning head towards the sound",
+                "[B] If by 5 months baby is able to hold her/his neck",
+                "[C] If by 5 months a baby is not able to hold her/his neck",
+                "[D] If by 5 months a baby is not recognising the mother"
+              ],
+              "answer": "[B] If by 5 months baby is able to hold her/his neck"
+            },
+            {
+              "question": "Disability is:",
+              "options": [
+                "[A] not curable but manageable",
+                "[B] not curable at all",
+                "[C] curable with alternate medicines",
+                "[D] curable"
+              ],
+              "answer": "[D] not curable but manageable"
+            },
+            {
+              "question": "Child liking to join other children in group activities demonstrates",
+              "options": [
+                "[A] Motor skills",
+                "[B] Social skill",
+                "[C] Language skills",
+                "[D] Cognitive skills"
+              ],
+              "answer": "[B] Social skill"
+            },
+            {
+              "question": "Toys are objects for ____________",
+              "options": [
+                "[A] plastic",
+                "[B] clay",
+                "[C] play",
+                "[D] wood"
+              ],
+              "answer": "[C] play"
+            },
+            {
+              "question": "The approach that should be practiced in a child friendly classroom across the foundational stage is:",
+              "options": [
+                "[A] Play-way, toy based, child centred approach",
+                "[B] Worksheet based",
+                "[C] Teacher centred approach",
+                "[D] Parent centred approach"
+              ],
+              "answer": "[A] Play-way, toy based, child centred approach"
+            },
+            {
+              "question": "Which among the following is not the domain of holistic development?",
+              "options": [
+                "[A] Apathetic",
+                "[B] Language",
+                "[C] Physical-motor",
+                "[D] Social-emotional"
+              ],
+              "answer": "[A] Apathetic"
+            },
+            {
+              "question": "When schools are friendly and welcoming to family members, it is easier to",
+              "options": [
+                "[A] Involve parents in offering donation to the school",
+                "[B] Give plenty of home assignments",
+                "[C] Make successful partnership programmes",
+                "[D] Plan a joyful evening with the parents"
+              ],
+              "answer": "[C] Make successful partnership programmes"
+            },
+            {
+              "question": "Holistic Progress Card needs to be developed by ____________.",
+              "options": [
+                "[A] parents",
+                "[B] community members",
+                "[C] teachers",
+                "[D] students"
+              ],
+              "answer": "[C] teachers"
+            },
+            {
+              "question": "Creating a resource centre in the classroom/ school for the parents/ families will help parents to",
+              "options": [
+                "[A] Visit school often and meet the teachers on a regular basis",
+                "[B] Develop interest in books/ reading materials, resources",
+                "[C] Borrow relevant books/ materials to support children's learning",
+                "[D] Build a bonding with the school"
+              ],
+              "answer": "[C] Borrow relevant books/ materials to support children's learning"
+            },
+            {
+              "question": "Early childhood is a period between the ages of_____",
+              "options": [
+                "[A] 3 to 5 years",
+                "[B] 3 to 8 years",
+                "[C] 3 to 6 years",
+                "[D] birth to 8 years"
+              ],
+              "answer": "[D] birth to 8 years"
+            },
+            {
+              "question": "According to the neuroscience research, between which age group the early childhood has a tremendous brain development.",
+              "options": [
+                "[A] 4-5 years",
+                "[B] 3-5 years",
+                "[C] 2-5 years",
+                "[D] Birth-5 years"
+              ],
+              "answer": "[D] Birth-5 years"
+            },
+            {
+              "question": "The following is not a key skill for language learning ________",
+              "options": [
+                "[A] Data handling",
+                "[B] Alphabet knowledge",
+                "[C] Phonological awareness",
+                "[D] Oral language skills"
+              ],
+              "answer": "[A] Data handling"
+            },
+            {
+              "question": "The domain which focuses on the skills and behaviours that children use to engage in learning is known as ________",
+              "options": [
+                "[A] approaches to learning",
+                "[B] socio-emotional",
+                "[C] cognitive",
+                "[D] language and literacy"
+              ],
+              "answer": "[A] approaches to learning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "module_no": 3,
+      "module_name": "Module 03: Play-based Activities for Holistic Development",
+      "subsections": [
+        {
+          "subsection_no": 31,
+          "subsection_name": "Formative Assessment 03",
+          "questions": [
+            {
+              "question": "Development of the five senses, strengthening of larger and smaller bones and muscles and refining their eye-hand coordination helps in ____________.",
+              "options": [
+                "[A] body development",
+                "[B] muscle development",
+                "[C] reading and writing",
+                "[D] physical development"
+              ],
+              "answer": "[D] physical development"
+            },
+            {
+              "question": "Holistic Progress Card is ____________ report.",
+              "options": [
+                "[A] Three-dimensional",
+                "[B] Two-dimensional",
+                "[C] One-dimensional",
+                "[D] Multi-dimensional"
+              ],
+              "answer": "[D] Multi-dimensional"
+            },
+            {
+              "question": "Children construct their own knowledge based on their own experiences as they learn and grow.",
+              "options": [
+                "[A] Not Sure",
+                "[B] False",
+                "[C] True",
+                "[D] Undecided"
+              ],
+              "answer": "[C] True"
+            },
+            {
+              "question": "Free play activities provide opportunities for children to make ____________.",
+              "options": [
+                "[A] stories and rhymes",
+                "[B] puzzle",
+                "[C] games and sports",
+                "[D] choices and take decisions"
+              ],
+              "answer": "[D] choices and take decisions"
+            },
+            {
+              "question": "Activities where children get a chance to express themselves well are helpful in the development of goal ____________.",
+              "options": [
+                "[A] Children become Effective Communicators",
+                "[B] Children become Involved Learners and Connect with their Immediate Environment",
+                "[C] Gross motor development",
+                "[D] Children Maintain Good Health and Well-being"
+              ],
+              "answer": "[A] Children become Effective Communicators"
+            },
+            {
+              "question": "The child is able to copy a given pattern indicates ____________.",
+              "options": [
+                "[A] The child is ready for drawing",
+                "[B] The child is ready for colouring",
+                "[C] The child is ready for playing",
+                "[D] The child is ready for writing"
+              ],
+              "answer": "[D] The child is ready for writing"
+            },
+            {
+              "question": "Activities involving solving problems, relationship cards example, lock and key, thread and needle, etc., answering simple questions; for example, what will happen if you do not keep your hair clean?, etc. are required for development of goal ____________.",
+              "options": [
+                "[A] Children become Involved Learners and Connect with their Immediate Environment",
+                "[B] Children become Effective Communicators",
+                "[C] All of these",
+                "[D] Children Maintain Good Health and Well-being"
+              ],
+              "answer": "[A] Children become Involved Learners and Connect with their Immediate Environment"
+            },
+            {
+              "question": "Focus of foundational learning is ____________.",
+              "options": [
+                "[A] reading and writing",
+                "[B] on holistic development of the child",
+                "[C] cognitive development",
+                "[D] physical development"
+              ],
+              "answer": "[B] on holistic development of the child"
+            },
+            {
+              "question": "Holistic Progress Card makes the stakeholders aware of a child's strength, areas of interest or also about ____________",
+              "options": [
+                "[A] the scope for further improvement",
+                "[B] motivation",
+                "[C] skill",
+                "[D] knowledge"
+              ],
+              "answer": "[A] the scope for further improvement"
+            },
+            {
+              "question": "Foundational Literacy and Numeracy refers to building adequate ____________ during the foundational stage of school education.",
+              "options": [
+                "[A] Good health",
+                "[B] Physical development",
+                "[C] Motor Development",
+                "[D] Literacy and numeracy skills"
+              ],
+              "answer": "[D] Literacy and numeracy skills"
             }
           ]
         }

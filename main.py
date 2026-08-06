@@ -168,9 +168,9 @@ def main():
     # 3. Execute Automation Pipeline for selected user(s) with Auto-Reconnect Recovery
     for idx, (u, p) in enumerate(users_to_process, 1):
         disp = config.USER_NAMES.get(u, u)
-        logger.info("\n" + "=" * 65)
+        logger.info("\n" + "=" * 43)
         logger.info(f"   PROCESSING USER {idx}/{len(users_to_process)}: {disp} ({u})")
-        logger.info("=" * 65)
+        logger.info("=" * 43)
 
         max_session_attempts = 3
         for s_attempt in range(1, max_session_attempts + 1):
@@ -180,32 +180,46 @@ def main():
                     username=u,
                     password=p
                 ))
-                break  # Successful completion!
+                break  # Completed successfully — move to next user
+
             except KeyboardInterrupt:
                 logger.info("Automation process interrupted by user.")
                 sys.exit(0)
+
             except Exception as e:
-                err_msg = str(e)
-                if "connection closed" in err_msg.lower() or "target closed" in err_msg.lower() or "browser has been closed" in err_msg.lower():
-                    logger.warning(f"\n⚠️  [BROWSER DISCONNECT DETECTED] Session connection dropped (Attempt {s_attempt}/{max_session_attempts}).")
+                err_msg = str(e).lower()
+                is_browser_disconnect = any(kw in err_msg for kw in [
+                    "connection closed",
+                    "target closed",
+                    "browser has been closed",
+                    "browser closed",
+                    "playwright",
+                    "websocket",
+                    "pipe closed",
+                ])
+
+                if is_browser_disconnect:
+                    logger.warning(f"\n⚠️  [BROWSER DISCONNECT] Session connection dropped (Attempt {s_attempt}/{max_session_attempts}).")
                     if s_attempt < max_session_attempts:
                         logger.warning("🚀 Cleaning browser session locks & auto-restarting fresh Chrome session in 3 seconds...")
-                        import os, glob
+                        import os, glob, time
                         try:
                             user_dir = getattr(config, "USER_DATA_DIR", "")
                             if user_dir and os.path.exists(user_dir):
                                 for lf in glob.glob(os.path.join(user_dir, "*Singleton*")):
-                                    try: os.remove(lf)
-                                    except Exception: pass
+                                    try:
+                                        os.remove(lf)
+                                    except Exception:
+                                        pass
                         except Exception:
                             pass
-                        import time
                         time.sleep(3)
+                        logger.warning(f"🔄 [AUTO-RESTART] Starting fresh Chrome session (Attempt {s_attempt + 1}/{max_session_attempts})...\n")
                     else:
-                        logger.error(f"Automation execution failure after {max_session_attempts} attempts: {e}", exc_info=True)
+                        logger.error(f"❌ [SESSION FAILED] Browser disconnected {max_session_attempts} times for user '{disp}'. Skipping to next user.")
                 else:
                     logger.error(f"Automation execution failure: {e}", exc_info=True)
-                    break
+                    break  # Non-browser error — don't retry
 
 
 if __name__ == "__main__":

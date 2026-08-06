@@ -931,6 +931,139 @@ async def close_activity_modal(page):
 
 
 
+
+async def process_certificate_feedback(page, modal_already_open=False):
+    """
+    Handles the Certificate section 'Give Feedback' popup flow:
+      modal_already_open=False (default): Clicks Give Feedback button, waits for modal, then submits.
+      modal_already_open=True:            Modal is already visible (DIKSHA auto-opened it on course load).
+                                          Skips button-click steps — goes straight to emoji + submit.
+      Steps (when modal_already_open=False):
+        1. Clicks 'Give Feedback' button (force=True, JS dispatch — bypasses disabled state)
+        2. Waits for feedback modal popup to open
+      Steps (always):
+        3. Selects the best emoji rating (data-rating='5' — 5 stars = Excellent)
+        4. Fills the optional textarea with a positive feedback message
+        5. Clicks 'Submit Feedback' (#submitFeedbackBtn)
+        6. Waits 5s for AJAX submission to complete
+    If any step fails, logs a warning and continues — feedback failure never blocks course completion.
+    """
+    logger.info("  --> [CERTIFICATE FEEDBACK] Attempting to submit course feedback before certificate download...")
+    try:
+        if modal_already_open:
+            # Modal is already visible — DIKSHA auto-opened it on course load.
+            # Skip button-click and modal-verify steps entirely.
+            logger.info("  --> [CERTIFICATE FEEDBACK] Modal already open — skipping button click, proceeding to rating...")
+            await page.wait_for_timeout(1500)  # Ensure animation is fully settled
+        else:
+            # Step 1: Locate the CORRECT Give Feedback button
+            # DIKSHA renders two buttons — prefer the one inside .btn-wrap (the real bound button)
+            feedback_btn = page.locator(".btn-wrap button:has-text('Give Feedback')").first
+            if await feedback_btn.count() == 0:
+                # Fallback to any Give Feedback button on the page
+                feedback_btn = page.locator("button:has-text('Give Feedback')").first
+            if await feedback_btn.count() == 0:
+                logger.warning("  --> [CERTIFICATE FEEDBACK] 'Give Feedback' button not found. Skipping feedback step.")
+                return
+
+            logger.info("  --> [CERTIFICATE FEEDBACK] Clicking 'Give Feedback' button...")
+            try:
+                await feedback_btn.click(force=True)
+            except Exception:
+                pass
+            # JS dispatch as fallback — removes disabled attribute and fires click event
+            try:
+                await feedback_btn.evaluate("""el => {
+                    el.removeAttribute('disabled');
+                    el.click();
+                    const ev = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
+                    el.dispatchEvent(ev);
+                }""")
+            except Exception:
+                pass
+            await page.wait_for_timeout(3000)
+
+            # Step 2: Verify feedback modal opened (tight selector — no broad [id*='feedback'])
+            modal = page.locator(".modal.show, .modal.in, #feedbackModal, .feedback-modal").first
+            if await modal.count() == 0 or not await modal.is_visible():
+                logger.warning("  --> [CERTIFICATE FEEDBACK] Feedback modal did not open. Skipping feedback step.")
+                return
+            logger.info("  --> [CERTIFICATE FEEDBACK] Feedback modal opened successfully!")
+            # Wait 1.5s for modal animation to complete before clicking emoji
+            await page.wait_for_timeout(1500)
+
+        # Step 3: Select best emoji rating (5 stars — data-rating='5' = Excellent)
+        try:
+            best_emoji = page.locator("div.emoji-item[data-rating='5']").first
+            if await best_emoji.count() > 0:
+                await best_emoji.click(force=True)
+                logger.info("  --> [CERTIFICATE FEEDBACK] Selected 5-star rating emoji ⭐⭐⭐⭐⭐ (Excellent)")
+            else:
+                # Fallback: click last emoji-item (highest available)
+                all_emojis = page.locator("div.emoji-item.rating-input")
+                cnt = await all_emojis.count()
+                if cnt > 0:
+                    await all_emojis.nth(cnt - 1).click(force=True)
+                    logger.info(f"  --> [CERTIFICATE FEEDBACK] Selected highest available rating (emoji #{cnt})")
+        except Exception as e:
+            logger.warning(f"  --> [CERTIFICATE FEEDBACK] Emoji rating notice: {e}")
+
+        await page.wait_for_timeout(500)
+
+        # Step 4: Fill optional feedback textarea
+        try:
+            textarea = page.locator("textarea[name='review'], textarea.form-control").first
+            if await textarea.count() > 0:
+                await textarea.fill("This course was very well-structured and informative. The content is highly relevant and practical for classroom teaching. I strongly recommend it to all teachers.")
+                logger.info("  --> [CERTIFICATE FEEDBACK] Filled feedback textarea with positive review.")
+        except Exception as e:
+            logger.warning(f"  --> [CERTIFICATE FEEDBACK] Textarea fill notice: {e}")
+
+        await page.wait_for_timeout(500)
+
+        # Step 5: Click Submit Feedback button
+        try:
+            submit_btn = page.locator("#submitFeedbackBtn, button:has-text('Submit Feedback')").first
+            if await submit_btn.count() > 0:
+                logger.info("  --> [CERTIFICATE FEEDBACK] Clicking 'Submit Feedback'...")
+                await submit_btn.click(force=True)
+                await page.wait_for_timeout(5000)
+                logger.info("  --> [CERTIFICATE FEEDBACK] ✅ Feedback submitted successfully!")
+            else:
+                logger.warning("  --> [CERTIFICATE FEEDBACK] Submit button not found.")
+        except Exception as e:
+            logger.warning(f"  --> [CERTIFICATE FEEDBACK] Submit notice: {e}")
+
+        # Step 6: Close the 'Feedback Submitted Successfully' success modal
+        # DIKSHA shows a success popup after submit — must be closed to resume automation
+        try:
+            await page.wait_for_timeout(1500)  # Let success modal fully render
+            close_btn = page.locator(
+                "a.close[data-dismiss='modal'], "
+                "a[aria-label='Close'], "
+                "button.close[data-dismiss='modal'], "
+                ".modal-header a.close, "
+                ".modal-header button.close"
+            ).first
+            if await close_btn.count() > 0 and await close_btn.is_visible():
+                logger.info("  --> [CERTIFICATE FEEDBACK] Closing 'Feedback Submitted Successfully' modal...")
+                await close_btn.click(force=True)
+                await page.wait_for_timeout(1500)  # Wait for modal close animation
+                logger.info("  --> [CERTIFICATE FEEDBACK] Success modal closed. ✓")
+            else:
+                # Fallback: press Escape key to close any open modal
+                await page.keyboard.press("Escape")
+                await page.wait_for_timeout(1000)
+                logger.info("  --> [CERTIFICATE FEEDBACK] Success modal closed via Escape key. ✓")
+        except Exception as e:
+            logger.warning(f"  --> [CERTIFICATE FEEDBACK] Modal close notice: {e}")
+
+    except Exception as ex:
+        logger.warning(f"  --> [CERTIFICATE FEEDBACK] Feedback flow notice: {ex}. Continuing to course completion...")
+
+
+
+
 async def wait_for_server_checkmark(page, timeout=15, item_btn=None):
     """
     Waits for server 100% checkmark pie icon: <i class="fas fa-check"></i>
@@ -999,9 +1132,24 @@ async def open_activity_popup(page, view_button):
     Logs clean message without raw ID attribute:
     '--> [DOUBLE-TRIGGER POPUP] Re-clicking title link to force open popup modal...'
     """
-    await safe_action_click(view_button)
-    logger.info("  --> [CLICKED VIEW BUTTON] View button click sent — waiting 3s for modal to open...")
-    await page.wait_for_timeout(3000)
+    # Resolve the CORRECT clickable button — DIKSHA renders two identical <a> elements
+    # with the same act_id: one bare outer anchor (unbound) and one inside li.action123 (real button).
+    # Always prefer the li.action123 version for the first click.
+    actual_btn = view_button
+    try:
+        act_id_pre = await view_button.get_attribute("act_id") or await view_button.get_attribute("data-id") or ""
+        if act_id_pre:
+            correct_btn = page.locator(f"li.action123 a[act_id='{act_id_pre}'], li.action123 a[data-id='{act_id_pre}']").first
+            if await correct_btn.count() > 0:
+                # Use li.action123 button regardless of viewport visibility
+                # safe_action_click() handles scroll_into_view automatically
+                actual_btn = correct_btn
+    except Exception:
+        actual_btn = view_button  # Fallback to original if resolution fails
+
+    await safe_action_click(actual_btn)
+    logger.info("  --> [CLICKED VIEW BUTTON] View button click sent — waiting 5s for modal to open...")
+    await page.wait_for_timeout(5000)
 
     try:
         modal_chk = page.locator(".modal.show, .modal.in, .quiz-popup-wrapper, #instructionModal, iframe, .pdf-viewer, #pdf-container").first
@@ -1011,7 +1159,8 @@ async def open_activity_popup(page, view_button):
             logger.warning("  --> [MODAL NOT DETECTED] Modal did not open after first click. Attempting double-trigger fallback...")
             act_id = await view_button.get_attribute("act_id") or await view_button.get_attribute("data-id") or ""
             if act_id:
-                t_link = page.locator(f"a[act_id='{act_id}'], a[data-id='{act_id}'], a.activity-list[act_id='{act_id}']").first
+                # Prefer li.action123 version in double-trigger too
+                t_link = page.locator(f"li.action123 a[act_id='{act_id}'], li.action123 a[data-id='{act_id}'], a[act_id='{act_id}'], a[data-id='{act_id}']").first
                 if await t_link.count() > 0 and await t_link.is_visible():
                     logger.info("  --> [DOUBLE-TRIGGER POPUP] Re-clicking title link to force open popup modal...")
                     await safe_action_click(t_link)
@@ -1022,6 +1171,7 @@ async def open_activity_popup(page, view_button):
                 logger.warning("  --> [DOUBLE-TRIGGER] No act_id attribute found on view button. Proceeding anyway.")
     except Exception as d_ex:
         logger.warning(f"  --> Double-trigger popup notice: {d_ex}")
+
 
 
 
@@ -2696,8 +2846,32 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
     except Exception as e:
         logger.warning(f"  --> Lessons tab click notice: {e}")
 
+    # ── EARLY COMPLETION DETECTION ────────────────────────────────────────────
+    # Some courses are already 100% complete — DIKSHA auto-pops the Give Feedback
+    # modal immediately after the Lessons tab loads (no module scan needed).
+    # Detect and handle this before the accordion engine runs.
+    try:
+        early_modal = page.locator(".modal.show, .modal.in, #feedbackModal, .feedback-modal").first
+        if await early_modal.count() > 0 and await early_modal.is_visible():
+            logger.info("  --> [EARLY COMPLETION DETECTED] Course is already 100% complete!")
+            logger.info("  --> [EARLY COMPLETION] Give Feedback modal detected automatically by DIKSHA.")
+            # Pass modal_already_open=True — skip button-click steps (modal is already visible)
+            await process_certificate_feedback(page, modal_already_open=True)
+            logger.info("=" * 67)
+            logger.info(" 🎉 🎓 AUTOMATION EXECUTION SUCCESSFUL & COURSE COMPLETED!")
+            logger.info("=" * 67)
+            logger.info(f"  ✔ User Profile : {user_str}")
+            logger.info(f"  ✔ Course Title : {course_title}")
+            logger.info("  ✔ Certificate  : Download Certificate Available")
+            logger.info("  ✔ Status       : 100% Complete — Already Finished Before This Run!")
+            logger.info("=" * 67 + "\n")
+            return True
+    except Exception as early_ex:
+        logger.warning(f"  --> Early completion check notice: {early_ex}")
+    # ─────────────────────────────────────────────────────────────────────────
 
     logger.info("[ACCORDION ENGINE] Scanning course section accordions...")
+
     
     # Locate all primary module accordion headers
     headers_raw = page.locator(
@@ -2771,8 +2945,27 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
             if is_cert_section or has_customcert_link:
                 logger.info(f"  🎓 [CERTIFICATE SECTION DETECTED] '{header_title}' reached!")
-                logger.info("  --> Verified Download Certificate link. All course requirements 100% satisfied!")
-                logger.info("  --> Skipping 'View' button click to prevent unexpected PDF download popups.\n")
+                logger.info("  --> All course requirements 100% satisfied!")
+
+                # Expand the Certificate accordion panel FIRST before calling feedback
+                # (Give Feedback button is inside the panel — invisible if panel is collapsed)
+                try:
+                    cert_toggle = header.locator("a[data-toggle='collapse'], a[href*='collapse'], a[aria-controls*='collapse']").first
+                    if await cert_toggle.count() == 0:
+                        cert_toggle = header
+                    aria_exp = (await cert_toggle.get_attribute("aria-expanded") or "").lower()
+                    if aria_exp != "true":
+                        logger.info("  --> [CERTIFICATE] Expanding accordion panel to reveal Give Feedback button...")
+                        await cert_toggle.scroll_into_view_if_needed()
+                        await cert_toggle.click(force=True)
+                        await page.wait_for_timeout(2500)
+                    else:
+                        logger.info("  --> [CERTIFICATE] Accordion panel already expanded.")
+                except Exception as cert_expand_ex:
+                    logger.warning(f"  --> [CERTIFICATE] Panel expand notice: {cert_expand_ex}")
+
+                # Submit Give Feedback popup before logging course completion
+                await process_certificate_feedback(page)
 
                 logger.info("=" * 67)
                 logger.info(" 🎉 🎓 AUTOMATION EXECUTION SUCCESSFUL & COURSE COMPLETED!")
@@ -2783,6 +2976,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                 logger.info("  ✔ Status       : 100% Complete — All Modules & Assessments Done!")
                 logger.info("=" * 67 + "\n")
                 return True
+
 
             max_module_attempts = 3
             module_retry_pass = 0
@@ -3027,8 +3221,8 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
 
 
                 server_synced = False
-                for sync_step in range(1, 11):
-                    logger.info(f"\n  ⏳ [MODULE SYNC {sync_step}/10] Reloading page & re-scanning subsections...")
+                for sync_step in range(1, 4):
+                    logger.info(f"\n  ⏳ [MODULE SYNC {sync_step}/3] Reloading page & re-scanning subsections...")
                     try:
                         await page.reload()
                         await page.wait_for_timeout(3000)
@@ -3068,7 +3262,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                         # Step 2: Re-scan and re-print SUBSECTION BREAKDOWN list on Attempt #sync_step
                         sync_btns = await get_section_action_buttons(collapse_panel, header)
                         if sync_btns:
-                            logger.info(f"  📋 [SUBSECTION BREAKDOWN ({len(sync_btns)} ITEMS) - Attempt #{sync_step}/10]:")
+                            logger.info(f"  📋 [SUBSECTION BREAKDOWN ({len(sync_btns)} ITEMS) - Sync Attempt #{sync_step}/3]:")
                             for idx, b in enumerate(sync_btns, 1):
                                 try:
                                     b_txt = (await b.inner_text()).strip()
@@ -3109,7 +3303,7 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                                         logger.error(f"  ❌ [UNEXPECTED LOCK IN SYNC] Item [{s_idx:02d}/{len(sync_btns):02d}]: '{s_item_title}' is locked during sync — this should not happen. Triggering course restart...")
                                         raise _CourseRestartSignal(s_item_title)
 
-                                    logger.info(f"  🔄 [SYNC RE-EXECUTION Attempt #{sync_step}/10] Found incomplete item [{s_idx:02d}/{len(sync_btns):02d}]: '{s_item_title}'. Executing item now...")
+                                    logger.info(f"  🔄 [SYNC RE-EXECUTION Attempt #{sync_step}/3] Found incomplete item [{s_idx:02d}/{len(sync_btns):02d}]: '{s_item_title}'. Executing item now...")
 
                                     s_act_type = await s_btn.get_attribute("act_type") or "resource"
                                     if s_act_type == "url":
@@ -3142,11 +3336,11 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                             all_items_checkmarked = False
 
                         if await is_header_100_percent_complete(header) or all_items_checkmarked:
-                            logger.info(f"  ✅ [MODULE SYNC SUCCESS] DIKSHA server completion verified for '{header_title}' on Attempt #{sync_step}/10!")
+                            logger.info(f"  ✅ [MODULE SYNC SUCCESS] DIKSHA server completion verified for '{header_title}' on Attempt #{sync_step}/3!")
                             server_synced = True
                             break
                         # Not done yet — wait 15s for DIKSHA server to register progress before next attempt
-                        logger.info(f"  ⏳ [SYNC WAIT] Attempt {sync_step}/10 incomplete. Waiting 15s for server sync...")
+                        logger.info(f"  ⏳ [SYNC WAIT] Attempt {sync_step}/3 incomplete. Waiting 15s for server sync...")
                         await asyncio.sleep(15)
                     except _CourseRestartSignal:
                         raise  # Never swallow the course restart signal
@@ -3159,17 +3353,10 @@ async def process_course_modules(page, answer_key=None, course_title="Unknown Co
                     logger.info(f"  🎓 [MODULE COMPLETED] '{header_title}' completed successfully! Advancing to next module...\n")
                     break
 
-                # ⏸️ PAUSE SYSTEM & PROMPT USER TO PRESS ENTER TO RESUME (NO CLOSING / NO EXIT!)
-                logger.warning("\n" + "=" * 75)
-                logger.warning(f" ⏸️  [AUTOMATION PAUSED] '{header_title}' is not 100% complete after 10 attempts.")
-                logger.warning(" 🔒 BROWSER & SERVER SESSION REMAIN 100% ACTIVE (NOT CLOSED)!")
-                logger.warning(" 👉 Press [ENTER] key in terminal console to RESUME automation & retry full module pass...")
-                logger.warning("=" * 75 + "\n")
-
-
-                loop = asyncio.get_running_loop()
-                await loop.run_in_executor(None, input, "Press [ENTER] to RESUME & RE-START module pass: ")
-                logger.info("  ▶ [USER RESUMED] Re-starting full module execution & re-scanning all subsections...\n")
+                # Both sync attempts failed — restart the entire course from the beginning
+                logger.warning(f"  ⚠️ [MODULE SYNC FAILED] '{header_title}' not 100% after 3 sync attempts.")
+                logger.warning(f"  🔄 Triggering full course restart to retry from the beginning...")
+                raise _CourseRestartSignal(header_title)
 
     else:
 

@@ -29,6 +29,7 @@ USER_NAMES = {
     "8617383566": "Sujata Mondal",
     "7908555852": "Tasapur Rahaman",
     "7384227228": "Bappaditya Biswas",
+    "meithuu75@gmail.com": "Syad Nazibur Rahaman",
     "gexowo4534@candaba.com": "Gsgs Sdgr",
     "borkej@smanthaai.online": "Bgdh Hdfh",
 }
@@ -39,6 +40,7 @@ USER_CREDENTIALS_ENCRYPTED = {
     "8617383566": "ENC256:S0R5KItAxBw=",
     "7908555852": "ENC256:S0R5KItAxBw=",
     "7384227228": "ENC256:SXZ8MotQzFmQjZeQoA==",
+    "meithuu75@gmail.com": "Nazibur1975@#",
     "gexowo4534@candaba.com": "ENC256:fld4G4dW0nfblr_x1FjG",
     "borkej@smanthaai.online": "ENC256:e1J6I4wX8GOpgqbQpiL9",
 }

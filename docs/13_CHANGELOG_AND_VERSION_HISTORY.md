@@ -6,9 +6,24 @@ All notable changes, architectural updates, engine improvements, bug fixes, and 
 
 ## 📑 Table of Contents
 
-1. [🚀 Summary of August 3, 2026 Release](#-summary-of-august-3-2026-release)
-2. [🕒 Timelines & Detailed Technical Feature Breakdown](#-timelines--detailed-technical-feature-breakdown)
-3. [🌐 Commit Log History](#-commit-log-history)
+1. [🚀 Summary of August 6, 2026 Release](#-summary-of-august-6-2026-release)
+2. [🚀 Summary of August 4, 2026 Release](#-summary-of-august-4-2026-release)
+3. [🚀 Summary of August 3, 2026 Release](#-summary-of-august-3-2026-release)
+4. [🕒 Timelines & Detailed Technical Feature Breakdown](#-timelines--detailed-technical-feature-breakdown)
+5. [🌐 Commit Log History](#-commit-log-history)
+
+---
+
+## 🚀 Summary of August 6, 2026 Release
+
+Today's release delivers **6 critical bug fixes and new features** across the engine, main entry point, and course data:
+
+* **Bug Fix — Certificate Accordion Not Expanded Before Feedback (Critical):** The certificate section handler called `process_certificate_feedback()` before expanding the accordion panel. The Give Feedback button inside the collapsed panel was invisible — `count() == 0` — causing silent feedback skip every time. Fixed by adding a dedicated `aria-expanded` check and `click(force=True)` panel expansion (2.5s wait) BEFORE calling the feedback function.
+* **New — Step 7: Close "Feedback Submitted Successfully" Modal:** After AJAX submit, DIKSHA shows a success popup. Engine now automatically closes it using `a.close[data-dismiss='modal']` selector with `Escape` key fallback. Works in both Scenario A and Scenario B.
+* **Bug Fix — open_activity_popup: `is_visible()` Caused Wrong Button Selection:** When resolving `li.action123 a[act_id='X']`, if the button was scrolled out of viewport, `is_visible()` returned `False` and fell back to the outer bare button (no event handler). This caused `[MODAL NOT DETECTED]` on every first click for PDF/Video activities. Fixed by removing the `is_visible()` check — `safe_action_click()` handles scroll automatically. First-click wait increased from 3s → 5s.
+* **New — main.py: 3-Attempt Auto-Reconnect Session Loop:** Replaced plain `asyncio.run()` with a `for s_attempt in range(1, 4)` retry loop. Detects all Playwright disconnect errors (`connection closed`, `target closed`, `browser has been closed`, `websocket`, `pipe closed`). On disconnect: cleans stale `*Singleton*` Chrome lock files → sleeps 3s → restarts fresh Chrome session automatically. Non-browser errors break immediately (no retry).
+* **Bug Fix — Module Sync Attempt Counter Label:** Subsection breakdown and re-execution log messages showed `/10` (old value) but the `for sync_step in range(1, 4)` loop only runs 3 times. Fixed both labels to correctly show `/3`.
+* **Course JSON Data Merge:** Merged all answer key data from old `C:\UDISE [GM]\courses` into new `data\courses` folder. Copied 2 missing files (`Action_Research.json`, `Catch_the_Rain.json`). Deep-merged `NISHTHA_FLN_English.json` (7 missing modules + 3 subsections added, 13.8 KB → 300 KB) and `NISHTHA_ECCE_English.json` (3 missing modules added, 38.7 KB → 161.1 KB). Zero duplicates verified.
 
 ---
 
