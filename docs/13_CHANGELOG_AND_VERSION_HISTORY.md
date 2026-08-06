@@ -217,11 +217,27 @@ Today's release represents a massive overhaul of the **DIKSHA+ Automation Engine
 | **`76e7cfa`** | `19:25:50` | Docs: Add Playwright error fix, termux-wake-lock, dpkg-reconfigure tzdata timezone config, and git update details |
 | **`1842b0d`** | `19:19:16` | Fix: Remove false-positive `not found_incomplete` check in module sync; require explicit header 100% OR `all_items_checkmarked` |
 | **`be84c71`** | `19:11:04` | Engine & Docs: Update Module Sync to 5 attempts maximum with infinite User Pause & Resume system (Press ENTER to resume, zero server close) |
-| **`c9fa63b`** | `19:01:46` | Config: Add new registered user Bappaditya Biswas (`7384227228`) |
-| **`8c4256b`** | `02:43:52` | Docs: Add exact Module Sync & Re-Execution terminal log trace to `11_COMPLETE_REAL_WORLD_TERMINAL_LOGS_EXAMPLE.md` |
-| **`4c5cc72`** | `02:42:30` | Engine & Docs: Update Module Sync Loop to check module badge, expand accordion, find incomplete item, re-execute item, and re-check module badge |
-| **`9d5308f`** | `02:39:25` | Fix: Add `safe_action_click` helper (`scroll_into_view` + `force=True` + JS click fallback) to resolve Playwright `Element is not visible` |
-| **`aa6791e`** | `02:36:44` | Docs: Complete Termux & Ubuntu PRoot setup guide with Single-Command 1-click installer, Multi-step breakdown, and Private Repo cloning |
-| **`b0f73c9`** | `02:20:31` | Engine & Docs: Refine Targeted Single-Item Re-Execution and Dual Confirmation |
+## 🌐 Commit Log History (August 6, 2026)
+
+| Commit Hash | Time (IST) | Description |
+| :--- | :--- | :--- |
+| **`901af56`** | `20:13:20` | Update: Set pre-click hydration buffer to 3s and format clean log line in open_activity_popup |
+| **`0a26e74`** | `20:04:36` | Update: Set 5s polling interval and format exact log lines for open_activity_popup as requested |
+| **`8378fb1`** | `20:08:52` | Feature: Add 5-second pre-click hydration buffer before clicking activity item title link or View button in open_activity_popup |
+| **`967e45a`** | `19:45:13` | Feature: Add YouTube Weblinks Blocker, DOM Link Neutralizer, and Auto-Recovery Guard to prevent accidental external YouTube navigation on Weblinks resources |
+| **`836d5c6`** | `19:23:55` | Fix: Simultaneously trigger both Item Title Link and View button on first click in open_activity_popup to guarantee 100% first-click modal opening |
+| **`ee3d8e6`** | `19:20:14` | Feature: Perfect 5-Star Emoji Rating card selection ('Excellent' 😃) and clean logging for DIKSHA 'Share your Feedback' popup modal |
+| **`37fece7`** | `19:14:47` | Feature: Enhance Feedback Rating Selector to dynamically support both 3-Star and 5-Star systems, Emoji cards, and Radio choices |
+| **`cde504b`** | `19:02:20` | Update: Display exact model name in Gemini rate limit log warnings while preserving full multi-model retry sequence |
+| **`2e15f4d`** | `18:57:52` | Fix: Break early on Gemini rate limit per key to eliminate duplicate log warning lines and switch immediately to Groq LPU API |
+| **`e0f4208`** | `18:52:27` | Feature: Add Auto-Save Quality Guard in save_auto_learned_qa to reject saving questions with duplicate or near-identical options into JSON memory |
+| **`2d1fbda`** | `18:50:17` | Data: Deep scan and delete 5 malformed questions with duplicate/near-identical options across NISHTHA ECCE and FLN course memory files |
+| **`14ee3e8`** | `18:44:13` | Data: Organize, deduplicate, and sort all course JSON files in numerical module order (Module 01, 02, 03...) without UTF-8 BOM |
+| **`1918f1d`** | `18:39:14` | Fix: Prioritize exact <li class='action123'> <a class='module-view-btn'> button element in get_section_action_buttons to ensure first-click success on View buttons |
+| **`a5a8008`** | `18:36:20` | Feature: Add 500ms fast modal polling window and expanded PDF player selectors (.sunbird-pdf-player, #resource_iframe, etc.) to open_activity_popup |
+| **`6e71674`** | `18:31:15` | Fix: Fully restore complete Dual-Scan Feedback Engine supporting both Automatic Popups and Manual 'Give Feedback' Button clicks with Emoji 5-Star Card Selection |
+
+---
+
 
 
