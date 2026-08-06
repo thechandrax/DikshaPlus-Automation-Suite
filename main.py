@@ -101,8 +101,8 @@ def display_interactive_user_menu():
 def select_browser_mode():
     """
     Displays interactive CLI menu to select browser display mode:
-    [1] Headless Mode (Silent Background Execution — Invisible Browser)
-    [2] Visible GUI Mode (Show Chrome Browser Window on Screen)
+    [1] Headless Mode (Silent Background Execution)
+    [2] Visible GUI Mode (Show Browser Window on Screen)
     """
     if not sys.stdin.isatty():
         return
@@ -110,22 +110,30 @@ def select_browser_mode():
     print("\n" + "=" * 67)
     print(" 🖥️ CHOOSE BROWSER DISPLAY MODE")
     print("=" * 67)
-    print("  [1] Headless Mode (Silent Background Execution — Invisible Browser)")
-    print("  [2] Visible GUI Mode (Show Chrome Browser Window on Screen)")
+    print("  [1] Headless Mode (Silent Background Execution)")
+    print("  [2] Visible GUI Mode (Show Browser Window on Screen)")
     print("-" * 67)
 
-    try:
-        mode_choice = input("\033[38;5;51m👉 Select browser mode (1 or 2) [Default: 1]: \033[0m").strip()
-        if mode_choice == "2":
-            config.HEADLESS = False
-            logger.info("  ✔ Mode selected: [2] Visible GUI Mode (Chrome browser window will open on screen).")
-        else:
+    while True:
+        try:
+            mode_choice = input("\033[38;5;51m👉 Select browser mode (1 or 2): \033[0m").strip()
+            if mode_choice == "1":
+                config.HEADLESS = True
+                logger.info("  ✔ Mode selected: [1] Headless Mode (Silent Background Execution).")
+                break
+            elif mode_choice == "2":
+                config.HEADLESS = False
+                logger.info("  ✔ Mode selected: [2] Visible GUI Mode (Show Browser Window on Screen).")
+                break
+            else:
+                print("  \033[31m[!] Invalid selection. Please enter 1 or 2.\033[0m")
+        except (KeyboardInterrupt, EOFError):
+            sys.exit(0)
+        except Exception:
             config.HEADLESS = True
-            logger.info("  ✔ Mode selected: [1] Headless Mode (Chrome running silently in background).")
-    except Exception:
-        config.HEADLESS = True
-        logger.info("  ✔ Mode selected: [1] Headless Mode (Default).")
+            break
     print("=" * 67 + "\n")
+
 
 
 def main():
