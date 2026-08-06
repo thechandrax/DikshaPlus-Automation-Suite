@@ -108,8 +108,9 @@ def select_browser_mode():
         return
 
     print("\n" + "=" * 67)
-    print(" 🖥️ CHOOSE BROWSER DISPLAY MODE")
+    print(" 🌐 CHOOSE BROWSER DISPLAY MODE")
     print("=" * 67)
+
     print("  [1] Headless Mode (Silent Background Execution)")
     print("  [2] Visible GUI Mode (Show Browser Window on Screen)")
     print("-" * 67)
