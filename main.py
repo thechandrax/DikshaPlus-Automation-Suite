@@ -107,24 +107,24 @@ def select_browser_mode():
     if not sys.stdin.isatty():
         return
 
-    print("\n" + "=" * 67)
-    print(" 🌐 CHOOSE BROWSER DISPLAY MODE")
-    print("=" * 67)
+    print("\n\033[38;5;51m" + "=" * 67 + "\033[0m")
+    print(" \033[1;38;5;220m🌐 CHOOSE BROWSER DISPLAY MODE\033[0m")
+    print("\033[38;5;51m" + "=" * 67 + "\033[0m")
 
-    print("  [1] Headless Mode (Silent Background Execution)")
-    print("  [2] Visible GUI Mode (Show Browser Window on Screen)")
-    print("-" * 67)
+    print("  \033[38;5;220m[1]\033[0m \033[1;38;5;82mHeadless Mode\033[0m \033[38;5;245m(Silent Background Execution)\033[0m")
+    print("  \033[38;5;220m[2]\033[0m \033[1;38;5;207mVisible GUI Mode\033[0m \033[38;5;245m(Show Browser Window on Screen)\033[0m")
+    print("\033[38;5;51m" + "-" * 67 + "\033[0m")
 
     while True:
         try:
             mode_choice = input("\033[38;5;51m👉 Select browser mode (1 or 2): \033[0m").strip()
             if mode_choice == "1":
                 config.HEADLESS = True
-                logger.info("  ✔ Mode selected: [1] Headless Mode (Silent Background Execution).")
+                logger.info("  ✔ Mode selected: \033[1;38;5;82m[1] Headless Mode (Silent Background Execution)\033[0m")
                 break
             elif mode_choice == "2":
                 config.HEADLESS = False
-                logger.info("  ✔ Mode selected: [2] Visible GUI Mode (Show Browser Window on Screen).")
+                logger.info("  ✔ Mode selected: \033[1;38;5;207m[2] Visible GUI Mode (Show Browser Window on Screen)\033[0m")
                 break
             else:
                 print("  \033[31m[!] Invalid selection. Please enter 1 or 2.\033[0m")
@@ -133,7 +133,8 @@ def select_browser_mode():
         except Exception:
             config.HEADLESS = True
             break
-    print("=" * 67 + "\n")
+    print("\033[38;5;51m" + "=" * 67 + "\033[0m\n")
+
 
 
 
