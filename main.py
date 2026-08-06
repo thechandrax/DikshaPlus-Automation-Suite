@@ -112,8 +112,9 @@ def select_browser_mode():
     print("\033[38;5;51m" + "=" * 67 + "\033[0m")
 
 
-    print("  \033[38;5;220m[1]\033[0m \033[1;38;5;82mHeadless Mode\033[0m \033[38;5;245m(Silent Background Execution)\033[0m")
-    print("  \033[38;5;220m[2]\033[0m \033[1;38;5;207mVisible GUI Mode\033[0m \033[38;5;245m(Show Browser Window on Screen)\033[0m")
+    print("  \033[38;5;220m[1]\033[0m \033[1;38;5;82mHeadless Mode\033[0m \033[1;37m(Silent Background Execution)\033[0m")
+    print("  \033[38;5;220m[2]\033[0m \033[1;38;5;207mVisible GUI Mode\033[0m \033[1;37m(Show Browser Window on Screen)\033[0m")
+
     print("\033[38;5;51m" + "-" * 67 + "\033[0m")
 
     while True:
