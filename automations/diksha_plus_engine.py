@@ -2585,18 +2585,18 @@ async def get_section_action_buttons(collapse_panel, header):
     """
     Returns unique, deduplicated action buttons inside a module collapse panel or card.
     Deduplicates title links vs View buttons using act_id and data-id attributes.
-    Always prioritizes actual .module-view-btn elements over title links.
+    Always prioritizes actual li.action123 <a class="module-view-btn"> elements over bare title links.
     """
     btns = None
     if collapse_panel and await collapse_panel.count() > 0:
-        btns = collapse_panel.locator("a.module-view-btn, button.module-view-btn, .btn.module-view-btn, a[act_type], a[act_id], a.activity-list, button:has-text('View'), a:has-text('View'), button:has-text('Start'), a:has-text('Start'), button:has-text('Continue'), a:has-text('Continue')")
+        btns = collapse_panel.locator("li.action123 a, a.module-view-btn, button.module-view-btn, .btn.module-view-btn, a[act_type], a[act_id], a.activity-list, button:has-text('View'), a:has-text('View'), button:has-text('Start'), a:has-text('Start'), button:has-text('Continue'), a:has-text('Continue')")
     
     if not btns or await btns.count() == 0:
         parent_card = header.locator("xpath=ancestor::*[contains(@class,'card') or contains(@class,'panel') or contains(@class,'modules_full_accordian_div')][1]").first
         if await parent_card.count() > 0:
-            btns = parent_card.locator("a.module-view-btn, button.module-view-btn, .btn.module-view-btn, a[act_type], a[act_id], a.activity-list, button:has-text('View'), a:has-text('View')")
+            btns = parent_card.locator("li.action123 a, a.module-view-btn, button.module-view-btn, .btn.module-view-btn, a[act_type], a[act_id], a.activity-list, button:has-text('View'), a:has-text('View')")
         else:
-            btns = header.locator("xpath=following-sibling::div[1]").locator("a.module-view-btn, .btn, a[act_id], a")
+            btns = header.locator("xpath=following-sibling::div[1]").locator("li.action123 a, a.module-view-btn, .btn, a[act_id], a")
 
     raw_count = await btns.count()
     id_map = {}
@@ -2607,13 +2607,22 @@ async def get_section_action_buttons(collapse_panel, header):
         try:
             act_id = await b.get_attribute("act_id") or await b.get_attribute("data-id") or ""
             b_class = await b.get_attribute("class") or ""
-            is_real_view_btn = "module-view-btn" in b_class or "btn" in b_class or "view" in (await b.inner_text()).lower()
+            
+            parent_li_class = ""
+            try:
+                parent_li = b.locator("xpath=ancestor::li[1]").first
+                if await parent_li.count() > 0:
+                    parent_li_class = await parent_li.get_attribute("class") or ""
+            except Exception:
+                pass
+
+            is_real_view_btn = "action123" in parent_li_class or "module-view-btn" in b_class or "btn" in b_class or "view" in (await b.inner_text()).lower()
 
             if act_id:
                 if act_id not in id_map:
                     id_map[act_id] = b
                 elif is_real_view_btn:
-                    id_map[act_id] = b  # Upgrade to real View button if previous match was title link
+                    id_map[act_id] = b  # Upgrade to real li.action123 View button!
             else:
                 row = b.locator("xpath=ancestor::*[contains(@class,'row') or contains(@class,'item') or contains(@class,'list') or contains(@class,'card-body')][1]").first
                 row_key = (await row.inner_text()).strip() if await row.count() > 0 else (await b.inner_text()).strip()
@@ -2622,6 +2631,7 @@ async def get_section_action_buttons(collapse_panel, header):
                     fallback_btns.append((clean_key, b))
         except Exception:
             fallback_btns.append(("", b))
+
 
     distinct_btns = list(id_map.values())
     seen_keys = set()
