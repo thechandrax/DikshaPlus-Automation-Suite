@@ -207,11 +207,35 @@ def extract_all_qa_items(answer_key):
 def save_auto_learned_qa(course_title, module_no, module_name, sub_no, sub_name, question_text, answer_text, option_texts=None, is_feedback=False):
     """
     Saves auto-learned question & answer sequentially under clean modules -> subsections hierarchy.
+    Applies Auto-Save Quality Guard to reject duplicate/near-identical options or malformed entries.
     """
     global ACTIVE_COURSE_TITLE
+
+    # AUTO-SAVE QUALITY GUARD: Reject saving if options are malformed, duplicate, or near-identical!
+    if option_texts and len(option_texts) >= 2:
+        norm_opts = [re.sub(r'^\s*(?:\[[A-Za-z0-9]\]|[A-Za-z0-9][\.\)])\s*', '', str(o)).strip().lower() for o in option_texts if str(o).strip()]
+        
+        # Check 1: Duplicate identical options
+        if len(norm_opts) > 1 and len(set(norm_opts)) < len(norm_opts):
+            logger.warning(f"  🛡️ [AUTO-SAVE GUARD REJECTED] Refusing to save Q '{question_text[:40]}...' into JSON — Contains duplicate/identical options!")
+            return False
+
+        # Check 2: Near-identical options (>85% character overlap)
+        if len(norm_opts) >= 4:
+            first_opt = norm_opts[0]
+            matching_count = sum(1 for opt in norm_opts if opt == first_opt or (len(first_opt) > 20 and opt[:30] == first_opt[:30]))
+            if matching_count >= 3:
+                logger.warning(f"  🛡️ [AUTO-SAVE GUARD REJECTED] Refusing to save Q '{question_text[:40]}...' into JSON — Near-identical options detected!")
+                return False
+
+    # Guard: Reject if question text is too short or empty
+    if not question_text or len(str(question_text).strip()) < 5:
+        return False
+
     try:
         # Resolve course_title using global memory if missing or generic
         valid_title = course_title
+
         if not valid_title or valid_title in ("Course", "unknown_course", "Unknown Course"):
             valid_title = ACTIVE_COURSE_TITLE
 
